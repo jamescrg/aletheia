@@ -9,30 +9,35 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
+import environ
 from django.forms.renderers import TemplatesSetting
 
-from . import settings_local
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+environ.Env.read_env(os.path.join(BASE_DIR, 'config/.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = settings_local.SECRET_KEY
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = settings_local.DEBUG
+DEBUG = env("DEBUG")
 
 # check dev v. production environment
-ENV = settings_local.ENV
+ENV = env("ENV")
 
 # urls to which the application will respond
-ALLOWED_HOSTS = settings_local.ALLOWED_HOSTS
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 # Application definition
 
@@ -113,9 +118,9 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": settings_local.DB_NAME,
-        "USER": settings_local.DB_USER,
-        "PASSWORD": settings_local.DB_PASSWORD,
+        "NAME": env("DB_NAME"),
+        "USER": env("DB_USER"),
+        "PASSWORD": env("DB_PASSWORD"),
         "HOST": "localhost",
     }
 }
@@ -173,13 +178,13 @@ INTERNAL_IPS = [
 
 # Email
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = settings_local.EMAIL_HOST
+EMAIL_HOST = env("EMAIL_HOST")
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = settings_local.EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = settings_local.EMAIL_HOST_PASSWORD
-SERVER_EMAIL = settings_local.SERVER_EMAIL
-ADMINS = settings_local.ADMINS
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+SERVER_EMAIL = env("SERVER_EMAIL")
+ADMINS = env("ADMINS")
 
 # set cookies (sessions) to last for two months
 # default is two weeks, multiplying by four to get two months
@@ -205,8 +210,8 @@ LOGGING = {
         "file": {
             "level": "DEBUG",
             "class": "logging.FileHandler",
-            "filename": "/var/log/gunicorn/cla.django.log",
-            # "filename": "logs/debug.log",  # Log file location for Mac
+            # "filename": "/var/log/gunicorn/cla.django.log",
+            "filename": "logs/debug.log",  # Log file location for Mac
             "formatter": "timestamped",
         },
     },
