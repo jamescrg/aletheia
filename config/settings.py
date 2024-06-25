@@ -210,7 +210,7 @@ LOGGING = {
         "file": {
             "level": "DEBUG",
             "class": "logging.FileHandler",
-            "filename": "/var/log/gunicorn/cla.django.log",
+            "filename": env("LOGFILE"),
             "formatter": "timestamped",
         },
     },
