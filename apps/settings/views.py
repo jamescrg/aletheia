@@ -12,16 +12,16 @@ GOOGLE_TOKEN_PATH = "google/google_tokens.json"
 
 def _token_exists(file_path):
     try:
-        with open(file_path, 'r') as file:
+        with open(file_path, "r") as file:
             data = json.load(file)
 
-        return 'token' in data
+        return "token" in data
     except (IOError, json.JSONDecodeError):
         return False
 
 
 def _get_redirect_uri(request):
-    return f'https://{request.get_host()}/settings/google/store'
+    return f"https://{request.get_host()}/settings/google/store"
 
 
 def _create_flow(redirect_uri):

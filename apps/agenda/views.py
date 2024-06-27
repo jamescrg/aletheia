@@ -79,8 +79,7 @@ def add(request):
 
     task.user_id = request.user.id
 
-    matter = get_object_or_404(
-        Matter, pk=request.POST.get("matter"))
+    matter = get_object_or_404(Matter, pk=request.POST.get("matter"))
     task.matter = matter
 
     task.status = "Pending"

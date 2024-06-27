@@ -24,6 +24,7 @@ def results(request):
 def email_test(request):
     """Test whether I can send an email"""
     from django.core.mail import send_mail
+
     # from config import settings_local
 
     send_mail(

@@ -2,6 +2,7 @@ from django import forms
 
 from .models import Matter, Proceeding, SettlementEntry, Fact, Rate
 
+
 class MatterForm(forms.ModelForm):
     class Meta:
         model = Matter
