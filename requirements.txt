@@ -10,3 +10,4 @@ psycopg2-binary==2.9.9
 setuptools==70.1.1
 google-auth-oauthlib==0.4.6
 black==24.4.2
+pytest-django==4.8.0
