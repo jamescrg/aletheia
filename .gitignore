@@ -10,5 +10,6 @@ gunicorn_cl.conf.py
 .idea
 logs
 venv/
+.venv/
 google/*
 !google/.gitkeep
