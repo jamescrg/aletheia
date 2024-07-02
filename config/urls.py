@@ -3,7 +3,6 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path, include
 
 from apps.activity import views as activity
-from apps.contacts import views as contacts
 from apps.events import views as events
 from apps.invoicing import views as invoicing
 from apps.lab import views as lab
@@ -24,35 +23,8 @@ urlpatterns = [
     path("", include("apps.intakes.urls")),
     # Matters App
     path("", include("apps.matters.urls")),
-    # --------------------------------------
-    # contacts
-    # --------------------------------------
-    path("contacts/", contacts.index, name="contacts"),
-    path("contacts/<int:id>", contacts.select, name="contacts-select"),
-    path("contacts/add", contacts.add, name="contacts-add"),
-    path("contacts/<int:id>/edit", contacts.edit, name="contacts-edit"),
-    path("contacts/<int:id>/delete", contacts.delete, name="contacts-delete"),
-    path("contacts/<int:id>/assign", contacts.assign, name="contacts-assign"),
-    path(
-        "contacts/<int:id>/assign/store",
-        contacts.assign_store,
-        name="contacts-assign-store",
-    ),
-    path("contacts/<int:id>/remove", contacts.remove, name="contacts-remove"),
-    path(
-        "contacts/<int:id>/remove/store",
-        contacts.remove_store,
-        name="contacts-remove-store",
-    ),
-    path(
-        "contacts/<int:id>/add_intake", contacts.add_intake, name="contacts-add-intake"
-    ),
-    path(
-        "contacts/<int:id>/toggle_google_sync",
-        contacts.toggle_google_sync,
-        name="contacts-toggle-google-sync",
-    ),
-    path("contacts/google_list", contacts.google_list, name="contacts-google"),
+    # Contacts App
+    path("", include("apps.contacts.urls")),
     # --------------------------------------
     # events
     # --------------------------------------
