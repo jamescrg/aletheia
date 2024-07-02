@@ -27,18 +27,8 @@ urlpatterns = [
     path("", include("apps.events.urls")),
     # Activity App
     path("", include("apps.activity.urls")),
-    # --------------------------------------
-    # trust
-    # --------------------------------------
-    path("trust/", trust.index, name="trust"),
-    path("trust/history/", trust.history, name="trust-history"),
-    path("trust/history/<str:interval>/", trust.history, name="trust-history-interval"),
-    path("trust/client/<int:id>", trust.client, name="trust-client"),
-    path("trust/<int:contact_id>/add", trust.add, name="trust-add"),
-    path("trust/<int:id>/edit", trust.edit, name="trust-edit"),
-    path("trust/<int:id>/delete", trust.delete, name="trust-delete"),
-    path("trust/<int:id>/entered", trust.toggle_entered, name="trust-entered"),
-    path("trust/<int:id>/confirmed", trust.toggle_confirmed, name="trust-confirmed"),
+    # Trust App
+    path("", include("apps.trust.urls")),
     # --------------------------------------
     # search
     # --------------------------------------
