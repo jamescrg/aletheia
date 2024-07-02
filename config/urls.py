@@ -1,8 +1,14 @@
 from django.contrib import admin
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path, include
 
-from apps.folders import views as folders
+from apps.activity import views as activity
 from apps.agenda import views as agenda
+from apps.contacts import views as contacts
+from apps.events import views as events
+from apps.intakes import views as intakes
+from apps.invoicing import views as invoicing
+from apps.lab import views as lab
 from apps.matters import views as matters
 from apps.matters import views_activity as matters_activity
 from apps.matters import views_contacts as matters_contacts
@@ -11,29 +17,17 @@ from apps.matters import views_proceedings as matters_proceedings
 from apps.matters import views_rates as matters_rates
 from apps.matters import views_settlement as matters_settlement
 from apps.matters import views_timeline as matters_timeline
-from apps.contacts import views as contacts
-from apps.events import views as events
-from apps.activity import views as activity
-from apps.trust import views as trust
-from apps.intakes import views as intakes
 from apps.search import views as search
 from apps.settings import views as settings
-from apps.invoicing import views as invoicing
-from apps.lab import views as lab
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-
+from apps.trust import views as trust
 
 urlpatterns = [
+    # Admin
     path("admin/", admin.site.urls),
+    # Accounts App
     path("accounts/", include("apps.accounts.urls")),
-    path("accounts/", include("django.contrib.auth.urls")),
-    # --------------------------------------
-    # folders
-    # --------------------------------------
-    path("folders/<int:id>/<str:page>", folders.select, name="folder-select"),
-    path("folders/insert/<str:page>", folders.insert, name="folder-insert"),
-    path("folders/update/<int:id>/<str:page>", folders.update, name="folder-update"),
-    path("folders/delete/<int:id>/<str:page>", folders.delete, name="folder-delete"),
+    # Folders App
+    path("", include("apps.folders.urls")),
     # --------------------------------------
     # agenda
     # --------------------------------------
