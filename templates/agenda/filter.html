@@ -17,7 +17,7 @@
             <form
                     method="post"
                     class="form-responsive"
-                    href={% url 'agenda:filter-update' %}
+                    action={% url 'agenda:filter-update' %}
             >
                 {% csrf_token %}
 
@@ -35,14 +35,11 @@
                 <option value="Complete" {% if filter.status == "Complete" %}selected{% endif %}>
                     Complete
                 </option>
-
             </select>
 
-                <label>From:</label>
-                <label>
-                    <input type="date" name="date_from"
-                           value="{% if filter.date_from %}{{ filter.date_from }}{% endif %}"/>
-                </label>
+                <label for="date_from">From:</label>
+                <input type="date" name="date_from" id="date_from"
+                       value="{% if filter.date_from %}{{ filter.date_from }}{% endif %}"/>
 
                 <label>To:</label>
                 <label>

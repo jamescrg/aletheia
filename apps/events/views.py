@@ -55,7 +55,7 @@ def add(request, matter_id=None, origin="events"):
             if origin == "matters":
                 return redirect(f"/matters/{event.matter_id}/events")
             else:
-                return redirect(origin)
+                return redirect(f"/{origin}")
 
     # if no post data has been submitted, show the contact form
     else:
@@ -132,7 +132,7 @@ def edit(request, id, origin="events"):
             if origin == "matters":
                 return redirect(f"/matters/{event.matter_id}/events")
             else:
-                return redirect(origin)
+                return redirect(f"/{origin}")
 
     else:
         form = EventForm(instance=event, initial={"matter": event.matter})

@@ -96,7 +96,7 @@ def add(request):
 
     request.session["agenda_matter"] = matter.id
 
-    return redirect("agenda")
+    return redirect("/agenda")
 
 
 @login_required
@@ -112,7 +112,7 @@ def edit(request, id):
             task = form.save(commit=False)
             task.save()
 
-        return redirect("agenda")
+        return redirect("/agenda")
 
     else:
         task = get_object_or_404(Task, pk=id)

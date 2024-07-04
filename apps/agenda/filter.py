@@ -51,6 +51,7 @@ class Filter:
 
         # load save session data
         agenda_filter = request.session.get("agenda_filter")
+
         if agenda_filter:
             for key, value in agenda_filter.items():
                 self.values[key] = value
