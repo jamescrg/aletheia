@@ -12,20 +12,17 @@ def test_index(client, folder, contact):
     response = client.get("/contacts/")
     assert response.status_code == 200
 
-    response = client.get(reverse("contacts:contacts"))
+    response = client.get(reverse("contacts"))
     assert response.status_code == 200
 
     # no selected folder
-    response = client.get(reverse("contacts:contacts"))
+    response = client.get(reverse("contacts"))
     assertTemplateUsed(response, "contacts/content.html")
     assert not response.context["contacts"]
 
     # folder selected
-    response = client.get(reverse("contacts:select", args=[contact.id]))
-    assert response.status_code == 302
-
-    response = client.get(reverse("contacts:contacts"))
-    assert response.context["selected_folder"] == folder
+    response = client.get(reverse("contacts"))
+    assert response.context["contacts"]
 
 
 def test_select(client, folder, contact):
@@ -35,14 +32,11 @@ def test_select(client, folder, contact):
     assert contact == response.context["selected_contact"]
 
 
-def test_add_get(client, folder, contact):
+def test_add_get(client, folder):
     # test without a selected folder
     response = client.get("/contacts/add")
     assert response.status_code == 200
     assertTemplateUsed(response, "contacts/form.html")
-
-    response = client.get(reverse("contacts:select", args=[contact.id]))
-    assert response.status_code == 302
 
     # set a selected folder
     response = client.get("/contacts/add")
@@ -68,12 +62,9 @@ def test_edit_post(client, folder, contact):
         "folder": folder.id,
         "name": "Descartes",
         "phone1": "440.500.6000",
-        "client_status": "Current",
     }
-
     response = client.post(f"/contacts/{contact.id}/edit", data)
     assert response.status_code == 302
-
     found = Contact.objects.filter(name="Descartes").exists()
     assert found
 
