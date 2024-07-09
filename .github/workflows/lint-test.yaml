@@ -10,7 +10,6 @@ env:
   ENV: ${{ vars.ENV }}
   ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
   SITE_NAME: ${{ vars.SITE_NAME }}
-  DB_HOST: ${{ secrets.DB_HOST }}
   DB_NAME: ${{ secrets.DB_NAME }}
   DB_USER: ${{ secrets.DB_USER }}
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -56,6 +55,9 @@ jobs:
 
       - name: Run migrations
         run: python manage.py migrate
+
+      - name: Lint code
+        run: pre-commit run --all-files
 
       - name: Run tests
         run: pytest
