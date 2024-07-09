@@ -19,7 +19,7 @@ from django.forms.renderers import TemplatesSetting
 
 from utils.prepare_path import prepare_path
 
-env = environ.Env(DEBUG=(bool, False), ADMINS=(list, []))
+env = environ.Env(DEBUG=(bool, False), ADMINS=(list, []), DB_HOST=(str, "localhost"))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -124,7 +124,7 @@ DATABASES = {
         "NAME": env("DB_NAME"),
         "USER": env("DB_USER"),
         "PASSWORD": env("DB_PASSWORD"),
-        "HOST": "localhost",
+        "HOST": env("DB_HOST"),
     }
 }
 

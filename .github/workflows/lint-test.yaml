@@ -10,6 +10,7 @@ env:
   ENV: ${{ vars.ENV }}
   ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
   SITE_NAME: ${{ vars.SITE_NAME }}
+  DB_HOST: ${{ secrets.DB_HOST }}
   DB_NAME: ${{ secrets.DB_NAME }}
   DB_USER: ${{ secrets.DB_USER }}
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -23,6 +24,14 @@ jobs:
   lint-and-test:
     name: Linting and Testing
     runs-on: ubuntu-latest
+
+    services:
+      database:
+        image: postgres:14
+        env:
+          POSTGRES_USER: ${{ secrets.DB_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.DB_NAME }}
 
     steps:
       - name: Checkout code
