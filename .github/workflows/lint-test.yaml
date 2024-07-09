@@ -6,14 +6,14 @@ on:
 
 env:
   SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  DEBUG: ${{ variables.DEBUG }}
-  ENV: ${{ variables.ENV }}
+  DEBUG: ${{ vars.DEBUG }}
+  ENV: ${{ vars.ENV }}
   ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
-  SITE_NAME: ${{ variables.SITE_NAME }}
+  SITE_NAME: ${{ vars.SITE_NAME }}
   DB_NAME: ${{ secrets.DB_NAME }}
   DB_USER: ${{ secrets.DB_USER }}
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-  ADMINS: ${{ variables.ADMINS }}
+  ADMINS: ${{ vars.ADMINS }}
   EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
   EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
   EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
@@ -23,6 +23,21 @@ jobs:
   lint-and-test:
     name: Linting and Testing
     runs-on: ubuntu-latest
+
+    services:
+      database:
+        image: postgres:14
+        env:
+          POSTGRES_USER: ${{ secrets.DB_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.DB_NAME }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout code
@@ -38,9 +53,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Run migrations
+        run: python manage.py migrate
+
       - name: Lint code
         run: pre-commit run --all-files
 
       - name: Run tests
         run: pytest
-        env:
