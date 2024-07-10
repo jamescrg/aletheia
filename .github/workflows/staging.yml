@@ -98,4 +98,4 @@ Hl9lYuzMFAsAAAATdHVtcGFASmFucy1BaXIuaG9tZQ==
 
       - name: Deploy to Staging
         run: |
-          ssh target "law && git pull && pip install -r requirements.txt && python manage.py migrate && sudo systemctl restart lawadmin.service"
+          ssh target "cd /www/lawadmin/ && source venv/bin/activate && git pull && pip install -r requirements.txt && python manage.py migrate && sudo systemctl restart lawadmin.service"
