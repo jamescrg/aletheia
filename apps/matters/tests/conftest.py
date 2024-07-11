@@ -80,8 +80,6 @@ def matter(user, contact):
         firm_file_no="123",
         ref_no="125",
         practice_area="General",
-        hourly_rate=300,
-        firm_rate=300,
         client=contact,
     )
     return matter

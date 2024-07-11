@@ -56,8 +56,6 @@ def test_edit_post(client, user, matter):
         "firm_file_no": "123",
         "ref_no": "125",
         "practice_area": "General",
-        "hourly_rate": 300,
-        "firm_rate": 300,
         "client": matter.client.id,
     }
     response = client.post(f"/matters/{matter.id}/edit", data)
