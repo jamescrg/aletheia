@@ -50,7 +50,6 @@ class MatterForm(forms.ModelForm):
             "firm_file_no": "File Number",
             "ref_no": "Client Reference",
             "practice_area": "Practice Area",
-            "firm_rate": "Firm Rate",
         }
 
 
