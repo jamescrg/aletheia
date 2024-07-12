@@ -12,12 +12,7 @@
                     class="section-title-left-right"
             >
 
-                <button
-                        hx-get="/matters/{{ matter.id }}/edit"
-                        hx-target="#htmx-modal-container"
-                        data-bs-toggle="modal"
-                        data-bs-target="#htmx-modal-container"
-                >
+                <a href="/matters/{{ matter.id }}/edit">
                     <i class="bi bi-pencil"></i>
                 </button>
                 <a href={% url 'matters:print' id=matter.id %}>
