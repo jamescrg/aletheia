@@ -1,68 +1,75 @@
-{% extends "base.html" %}
-{% block content %}
+<div class="modal-dialog modal-md">
+    <div class="modal-content">
 
-    <div class="col-sm-12">
-        <div class="section-title">
-            Assign Contact to Matter
+        <div class="modal-header">
+            <h1 class="modal-title">
+                Assign Contact to Matter
+            </h1>
+            <div>
+                <a href="#" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i>
+                </a>
+            </div>
         </div>
-        <form action="{{ action }}" method="post" role="form">
 
-            {% csrf_token %}
+        <div class="modal-body">
+            <form action="{{ action }}" method="post" role="form">
 
-            <table>
+                {% csrf_token %}
 
-                <tr>
+                <table>
 
-                    <th>Matter:</th>
-                    <td>
-                        <label>
-                            <select class="select-field" name="matter_id">
+                    <tr>
 
-                                {% for matter in matters %}
+                        <th>Matter:</th>
+                        <td>
+                            <label>
+                                <select class="select-field" name="matter_id">
 
-                                    <option value="{{ matter.id }}">{{ matter.name }}</option>
+                                    {% for matter in matters %}
 
-                                {% endfor %}
+                                        <option value="{{ matter.id }}">{{ matter.name }}</option>
 
-                            </select>
-                        </label>
-                    </td>
+                                    {% endfor %}
 
-                </tr>
+                                </select>
+                            </label>
+                        </td>
 
-                <tr>
-                    <th>Role:
-                    </th>
+                    </tr>
 
-                    <td>
+                    <tr>
+                        <th>Role:
+                        </th>
 
-                        <label>
-                            <select class="select-field" name="role_id">
+                        <td>
 
-                                {% for role in roles %}
+                            <label>
+                                <select class="select-field" name="role_id">
 
-                                    <option value="{{ role.id }}">{{ role.name }}</option>
+                                    {% for role in roles %}
 
-                                {% endfor %}
+                                        <option value="{{ role.id }}">{{ role.name }}</option>
 
-                            </select>
-                        </label>
-                    </td>
+                                    {% endfor %}
 
-                </tr>
+                                </select>
+                            </label>
+                        </td>
 
-                <tr>
+                    </tr>
 
-                    <td></td>
+                    <tr>
 
-                    <td>
-                        <input type="submit" value="Submit"/>
-                    </td>
+                        <td></td>
 
-                </tr>
-            </table>
-        </form>
+                        <td>
+                            <input type="submit" value="Submit"/>
+                        </td>
 
+                    </tr>
+                </table>
+            </form>
+        </div>
     </div>
-
-{% endblock content %}
+</div>
