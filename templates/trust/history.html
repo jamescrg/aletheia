@@ -90,12 +90,18 @@
                                 </td>
 
                                 <td class="note">
-                                    <a href={% url 'trust:edit' id=transaction.id %}>
+                                    <a
+                                            href="#"
+                                            hx-get="/trust/{{ transaction.id }}/edit"
+                                            hx-target="#htmx-modal-container"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#htmx-modal-container"
+                                    >
                                         {{ transaction.description }}
                                     </a>
                                 </td>
 
-                                <td class="amount darkred">
+                                <td class="amount urgent">
                                     {% if transaction.type == 'Withdrawal' %} $
                                         {{ transaction.amount|intcomma }} {% endif %}
                                 </td>
