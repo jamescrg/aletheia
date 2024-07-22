@@ -1,20 +1,16 @@
-# from datetime import date, timedelta
-# from dateutil import parser
-
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
-# from django.shortcuts import redirect
-# from django.shortcuts import get_object_or_404
-
-# from apps.matters.models import Matter
+from apps.invoicing.models import Invoice
 
 
 @login_required
 def index(request):
-
-    # invoices = Invoice.objects.all().order_by("-id")
-    invoices = []
+    invoices = (
+        Invoice.objects.all()
+        .select_related("matter", "created_by")
+        .order_by("-created_at")
+    )
 
     context = {
         "page": "invoicing",

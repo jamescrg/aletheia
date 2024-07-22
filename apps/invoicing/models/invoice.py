@@ -34,3 +34,7 @@ class Invoice(models.Model):
 
     class Meta:
         indexes = [models.Index(fields=["matter"])]
+
+    @property
+    def amount(self):
+        return 3000

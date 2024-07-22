@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load humanize %}
 {% block content %}
   <div class="section">
     <div class="section-title">
@@ -20,17 +21,21 @@
     <div class="table-container">
       <table class="table events">
         <tr>
-          <th class="date">Date Issued</th>
+          <th class="date">Invoice no.</th>
           <th class="matter">Matter</th>
-          <th class="party">Amount</th>
+          <th>Comment</th>
+          <th>Created at</th>
+          <th>Amount</th>
         </tr>
         {% for invoice in invoices %}
           <tr>
-            <td class="date">{{ invoice.date|date:"Y-m-d" }}</td>
+            <td>#{{ invoice.id }}</td>
             <td class="matter">
               <a href={% url 'matters:detail' id=invoice.matter.id %}>{{ invoice.matter.name }}</a>
             </td>
-            <td class="amount"></td>
+            <td class="amount">{{ invoice.comment }}</td>
+            <td class="invoice-date">{{ invoice.created_at|date:"Y-m-d H:i" }}</td>
+            <td class="numeric total">${{ invoice.amount|floatformat:2|intcomma }}</td>
           </tr>
         {% endfor %}
       </table>
