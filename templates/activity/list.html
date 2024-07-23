@@ -3,6 +3,11 @@
   {% load humanize %}
   <div class="filter-bar">
     <div class="section-title-left-right">
+      <a href="{% url 'activity:toggle-show-time' %}">Time</a>
+      <button hx-get="{% url 'activity:filter' %}"
+              hx-target="#htmx-modal-container"
+              data-bs-toggle="modal"
+              data-bs-target="#htmx-modal-container">Expenses</button>
       <button hx-get="{% url 'activity:filter' %}"
               hx-target="#htmx-modal-container"
               data-bs-toggle="modal"
