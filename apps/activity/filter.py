@@ -21,6 +21,8 @@ class Filter:
 
     quick_filters = {
         "today": {
+            "show_time": True,
+            "show_expenses": True,
             "date_from": None,
             "date_to": None,
             "firm": "Campbell & Brannon",
@@ -31,6 +33,8 @@ class Filter:
             "entered": None,
         },
         "unentered": {
+            "show_time": True,
+            "show_expenses": True,
             "date_from": None,
             "date_to": None,
             "firm": "Campbell & Brannon",
