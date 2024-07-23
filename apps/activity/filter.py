@@ -6,6 +6,8 @@ logger = logging.getLogger(__name__)
 
 class Filter:
     values = {
+        "show_time": True,
+        "show_expenses": True,
         "date_from": None,
         "date_to": None,
         "firm": "Campbell & Brannon",
@@ -81,4 +83,16 @@ class Filter:
         }
         for key, val in new_values.items():
             request.session["activity_filter"][key] = val
+        request.session.modified = True
+
+    def toggle_entries(self, request, entry_type):
+        if entry_type == "time":
+            val = "show_time"
+        else:
+            val = "show_expenses"
+        if self.values[val]:
+            self.values[val] = False
+        else:
+            self.values[val] = True
+        request.session["activity_filter"][val] = self.values[val]
         request.session.modified = True
