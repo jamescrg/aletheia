@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import DecimalField, ExpressionWrapper, F, Sum
 
 from apps.accounts.models import CustomUser
 from apps.matters.models import Matter
@@ -35,6 +36,40 @@ class Invoice(models.Model):
     class Meta:
         indexes = [models.Index(fields=["matter"])]
 
+    def save(self, *args, **kwargs):
+        from apps.activity.models import ExpenseEntry, TimeEntry
+
+        invoice = super().save(*args, **kwargs)
+
+        TimeEntry.objects.filter(
+            matter=self.matter, date__range=[self.date_from, self.date_to]
+        ).update(invoice_id=self.id)
+
+        ExpenseEntry.objects.filter(
+            matter=self.matter, date__range=[self.date_from, self.date_to]
+        ).update(invoice_id=self.id)
+
+        return invoice
+
     @property
     def amount(self):
-        return 3000
+        from apps.activity.models import ExpenseEntry, TimeEntry
+
+        time_entry_amount = (
+            TimeEntry.objects.filter(invoice=self.id)
+            .annotate(
+                fee=ExpressionWrapper(
+                    F("hours") * F("firm_rate"), output_field=DecimalField()
+                )
+            )
+            .aggregate(total_fee=Sum("fee"))["total_fee"]
+        ) or 0
+
+        expense_amount = (
+            ExpenseEntry.objects.filter(invoice=self.id).aggregate(
+                total_amount=Sum("amount")
+            )["total_amount"]
+            or 0
+        )
+
+        return time_entry_amount + expense_amount

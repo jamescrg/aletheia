@@ -8,7 +8,7 @@
         <div class="section-title-left-right">
           <button type="button"
                   class="btn-icon"
-                  hx-get="/invoicing/add"
+                  hx-get="{% url 'invoicing:new-invoice' %}"
                   hx-target="#htmx-modal-container"
                   hx-trigger="click"
                   data-bs-toggle="modal"
