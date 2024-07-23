@@ -517,3 +517,10 @@ def export(request):
         )
 
     return response
+
+
+@login_required
+def toggle_show_time(request):
+    filter = Filter(request)
+    filter.toggle("time")
+    return redirect("/activity")

@@ -15,6 +15,7 @@ from apps.activity.views import (
     index,
     toggle_entered,
     toggle_entered_expense,
+    toggle_show_time,
 )
 
 app_name = "activity"
@@ -64,4 +65,5 @@ urlpatterns = [
         name="filter-matter",
     ),
     path("activity/export", export, name="export"),
+    path("activity/toggle-show-time", toggle_show_time, name="toggle-show-time"),
 ]
