@@ -520,7 +520,7 @@ def export(request):
 
 
 @login_required
-def toggle_show_time(request):
+def toggle_entries(request, entry_type):
     filter = Filter(request)
-    filter.toggle("time")
+    filter.toggle_entries(request, entry_type)
     return redirect("/activity")
