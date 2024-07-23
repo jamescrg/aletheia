@@ -16,7 +16,6 @@ class Filter:
         "keyword": "",
         "comp": None,
         "entered": None,
-        "view_rate": "Firm",
         "order": "date, descending",
     }
 
@@ -61,8 +60,17 @@ class Filter:
             request.session["activity_filter"] = {}
 
     def update(self, request):
+
+        # make the user submitted post data mutable
+        filter_values = request.POST.copy()
+
+        # cast the show_x values to integers that will evaluate to True/False
+        filter_values["show_time"] = int(filter_values["show_time"])
+        filter_values["show_expenses"] = int(filter_values["show_expenses"])
+
+        # save in session
         for key in self.values.keys():
-            request.session["activity_filter"][key] = request.POST[key]
+            request.session["activity_filter"][key] = filter_values[key]
         request.session.modified = True
 
     def set_quick_filter(self, request, quick_filter):
