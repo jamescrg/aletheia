@@ -5,7 +5,6 @@
 
 html, body {
     width: 100%;
-    height: 100%;
     font-size: 0.9rem;
 }
 
@@ -101,6 +100,7 @@ html, body {
 
 .expense {
     margin-top: 4rem;
+    page-break-before: always;
 }
 
 .small-line {
