@@ -34,6 +34,14 @@ Make sure to have the following installed on your machine:
 - Python 3.10 or higher
 - PostgreSQL
 
+### Additional Machine Requirements
+
+The application needs additional software to be installed on the machine
+where the application will be running. The additional software is:
+
+- Pango
+    - Install: `sudo apt-get install -y libpangocairo-1.0-0`
+
 ### Setting up PostgreSQL
 
 After installing PostgreSQL on your machine, create a new database, user
