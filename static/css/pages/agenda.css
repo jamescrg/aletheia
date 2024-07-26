@@ -163,10 +163,9 @@ Task Add Form Quick
 
 .edit-user {
   background: var(--warm-gray-100);
-  /* border: solid 1px var(--warm-gray-300); */
   border: none;
   border-radius: 4px;
-  color: inherit;
+  color: var(--warm-gray-600);
   padding-top: 0;
 }
 

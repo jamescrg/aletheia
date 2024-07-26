@@ -201,3 +201,12 @@ def task_status(request, id):
         "task": task,
     }
     return render(request, "agenda/task-status.html", context)
+
+
+@login_required
+def edit_user(request, task_id):
+    print("this ran")
+    task = get_object_or_404(Task, pk=task_id)
+    user = get_object_or_404(CustomUser, pk=request.POST["user"])
+    task.user = user
+    task.save()

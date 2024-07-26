@@ -11,6 +11,7 @@ urlpatterns = [
     path("agenda/<int:id>/edit", views.edit, name="edit"),
     path("agenda/<int:id>/delete", views.delete, name="delete"),
     path("agenda/<int:id>/task-status", views.task_status, name="task-status"),
+    path("agenda/<int:task_id>/edit-user", views.edit_user, name="edit-user"),
     path("agenda/filter", views.filter, name="filter"),
     path("agenda/filter/update", views.filter_update, name="filter-update"),
     path(
