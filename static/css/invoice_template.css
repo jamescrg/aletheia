@@ -3,9 +3,10 @@
     margin: 4rem;
 }
 
-html, body {
+.invoice-template {
     width: 100%;
     font-size: 0.9rem;
+    background-color: #fff;
 }
 
 .cb-logo {
@@ -87,11 +88,11 @@ html, body {
 
 .total {
     display: flex;
-    align-items: baseline;
     justify-content: flex-end;
     margin-right: 1rem;
     font-weight: bold;
     font-size: 0.8rem;
+    align-items: baseline;
 }
 
 .total-name {

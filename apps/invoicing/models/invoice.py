@@ -57,6 +57,10 @@ class Invoice(models.Model):
         return invoice
 
     @property
+    def status_display(self):
+        return dict(INVOICE_STATUS).get(self.status)
+
+    @property
     def amount(self):
         from apps.activity.models import ExpenseEntry, TimeEntry
 

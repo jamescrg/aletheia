@@ -182,6 +182,8 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
+X_FRAME_OPTIONS = "SAMEORIGIN"
+
 # Email
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = env("EMAIL_HOST")

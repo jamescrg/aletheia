@@ -9,7 +9,7 @@ from django.db.models import DecimalField, ExpressionWrapper, F, Sum
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.views.generic import FormView
+from django.views.generic import DeleteView, DetailView, FormView
 from weasyprint import HTML
 
 from apps.activity.models import ExpenseEntry, TimeEntry
@@ -33,6 +33,45 @@ def index(request):
     }
 
     return render(request, "invoicing/list.html", context)
+
+
+class InvoiceDetailView(LoginRequiredMixin, DetailView):
+    model = Invoice
+    template_name = "invoicing/preview/preview.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["page"] = "invoicing"
+
+        file_url = self.request.build_absolute_uri(self.object.pdf_file.url)
+        context["file_url"] = file_url
+
+        return context
+
+
+class InvoiceActivityView(LoginRequiredMixin, DetailView):
+    model = Invoice
+    template_name = "invoicing/entries/entries.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["page"] = "invoicing"
+
+        return context
+
+
+class InvoiceExpensesView(LoginRequiredMixin, DetailView):
+    model = Invoice
+    template_name = "invoicing/expenses/expenses.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["page"] = "invoicing"
+
+        return context
 
 
 class NewInvoiceView(LoginRequiredMixin, FormView):
@@ -143,3 +182,11 @@ class NewInvoiceView(LoginRequiredMixin, FormView):
         invoice.save()
 
         return super().form_valid(form)
+
+
+class DeleteInvoiceView(LoginRequiredMixin, DeleteView):
+    model = Invoice
+    success_url = reverse_lazy("invoicing:invoicing")
+
+    def get(self, request, *args, **kwargs):
+        return self.delete(request, *args, **kwargs)

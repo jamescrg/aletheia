@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block content %}
+  <div class="section">
+    <div class="section-title">
+      <div class="section-title-left">
+        <h1>Invoice no. {{ invoice.id }} - {{ invoice.matter.name }}</h1>
+      </div>
+    </div>
+    <p>{{ invoice.comment }}</p>
+    <div class="invoice-table-container">
+      <table class="detail-table">
+        <tr>
+          <th>Created by</th>
+          <td>{{ invoice.created_by.username }}</td>
+        </tr>
+        <tr>
+          <th>Created at</th>
+          <td>{{ invoice.created_at|date:"Y-m-d" }}</td>
+        </tr>
+        <tr>
+          <th>Date from</th>
+          <td>{{ invoice.date_from|date:"Y-m-d" }}</td>
+        </tr>
+        <tr>
+          <th>Date to</th>
+          <td>{{ invoice.date_to|date:"Y-m-d" }}</td>
+        </tr>
+      </table>
+      <table class="detail-table">
+        <tr>
+          <th>Issue date</th>
+          <td>{{ invoice.issue_date|date:"Y-m-d" }}</td>
+        </tr>
+        <tr>
+          <th>Total amount</th>
+          <td>${{ invoice.amount|floatformat:2|intcomma }}</td>
+        </tr>
+        <tr>
+          <th>Discount</th>
+          <td>{{ invoice.discount|floatformat:2|intcomma }}%</td>
+        </tr>
+        <tr>
+          <th>Status</th>
+          <td>{{ invoice.status_display }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <ul class="sub-modules">
+    <li {% if request.path|slice:"28:" == '/preview/' %}class="active"{% endif %}>
+      <a href={% url 'invoicing:invoice-detail' pk=invoice.id %}>Preview PDF</a>
+    </li>
+    <li {% if request.path|slice:"28:" == '/entries/' %}class="active"{% endif %}>
+      <a href={% url 'invoicing:invoice-activity' pk=invoice.id %}>Activity entries</a>
+    </li>
+    <li {% if request.path|slice:"28:" == '/expenses/' %}class="active"{% endif %}>
+      <a href={% url 'invoicing:invoice-expenses' pk=invoice.id %}>Expense entries</a>
+    </li>
+  </ul>
+  <div class="section">
+    {% block subcontent %}
+    {% endblock subcontent %}
+  </div>
+{% endblock content %}
