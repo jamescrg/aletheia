@@ -7,7 +7,7 @@ from apps.matters.models import Matter
 INVOICE_STATUS = (
     ("DRAFT", "Draft"),
     ("SENT", "Sent"),
-    ("CANCELLED", "Cancelled"),
+    ("CANCELED", "Canceled"),
     ("APPROVED", "Approved"),
 )
 
