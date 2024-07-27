@@ -5,6 +5,7 @@ from apps.invoicing.views.invoice import (
     InvoiceDetailView,
     InvoicePDFView,
     NewInvoiceView,
+    StatusUpdateView,
     index,
 )
 
@@ -25,5 +26,10 @@ urlpatterns = [
     ),
     path(
         "invoicing/invoice-pdf/<int:pk>/", InvoicePDFView.as_view(), name="invoice-pdf"
+    ),
+    path(
+        "invoicing/status-update/<int:pk>/",
+        StatusUpdateView.as_view(),
+        name="status-update",
     ),
 ]
