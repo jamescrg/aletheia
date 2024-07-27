@@ -7,7 +7,7 @@ from apps.matters.models import Matter
 INVOICE_STATUS = (
     ("DRAFT", "Draft"),
     ("SENT", "Sent"),
-    ("CANCELLED", "Cancelled"),
+    ("CANCELED", "Canceled"),
     ("APPROVED", "Approved"),
 )
 
@@ -20,16 +20,15 @@ class Invoice(models.Model):
     matter = models.ForeignKey(Matter, on_delete=models.SET_NULL, null=True, blank=True)
     date_from = models.DateField()
     date_to = models.DateField()
-    issue_date = models.DateField()
+    date_issued = models.DateField()
     message = models.TextField(null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
     show_comp = models.BooleanField(default=False)
     discount = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     status = models.CharField(max_length=20, choices=INVOICE_STATUS, default="DRAFT")
-    approved_at = models.DateTimeField(null=True, blank=True)
-    sent_at = models.DateTimeField(null=True, blank=True)
-    cancelled_at = models.DateTimeField(null=True, blank=True)
-    pdf_file = models.FileField(upload_to="invoices/", null=True, blank=True)
+    date_approved = models.DateTimeField(null=True, blank=True)
+    date_sent = models.DateTimeField(null=True, blank=True)
+    date_canceled = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"Invoice #{self.id}"
@@ -57,6 +56,10 @@ class Invoice(models.Model):
         return invoice
 
     @property
+    def status_display(self):
+        return dict(INVOICE_STATUS).get(self.status)
+
+    @property
     def amount(self):
         from apps.activity.models import ExpenseEntry, TimeEntry
 
@@ -77,4 +80,4 @@ class Invoice(models.Model):
             or 0
         )
 
-        return (time_entry_amount + expense_amount) * (1 - self.discount / 100)
+        return (time_entry_amount + expense_amount) - self.discount

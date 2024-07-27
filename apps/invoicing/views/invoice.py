@@ -1,22 +1,19 @@
 import os
+from datetime import datetime
 from itertools import chain
-from tempfile import NamedTemporaryFile
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.files.base import ContentFile
-from django.db.models import DecimalField, ExpressionWrapper, F, Sum
+from django.http import HttpResponse
 from django.shortcuts import render
-from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.views.generic import FormView
-from weasyprint import HTML
+from django.views.generic import DeleteView, DetailView, FormView, View
 
 from apps.activity.models import ExpenseEntry, TimeEntry
 from apps.invoicing.forms import InvoiceForm
+from apps.invoicing.functions import generate_invoice
 from apps.invoicing.models import Invoice
 from apps.matters.models import Matter
-from config.settings import BASE_DIR
 
 
 @login_required
@@ -33,6 +30,22 @@ def index(request):
     }
 
     return render(request, "invoicing/list.html", context)
+
+
+class InvoiceDetailView(LoginRequiredMixin, DetailView):
+    model = Invoice
+    template_name = "invoicing/preview/preview.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["page"] = "invoicing"
+
+        context["file_url"] = reverse_lazy(
+            "invoicing:invoice-pdf", kwargs={"pk": self.object.pk}
+        )
+
+        return context
 
 
 class NewInvoiceView(LoginRequiredMixin, FormView):
@@ -69,77 +82,55 @@ class NewInvoiceView(LoginRequiredMixin, FormView):
 
         invoice.save()
 
-        if invoice.show_comp:
-            entries = TimeEntry.objects.filter(
-                matter=invoice.matter,
-                date__range=[invoice.date_from, invoice.date_to],
-                invoice=invoice,
-            )
-        else:
-            entries = TimeEntry.objects.filter(
-                matter=invoice.matter,
-                date__range=[invoice.date_from, invoice.date_to],
-                invoice=invoice,
-                comp=invoice.show_comp,
-            )
+        return super().form_valid(form)
 
-        entries_total = (
-            entries.annotate(
-                fee=ExpressionWrapper(
-                    F("hours") * F("firm_rate"), output_field=DecimalField()
-                )
-            ).aggregate(total_fee=Sum("fee"))["total_fee"]
-        ) or 0
 
-        if invoice.show_comp:
-            expenses = ExpenseEntry.objects.filter(
-                matter=invoice.matter,
-                date__range=[invoice.date_from, invoice.date_to],
-                invoice=invoice,
-            )
-        else:
-            expenses = ExpenseEntry.objects.filter(
-                matter=invoice.matter,
-                date__range=[invoice.date_from, invoice.date_to],
-                invoice=invoice,
-                comp=invoice.show_comp,
-            )
-        expenses_total = (
-            expenses.aggregate(total_amount=Sum("amount"))["total_amount"] or 0
-        )
+class DeleteInvoiceView(LoginRequiredMixin, DeleteView):
+    model = Invoice
+    success_url = reverse_lazy("invoicing:invoicing")
 
-        pre_discount_total = entries_total + expenses_total
-        combined_total = pre_discount_total * (1 - invoice.discount / 100)
+    def get(self, request, *args, **kwargs):
+        return self.delete(request, *args, **kwargs)
 
-        context = {
-            "invoice": invoice,
-            "entries": entries,
-            "expenses": expenses,
-            "entries_total": entries_total,
-            "expenses_total": expenses_total,
-            "combined_total": combined_total,
-            "pre_discount_total": pre_discount_total,
-        }
 
-        html_string = render_to_string("invoicing/invoice.html", context)
-        html = HTML(string=html_string, base_url=self.request.build_absolute_uri())
+class InvoicePDFView(LoginRequiredMixin, DetailView):
+    model = Invoice
 
-        with NamedTemporaryFile(suffix=".pdf", delete=False) as pdf_file:
-            html.write_pdf(
-                target=pdf_file.name,
-                stylesheets=[
-                    BASE_DIR.joinpath(
-                        os.path.join("static", "css", "invoice_template.css")
-                    )
-                ],
-            )
-            pdf_file.seek(0)
+    def get(self, request, *args, **kwargs):
+        invoice = self.get_object()
 
-            invoice.pdf_file.save(
-                f"{invoice.matter.name}_{invoice.issue_date}_{invoice.id}.pdf",
-                ContentFile(pdf_file.read()),
-            )
+        file = generate_invoice(invoice, request)
+
+        with open(file.name, "rb") as pdf:
+            response = HttpResponse(pdf.read(), content_type="application/pdf")
+            response["Content-Disposition"] = f'filename="{invoice}.pdf"'
+
+        os.unlink(file.name)
+
+        return response
+
+
+class StatusUpdateView(LoginRequiredMixin, View):
+    model = Invoice
+
+    def post(self, request, *args, **kwargs):
+        invoice = self.model.objects.get(pk=kwargs["pk"])
+
+        invoice_status = request.POST["status"]
+
+        invoice.status = invoice_status
+
+        if invoice_status == "APPROVED":
+            invoice.date_approved = datetime.now()
+        elif invoice_status == "SENT":
+            invoice.date_sent = datetime.now()
+        elif invoice_status == "CANCELED":
+            invoice.date_canceled = datetime.now()
 
         invoice.save()
 
-        return super().form_valid(form)
+        if invoice_status == "CANCELED":
+            TimeEntry.objects.filter(invoice=invoice).update(invoice=None)
+            ExpenseEntry.objects.filter(invoice=invoice).update(invoice=None)
+
+        return render(request, "invoicing/invoice-row.html", {"invoice": invoice})

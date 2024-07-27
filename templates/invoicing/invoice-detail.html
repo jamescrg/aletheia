@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/pages/activity.css' %}" />
+{% endblock head %}
+{% block content %}
+  <div class="section">
+    <div class="section-title">
+      <div class="section-title-left">
+        <h1>Invoice no. {{ invoice.id }} - {{ invoice.matter.name }}</h1>
+      </div>
+    </div>
+    <p>{{ invoice.comment }}</p>
+    <div class="invoice-table-container">
+      <table class="detail-table">
+        <tr>
+          <th>Date from</th>
+          <td>{{ invoice.date_from|date:"Y-m-d" }}</td>
+        </tr>
+        <tr>
+          <th>Date to</th>
+          <td>{{ invoice.date_to|date:"Y-m-d" }}</td>
+        </tr>
+        <tr>
+          <th>Created by</th>
+          <td>{{ invoice.created_by.username }}</td>
+        </tr>
+        <tr>
+          <th>Created at</th>
+          <td>{{ invoice.created_at|date:"Y-m-d H:i" }}</td>
+        </tr>
+      </table>
+      <table class="detail-table">
+        <tr>
+          <th>Issue date</th>
+          <td>{{ invoice.date_issued|date:"Y-m-d" }}</td>
+        </tr>
+        <tr>
+          <th>Total amount</th>
+          <td>${{ invoice.amount|floatformat:2|intcomma }}</td>
+        </tr>
+        <tr>
+          <th>Discount</th>
+          <td>${{ invoice.discount|floatformat:2|intcomma }}</td>
+        </tr>
+        <tr>
+          <th>Status</th>
+          <td>{{ invoice.status_display }}</td>
+        </tr>
+      </table>
+      <table class="detail-table">
+        <tr>
+          <th>Approved at</th>
+          <td>{{ invoice.date_approved|date:"Y-m-d H:i" }}</td>
+        </tr>
+        <tr>
+          <th>Sent at</th>
+          <td>{{ invoice.date_sent|date:"Y-m-d H:i" }}</td>
+        </tr>
+        <tr>
+          <th>Canceled at</th>
+          <td>{{ invoice.date_canceled|date:"Y-m-d H:i" }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <ul class="sub-modules">
+    <li {% if request.path|slice:"28:" == '/preview/' %}class="active"{% endif %}>
+      <a href={% url 'invoicing:invoice-detail' pk=invoice.id %}>Preview PDF</a>
+    </li>
+  </ul>
+  <div class="section">
+    {% block subcontent %}
+    {% endblock subcontent %}
+  </div>
+{% endblock content %}

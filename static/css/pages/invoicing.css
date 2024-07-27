@@ -6,3 +6,54 @@
     text-align: center;
     width: 50px;
 }
+
+.pointer {
+    cursor: pointer;
+}
+
+.invoice-delete {
+    color: var(--red-600)
+}
+
+.invoice-delete:hover {
+    color: var(--red-700)
+}
+
+.detail-table {
+    width: 25%;
+    height: fit-content;
+}
+
+@media (max-width: 768px) {
+    .detail-table {
+        width: 100%;
+    }
+}
+
+.invoice-table-container {
+    display: flex;
+    gap: 2rem;
+}
+
+@media (max-width: 768px) {
+    .invoice-table-container {
+        flex-direction: column;
+    }
+}
+
+.sub-modules {
+    display: flex;
+    gap: 2rem;
+    background: var(--warm-gray-200);
+    border-radius: 3px 3px 0 0;
+    margin-bottom: 0;
+    padding: 7px 20px;
+}
+
+.sub-modules .active {
+  font-weight: 600;
+}
+
+.activites-title {
+    margin-bottom: 1rem;
+}
