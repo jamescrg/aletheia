@@ -3,6 +3,7 @@ from .invoice import (
     InvoiceDetailView,
     InvoicePDFView,
     NewInvoiceView,
+    StatusUpdateView,
 )
 
 __all__ = [
@@ -10,4 +11,5 @@ __all__ = [
     "DeleteInvoiceView",
     "InvoiceDetailView",
     "InvoicePDFView",
+    "StatusUpdateView",
 ]

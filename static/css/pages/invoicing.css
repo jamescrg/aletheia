@@ -21,6 +21,7 @@
 
 .detail-table {
     width: 25%;
+    height: fit-content;
 }
 
 @media (max-width: 768px) {

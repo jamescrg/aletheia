@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from itertools import chain
 
 from django.contrib.auth.decorators import login_required
@@ -6,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import DeleteView, DetailView, FormView
+from django.views.generic import DeleteView, DetailView, FormView, View
 
 from apps.activity.models import ExpenseEntry, TimeEntry
 from apps.invoicing.forms import InvoiceForm
@@ -107,3 +108,26 @@ class InvoicePDFView(LoginRequiredMixin, DetailView):
         os.unlink(file.name)
 
         return response
+
+
+# Make a view that edits the 'status' field of an invoice
+class StatusUpdateView(LoginRequiredMixin, View):
+    model = Invoice
+
+    def post(self, request, *args, **kwargs):
+        invoice = self.model.objects.get(pk=kwargs["pk"])
+
+        invoice_status = request.POST["status"]
+
+        invoice.status = invoice_status
+
+        if invoice_status == "APPROVED":
+            invoice.date_approved = datetime.now()
+        elif invoice_status == "SENT":
+            invoice.date_sent = datetime.now()
+        elif invoice_status == "CANCELED":
+            invoice.date_canceled = datetime.now()
+
+        invoice.save()
+
+        return render(request, "invoicing/invoice-row.html", {"invoice": invoice})

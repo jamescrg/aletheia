@@ -16,20 +16,20 @@
     <div class="invoice-table-container">
       <table class="detail-table">
         <tr>
-          <th>Created by</th>
-          <td>{{ invoice.created_by.username }}</td>
-        </tr>
-        <tr>
-          <th>Created at</th>
-          <td>{{ invoice.created_at|date:"Y-m-d" }}</td>
-        </tr>
-        <tr>
           <th>Date from</th>
           <td>{{ invoice.date_from|date:"Y-m-d" }}</td>
         </tr>
         <tr>
           <th>Date to</th>
           <td>{{ invoice.date_to|date:"Y-m-d" }}</td>
+        </tr>
+        <tr>
+          <th>Created by</th>
+          <td>{{ invoice.created_by.username }}</td>
+        </tr>
+        <tr>
+          <th>Created at</th>
+          <td>{{ invoice.created_at|date:"Y-m-d H:i" }}</td>
         </tr>
       </table>
       <table class="detail-table">
@@ -48,6 +48,20 @@
         <tr>
           <th>Status</th>
           <td>{{ invoice.status_display }}</td>
+        </tr>
+      </table>
+      <table class="detail-table">
+        <tr>
+          <th>Approved at</th>
+          <td>{{ invoice.date_approved|date:"Y-m-d H:i" }}</td>
+        </tr>
+        <tr>
+          <th>Sent at</th>
+          <td>{{ invoice.date_sent|date:"Y-m-d H:i" }}</td>
+        </tr>
+        <tr>
+          <th>Canceled at</th>
+          <td>{{ invoice.date_canceled|date:"Y-m-d H:i" }}</td>
         </tr>
       </table>
     </div>
