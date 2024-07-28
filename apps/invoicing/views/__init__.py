@@ -1,13 +1,13 @@
 from .invoice import (
+    AddInvoiceView,
     DeleteInvoiceView,
     InvoiceDetailView,
     InvoicePDFView,
-    NewInvoiceView,
     StatusUpdateView,
 )
 
 __all__ = [
-    "NewInvoiceView",
+    "AddInvoiceView",
     "DeleteInvoiceView",
     "InvoiceDetailView",
     "InvoicePDFView",
