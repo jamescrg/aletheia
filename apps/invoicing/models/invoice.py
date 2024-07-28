@@ -18,7 +18,6 @@ class Invoice(models.Model):
         CustomUser, on_delete=models.SET_NULL, null=True, blank=True
     )
     matter = models.ForeignKey(Matter, on_delete=models.SET_NULL, null=True, blank=True)
-    date_from = models.DateField()
     date_to = models.DateField()
     date_issued = models.DateField()
     message = models.TextField(null=True, blank=True)
@@ -41,15 +40,16 @@ class Invoice(models.Model):
 
         invoice = super().save(*args, **kwargs)
 
+        # TODO: clean mark all old time entries prior to 2024 as "entered"
         TimeEntry.objects.filter(
             matter=self.matter,
-            date__range=[self.date_from, self.date_to],
+            date__lte=self.date_to,
             invoice__isnull=True,
         ).update(invoice_id=self.id)
 
         ExpenseEntry.objects.filter(
             matter=self.matter,
-            date__range=[self.date_from, self.date_to],
+            date__lte=self.date_to,
             invoice__isnull=True,
         ).update(invoice_id=self.id)
 
