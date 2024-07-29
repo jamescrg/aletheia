@@ -48,8 +48,8 @@ class InvoiceDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
-class NewInvoiceView(LoginRequiredMixin, FormView):
-    template_name = "invoicing/new-invoice.html"
+class AddInvoiceView(LoginRequiredMixin, FormView):
+    template_name = "invoicing/form-invoice.html"
     form_class = InvoiceForm
     success_url = reverse_lazy("invoicing:invoicing")
 
@@ -58,15 +58,17 @@ class NewInvoiceView(LoginRequiredMixin, FormView):
 
         form = self.form_class()
 
-        entries = TimeEntry.objects.filter(invoice__isnull=True, entered=0).values_list(
-            "matter", flat=True
-        )
+        # TODO: after removing old firm data from database;
+        # remove the date__gte limiter from this query
+        entries = TimeEntry.objects.filter(
+            invoice__isnull=True, entered=0, date__gte="2024-01-01"
+        ).values_list("matter", flat=True)
         expenses = ExpenseEntry.objects.filter(
             invoice__isnull=True, entered=0
         ).values_list("matter", flat=True)
 
         matter_list = (
-            Matter.objects.filter(status="Open", id__in=chain(entries, expenses))
+            Matter.objects.filter(id__in=chain(entries, expenses))
             .distinct()
             .order_by("name")
         )
@@ -103,7 +105,9 @@ class InvoicePDFView(LoginRequiredMixin, DetailView):
 
         with open(file.name, "rb") as pdf:
             response = HttpResponse(pdf.read(), content_type="application/pdf")
-            response["Content-Disposition"] = f'filename="{invoice}.pdf"'
+            response["Content-Disposition"] = (
+                f'filename="Invoice {invoice.id} - {invoice.matter} - {invoice.date_issued}.pdf"'
+            )
 
         os.unlink(file.name)
 
