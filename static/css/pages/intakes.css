@@ -1,4 +1,6 @@
-/* intake list and details */
+/* ==========================================================================
+List View
+========================================================================== */
 
 .add-to-contacts {
     float: right;
@@ -42,31 +44,44 @@
     color: inherit;
 }
 
-.add-note {
-    float: right;
-    margin: 15px 5px 25px 0;
-}
-
 #id_details {
     min-height: 300px;
     resize: both;
     width: 600px;
 }
 
-.intake-notes p {
-  margin: 0;
-  padding: 0;
+/* ==========================================================================
+Notes
+========================================================================== */
+
+.note {
+  padding: 0.75rem 0;
 }
 
 .note-title {
   font-size: 0.9rem;
   font-weight: 600;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
 }
 
-.note-title td {
-  border: none;
-  padding-left: 0 !important;
-  padding-right: 1rem;
+.note-title-right {
+  margin-right: 0.5rem;
+}
+
+.note-date-time {
+  margin-right: 1rem;
+}
+
+.note-username {
+  margin-right: 1rem;
+}
+
+.note-type {
+  margin-right: 1rem;
 }
 
 .note-date {
@@ -81,7 +96,9 @@
     width: 120px;
 }
 
-/* markdown formatting */
+/* ==========================================================================
+Markdown
+========================================================================== */
 
 .note-details h1 {
     font-size: 1.5em;
@@ -103,12 +120,12 @@
 }
 
 .note-details ul {
-    padding: inherit;
+    padding-left: 1rem;
 }
 
 .note-details ul li {
     list-style-type: disc;
-    padding-left: 5px;
+    padding-left: 0.5rem;
 }
 
 .note-details ol {
@@ -138,7 +155,9 @@ code {
     white-space: pre-wrap;
 }
 
-/* intake form */
+/* ==========================================================================
+Form
+========================================================================== */
 
 #id_name {
     max-width: 400px;
