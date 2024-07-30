@@ -113,6 +113,7 @@ class NoteForm(forms.ModelForm):
             ("Email Out", "Email Out"),
             ("VM In", "VM In"),
             ("VM Out", "VM Out"),
+            ("Comment", "Comment"),
         )
 
         widgets = {
