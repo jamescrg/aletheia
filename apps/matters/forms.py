@@ -16,7 +16,7 @@ class MatterForm(forms.ModelForm):
             "practice_area",
             "firm",
             "clio_matter_no",
-            "ref_no",
+            "client_reference_id",
         )
 
         STATUSES = (
@@ -48,7 +48,7 @@ class MatterForm(forms.ModelForm):
         labels = {
             "date_start": "Open Date",
             "clio_matter_no": "File Number",
-            "ref_no": "Client Reference",
+            "client_reference_id": "Client Reference",
             "practice_area": "Practice Area",
         }
 
