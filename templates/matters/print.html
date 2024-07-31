@@ -14,11 +14,11 @@
           </tr>
           <tr>
             <td class="strong">File No.</td>
-            <td>{{ matter.firm_file_no|slice:'0:5'|default:'' }}</td>
+            <td>{{ matter.clio_matter_id|slice:'0:5'|default:'' }}</td>
           </tr>
           <tr>
             <td class="strong">Ref No.</td>
-            <td>{{ matter.ref_no|default:'' }}</td>
+            <td>{{ matter.client_reference_id|default:'' }}</td>
           </tr>
         </table>
         <table>

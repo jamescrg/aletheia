@@ -25,7 +25,7 @@ def results(request):
         matters = Matter.objects.filter(
             Q(name__contains=text)
             | Q(description__icontains=text)
-            | Q(ref_no=text)
+            | Q(client_reference_id=text)
             | Q(practice_area__icontains=text)
         ).order_by("name")
 
