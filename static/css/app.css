@@ -360,7 +360,7 @@ li {
 
 .filter-bar .section-title-right a,
 .filter-bar .section-title-right button {
-    background: var(--warm-gray-150);
+    /* background: var(--warm-gray-150); */
     border: none;
     border-radius: 4px;
     color: var(--lime-800);
