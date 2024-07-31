@@ -54,7 +54,7 @@ def test_edit_post(client, user, matter):
         "date_end": "2022-08-07",
         "firm": "Test Firm",
         "clio_matter_no": "123",
-        "ref_no": "125",
+        "client_reference_id": "125",
         "practice_area": "General",
         "client": matter.client.id,
     }
