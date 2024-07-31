@@ -42,6 +42,9 @@
           <br />
           <p class="text-right">Matter {{ invoice.matter.id }}</p>
           <p class="text-right">"{{ invoice.matter.name }}"</p>
+          {% if invoice.matter.client_reference_id %}
+            <p class="text-right">{{ invoice.matter.client_reference_id }}</p>
+          {% endif %}
         </div>
       </div>
       <div class="section">
