@@ -36,7 +36,7 @@
       </div>
     </div>
     <div class="col-md-8">
-      <div class="section">
+      <div class="section notes">
         <div class="section-title">
           <div class="section-title-left">
             <h1>Notes</h1>
@@ -68,9 +68,9 @@
                      data-bs-toggle="modal"
                      data-bs-target="#htmx-modal-container">
                     <span class="note-date-time">{{ note.date|date:'Y-m-d' }} {{ note.time|time:'g:i A' }}</span>
-                    <span class="note-username">{{ note.user.username|title }}</span>
-                    <span class="note-type">{{ note.type }}</span>
                   </a>
+                  <span class="note-username">{{ note.user.username|title }}</span>
+                  <span class="note-type">{{ note.type }}</span>
                 </div>
                 <div class="note-title-right"></div>
               </div>
