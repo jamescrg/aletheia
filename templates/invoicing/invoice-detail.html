@@ -52,7 +52,7 @@
       {% endif %}
     </div>
   </div>
-  <ul class="sub-modules">
+  <ul class="sub-nav">
     <li {% if request.path|slice:"28:" == '/preview/' %}class="active"{% endif %}>
       <a href={% url 'invoicing:invoice-detail' pk=invoice.id %}>Preview PDF</a>
     </li>
