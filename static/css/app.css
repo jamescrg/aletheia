@@ -360,7 +360,6 @@ li {
 
 .filter-bar .section-title-right a,
 .filter-bar .section-title-right button {
-    /* background: var(--warm-gray-150); */
     border: none;
     border-radius: 4px;
     color: var(--lime-800);
@@ -380,4 +379,33 @@ li {
     flex-direction: row;
     justify-content: left;
     align-items: center;
+}
+
+/* ==========================================================================
+Sub nav
+========================================================================== */
+
+.sub-nav {
+  background: var(--warm-gray-200);
+  border-radius: 3px 3px 0 0;
+  margin-bottom: 0;
+  padding: 0.5rem 0;
+}
+
+.sub-nav ul {
+  margin: 0;
+  padding: 0;
+}
+
+.sub-nav li {
+  display: inline;
+  padding: 0.5rem 1rem 0.53rem 1rem;
+}
+
+.sub-nav a {
+  color: var(--warm-gray-600);
+}
+
+.sub-nav .active {
+  background-color: var(--warm-gray-100);
 }

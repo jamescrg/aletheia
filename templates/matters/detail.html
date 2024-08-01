@@ -23,106 +23,74 @@
         </a>
       </div>
     </div>
-    <div class="flex-start-space">
-      <div class="matter-data">
-        <div class="description">
-          <!-- -------------------------------------------------------- -->
-          <!-- normal display, show matter link -->
-          <!-- -------------------------------------------------------- -->
-          <button class="button-link show-status-form-button"
-                  onclick="showStatusForm()">{{ matter.description }}</button>
-          <!-- -------------------------------------------------------- -->
-          <!-- edit status form -->
-          <!-- -------------------------------------------------------- -->
-          <form class="edit-status"
-                method="post"
-                action="{% url 'matters:edit-description' id=matter.id %}">
-            {% csrf_token %}
-            <label>
-              <input type="text"
-                     class="edit-status-input"
-                     name="description"
-                     onchange="submit()"
-                     onblur="hideStatusForm()"
-                     value="{{ matter.description }}"
-                     required />
-            </label>
-            <input type="hidden" name="return" value="detail" />
-          </form>
-        </div>
-        <div class="tables">
+    <div class="matter-data">
+      <table>
+        <tr>
+          <td class="strong">Matter No.</td>
+          <td>{{ matter.id }}</td>
+        </tr>
+        <tr>
+          <td class="strong">Clio No.</td>
+          <td>{{ matter.clio_matter_id|slice:'0:5'|default:'' }}</td>
+        </tr>
+      </table>
+      <table>
+        <tr>
+          <td class="strong">Open Date</td>
+          <td>{{ matter.date_start|date:'Y-m-d' }}</td>
+        </tr>
+        <tr>
+          <td class="strong">Practice Area</td>
+          <td>{{ matter.practice_area }}</td>
+        </tr>
+      </table>
+      {% if proceeding %}
+        <table>
+          <tr>
+            <td class="strong">Forum</td>
+            <td>{{ proceeding.forum }}</td>
+          </tr>
+          <tr>
+            <td class="strong">Case No.</td>
+            <td>{{ proceeding.case_number }}</td>
+          </tr>
+        </table>
+        {% if matter.client_reference_id %}
           <table>
             <tr>
-              <td class="strong">Matter No.</td>
-              <td>{{ matter.id }}</td>
-            </tr>
-            <tr>
-              <td class="strong">File No.</td>
-              <td>{{ matter.clio_matter_id|slice:'0:5'|default:'' }}</td>
-            </tr>
-            <tr>
-              <td class="strong">Ref No.</td>
+              <td class="strong">Client Reference Id.</td>
               <td>{{ matter.client_reference_id|default:'' }}</td>
             </tr>
           </table>
-          <table>
-            <tr>
-              <td class="strong">Open Date</td>
-              <td>{{ matter.date_start|date:'Y-m-d' }}</td>
-            </tr>
-            <tr>
-              <td class="strong">Practice Area</td>
-              <td>{{ matter.practice_area }}</td>
-            </tr>
-          </table>
-          {% if proceeding %}
-            <table>
-              <tr>
-                <td class="strong">Forum</td>
-                <td>{{ proceeding.forum }}</td>
-              </tr>
-              <tr>
-                <td class="strong">Case No.</td>
-                <td>{{ proceeding.case_number }}</td>
-              </tr>
-              <tr>
-                <td class="strong">Filed</td>
-                <td>{{ proceeding.date_filed|date:'Y-m-d' }}</td>
-              </tr>
-              <tr>
-                <td class="strong">Status</td>
-                <td>{{ proceeding.status }}</td>
-              </tr>
-            </table>
-          {% endif %}
-        </div>
-      </div>
-      <div class="matter-detail-quicklinks"></div>
+        {% endif %}
+      {% endif %}
     </div>
   </div>
-  <ul class="sub-modules">
-    <li {% if submodule == 'rates' %}class="active"{% endif %}>
-      <a href={% url 'matters:rates' id=matter.id %}>Rates</a>
-    </li>
-    <li {% if submodule == 'activity' %}class="active"{% endif %}>
-      <a href={% url 'matters:activity' id=matter.id %}>Activity</a>
-    </li>
-    <li {% if submodule == 'events' %}class="active"{% endif %}>
-      <a href={% url 'matters:events' id=matter.id %}>Events</a>
-    </li>
-    <li {% if submodule == 'contacts' %}class="active"{% endif %}>
-      <a href={% url 'matters:contacts' id=matter.id %}>Contacts</a>
-    </li>
-    <li {% if submodule == 'proceedings' %}class="active"{% endif %}>
-      <a href={% url 'matters:proceedings' id=matter.id %}>Proceedings</a>
-    </li>
-    <li {% if submodule == 'settlement' %}class="active"{% endif %}>
-      <a href={% url 'matters:settlement' id=matter.id %}>Settlement</a>
-    </li>
-    <li {% if submodule == 'timeline' %}class="active"{% endif %}>
-      <a href={% url 'matters:timeline' id=matter.id %}>Timeline</a>
-    </li>
-  </ul>
+  <div class="sub-nav">
+    <ul>
+      <li {% if submodule == 'rates' %}class="active"{% endif %}>
+        <a href={% url 'matters:rates' id=matter.id %}>Rates</a>
+      </li>
+      <li {% if submodule == 'activity' %}class="active"{% endif %}>
+        <a href={% url 'matters:activity' id=matter.id %}>Activity</a>
+      </li>
+      <li {% if submodule == 'events' %}class="active"{% endif %}>
+        <a href={% url 'matters:events' id=matter.id %}>Events</a>
+      </li>
+      <li {% if submodule == 'contacts' %}class="active"{% endif %}>
+        <a href={% url 'matters:contacts' id=matter.id %}>Contacts</a>
+      </li>
+      <li {% if submodule == 'proceedings' %}class="active"{% endif %}>
+        <a href={% url 'matters:proceedings' id=matter.id %}>Proceedings</a>
+      </li>
+      <li {% if submodule == 'settlement' %}class="active"{% endif %}>
+        <a href={% url 'matters:settlement' id=matter.id %}>Settlement</a>
+      </li>
+      <li {% if submodule == 'timeline' %}class="active"{% endif %}>
+        <a href={% url 'matters:timeline' id=matter.id %}>Timeline</a>
+      </li>
+    </ul>
+  </div>
   <div class="matter-section">
     {% block subcontent %}
     {% endblock subcontent %}

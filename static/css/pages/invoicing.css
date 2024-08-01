@@ -69,19 +69,6 @@ Detail View
   }
 }
 
-.sub-modules {
-  display: flex;
-  gap: 2rem;
-  background: var(--warm-gray-200);
-  border-radius: 3px 3px 0 0;
-  margin-bottom: 0;
-  padding: 7px 20px;
-}
-
-.sub-modules .active {
-  font-weight: 600;
-}
-
 .activites-title {
   margin-bottom: 1rem;
 }

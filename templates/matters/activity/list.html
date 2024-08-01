@@ -4,7 +4,9 @@
     <div class="section-title-left">
       <h2>Last 30 Days</h2>
     </div>
-    <a href={% url 'activity:filter-matter' id=matter.id %}>Jump to Activity: All</a>
+    <div class="section-title-right">
+      <a href={% url 'activity:filter-matter' id=matter.id %}>Jump to Activity: All</a>
+    </div>
   </div>
   <div class="matter-section-data">
     <div class="table-container">
