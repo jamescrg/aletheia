@@ -13,6 +13,7 @@ from django.views.generic import DeleteView, DetailView, FormView, TemplateView,
 
 from apps.activity.models import ExpenseEntry, TimeEntry
 from apps.invoicing.forms import InvoiceForm
+from apps.invoicing.forms.invoice import EditInvoiceForm
 from apps.invoicing.functions import generate_invoice
 from apps.invoicing.models import Invoice
 from apps.matters.models import Matter
@@ -105,6 +106,23 @@ class AddInvoiceView(LoginRequiredMixin, FormView):
         invoice.save()
 
         return super().form_valid(form)
+
+
+class EditInvoiceView(LoginRequiredMixin, FormView):
+    template_name = "invoicing/edit-invoice.html"
+    form_class = EditInvoiceForm
+    success_url = reverse_lazy("invoicing:invoicing")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        invoice = Invoice.objects.get(pk=self.kwargs["pk"])
+        context["invoice"] = invoice
+
+        form = self.form_class(instance=invoice)
+        context["form"] = form
+
+        return context
 
 
 class DeleteInvoiceView(LoginRequiredMixin, DeleteView):

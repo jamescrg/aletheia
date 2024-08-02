@@ -4,6 +4,7 @@ from apps.invoicing.views.invoice import (
     AddInvoiceView,
     CancelInvoiceView,
     DeleteInvoiceView,
+    EditInvoiceView,
     InvoiceDetailView,
     InvoicePDFView,
     StatusUpdateView,
@@ -20,6 +21,11 @@ urlpatterns = [
         name="invoice-detail",
     ),
     path("invoicing/add-invoice/", AddInvoiceView.as_view(), name="add-invoice"),
+    path(
+        "invoicing/edit-invoice/<int:pk>/",
+        EditInvoiceView.as_view(),
+        name="edit-invoice",
+    ),
     path(
         "invoicing/delete-invoice/<int:pk>/",
         DeleteInvoiceView.as_view(),
