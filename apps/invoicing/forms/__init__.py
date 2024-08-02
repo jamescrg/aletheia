@@ -1,3 +1,3 @@
-from .invoice import InvoiceForm
+from .invoice import EditInvoiceForm, InvoiceForm
 
-__all__ = ["InvoiceForm"]
+__all__ = ["InvoiceForm", "EditInvoiceForm"]
