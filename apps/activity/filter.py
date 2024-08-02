@@ -86,7 +86,6 @@ class Filter:
             "keyword": "",
             "comp": None,
             "entered": None,
-            "view_rate": "Firm",
             "order": "date, descending",
         }
         for key, val in new_values.items():

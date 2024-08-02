@@ -79,7 +79,6 @@ def test_filter_update(client):
         "keyword": "",
         "comp": "",
         "entered": "No",
-        "view_rate": "Firm",
         "order": "date, descending",
         "user": "All",
         "show_time": 1,
