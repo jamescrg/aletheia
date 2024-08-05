@@ -11,6 +11,19 @@
       <div class="section-title-left">
         <h1>Invoice {{ invoice.id }} - {{ invoice.matter.name }}</h1>
       </div>
+      {% if invoice.status == 'DRAFT' or invoice.status == 'APPROVED' %}
+        <div class="section-title-right">
+          <button type="button"
+                  class="btn-icon"
+                  hx-get="{% url 'billing:edit-invoice' invoice.id %}"
+                  hx-target="#htmx-modal-container"
+                  hx-trigger="click"
+                  data-bs-toggle="modal"
+                  data-bs-target="#htmx-modal-container">
+            <i class="bi bi-pencil"></i>
+          </button>
+        </div>
+      {% endif %}
     </div>
     <p>{{ invoice.comment }}</p>
     <div class="invoice-table-container">
@@ -54,7 +67,7 @@
   </div>
   <ul class="sub-nav">
     <li {% if request.path|slice:"28:" == '/preview/' %}class="active"{% endif %}>
-      <a href={% url 'invoicing:invoice-detail' pk=invoice.id %}>Preview PDF</a>
+      <a href={% url 'billing:invoice-detail' pk=invoice.id %}>Preview PDF</a>
     </li>
   </ul>
   <div class="section">

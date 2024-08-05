@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from django import forms
 
-from apps.invoicing.models import Invoice
+from apps.billing.models import Invoice
 
 
 class InvoiceForm(forms.ModelForm):
@@ -40,4 +40,25 @@ class InvoiceForm(forms.ModelForm):
         self.fields["show_comp"].initial = True
 
         self.fields["date_limit"].initial = last_day_of_previous_month
-        self.fields["date_limit"].label = "Limit Date "
+        self.fields["date_limit"].label = "Limit Date"
+
+
+class EditInvoiceForm(forms.ModelForm):
+    class Meta:
+        model = Invoice
+
+        fields = [
+            "date_limit",
+            "date_issued",
+            "message",
+            "comment",
+            "show_comp",
+            "discount",
+        ]
+        widgets = {
+            "date_issued": forms.DateInput(attrs={"type": "date"}),
+            "date_limit": forms.DateInput(attrs={"type": "date"}),
+            "message": forms.Textarea(attrs={"rows": 3}),
+            "comment": forms.Textarea(attrs={"rows": 3}),
+            "discount": forms.TextInput(attrs={"class": "discount"}),
+        }
