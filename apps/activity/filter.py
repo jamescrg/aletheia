@@ -81,6 +81,7 @@ class Filter:
 
     def matter(self, request, id):
         new_values = {
+            "tab": "time",
             "date_from": None,
             "date_to": None,
             "firm": None,
