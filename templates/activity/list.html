@@ -3,15 +3,15 @@
   {% load humanize %}
   <div class="sub-nav">
     <ul>
-      <li {% if filter.tab == "time" %}class="active"{% endif %}>
+      <li {% if tab == "time" %}class="active"{% endif %}>
         <a href="{% url 'activity:set-tab' tab='time' %}">Time</a>
       </li>
-      <li {% if filter.tab == "expenses" %}class="active"{% endif %}>
+      <li {% if tab == "expenses" %}class="active"{% endif %}>
         <a href="{% url 'activity:set-tab' tab='expenses' %}">Expenses</a>
       </li>
     </ul>
   </div>
-  {% if filter.tab == "time" %}
+  {% if tab == "time" %}
     <div class="section sub-section">
       <div class="section-title">
         <div class="section-title-left">
@@ -105,7 +105,7 @@
       </div>
     </div>
   {% endif %}
-  {% if filter.tab == "expenses" %}
+  {% if tab == "expenses" %}
     <div class="section sub-section">
       <div class="section-title">
         <div class="section-title-left">
