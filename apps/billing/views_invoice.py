@@ -10,12 +10,11 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 
 from apps.activity.models import ExpenseEntry, TimeEntry
-from apps.billing.filters.invoice import InvoiceFilter
-from apps.billing.forms import InvoiceForm
-from apps.billing.forms.invoice import EditInvoiceForm
+from apps.billing.filters_invoice import InvoiceFilter
+from apps.billing.forms_invoice import EditInvoiceForm, InvoiceForm
 from apps.billing.functions import generate_invoice
 from apps.billing.functions.calculate_inv_amount import calculate_inv_amount
-from apps.billing.models import Invoice
+from apps.billing.models_invoice import Invoice
 from apps.matters.models import Matter
 
 
