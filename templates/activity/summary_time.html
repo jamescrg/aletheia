@@ -1,0 +1,31 @@
+{% load humanize %}
+<div class="activity-summary">
+  <table>
+    <tr>
+      <th>Total Hours</th>
+      <td class="numeric">{{ summary.total_hours|floatformat:1 }}</td>
+    </tr>
+    <tr>
+      <th>Comp Hours</th>
+      <td class="numeric">{{ summary.comp_hours|floatformat:1 }}</td>
+    </tr>
+    <tr>
+      <th>Net Hours</th>
+      <td class="numeric">{{ summary.net_hours|floatformat:1 }}</td>
+    </tr>
+  </table>
+  <table>
+    <tr>
+      <th>Total Fees</th>
+      <td class="numeric">${{ summary.total_fees|floatformat:2|intcomma }}</td>
+    </tr>
+    <tr>
+      <th>Comp Fees</th>
+      <td class="numeric">${{ summary.comp_fees|floatformat:2|intcomma }}</td>
+    </tr>
+    <tr>
+      <th>Net Fees</th>
+      <td class="numeric">${{ summary.net_fees|floatformat:2|intcomma }}</td>
+    </tr>
+  </table>
+</div>
