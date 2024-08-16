@@ -1,0 +1,17 @@
+{% load humanize %}
+<div class="activity-summary">
+  <table>
+    <tr>
+      <th>Total Expenses</th>
+      <td class="numeric">${{ summary.total_expenses|floatformat:2|intcomma }}</td>
+    </tr>
+    <tr>
+      <th>Comp Expenses</th>
+      <td class="numeric">${{ summary.comp_expenses|floatformat:2|intcomma }}</td>
+    </tr>
+    <tr>
+      <th>Net Expenses</th>
+      <td class="numeric">${{ summary.net_expenses|floatformat:2|intcomma }}</td>
+    </tr>
+  </table>
+</div>

@@ -436,7 +436,7 @@ Pagination
     border: none;
     border-radius: 4px;
     color: var(--lime-800);
-    padding: 0.3rem 0.7rem;
+    padding: 0.05rem 0.5rem;
 
     &:hover {
         background: var(--warm-gray-150);
