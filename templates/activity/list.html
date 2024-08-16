@@ -101,17 +101,11 @@
               </td>
             </tr>
           {% endfor %}
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="numeric total">{{ summary.total_hours|floatformat:1 }}</td>
-            <td></td>
-            <td class="numeric total">${{ summary.total_fees|floatformat:2|intcomma }}</td>
-          </tr>
         </table>
-        {% include "pagination.html" %}
+      </div>
+      <div class="flex-start-space">
+        <div>{% include "pagination.html" %}</div>
+        {% include "activity/summary_time.html" %}
       </div>
     </div>
   {% endif %}
@@ -180,22 +174,26 @@
               </td>
               <td class="hours {% if not expense.entered and not expense.invoice %}urgent{% endif %}">
                 {% if expense.invoice %}
-                  ${{ expense.amount|floatformat:2|intcomma }}
+                  {% if expense.comp %}
+                    comp
+                  {% else %}
+                    ${{ expense.amount|floatformat:2|intcomma }}
+                  {% endif %}
                 {% else %}
-                  <a href={% url 'activity:toggle-entered-expense' id=expense.id %}>${{ expense.amount|floatformat:2|intcomma }}</a>
+                  {% if expense.comp %}
+                    <a href={% url 'activity:toggle-entered-expense' id=expense.id %}>comp</a>
+                  {% else %}
+                    <a href={% url 'activity:toggle-entered-expense' id=expense.id %}>${{ expense.amount|floatformat:2|intcomma }}</a>
+                  {% endif %}
                 {% endif %}
               </td>
             </tr>
           {% endfor %}
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="numeric total">${{ summary.total_expenses|floatformat:2|intcomma }}</td>
-          </tr>
         </table>
-        {% include "pagination.html" %}
+        <div class="activty-under-table">
+          {% include "pagination.html" %}
+          {% include "activity/summary_expenses.html" %}
+        </div>
       </div>
     </div>
   {% endif %}

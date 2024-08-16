@@ -16,7 +16,7 @@ Time entry form
 
 
 /* ==========================================================================
-Time entry list table
+Time and expense entry list table
 ========================================================================== */
 
 .select-user {
@@ -64,4 +64,21 @@ Time entry list table
 
 .total {
     font-weight: 600;
+}
+
+.activity-summary {
+  align-items: start;
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+
+}
+
+.activity-summary table {
+  margin: 1.5rem 0 0 1.5rem;
+  min-width: 350px;
+}
+
+.activity-summary table td {
+  width: 50%;
 }
