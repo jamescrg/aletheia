@@ -20,9 +20,7 @@
               hx-target="#htmx-modal-container"
               hx-trigger="click"
               data-bs-toggle="modal"
-              data-bs-target="#htmx-modal-container">
-        <i class="bi bi-funnel"></i>
-      </button>
+              data-bs-target="#htmx-modal-container">Filter</button>
       {% if not show_events %}
         <a href={% url 'agenda:toggle-events' %}>
           <i class="bi bi-calendar2"></i>
