@@ -32,7 +32,6 @@ def index(request):
     confirmed_account_balance = trust.get_confirmed_account_balance()
 
     page = request.GET.get("page")
-
     pagination = Paginator(contacts, per_page=10).get_page(page)
 
     context = {
