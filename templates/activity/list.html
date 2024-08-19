@@ -37,9 +37,7 @@
           <button hx-get="{% url 'activity:filter' %}"
                   hx-target="#htmx-modal-container"
                   data-bs-toggle="modal"
-                  data-bs-target="#htmx-modal-container">
-            <i class="bi bi-funnel"></i>
-          </button>
+                  data-bs-target="#htmx-modal-container">Filter</button>
           <button hx-get="/activity/add"
                   hx-target="#htmx-modal-container"
                   data-bs-toggle="modal"
@@ -59,7 +57,7 @@
             <th class="numeric rate">Rate</th>
             <th class="numeric fee">Fee</th>
           </tr>
-          {% for entry in entries %}
+          {% for entry in objects %}
             <tr>
               <td class="date">{{ entry.date|date:'Y-m-d' }}</td>
               <td class="user">{{ entry.user.symbol }}</td>
@@ -101,16 +99,11 @@
               </td>
             </tr>
           {% endfor %}
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="numeric total">{{ summary.total_hours|floatformat:1 }}</td>
-            <td></td>
-            <td class="numeric total">${{ summary.total_fees|floatformat:2|intcomma }}</td>
-          </tr>
         </table>
+      </div>
+      <div class="flex-start-space">
+        <div>{% include "pagination.html" %}</div>
+        {% include "activity/summary_time.html" %}
       </div>
     </div>
   {% endif %}
@@ -137,9 +130,7 @@
           <button hx-get="{% url 'activity:filter' %}"
                   hx-target="#htmx-modal-container"
                   data-bs-toggle="modal"
-                  data-bs-target="#htmx-modal-container">
-            <i class="bi bi-funnel"></i>
-          </button>
+                  data-bs-target="#htmx-modal-container">Filter</button>
           <button data-bs-toggle="modal"
                   hx-target="#htmx-modal-container"
                   data-bs-target="#htmx-modal-container"
@@ -157,43 +148,48 @@
             <th class="actions">Description</th>
             <th class="numeric hours">Amount</th>
           </tr>
-          {% for entry in expense_entries %}
+          {% for expense in objects %}
             <tr>
-              <td class="date">{{ entry.date|date:'Y-m-d' }}</td>
-              <td class="user">{{ entry.user.symbol }}</td>
+              <td class="date">{{ expense.date|date:'Y-m-d' }}</td>
+              <td class="user">{{ expense.user.symbol }}</td>
               <td class="matter">
-                <a href={% url 'matters:detail' id=entry.matter.id %}>{{ entry.matter.name }}</a>
+                <a href={% url 'matters:detail' id=expense.matter.id %}>{{ expense.matter.name }}</a>
               </td>
               <td class="actions">
-                {% if entry.invoice %}
-                  {{ entry.category }} - {{ entry.description }}
+                {% if expense.invoice %}
+                  {{ expense.category }} - {{ expense.description }}
                 {% else %}
                   <a href="#"
-                     hx-get="/activity/{{ entry.id }}/edit_expense"
+                     hx-get="/activity/{{ expense.id }}/edit_expense"
                      hx-target="#htmx-modal-container"
                      hx-trigger="click"
                      data-bs-toggle="modal"
-                     data-bs-target="#htmx-modal-container">{{ entry.category }}
-                  - {{ entry.description }}</a>
+                     data-bs-target="#htmx-modal-container">{{ expense.category }}
+                  - {{ expense.description }}</a>
                 {% endif %}
               </td>
-              <td class="hours {% if not entry.entered and not entry.invoice %}urgent{% endif %}">
-                {% if entry.invoice %}
-                  ${{ entry.amount|floatformat:2|intcomma }}
+              <td class="hours {% if not expense.entered and not expense.invoice %}urgent{% endif %}">
+                {% if expense.invoice %}
+                  {% if expense.comp %}
+                    comp
+                  {% else %}
+                    ${{ expense.amount|floatformat:2|intcomma }}
+                  {% endif %}
                 {% else %}
-                  <a href={% url 'activity:toggle-entered-expense' id=entry.id %}>${{ entry.amount|floatformat:2|intcomma }}</a>
+                  {% if expense.comp %}
+                    <a href={% url 'activity:toggle-entered-expense' id=expense.id %}>comp</a>
+                  {% else %}
+                    <a href={% url 'activity:toggle-entered-expense' id=expense.id %}>${{ expense.amount|floatformat:2|intcomma }}</a>
+                  {% endif %}
                 {% endif %}
               </td>
             </tr>
           {% endfor %}
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="numeric total">${{ summary.total_expenses|floatformat:2|intcomma }}</td>
-          </tr>
         </table>
+        <div class="activty-under-table">
+          {% include "pagination.html" %}
+          {% include "activity/summary_expenses.html" %}
+        </div>
       </div>
     </div>
   {% endif %}

@@ -4,6 +4,8 @@ def calculate_summary(entries, expense_entries):
     comp_hours = 0
     comp_fees = 0
     total_expenses = 0
+    comp_expenses = 0
+    net_expenses = 0
 
     for entry in entries:
         total_hours += entry.hours
@@ -16,17 +18,24 @@ def calculate_summary(entries, expense_entries):
     for entry in expense_entries:
         total_expenses += entry.amount
 
-    payable_hours = total_hours - comp_hours
-    payable_fees = total_fees - comp_fees
+        if entry.comp == 1:
+            comp_expenses += entry.amount
+
+    net_hours = total_hours - comp_hours
+    net_fees = total_fees - comp_fees
+
+    net_expenses = total_expenses - comp_expenses
 
     summary = {
         "total_hours": total_hours,
         "total_fees": total_fees,
         "comp_hours": comp_hours,
         "comp_fees": comp_fees,
-        "payable_hours": payable_hours,
-        "payable_fees": payable_fees,
+        "net_hours": net_hours,
+        "net_fees": net_fees,
         "total_expenses": total_expenses,
+        "comp_expenses": comp_expenses,
+        "net_expenses": net_expenses,
     }
 
     return summary

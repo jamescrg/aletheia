@@ -11,9 +11,7 @@
                 hx-target="#htmx-modal-container"
                 hx-trigger="click"
                 data-bs-toggle="modal"
-                data-bs-target="#htmx-modal-container">
-          <i class="bi bi-funnel"></i>
-        </button>
+                data-bs-target="#htmx-modal-container">Filter</button>
         <button type="button"
                 class="btn-icon"
                 hx-get="{% url 'billing:add-payment' %}"
@@ -36,10 +34,11 @@
           <th class="amount">Amount</th>
           <th class="actions">Actions</th>
         </tr>
-        {% for payment in payments %}
+        {% for payment in objects %}
           {% include "billing/payments/payment-row.html" %}
         {% endfor %}
       </table>
+      {% include "pagination.html" %}
     </div>
   </div>
 {% endblock content %}
