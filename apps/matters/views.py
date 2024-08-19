@@ -27,7 +27,7 @@ def index(request):
     number_matters = matters.count()
 
     page = request.GET.get("page")
-    pagination = Paginator(matters, per_page=10).get_page(page)
+    pagination = Paginator(matters, per_page=20).get_page(page)
 
     context = {
         "page": "matters",
