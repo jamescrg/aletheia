@@ -6,16 +6,15 @@ from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.accounts.models import CustomUser
-from apps.activity.filter_expenses import ExpenseFilter
-from apps.activity.filter_time_entries import TimeEntryFilter
-from apps.activity.forms import ExpenseEntryForm, TimeEntryForm
+from apps.activity.filter_time import TimeEntryFilter
+from apps.activity.forms import TimeEntryForm
 from apps.activity.models import ExpenseEntry, TimeEntry
-from apps.activity.summary import calculate_summary
+from apps.activity.summary import calculate_summary_time
 from apps.matters.models import Matter, Rate
 
 
 @login_required
-def index(request):
+def list_time(request):
     """
     Display a list of activity entries
 
@@ -27,80 +26,48 @@ def index(request):
     """
 
     entries = TimeEntry.objects.all()
-    expense_entries = ExpenseEntry.objects.all()
-
     number_entries = entries.count()
 
-    tab = "time"
-    if request.session.get("activity-tab"):
-        tab = request.session["activity-tab"]
+    filter_data = request.session.get("time_filter", None)
 
-    if tab == "time":
-        filter_data = request.session.get("time_filter", None)
+    if filter_data:
+        filter = TimeEntryFilter(filter_data)
+        entries = filter.qs
 
-        if filter_data:
-            filter = TimeEntryFilter(filter_data)
-            entries = filter.qs
-
-            order = filter_data.get("order", "date, ascending")
-            if order == "date, descending":
-                entries = entries.order_by("-date", "-id")
-            else:
-                entries = entries.order_by("date", "id")
-
-            user_id = filter_data.get("user")
-            user_id = int(user_id) if user_id not in (None, "") else None
-        else:
-            entries = TimeEntry.objects.all().order_by("date", "id")
-            user_id = None
-
-    elif tab == "expenses":
-        filter_data = request.session.get("expense_filter", None)
         order = filter_data.get("order", "date, ascending")
-
-        if filter_data:
-            filter = ExpenseFilter(filter_data)
-            expense_entries = filter.qs
-
-            order = filter_data.get("order", "date, ascending")
-            if order == "date, descending":
-                entries.order_by("-date", "-id")
-            else:
-                entries.order_by("date", "id")
-
-            user_id = filter_data.get("user")
-            user_id = int(user_id) if user_id not in (None, "") else None
+        if order == "date, descending":
+            entries = entries.order_by("-date", "-id")
         else:
-            expense_entries = ExpenseEntry.objects.all().order_by("date", "id")
-            user_id = None
+            entries = entries.order_by("date", "id")
 
-    summary = calculate_summary(entries, expense_entries)
+        user_id = filter_data.get("user")
+        user_id = int(user_id) if user_id not in (None, "") else None
+    else:
+        entries = TimeEntry.objects.all().order_by("date", "id")
+        user_id = None
 
+    summary = calculate_summary_time(entries)
     users = CustomUser.objects.filter(is_active=True)
-
     page = request.GET.get("page")
-
-    pagination = Paginator(
-        entries if tab == "time" else expense_entries, per_page=10
-    ).get_page(page)
+    pagination = Paginator(entries, per_page=10).get_page(page)
 
     context = {
         "page": "activity",
+        "subpage": "time",
         "edit": False,
         "objects": pagination.object_list,
         "pagination": pagination,
         "number_entries": number_entries,
         "summary": summary,
-        "tab": tab,
         "users": users,
         "user_id": user_id,
     }
 
-    return render(request, "activity/list.html", context)
+    return render(request, "activity/time/list.html", context)
 
 
 @login_required
-def time_entry_filter(request):
+def filter_time(request):
     def get_filter(request):
         filter_data = request.session.get("time_filter", request.POST)
         return TimeEntryFilter(filter_data, queryset=TimeEntry.objects.all())
@@ -124,24 +91,7 @@ def time_entry_filter(request):
 
 
 @login_required
-def expenses_filter(request):
-    def get_filter(request):
-        filter_data = request.session.get("expense_filter", request.POST)
-
-        return ExpenseFilter(filter_data, queryset=ExpenseEntry.objects.all())
-
-    if request.method == "POST":
-        request.session["expense_filter"] = request.POST
-
-        return redirect("activity:list")
-    else:
-        filter = get_filter(request)
-
-        return render(request, "activity/expenses-filter.html", {"filter": filter})
-
-
-@login_required
-def filter_matter(request, matter_id, tab):
+def quick_filter_time_matter(request, matter_id, tab):
     if tab == "time":
         filter_data = request.session.get("time_filter", {})
     elif tab == "expenses":
@@ -172,7 +122,7 @@ def filter_matter(request, matter_id, tab):
 
 
 @login_required
-def quick_filter_unbilled(request, tab):
+def quick_filter_time(request, tab):
     if tab == "time":
         filter_data = request.session.get("time_filter", {})
     elif tab == "expenses":
@@ -256,7 +206,7 @@ def quick_filter_user(request, tab):
 
 
 @login_required
-def add(request, id=None):
+def add_time(request, id=None):
     # if applicable, process any post data submitted by user
     if request.method == "POST":
         form = TimeEntryForm(request.POST)
@@ -358,66 +308,7 @@ def add(request, id=None):
 
 
 @login_required
-def add_expense(request, id=None):
-    # if applicable, process any post data submitted by user
-    if request.method == "POST":
-        form = ExpenseEntryForm(request.POST)
-        if form.is_valid():
-            entry = form.save(commit=False)
-            entry.user_id = request.user.id
-            codes = {
-                "ff ": "Filing fee ",
-                "fx ": "FedEx ",
-                "ml ": "Mail ",
-            }
-            for key, val in codes.items():
-                entry.description = entry.description.replace(key, val)
-            entry.save()
-            return redirect("/activity")
-
-    # if no post data has been submitted, show the entry form
-    else:
-        today = date.today().strftime("%Y-%m-%d")
-        if id:
-            matter = get_object_or_404(Matter, pk=id)
-            form = ExpenseEntryForm(
-                initial={
-                    "date": today,
-                    "matter": matter,
-                }
-            )
-        else:
-            form = ExpenseEntryForm(initial={"date": today})
-
-    # get list of matters for activity form
-    matter_list = Matter.objects.filter(status="Open").order_by("name")
-
-    # if a single matter is selected,  pull that matter as a quersyset
-    if id:
-        selected_matter = Matter.objects.filter(id=id)
-
-        # if the matter is closed, add it to the matter list
-        # if it is open, don't add it; avoid creating two instances of the same matter
-        if selected_matter.first().status == "Closed":
-            matter_list |= selected_matter
-
-    # set the form fields
-    form.fields["matter"].queryset = matter_list
-
-    context = {
-        "page": "activity",
-        "edit": False,
-        "add": True,
-        "action": "/activity/add_expense",
-        "form": form,
-        "matter_list": matter_list,
-    }
-
-    return render(request, "activity/form_expense.html", context)
-
-
-@login_required
-def edit(request, id):
+def edit_time(request, id):
     entry = get_object_or_404(TimeEntry, pk=id)
 
     if request.method == "POST":
@@ -464,71 +355,15 @@ def edit(request, id):
 
 
 @login_required
-def edit_expense(request, id):
-    entry = get_object_or_404(ExpenseEntry, pk=id)
-
-    if request.method == "POST":
-        form = ExpenseEntryForm(request.POST, instance=entry)
-        if form.is_valid():
-            entry = form.save(commit=False)
-            entry.save()
-            return redirect("/activity")
-
-    else:
-        # get list of matters for activity form
-        matter_list = Matter.objects.filter(status="Open").order_by("name")
-
-        selected_matter = Matter.objects.filter(id=entry.matter.id)
-        if selected_matter.first().status == "Closed":
-            matter_list |= selected_matter
-
-        # initialize form
-        form = ExpenseEntryForm(instance=entry)
-
-        # set the form fields
-        form.fields["matter"].queryset = matter_list
-
-    context = {
-        "page": "activity",
-        "edit": True,
-        "add": False,
-        "action": f"/activity/{id}/edit_expense",
-        "entry": entry,
-        "form": form,
-        "matter_list": matter_list,
-    }
-
-    return render(request, "activity/form_expense.html", context)
-
-
-@login_required
-def delete(request, id):
+def delete_time(request, id):
     entry = get_object_or_404(TimeEntry, pk=id)
     entry.delete()
     return redirect("/activity")
 
 
 @login_required
-def delete_expense(request, id):
-    entry = get_object_or_404(ExpenseEntry, pk=id)
-    entry.delete()
-    return redirect("/activity")
-
-
-@login_required
-def toggle_entered(request, id):
+def toggle_entered_time(request, id):
     entry = get_object_or_404(TimeEntry, pk=id)
-    if entry.entered == 1:
-        entry.entered = 0
-    else:
-        entry.entered = 1
-    entry.save()
-    return redirect("/activity")
-
-
-@login_required
-def toggle_entered_expense(request, id):
-    entry = get_object_or_404(ExpenseEntry, pk=id)
     if entry.entered == 1:
         entry.entered = 0
     else:
@@ -625,10 +460,3 @@ def export(request):
         )
 
     return response
-
-
-@login_required
-def set_tab(request, tab):
-    request.session["activity-tab"] = tab
-    request.session.modified = True
-    return redirect("/activity")

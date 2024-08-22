@@ -1,0 +1,96 @@
+{% extends "activity/list.html" %}
+{% block sub-content %}
+  {% load humanize %}
+  <div class="section-title">
+    <div class="section-title-left">
+      <h1>Time</h1>
+      <div class="activity-row-filter">
+        <button hx-get="/activity/add-time"
+                hx-target="#htmx-modal-container"
+                data-bs-toggle="modal"
+                data-bs-target="#htmx-modal-container">
+          <i class="bi bi-plus-lg"></i>
+        </button>
+        <button hx-get="{% url 'activity:filter-time' %}"
+                hx-target="#htmx-modal-container"
+                data-bs-toggle="modal"
+                data-bs-target="#htmx-modal-container">Filter</button>
+        <a href={% url 'activity:quick-filter-time' 'unbilled' %}>Unbilled</a>
+        <a href={% url 'activity:quick-filter-time' 'today' %}>Today</a>
+        <form action="{% url 'activity:quick-filter-time' 'user' %}" method="post">
+          {% csrf_token %}
+          <select class="select-user" name="user" onchange="this.form.submit()">
+            <option value="">All</option>
+            {% for user in users %}
+              <option value="{{ user.id }}" {% if user.id == user_id %}selected{% endif %}>{{ user.username|title }}</option>
+            {% endfor %}
+          </select>
+        </form>
+      </div>
+    </div>
+    <div class="section-title-right">
+      <a href={% url 'activity:export' %}>
+        <i class="bi bi-cloud-download"></i>
+      </a>
+    </div>
+  </div>
+  <div class="table-container">
+    <table class="table activity">
+      <tr>
+        <th class="date">Date</th>
+        <th class="user">User</th>
+        <th class="matter">Matter</th>
+        <th class="actions">Actions</th>
+        <th class="numeric hours">Hours</th>
+        <th class="numeric rate">Rate</th>
+        <th class="numeric fee">Fee</th>
+      </tr>
+      {% for entry in objects %}
+        <tr>
+          <td class="date">{{ entry.date|date:'Y-m-d' }}</td>
+          <td class="user">{{ entry.user.symbol }}</td>
+          <td class="matter">
+            <a href={% url 'matters:detail' id=entry.matter.id %}>{{ entry.matter.name }}</a>
+          </td>
+          <td class="actions">
+            {% if entry.invoice %}
+              {{ entry.actions }}
+            {% else %}
+              <a href="#"
+                 hx-get="{% url 'activity:edit-time' id=entry.id %}"
+                 hx-target="#htmx-modal-container"
+                 hx-trigger="click"
+                 data-bs-toggle="modal"
+                 data-bs-target="#htmx-modal-container">{{ entry.actions }}</a>
+            {% endif %}
+          </td>
+          <td class="hours {% if not entry.entered and not entry.invoice %}urgent{% endif %}">
+            {% if entry.invoice %}
+              {{ entry.hours|floatformat:1 }}
+            {% else %}
+              <a href={% url 'activity:toggle-entered-time' id=entry.id %}>{{ entry.hours|floatformat:1 }}</a>
+            {% endif %}
+          </td>
+          <td class="rate">
+            {% if entry.comp %}
+              comp
+            {% else %}
+              ${{ entry.rate }}
+            {% endif %}
+          </td>
+          <td class="fee">
+            {% if entry.comp %}
+              comp
+            {% else %}
+              ${{ entry.fee|floatformat:2|intcomma }}
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="flex-start-space">
+    <div>{% include "pagination.html" %}</div>
+    {% include "activity/time/summary.html" %}
+  </div>
+{% endblock sub-content %}
