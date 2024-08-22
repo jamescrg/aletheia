@@ -37,11 +37,12 @@ def index(request):
 
     if tab == "time":
         filter_data = request.session.get("time_filter", None)
+        order = filter_data.get("order", "date, ascending")
 
         if filter_data:
             filter = TimeEntryFilter(filter_data)
             entries = filter.qs
-            if filter_data["order"] == "date, descending":
+            if order == "date, descending":
                 entries = entries.order_by("-date", "-id")
             else:
                 entries = entries.order_by("date", "id")
@@ -54,11 +55,12 @@ def index(request):
 
     elif tab == "expenses":
         filter_data = request.session.get("expense_filter", None)
+        order = filter_data.get("order", "date, ascending")
 
         if filter_data:
             filter = ExpenseFilter(filter_data)
             expense_entries = filter.qs
-            if filter_data["order"] == "date, descending":
+            if order == "date, descending":
                 entries.order_by("-date", "-id")
             else:
                 entries.order_by("date", "id")
@@ -71,7 +73,7 @@ def index(request):
 
     summary = calculate_summary(entries, expense_entries)
 
-    users = CustomUser.objects.all()
+    users = CustomUser.objects.filter(is_active=True)
 
     page = request.GET.get("page")
 
@@ -98,17 +100,24 @@ def index(request):
 def time_entry_filter(request):
     def get_filter(request):
         filter_data = request.session.get("time_filter", request.POST)
-
         return TimeEntryFilter(filter_data, queryset=TimeEntry.objects.all())
 
     if request.method == "POST":
         request.session["time_filter"] = request.POST
-
         return redirect("activity:list")
+
     else:
         filter = get_filter(request)
-
-        return render(request, "activity/time-entries-filter.html", {"filter": filter})
+        print("---------------------------------------")
+        print("filter", filter)
+        filter_order = request.session["time_filter"].get("order", "date, ascending")
+        print("---------------------------------------")
+        print("order", filter_order)
+        return render(
+            request,
+            "activity/time-entries-filter.html",
+            {"filter": filter, "filter_order": filter_order},
+        )
 
 
 @login_required

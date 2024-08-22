@@ -14,6 +14,7 @@
             action="{% url 'activity:filter-time-entries' %}">
         {% csrf_token %}
         {{ filter.form }}
+        <<<<<<< Updated upstream
         <label>Order By:</label>
         <label for="order">
           <select name="order" id="order">
@@ -23,6 +24,20 @@
                     {% if filter.order == 'date, ascending' %}selected{% endif %}>Date, Ascending</option>
           </select>
         </label>
+        =======
+        <<<<<<< Updated upstream
+        =======
+        <label>Order By:</label>
+        <label for="order">
+          <select name="order" id="order">
+            <option value="date, ascending"
+                    {% if filter_order == 'date, ascending' %}selected{% endif %}>Date, Ascending</option>
+            <option value="date, descending"
+                    {% if filter_order == 'date, descending' %}selected{% endif %}>Date, Descending</option>
+          </select>
+        </label>
+        >>>>>>> Stashed changes
+        >>>>>>> Stashed changes
         <br />
         <div class="flex-center-space">
           <button type="submit" class="submit">Apply</button>
