@@ -1,92 +1,81 @@
 from django.urls import path
 
-from apps.activity.views import (
-    add,
+from apps.activity.views_expenses import (
     add_expense,
-    delete,
     delete_expense,
-    edit,
     edit_expense,
-    expenses_filter,
+    filter_expenses,
+    list_expenses,
+    quick_filter_expenses,
+    toggle_entered_expenses,
+)
+from apps.activity.views_time import (
+    add_time,
+    delete_time,
+    edit_time,
     export,
-    filter_matter,
-    index,
-    quick_filter_today,
-    quick_filter_unbilled,
-    quick_filter_user,
-    set_tab,
-    time_entry_filter,
-    toggle_entered,
-    toggle_entered_expense,
+    filter_time,
+    list_time,
+    quick_filter_time,
+    quick_filter_time_matter,
+    toggle_entered_time,
 )
 
 app_name = "activity"
 
 urlpatterns = [
-    path("activity/", index, name="list"),
-    path("activity/add", add, name="add"),
-    path("activity/add_expense", add_expense, name="add-expense"),
-    path("activity/add/<int:id>", add, name="add"),
+    path("activity/", list_time, name="list-time"),
+    path("activity/add-time", add_time, name="add-time"),
+    path("activity/add-time/<int:id>", add_time, name="add-time"),
+    path("activity/<int:id>/edit-time", edit_time, name="edit-time"),
+    path("activity/<int:id>/delete-time", delete_time, name="delete-time"),
     path(
-        "activity/add_expense/<int:id>",
+        "activity/<int:id>/toggle-entered-time",
+        toggle_entered_time,
+        name="toggle-entered-time",
+    ),
+    path("activity/filter-time", filter_time, name="filter-time"),
+    path(
+        "activity/quick-filter-time/<str:quick_filter>",
+        quick_filter_time,
+        name="quick-filter-time",
+    ),
+    path(
+        "activity/quick-filter-time-matter/<int:matter_id>",
+        quick_filter_time_matter,
+        name="quick-filter-time-matter",
+    ),
+    path("activity/export", export, name="export"),
+    path("activity/expenses", list_expenses, name="list-expenses"),
+    path("activity/add-expense", add_expense, name="add-expense"),
+    path(
+        "activity/add-expense/<int:id>",
         add_expense,
         name="add-expense",
     ),
-    path("activity/<int:id>/edit", edit, name="edit"),
     path(
-        "activity/<int:id>/edit_expense",
+        "activity/<int:id>/edit-expense",
         edit_expense,
         name="edit-expense",
     ),
-    path("activity/<int:id>/delete", delete, name="delete"),
     path(
-        "activity/<int:id>/delete_expense",
+        "activity/<int:id>/delete-expense",
         delete_expense,
         name="delete-expense",
     ),
     path(
-        "activity/<int:id>/toggle-entered",
-        toggle_entered,
-        name="toggle-entered",
-    ),
-    path(
         "activity/<int:id>/toggle-entered-expense",
-        toggle_entered_expense,
+        toggle_entered_expenses,
         name="toggle-entered-expense",
     ),
-    path("activity/filter", filter, name="filter"),
-    path("activity/export", export, name="export"),
     path(
-        "activity/set-tab/<str:tab>",
-        set_tab,
-        name="set-tab",
-    ),
-    path(
-        "activity/quick-filter-today/<str:tab>",
-        quick_filter_today,
-        name="quick-filter-today",
-    ),
-    path(
-        "activity/quick-filter-unbilled/<str:tab>",
-        quick_filter_unbilled,
-        name="quick-filter-unbilled",
-    ),
-    path(
-        "activity/quick-filter-user/<str:tab>",
-        quick_filter_user,
-        name="quick-filter-user",
-    ),
-    path(
-        "activity/filter-matter/<int:matter_id>/<str:tab>",
-        filter_matter,
-        name="filter-matter",
-    ),
-    path(
-        "activity/filter-time-entries/", time_entry_filter, name="filter-time-entries"
+        "activity/quick-filter-expense/<str:tab>",
+        quick_filter_expenses,
+        name="quick-filter-expense",
     ),
     path(
         "activity/filter-expenses/",
-        expenses_filter,
+        filter_expenses,
         name="filter-expenses",
     ),
 ]
