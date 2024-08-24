@@ -18,11 +18,7 @@ def write_clio_csv(entries, response):
         ]
     )
     for entry in entries:
-        clio_user = ""
-        if entry.user.symbol == "JC":
-            clio_user = "James Craig"
-        if entry.user.symbol == "LK":
-            clio_user = "Lexi Krier"
+        clio_user = f"{entry.user.first_name} {entry.user.last_name}"
         writer.writerow(
             [
                 entry.matter.clio_matter_id,

@@ -427,7 +427,7 @@ def export_old(request):
 
 
 @login_required
-def export_to_csv(request, format):
+def time_export_to_csv(request, format):
 
     # Set the file name
     current_day_and_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
