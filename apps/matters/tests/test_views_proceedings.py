@@ -1,7 +1,7 @@
 import pytest
 from pytest_django.asserts import assertTemplateUsed
 
-from apps.matters.models import Proceeding
+from apps.matters.proceedings.models import Proceeding
 
 pytestmark = pytest.mark.django_db
 

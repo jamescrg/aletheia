@@ -1,6 +1,8 @@
 import pytest
 
-from apps.matters.forms import FactForm, MatterForm, ProceedingForm, SettlementEntryForm
+from apps.matters.forms import FactForm, MatterForm
+from apps.matters.proceedings.forms import ProceedingForm
+from apps.matters.settlement.forms import SettlementEntryForm
 
 pytestmark = pytest.mark.django_db
 
