@@ -38,7 +38,6 @@ class TimeEntryFilter(django_filters.FilterSet):
     )
     order_by = MultipleOrderingFilter(
         fields=[(("date", "id"), "date")],
-        field_labels={"date": "Date meow"},
         empty_label="Default",
     )
 

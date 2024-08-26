@@ -36,12 +36,6 @@ def expenses_list(request):
         filter = ExpenseFilter(filter_data)
         expenses = filter.qs
 
-        order = filter_data.get("order", "date, ascending")
-        if order == "date, descending":
-            expenses.order_by("-date", "-id")
-        else:
-            expenses.order_by("date", "id")
-
         user_id = filter_data.get("user")
         user_id = int(user_id) if user_id not in (None, "") else None
     else:
@@ -50,6 +44,7 @@ def expenses_list(request):
 
     summary = calculate_summary(expenses)
     users = CustomUser.objects.filter(is_active=True)
+
     page = request.GET.get("page")
     pagination = Paginator(expenses, per_page=10).get_page(page)
 
@@ -87,7 +82,6 @@ def expenses_filter(request):
 
 @login_required
 def expenses_filter_quick(request, quick_filter):
-
     quick_filters = {
         "unbilled": {
             "date_min": "",
@@ -98,7 +92,6 @@ def expenses_filter_quick(request, quick_filter):
             "comp": None,
             "entered": 0,
             "invoice": 0,
-            "order": "date, ascending",
         },
         "today": {
             "date_min": date.today().strftime("%Y-%m-%d"),
@@ -109,7 +102,6 @@ def expenses_filter_quick(request, quick_filter):
             "comp": None,
             "entered": None,
             "invoice": None,
-            "order": "date, descending",
         },
     }
 
@@ -126,8 +118,10 @@ def expenses_filter_quick(request, quick_filter):
 @login_required
 def expenses_filter_user(request):
     filter_data = request.session.get("expenses_filter", {})
+
     user = request.POST.get("user")
     filter_data["user"] = user
+
     request.session["expenses_filter"] = filter_data
     return redirect("activity:expenses-list")
 
