@@ -4,14 +4,9 @@ from django.test import Client
 from apps.accounts.models import CustomUser
 from apps.contacts.models import Contact
 from apps.folders.models import Folder
-from apps.matters.models import (
-    Fact,
-    Matter,
-    Proceeding,
-    Relationship,
-    Role,
-    SettlementEntry,
-)
+from apps.matters.models import Fact, Matter, Relationship, Role
+from apps.matters.proceedings.models import Proceeding
+from apps.matters.settlement.models import SettlementEntry
 
 
 @pytest.fixture

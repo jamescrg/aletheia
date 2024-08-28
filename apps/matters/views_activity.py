@@ -3,8 +3,9 @@ from datetime import date, timedelta
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render
 
-from apps.activity.models import TimeEntry
-from apps.matters.models import Matter, Proceeding
+from apps.activity.time.models import TimeEntry
+from apps.matters.models import Matter
+from apps.matters.proceedings.models import Proceeding
 
 
 @login_required
