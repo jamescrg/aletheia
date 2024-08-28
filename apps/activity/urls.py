@@ -1,20 +1,21 @@
 from django.urls import path
 
-from apps.activity.views_expenses import (
+from apps.activity.expenses.views import (
     expenses_add,
     expenses_delete,
     expenses_edit,
+    expenses_export_to_csv,
     expenses_filter,
     expenses_filter_quick,
     expenses_filter_user,
     expenses_list,
     expenses_toggle_entered,
 )
-from apps.activity.views_time import (
-    export,
+from apps.activity.time.views import (
     time_add,
     time_delete,
     time_edit,
+    time_export_to_csv,
     time_filter,
     time_filter_matter,
     time_filter_quick,
@@ -27,10 +28,10 @@ app_name = "activity"
 
 urlpatterns = [
     path("activity/", time_list, name="time-list"),
-    path("activity/export", export, name="export"),
     path("activity/time/add", time_add, name="time-add"),
     path("activity/time/add/<int:id>", time_add, name="time-add"),
     path("activity/time/<int:id>/edit", time_edit, name="time-edit"),
+    path("activity/time/export/<str:format>", time_export_to_csv, name="time-export"),
     path("activity/time/<int:id>/delete", time_delete, name="time-delete"),
     path(
         "activity/time/<int:id>/toggle-entered",
@@ -64,6 +65,11 @@ urlpatterns = [
         "activity/expenses/<int:id>/edit",
         expenses_edit,
         name="expenses-edit",
+    ),
+    path(
+        "activity/expenses/export/<str:format>",
+        expenses_export_to_csv,
+        name="expenses-export",
     ),
     path(
         "activity/expenses/<int:id>/delete",
