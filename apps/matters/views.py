@@ -56,7 +56,7 @@ def filter(request):
     else:
         filter = get_filter(request)
 
-        return render(request, "matters/matter-filter.html", {"filter": filter})
+        return render(request, "matters/filter.html", {"filter": filter})
 
 
 @login_required
