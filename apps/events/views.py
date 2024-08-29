@@ -70,12 +70,6 @@ def events_add(request, matter_id=None, origin="events"):
         request.session["origin"] = origin
         request.session.modified = True
 
-    print()
-    print(
-        "-------------------------------------------------------------------------------"
-    )
-    print("origin", origin)
-
     # set the origin of the request, defaulting to "events"
     origin = request.session.get("origin", "events")
 
