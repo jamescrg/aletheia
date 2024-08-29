@@ -28,7 +28,7 @@ urlpatterns = [
         name="invoices-list",
     ),
     path(
-        "billing/invoicess-detail/<int:pk>/preview/",
+        "billing/invoices-detail/<int:pk>/preview/",
         invoices_detail,
         name="invoices-detail",
     ),
@@ -37,6 +37,11 @@ urlpatterns = [
         "billing/invoices-edit/<int:pk>/",
         invoices_edit,
         name="invoices-edit",
+    ),
+    path(
+        "billing/invoices-filter/",
+        invoices_filter,
+        name="invoices-filter",
     ),
     path(
         "billing/invoices-delete/<int:pk>/",
@@ -63,7 +68,7 @@ urlpatterns = [
     path(
         "billing/payments-delete/<int:pk>/",
         payments_delete,
-        name="delete-payment",
+        name="payments-delete",
     ),
     path(
         "billing/payments-edit/<int:pk>/",
@@ -74,10 +79,5 @@ urlpatterns = [
         "billing/payments-filter/",
         payments_filter,
         name="payments-filter",
-    ),
-    path(
-        "billing/invoices-filter/",
-        invoices_filter,
-        name="invoices-filter",
     ),
 ]

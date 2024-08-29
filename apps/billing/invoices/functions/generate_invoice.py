@@ -30,7 +30,7 @@ def generate_invoice(invoice: Invoice, request: WSGIRequest) -> NamedTemporaryFi
         "invoice_total": calc["invoice_total"],
     }
 
-    html_string = render_to_string("billing/invoice.html", context)
+    html_string = render_to_string("billing/invoices/invoice.html", context)
     html = HTML(string=html_string, base_url=request.build_absolute_uri())
 
     with NamedTemporaryFile(suffix=".pdf", delete=False) as pdf_file:
