@@ -161,9 +161,9 @@ urlpatterns = [
         name="timeline-print",
     ),
     path(
-        "matters/filter-matters",
+        "matters/filter",
         filter,
-        name="filter-matters",
+        name="filter",
     ),
     path(
         "matters/order-by/<str:order>",

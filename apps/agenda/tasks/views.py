@@ -180,7 +180,7 @@ def tasks_status(request, id):
 def tasks_change_user(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
     user = get_object_or_404(CustomUser, pk=request.POST["user"])
-    users = CustomUser.objects.all()
+    users = CustomUser.objects.filter(is_active=True)
 
     task.user = user
     task.save()
