@@ -19,11 +19,7 @@ def payments_list(request):
         filter = PaymentFilter(filter_data)
         payments = filter.qs
     else:
-        payments = (
-            Payment.objects.all()
-            .select_related("matter", "created_by")
-            .order_by("-created_at")
-        )
+        payments = Payment.objects.all().select_related("matter").order_by("-date")
 
     page = request.GET.get("page")
     pagination = Paginator(payments, per_page=10).get_page(page)
@@ -35,7 +31,7 @@ def payments_list(request):
         "objects": pagination.object_list,
     }
 
-    return render(request, "payments/list.html", context)
+    return render(request, "billing/payments/list.html", context)
 
 
 @login_required
@@ -49,7 +45,7 @@ def payments_add(request):
 
             print("Saved payment", payment)
 
-            return redirect("billing:billing")
+            return redirect("billing:payments-list")
     else:
         form = PaymentForm()
 
@@ -69,10 +65,7 @@ def payments_add(request):
 def payments_delete(request, pk):
     payment = Payment.objects.get(pk=pk)
     payment.delete()
-
-    payments = Payment.objects.all().select_related("matter")
-
-    return render(request, "billing/payments/list.html", {"payments": payments})
+    return redirect("billing:payments-list")
 
 
 @login_required
@@ -85,7 +78,7 @@ def payments_edit(request, pk):
         if form.is_valid():
             form.save()
 
-            return redirect("billing:billing")
+            return redirect("billing:payments-list")
     else:
         form = PaymentForm(instance=payment)
 
@@ -123,7 +116,7 @@ def payments_filter(request):
     if request.method == "POST":
         request.session["payments_filter"] = request.POST
 
-        return redirect("billing:billing")
+        return redirect("billing:payments-list")
     else:
         filter = get_filter(request)
 

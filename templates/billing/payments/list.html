@@ -1,4 +1,5 @@
-{% block content %}
+{% extends "billing/list.html" %}
+{% block subcontent %}
   <div id="payment-list" class="section">
     <div class="section-title">
       <div class="section-title-left">
@@ -35,10 +36,10 @@
           <th class="actions">Actions</th>
         </tr>
         {% for payment in objects %}
-          {% include "billing/payments/payment-row.html" %}
+          {% include "billing/payments/row.html" %}
         {% endfor %}
       </table>
       {% include "pagination.html" %}
     </div>
   </div>
-{% endblock content %}
+{% endblock subcontent %}

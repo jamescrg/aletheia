@@ -55,7 +55,7 @@ def invoices_detail(request, pk):
 
     context = {
         "page": "billing",
-        "file_url": reverse_lazy("billing:invoice-pdf", kwargs={"pk": invoice.pk}),
+        "file_url": reverse_lazy("billing:invoices-pdf", kwargs={"pk": invoice.pk}),
         "invoice": invoice,
     }
 
@@ -153,7 +153,6 @@ def invoices_edit(request, pk):
 def invoices_delete(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
     invoice.delete()
-
     return redirect("billing:invoices-list")
 
 
