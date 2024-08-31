@@ -18,7 +18,9 @@ def payments_list(request):
         filter = PaymentFilter(filter_data)
         payments = filter.qs
     else:
-        payments = Payment.objects.all().select_related("matter").order_by("-date")
+        payments = (
+            Payment.objects.all().select_related("matter").order_by("-date", "-id")
+        )
 
     page = request.GET.get("page")
     pagination = Paginator(payments, per_page=10).get_page(page)
