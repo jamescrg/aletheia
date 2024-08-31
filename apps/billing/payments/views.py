@@ -12,7 +12,6 @@ from .models import Payment
 
 @login_required
 def payments_list(request):
-
     filter_data = request.session.get("payments_filter", None)
 
     if filter_data:
@@ -42,8 +41,6 @@ def payments_add(request):
         if form.is_valid():
             payment = form.save(commit=False)
             payment.save()
-
-            print("Saved payment", payment)
 
             return redirect("billing:payments-list")
     else:
