@@ -45,12 +45,14 @@ class Invoice(models.Model):
             matter=self.matter,
             date__lte=self.date_limit,
             invoice__isnull=True,
+            entered=0,
         ).update(invoice_id=self.id)
 
         ExpenseEntry.objects.filter(
             matter=self.matter,
             date__lte=self.date_limit,
             invoice__isnull=True,
+            entered=0,
         ).update(invoice_id=self.id)
 
         return invoice
