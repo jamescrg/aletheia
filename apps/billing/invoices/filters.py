@@ -2,6 +2,7 @@ import django_filters
 
 from apps.billing.invoices.models import INVOICE_STATUS, Invoice
 from apps.matters.models import Matter
+from config.helpers import MultipleOrderingFilter
 
 
 class InvoiceFilter(django_filters.FilterSet):
@@ -14,6 +15,10 @@ class InvoiceFilter(django_filters.FilterSet):
     status = django_filters.ChoiceFilter(choices=INVOICE_STATUS, empty_label="All")
     date_issued = django_filters.DateFromToRangeFilter(
         widget=django_filters.widgets.RangeWidget(attrs={"type": "date"})
+    )
+    order_by = MultipleOrderingFilter(
+        fields=[(("date_issued", "id"), "date issued")],
+        empty_label="Default",
     )
 
     class Meta:
