@@ -37,7 +37,7 @@ def invoices_list(request):
         )
 
     page = request.GET.get("page")
-    pagination = Paginator(invoices, per_page=10).get_page(page)
+    pagination = Paginator(invoices, per_page=15).get_page(page)
 
     context = {
         "app": "billing",
