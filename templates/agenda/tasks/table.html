@@ -53,7 +53,7 @@
           <a href={% url 'matters:detail' id=task.matter.id %}>{{ task.matter.name }}</a>
         </td>
         <td id="task-description"
-            class="description {% if task.date_due <= today %}soon{% endif %}">
+            class="description {% if task.date_due <= today %}urgent{% endif %}">
           {% if task.priority %}
             <span class="priority">
               <i class="bi bi-exclamation-lg"></i>

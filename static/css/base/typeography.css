@@ -11,23 +11,24 @@ h2 {
   margin-bottom: 0;
 }
 
-strong {
-  font-weight: 600;
+a,
+a:hover {
+  color: var(--lime-800);
+  outline: none;
+  text-decoration: none;
 }
 
+strong,
 .strong {
   font-weight: 600;
 }
 
-.soon a {
+.urgent,
+.urgent a {
   color: var(--orange-800);
 }
 
 .warn {
   margin-bottom: 20px;
   padding: 10px;
-}
-
-.urgent {
-  color: var(--orange-800);
 }
