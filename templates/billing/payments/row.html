@@ -1,12 +1,26 @@
 {% load humanize %}
 <tr id="payment-{{ payment.id }}">
   <td class="number">
-    <a class="pointer"
-       hx-get="{% url 'billing:payments-edit' payment.id %}"
-       hx-target="#htmx-modal-container"
-       hx-trigger="click"
-       data-bs-toggle="modal"
-       data-bs-target="#htmx-modal-container">{{ payment.id }}</a>
+    <button class="button-link"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false">{{ payment.id }}</button>
+    <ul class="dropdown-menu" aria-labelledby="paymentDropdown">
+      <li>
+        <a href="#"
+           class="dropdown-item"
+           hx-get="{% url 'billing:payments-edit' payment.id %}"
+           hx-target="#htmx-modal-container"
+           hx-trigger="click"
+           data-bs-toggle="modal"
+           data-bs-target="#htmx-modal-container">Edit</a>
+      </li>
+      <li>
+        <a onclick="return confirm('Are you sure you want to delete this payment?')"
+           class="dropdown-item"
+           href="{% url 'billing:payments-delete' payment.id %}">Delete</a>
+      </li>
+    </ul>
   </td>
   <td>
     <a href={% url 'matters:detail' id=payment.matter.id %}>{{ payment.matter.name|slice:":20" }}</a>
@@ -15,19 +29,4 @@
   <td>{{ payment.method_display }}</td>
   <td>{{ payment.detail|default:"" }}</td>
   <td class="amount">${{ payment.amount|floatformat:2|intcomma }}</td>
-  <td class="payments-actions">
-    <button class="btn-icon menu-icon"
-            type="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false">
-      <i class="bi bi-three-dots-vertical"></i>
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="paymentDropdown">
-      <li>
-        <a onclick="return confirm('Are you sure you want to delete this payment?')"
-           class="dropdown-item"
-           href="{% url 'billing:payments-delete' payment.id %}">Delete</a>
-      </li>
-    </ul>
-  </td>
 </tr>
