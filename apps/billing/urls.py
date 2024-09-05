@@ -2,14 +2,14 @@ from django.urls import path
 
 from apps.billing.invoices.views import (
     invoices_add,
-    invoices_cancel,
     invoices_delete,
     invoices_detail,
     invoices_edit,
+    invoices_edit_status,
     invoices_filter,
+    invoices_filter_status,
     invoices_list,
     invoices_pdf,
-    invoices_status_update,
 )
 from apps.billing.payments.views import (
     payments_add,
@@ -31,14 +31,18 @@ urlpatterns = [
     path("billing/invoices-add/", invoices_add, name="invoices-add"),
     path("billing/invoices-edit/<int:pk>/", invoices_edit, name="invoices-edit"),
     path("billing/invoices-filter/", invoices_filter, name="invoices-filter"),
+    path(
+        "billing/invoices-filter-status/",
+        invoices_filter_status,
+        name="invoices-filter-status",
+    ),
     path("billing/invoices-delete/<int:pk>/", invoices_delete, name="invoices-delete"),
     path("billing/invoices-pdf/<int:pk>/", invoices_pdf, name="invoices-pdf"),
     path(
-        "billing/invoices-status-update/<int:pk>/",
-        invoices_status_update,
-        name="invoices-status-update",
+        "billing/invoices-edit-status/<int:pk>/",
+        invoices_edit_status,
+        name="invoices-edit-status",
     ),
-    path("billing/invoices-cancel/<int:pk>/", invoices_cancel, name="invoices-cancel"),
     path("billing/payments/", payments_list, name="payments-list"),
     path("billing/payments-add/", payments_add, name="payments-add"),
     path("billing/payments-delete/<int:pk>/", payments_delete, name="payments-delete"),
