@@ -56,7 +56,7 @@
             <th class="text-right">Qty</th>
             <th class="money">Total</th>
           </tr>
-          {% for entry in entries %}
+          {% for entry in time_entries %}
             <tr>
               <td class="date{% if entry.comp %} comp{% endif %}">{{ entry.date|date:"Y-m-d" }}</td>
               <td class="{% if entry.comp %} comp{% endif %}">{{ entry.actions }} {{ entry.user.symbol }} {{ entry.rate }}</td>
@@ -134,7 +134,7 @@
             </tr>
           {% endif %}
           <tr>
-            <td class="total">Total Due (please pay this amount)</td>
+            <td class="total">Total Due</td>
             <td class="money total">${{ invoice.value.final_total|floatformat:2|intcomma }}</td>
           </tr>
         </table>
