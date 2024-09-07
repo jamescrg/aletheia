@@ -109,8 +109,12 @@ def tasks_edit(request, id):
             task = form.save(commit=False)
             task.save()
 
-        return redirect("/agenda")
-
+        return HttpResponse(
+            status=204,
+            headers={
+                "HX-Redirect": reverse("agenda:tasks-list"),
+            },
+        )
     else:
         task = get_object_or_404(Task, pk=id)
 
