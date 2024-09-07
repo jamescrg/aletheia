@@ -35,6 +35,13 @@ class EventFilter(django_filters.FilterSet):
     party = django_filters.ChoiceFilter(
         field_name="party", choices=PARTY_CHOICES, empty_label="All Parties"
     )
+    order_by = django_filters.OrderingFilter(
+        fields=(
+            ("date", "date"),
+            ("matter", "matter"),
+        ),
+        empty_label=None,
+    )
 
     class Meta:
         model = Event

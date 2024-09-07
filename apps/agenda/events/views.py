@@ -50,6 +50,7 @@ def events_filter_quick(request, quick_filter):
             "date_min": "",
             "date_max": "",
             "party": None,
+            "order_by": "date",
         },
     }
 

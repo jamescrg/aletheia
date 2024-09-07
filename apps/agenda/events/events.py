@@ -14,6 +14,7 @@ def get_table_data(request):
         "date_min": "",
         "date_max": "",
         "party": None,
+        "date": "date",
     }
 
     events_filter = request.session.get("events_filter", None)
