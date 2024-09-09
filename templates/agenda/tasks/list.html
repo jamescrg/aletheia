@@ -33,6 +33,13 @@
         </form>
       </div>
     </div>
+    <div class="section-title-right">
+      <button type="button"
+              class="btn-icon"
+              hx-post="{% url 'agenda:tasks-clear' %}"
+              hx-target="#task-table"
+              hx-swap="innerHTML">Clear tasks</button>
+    </div>
   </div>
-  {% include "agenda/tasks/table.html" %}
+  <div id="task-table">{% include "agenda/tasks/table.html" %}</div>
 {% endblock subcontent %}

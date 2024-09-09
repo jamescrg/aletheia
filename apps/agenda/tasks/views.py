@@ -218,3 +218,17 @@ def tasks_filter_sort(request, order):
     request.session["tasks_filter"] = filter_data
     context = get_table_data(request)
     return render(request, "agenda/tasks/table.html", context)
+
+
+@login_required
+def clear_tasks(request):
+    filter_data = request.session.get("tasks_filter", {})
+
+    filter = TasksFilter(filter_data)
+
+    # Delete all the tasks from the filter that are marked as complete
+    filter.qs.filter(status="Complete").delete()
+
+    context = get_table_data(request)
+
+    return render(request, "agenda/tasks/table.html", context)
