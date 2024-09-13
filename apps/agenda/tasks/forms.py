@@ -35,6 +35,10 @@ class TaskForm(forms.ModelForm):
             "date_due": forms.DateInput(attrs={"type": "date"}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["date_due"].initial = None
+
     def clean_description(self):
         description = self.cleaned_data["description"]
         if len(description) < 2:
