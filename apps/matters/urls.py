@@ -121,4 +121,5 @@ urlpatterns = [
     path("matters/filter-quick/<str:quick_filter>/", filter_quick, name="filter-quick"),
     # Ledger
     path("matters/<int:id>/ledger", ledger.index, name="ledger"),
+    path("matters/<int:pk>/ledger/pdf/", ledger.ledger_pdf, name="ledger-pdf"),
 ]

@@ -16,7 +16,6 @@ def generate_invoice(invoice: Invoice, request: WSGIRequest) -> NamedTemporaryFi
     Generate a PDF invoice for the given invoice instance
     """
 
-    # get list of time and expense enties for inclusion in invoice
     if invoice.show_comp:
         time_entries = TimeEntry.objects.filter(
             invoice=invoice,
@@ -34,7 +33,6 @@ def generate_invoice(invoice: Invoice, request: WSGIRequest) -> NamedTemporaryFi
             comp=invoice.show_comp,
         ).order_by("date")
 
-    # pass invoice and associated time and expense entries to template
     context = {
         "invoice": invoice,
         "time_entries": time_entries,
@@ -47,11 +45,7 @@ def generate_invoice(invoice: Invoice, request: WSGIRequest) -> NamedTemporaryFi
     with NamedTemporaryFile(suffix=".pdf", delete=False) as pdf_file:
         html.write_pdf(
             target=pdf_file.name,
-            stylesheets=[
-                BASE_DIR.joinpath(
-                    os.path.join("static", "css", "apps", "billing", "invoice.css")
-                )
-            ],
+            stylesheets=[BASE_DIR.joinpath(os.path.join("static", "css", "pdf.css"))],
         )
         pdf_file.seek(0)
 
