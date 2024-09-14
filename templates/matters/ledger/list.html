@@ -5,6 +5,12 @@
     <div class="section-title-left">
       <h2>Ledger</h2>
     </div>
+    <div class="section-title-right">
+      <a href="{% url 'matters:ledger-pdf' matter.id %}"
+         target="_blank"
+         type="button"
+         class="btn-icon">Download PDF</a>
+    </div>
   </div>
   {% if transactions %}
     <div class="table-container">

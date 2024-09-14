@@ -1,0 +1,83 @@
+{% load humanize %}
+{% load static %}
+{% load cache_buster %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" content="" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <title>{{ matter.name }} - Ledger</title>
+    <link rel="shortcut icon" href={% static 'images/briefcase-fill.svg' %} />
+    <link rel="stylesheet" href={% static_v 'css/pdf.css' %} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+          rel="stylesheet" />
+  </head>
+  <body class="{% if invoice.status == 'DRAFT' %}invoice-body-draft{% elif invoice.status == 'CANCELED' %}invoice-body-canceled{% endif %}">
+    <div class="invoice-template">
+      <div class="header">
+        <div class="header-left">
+          <div class="header-left-left">
+            <img width="100"
+                 height="auto"
+                 class="cb-logo"
+                 alt="cb_logo"
+                 src="{% static 'images/cb_logo.png' %}" />
+          </div>
+          <div class="header-left-right">
+            <p>
+              CB Legal, <span class="llc">LLC</span>
+            </p>
+            <p>5565 Glenridge Connector</p>
+            <p>Suite 350</p>
+            <p>Atlana, GA 30342</p>
+            <p>(770) 426 - 7740</p>
+            <p>jcraig@cblegal.law</p>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <h3>{{ matter.name }} - Ledger</h3>
+        {% if transactions %}
+          <div class="table-container">
+            <table class="table ledger">
+              <tr>
+                <th class="date">Date</th>
+                <th class="type">Type</th>
+                <th>Description</th>
+                <th class="numeric">Amount</th>
+              </tr>
+              {% for transaction in transactions %}
+                <tr>
+                  <td class="date">{{ transaction.date|date:'Y-m-d' }}</td>
+                  <td class="type">{{ transaction.transaction_type }}</td>
+                  <td>{{ transaction.description }}</td>
+                  {% if transaction.transaction_type == 'Charge' %}
+                    <td class="numeric urgent">-${{ transaction.amount|floatformat:2|intcomma }}</td>
+                  {% else %}
+                    <td class="numeric">${{ transaction.amount|floatformat:2|intcomma }}</td>
+                  {% endif %}
+                </tr>
+              {% endfor %}
+            </table>
+            <div class="flex-start-space">
+              <br />
+              <div class="totals-table">
+                <table class="table">
+                  <tr>
+                    <td class="total">Balance Due</td>
+                    <td class="numeric balance-due">${{ balance_due|floatformat:2|intcomma }}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          No transactions found.
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>
