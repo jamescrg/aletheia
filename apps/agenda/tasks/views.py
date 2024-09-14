@@ -63,7 +63,7 @@ def tasks_add(request):
             task.status = "Pending"
             task.save()
             request.session["tasks_matter"] = task.matter.id
-            return HttpResponse(status=204, headers={"HX-Trigger": "taskTableChanged"})
+            return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
 
     else:
 
@@ -98,7 +98,7 @@ def tasks_edit(request, id):
         if form.is_valid():
             task = form.save(commit=False)
             task.save()
-            return HttpResponse(status=204, headers={"HX-Trigger": "taskTableChanged"})
+            return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
 
     else:
         form = TaskForm(instance=task)
@@ -172,7 +172,7 @@ def tasks_filter_user(request):
     request.session["tasks_filter"] = filter_data
     table_data = get_table_data(request)
     context = table_data
-    return render(request, "agenda/tasks/table.html", context)
+    return render(request, "agenda/tasks/list-inner.html", context)
 
 
 @login_required
@@ -232,7 +232,7 @@ def tasks_filter_sort(request, order):
     request.session["tasks_filter"] = filter_data
 
     context = get_table_data(request)
-    return render(request, "agenda/tasks/table.html", context)
+    return render(request, "agenda/tasks/list-inner.html", context)
 
 
 @login_required
@@ -246,11 +246,11 @@ def clear_tasks(request):
 
     context = get_table_data(request)
 
-    return render(request, "agenda/tasks/table.html", context)
+    return render(request, "agenda/tasks/list-inner.html", context)
 
 
 @login_required
 def tasks_table(request):
     table_data = get_table_data(request)
     context = table_data
-    return render(request, "agenda/tasks/table.html", context)
+    return render(request, "agenda/tasks/list-inner.html", context)

@@ -44,6 +44,7 @@ class TaskForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["date_due"].initial = None
+        self.fields["priority"].initial = 3
 
     def clean_description(self):
         description = self.cleaned_data["description"]
