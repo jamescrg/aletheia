@@ -37,7 +37,7 @@
       </table>
     </div>
   {% endif %}
-  <div class="section">
+  <div class="section settings">
     <div class="section-title">
       <h1>Log Out</h1>
     </div>
@@ -47,13 +47,9 @@
     </p>
     <table class="options">
       <tr>
-        <td class="setting-label">Session:</td>
-        <td>
+        <td class="setting-label">Session</td>
+        <td class="setting-control">
           <a class="btn btn-primary" href="{% url 'accounts:logout' %}">Logout</a>
-          <!-- <form method="post" action="{% url 'accounts:logout' %}"> -->
-          <!--     {% csrf_token %} -->
-          <!--     <button type="submit">logout</button> -->
-          <!-- </form> -->
         </td>
       </tr>
     </table>
