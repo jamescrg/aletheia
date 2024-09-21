@@ -17,27 +17,6 @@
   </head>
   <body>
     <div class="invoice-template">
-      <div class="header">
-        <div class="header-left">
-          <div class="header-left-left">
-            <img width="100"
-                 height="auto"
-                 class="cb-logo"
-                 alt="cb_logo"
-                 src="{% static 'images/cb_logo.png' %}" />
-          </div>
-          <div class="header-left-right">
-            <p>
-              CB Legal, <span class="llc">LLC</span>
-            </p>
-            <p>5565 Glenridge Connector</p>
-            <p>Suite 350</p>
-            <p>Atlana, GA 30342</p>
-            <p>(770) 426 - 7740</p>
-            <p>jcraig@cblegal.law</p>
-          </div>
-        </div>
-      </div>
       <div class="section">
         <h3>{{ matter.name }} - Timeline</h3>
         <div class="table-container">
@@ -46,14 +25,13 @@
               <tr>
                 <th>Date</th>
                 <th>Description</th>
-                <th>Citation</th>
               </tr>
               {% for fact in facts %}
                 <tr>
                   <td class="date {% if fact.emphasis == 'Yes' %}strong{% endif %}">{{ fact.date|date:'Y-m-d' }}</td>
-                  <td class="description {% if fact.emphasis == 'Yes' %}strong{% endif %}">{{ fact.description }}</td>
-                  <td class="citation {% if fact.emphasis == 'Yes' %}strong{% endif %}">
-                    {{ fact.citation|slice:":25"|default_if_none:'' }}
+                  <td class="description {% if fact.emphasis == 'Yes' %}strong{% endif %}">
+                    {{ fact.description }}&nbsp;&nbsp;
+                    {% if fact.citation %}({{ fact.citation|slice:":25"|default_if_none:'' }}.){% endif %}
                   </td>
                 </tr>
               {% endfor %}

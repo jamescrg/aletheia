@@ -2,9 +2,10 @@
 Page Setup
 ========================================================================== */
 
+
 @page {
-  size: Letter;
   margin: 0.75in;
+  size: Letter;
 }
 
 .invoice-template {
@@ -135,8 +136,8 @@ h3 {
 }
 
 .totals-table {
-  width: fit-content;
   float: right;
+  width: fit-content;
 }
 
 .total {
@@ -149,6 +150,18 @@ h3 {
 
 .balance-due {
   font-weight: bold;
+}
+
+.strong {
+  font-weight: 600;
+}
+
+.transaction-type {
+  width: 0.75in;
+}
+
+.current-balance {
+  padding-right: 2rem;
 }
 
 /* ==========================================================================

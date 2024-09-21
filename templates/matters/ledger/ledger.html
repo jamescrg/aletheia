@@ -37,27 +37,33 @@
             <p>jcraig@cblegal.law</p>
           </div>
         </div>
+        <div class="header-right">
+          <h3>Matter Ledger</h3>
+          <p class="text-right">Matter {{ matter.id }}</p>
+          <p class="text-right">"{{ matter.name }}"</p>
+          {% if matter.client_reference_id %}<p class="text-right">{{ matter.client_reference_id }}</p>{% endif %}
+        </div>
       </div>
       <div class="section">
-        <h3>{{ matter.name }} - Ledger</h3>
+        <h3>List of Charges and Credits</h3>
         {% if transactions %}
           <div class="table-container">
             <table class="table ledger">
               <tr>
                 <th class="date">Date</th>
-                <th class="type">Type</th>
+                <th class="transaction-type">Type</th>
                 <th>Description</th>
-                <th class="numeric">Amount</th>
+                <th class="money">Amount</th>
               </tr>
               {% for transaction in transactions %}
                 <tr>
                   <td class="date">{{ transaction.date|date:'Y-m-d' }}</td>
-                  <td class="type">{{ transaction.transaction_type }}</td>
+                  <td class="transaction-type">{{ transaction.transaction_type }}</td>
                   <td>{{ transaction.description }}</td>
                   {% if transaction.transaction_type == 'Charge' %}
-                    <td class="numeric urgent">-${{ transaction.amount|floatformat:2|intcomma }}</td>
+                    <td class="money urgent">-${{ transaction.amount|floatformat:2|intcomma }}</td>
                   {% else %}
-                    <td class="numeric">${{ transaction.amount|floatformat:2|intcomma }}</td>
+                    <td class="money">${{ transaction.amount|floatformat:2|intcomma }}</td>
                   {% endif %}
                 </tr>
               {% endfor %}
@@ -67,8 +73,8 @@
               <div class="totals-table">
                 <table class="table">
                   <tr>
-                    <td class="total">Balance Due</td>
-                    <td class="numeric balance-due">${{ balance_due|floatformat:2|intcomma }}</td>
+                    <td class="current-balance strong">Current Balance</td>
+                    <td class="money balance-due">${{ balance_due|floatformat:2|intcomma }}</td>
                   </tr>
                 </table>
               </div>
