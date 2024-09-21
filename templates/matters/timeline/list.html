@@ -13,10 +13,12 @@
       </div>
     </div>
     <div class="section-title-right">
-      <a href="{% url 'matters:timeline-pdf' matter.id %}"
-         target="_blank"
-         type="button"
-         class="btn-icon">Download PDF</a>
+      {% if facts %}
+        <a href="{% url 'matters:timeline-pdf' matter.id %}"
+           target="_blank"
+           type="button"
+           class="btn-icon">Download PDF</a>
+      {% endif %}
     </div>
   </div>
   <div class="table-container">
