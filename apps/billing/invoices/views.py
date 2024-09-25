@@ -138,15 +138,15 @@ def invoices_pdf(request, pk):
 def invoice_ledes_98b(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
 
-    ledes = generate_ledes_98b(invoice)
+    ledes_file = generate_ledes_98b(invoice)
 
-    with open(ledes.name, "rb") as ledes_file:
-        response = HttpResponse(ledes_file.read(), content_type="text/plain")
+    with open(ledes_file.name, "rb") as file:
+        response = HttpResponse(file.read(), content_type="text/plain")
 
-        filename = f'attachment; filename="Ledes {invoice.id} - {invoice.matter} - {invoice.date_issued}.txt"'
+        filename = f'attachment; filename="LEDES98B - {invoice.id} - {invoice.matter} - {invoice.date_issued}.txt"'
         response["Content-Disposition"] = filename
 
-    os.unlink(ledes.name)
+    os.unlink(ledes_file.name)
 
     return response
 
