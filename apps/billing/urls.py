@@ -1,6 +1,7 @@
 from django.urls import path
 
 from apps.billing.invoices.views import (
+    invoice_ledes_98b,
     invoices_add,
     invoices_delete,
     invoices_detail,
@@ -45,6 +46,7 @@ urlpatterns = [
     ),
     path("billing/invoices-delete/<int:pk>/", invoices_delete, name="invoices-delete"),
     path("billing/invoices-pdf/<int:pk>/", invoices_pdf, name="invoices-pdf"),
+    path("billing/invoice-ledes/<int:pk>/", invoice_ledes_98b, name="invoice-ledes"),
     path(
         "billing/invoices-edit-status/<int:pk>/<str:status>/",
         invoices_edit_status,
