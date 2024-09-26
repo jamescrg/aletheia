@@ -9,6 +9,7 @@ from django.urls import reverse_lazy
 
 from apps.activity.expenses.models import ExpenseEntry
 from apps.activity.time.models import TimeEntry
+from apps.billing.invoices.functions import generate_ledes_98b
 from apps.matters.models import Matter
 
 from .filters import InvoiceFilter
@@ -129,6 +130,23 @@ def invoices_pdf(request, pk):
         filename = f'filename="{notation}Invoice {invoice.id} - {invoice.matter} - {invoice.date_issued}.pdf"'
         response["Content-Disposition"] = filename
     os.unlink(file.name)
+
+    return response
+
+
+@login_required
+def invoice_ledes_98b(request, pk):
+    invoice = get_object_or_404(Invoice, pk=pk)
+
+    ledes_file = generate_ledes_98b(invoice)
+
+    with open(ledes_file.name, "rb") as file:
+        response = HttpResponse(file.read(), content_type="text/plain")
+
+        filename = f'attachment; filename="LEDES98B - {invoice.id} - {invoice.matter} - {invoice.date_issued}.txt"'
+        response["Content-Disposition"] = filename
+
+    os.unlink(ledes_file.name)
 
     return response
 
