@@ -17,3 +17,11 @@ class CustomUser(AbstractUser):
     role = models.CharField(max_length=5, choices=ROLE_OPTIONS, default="USER")
 
     objects = CustomUserManager()
+
+    @property
+    def full_name(self):
+        return f"{self.first_name.capitalize()} {self.last_name.capitalize()}"
+
+    @property
+    def role_display(self):
+        return dict(ROLE_OPTIONS)[self.role]

@@ -1,4 +1,35 @@
 {% extends "settings/main.html" %}
 {% block subcontent %}
-  <div>These are the user management settings</div>
+  <div class="section-title">
+    <div class="section-title-left">
+      <h1>User Management</h1>
+    </div>
+  </div>
+  <div class="table-container">
+    <table class="table">
+      <tr>
+        <th>Username</th>
+        <th>Name</th>
+        <th>E-Mail</th>
+        <th>Role</th>
+        <th class="center-data">Active</th>
+      </tr>
+      {% for user in users %}
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>{{ user.full_name }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role_display }}</td>
+          <td class="center-data">
+            {% if user.is_active %}
+              <i class="bi bi-check-circle-fill true-bool"></i>
+            {% else %}
+              <i class="bi bi-x-circle-fill error false-bool"></i>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+    {% include "pagination.html" %}
+  </div>
 {% endblock subcontent %}
