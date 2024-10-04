@@ -50,14 +50,7 @@ def payments_add(request):
             return redirect("billing:payments-list")
     else:
         form = PaymentForm()
-
-        matter_ids = (
-            Invoice.objects.filter(status="SENT")
-            .select_related("matter")
-            .values_list("matter", flat=True)
-        )
-
-        matters = Matter.objects.filter(id__in=matter_ids).order_by("name")
+        matters = Matter.objects.exclude(status="Closed").order_by("name")
         form.fields["matter"].queryset = matters
 
     return render(request, "billing/payments/form.html", {"form": form})
