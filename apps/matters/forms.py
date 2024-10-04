@@ -21,6 +21,7 @@ class MatterForm(forms.ModelForm):
 
         STATUSES = (
             ("Open", "Open"),
+            ("Complete", "Complete"),
             ("Closed", "Closed"),
         )
 

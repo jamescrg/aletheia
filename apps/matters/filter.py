@@ -7,6 +7,7 @@ MATTER_STATUS_CHOICES = (
     ("Pending", "Pending"),
     ("Open", "Open"),
     ("Closed", "Closed"),
+    ("Complete", "Complete"),
 )
 
 PRACTICE_AREA_CHOICES = (

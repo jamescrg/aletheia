@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
 import apps.contacts.google as google
@@ -231,9 +230,7 @@ def delete(request, id):
 
 @login_required
 def assign(request, id):
-    matters = Matter.objects.filter(Q(status="Open") | Q(status="Pending")).order_by(
-        "name"
-    )
+    matters = Matter.objects.filter(status="Open").order_by("name")
     roles = Role.objects.all().order_by("name")
     context = {
         "app": "contacts",
