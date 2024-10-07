@@ -54,4 +54,9 @@ urlpatterns = [
         profile_urls.personal_profile,
         name="personal-profile",
     ),
+    path(
+        "settings/profile/personal/<str:form_type>/",
+        profile_urls.personal_profile,
+        name="personal-profile",
+    ),
 ]
