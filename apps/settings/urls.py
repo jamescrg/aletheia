@@ -47,6 +47,11 @@ urlpatterns = [
         user_urls.edit_user,
         name="edit-user",
     ),
+    path(
+        "settings/users/add/",
+        user_urls.add_user,
+        name="add-user",
+    ),
     # Profile
     path("settings/profile/", profile_urls.profile_index, name="profile-index"),
     path(

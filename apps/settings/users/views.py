@@ -4,7 +4,7 @@ from django.shortcuts import render
 
 from apps.accounts.models import CustomUser
 from apps.settings.users.filters import UserFilter
-from apps.settings.users.forms import UserForm
+from apps.settings.users.forms import CreateUserForm, UserForm
 from apps.settings.users.users import get_user_list
 
 
@@ -71,6 +71,25 @@ def switch_status(request, user_id):
     user.save()
 
     return HttpResponse(status=204, headers={"HX-Trigger": "userListReload"})
+
+
+@login_required
+def add_user(request):
+    if request.method == "POST":
+        form = CreateUserForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            return HttpResponse(status=204, headers={"HX-Trigger": "userListReload"})
+    else:
+        form = CreateUserForm()
+
+    context = {
+        "form": form,
+    }
+
+    return render(request, "settings/users/new-user.html", context)
 
 
 @login_required
