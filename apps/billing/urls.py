@@ -35,7 +35,7 @@ urlpatterns = [
     path("billing/invoices-edit/<int:pk>/", invoices_edit, name="invoices-edit"),
     path("billing/invoices-filter/", invoices_filter, name="invoices-filter"),
     path(
-        "billing/invoices-filter-status/",
+        "billing/invoices-filter-status/<str:status>",
         invoices_filter_status,
         name="invoices-filter-status",
     ),
