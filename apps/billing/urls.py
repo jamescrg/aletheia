@@ -1,7 +1,9 @@
 from django.urls import path
 
 from apps.billing.invoices.views import (
+    invoice_expense_entries,
     invoice_ledes_98b,
+    invoice_time_entires,
     invoices_add,
     invoices_delete,
     invoices_detail,
@@ -51,6 +53,16 @@ urlpatterns = [
         "billing/invoices-edit-status/<int:pk>/<str:status>/",
         invoices_edit_status,
         name="invoices-edit-status",
+    ),
+    path(
+        "billing/invoices-detail/<int:pk>/time-entries/",
+        invoice_time_entires,
+        name="invoice-time-entries",
+    ),
+    path(
+        "billing/invoices-detail/<int:pk>/expense-entries/",
+        invoice_expense_entries,
+        name="invoice-expense-entries",
     ),
     path("billing/payments/", payments_list, name="payments-list"),
     path("billing/payments-add/", payments_add, name="payments-add"),
