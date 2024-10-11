@@ -29,6 +29,9 @@ Profile Form
 .profile-form #id_first_name,
 .profile-form #id_last_name,
 .profile-form #id_email,
+.profile-form #id_old_password,
+.profile-form #id_new_password,
+.profile-form #id_confirm_password,
 .profile-form #id_initials {
   max-width: 300px;
   width: 100%;
@@ -41,4 +44,9 @@ Miscellaneous
 .success-msg {
   margin-top: 1rem;
   color: var(--lime-600);
+}
+
+.error-msg {
+  margin-top: 1rem;
+  color: var(--orange-800);
 }
