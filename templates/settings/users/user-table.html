@@ -4,6 +4,15 @@
     <div class="table-filter" hx-target="#users-table" hx-swap="#outerHTML">
       <button type="button"
               class="btn-icon"
+              hx-get="{% url 'settings:add-user' %}"
+              hx-target="#htmx-modal-container"
+              hx-trigger="click"
+              data-bs-toggle="modal"
+              data-bs-target="#htmx-modal-container">
+        <i class="bi bi-plus-lg"></i>
+      </button>
+      <button type="button"
+              class="btn-icon"
               hx-get="{% url 'settings:user-filter' %}"
               hx-target="#htmx-modal-container"
               hx-trigger="click"
