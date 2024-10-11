@@ -171,11 +171,12 @@ def invoices_filter(request):
 
 
 @login_required
-def invoices_filter_status(request):
+def invoices_filter_status(request, status):
     filter_data = request.session.get("invoices_filter", {})
-    status = request.POST.get("status")
     filter_data["status"] = status
+
     request.session["invoices_filter"] = filter_data
+
     return redirect("billing:invoices-list")
 
 

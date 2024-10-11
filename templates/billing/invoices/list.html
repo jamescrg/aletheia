@@ -20,16 +20,20 @@
                 hx-trigger="click"
                 data-bs-toggle="modal"
                 data-bs-target="#htmx-modal-container">Filter</button>
-        <form action="{% url 'billing:invoices-filter-status' %}" method="post">
-          {% csrf_token %}
-          <select class="select-user" name="status" onchange="this.form.submit()">
-            <option value="">All</option>
-            {% for option in status_options %}
-              <option value="{{ option.0 }}"
-                      {% if option.0 == selected_status %}selected{% endif %}>{{ option.1 }}</option>
-            {% endfor %}
-          </select>
-        </form>
+        <div class="status-buttons">
+          <a type="button"
+             class="btn-icon {% if selected_status == "DRAFT" %}toggle-active{% endif %}"
+             href="{% url 'billing:invoices-filter-status' "DRAFT" %}">Draft</a>
+          <a type="button"
+             class="btn-icon {% if selected_status == "APPROVED" %}toggle-active{% endif %}"
+             href="{% url 'billing:invoices-filter-status' "APPROVED" %}">Approved</a>
+          <a type="button"
+             class="btn-icon {% if selected_status == "SENT" %}toggle-active{% endif %}"
+             href="{% url 'billing:invoices-filter-status' "SENT" %}">Sent</a>
+          <a type="button"
+             class="btn-icon {% if selected_status == "PAID" %}toggle-active{% endif %}"
+             href="{% url 'billing:invoices-filter-status' "PAID" %}">Paid</a>
+        </div>
       </div>
     </div>
   </div>

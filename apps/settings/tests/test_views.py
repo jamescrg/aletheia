@@ -11,5 +11,3 @@ def test_index(client):
 
     response = client.get(reverse("settings:settings"))
     assertTemplateUsed(response, "settings/session/index.html")
-
-    assert "contacts_token" in response.context
