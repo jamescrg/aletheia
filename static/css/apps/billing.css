@@ -28,6 +28,14 @@ List View
   color: var(--orange-800)
 }
 
+.toggle-active {
+  font-weight: bold;
+}
+
+.status-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
 
 /* ==========================================================================
 Detail View
