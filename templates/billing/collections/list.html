@@ -1,0 +1,32 @@
+{% extends "billing/list.html" %}
+{% load humanize %}
+{% block subcontent %}
+  <div class="section-title">
+    <div class="section-title-left">
+      <h1>Collections</h1>
+    </div>
+  </div>
+  <div class="table-container">
+    <table class="table">
+      <tr>
+        <th>Matter</th>
+        <th>Billed</th>
+        <th>Paid</th>
+        <th>Owed</th>
+        <th>Unbilled</th>
+      </tr>
+      {% for matter in matters %}
+        <tr>
+          <td>
+            <a href="{% url 'matters:ledger' matter.id %}">{{ matter.name }}</a>
+          </td>
+          <td>${{ matter.value.invoices.billed|floatformat:2|intcomma }}</td>
+          <td>${{ matter.value.invoices.payment_sum|floatformat:2|intcomma }}</td>
+          <td>${{ matter.value.invoices.owed|floatformat:2|intcomma }}</td>
+          <td class="amount">${{ matter.value.unbilled.net_fees_and_expenses|floatformat:2|intcomma }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+    {% include "pagination.html" %}
+  </div>
+{% endblock subcontent %}

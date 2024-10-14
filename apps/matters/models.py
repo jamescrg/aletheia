@@ -29,6 +29,8 @@ class Matter(models.Model):
     def value(self):
         from apps.activity.expenses.models import ExpenseEntry
         from apps.activity.time.models import TimeEntry
+        from apps.billing.invoices.models import Invoice
+        from apps.billing.payments.models import Payment
 
         # total fees
         time_entries = TimeEntry.objects.filter(matter=self)
@@ -80,10 +82,29 @@ class Matter(models.Model):
         for key in total.keys():
             billed[key] = total[key] - unbilled[key]
 
+        invoices = Invoice.objects.filter(matter=self, status__in=["SENT", "PAID"])
+        billed_invoices = sum(invoice.value["final_total"] for invoice in invoices)
+
+        payment_sum = (
+            Payment.objects.filter(matter=self).aggregate(models.Sum("amount"))[
+                "amount__sum"
+            ]
+            or 0
+        )
+
+        invoice_owed = billed_invoices - payment_sum
+
+        invoices = {
+            "billed": billed_invoices,
+            "payment_sum": payment_sum,
+            "owed": invoice_owed,
+        }
+
         value = {
             "total": total,
             "unbilled": unbilled,
             "billed": billed,
+            "invoices": invoices,
         }
 
         return value
