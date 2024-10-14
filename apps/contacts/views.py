@@ -114,7 +114,9 @@ def add(request):
             # select newest contact for user
             new = Contact.objects.all().latest("id")
             request.session["selected_contact_id"] = new.id
-            request.session["contacts_selected_folder_id"] = new.folder.id
+            request.session["contacts_selected_folder_id"] = (
+                new.folder.id if new.folder else 0
+            )
 
             return redirect("/contacts")
 
