@@ -159,7 +159,7 @@ def order_by_expenses(request, order):
 
 
 @login_required
-def expenses_add(request, id=None):
+def expenses_add(request, id=None, matter_form=None):
     # if applicable, process any post data submitted by user
     if request.method == "POST":
         form = ExpenseEntryForm(request.POST)
@@ -174,6 +174,9 @@ def expenses_add(request, id=None):
             for key, val in codes.items():
                 entry.description = entry.description.replace(key, val)
             entry.save()
+
+            if matter_form:
+                return redirect("/activity/expenses")
 
             return render(
                 request,
@@ -218,7 +221,11 @@ def expenses_add(request, id=None):
         "action": "/activity/expenses/add",
         "form": form,
         "matter_list": matter_list,
+        "matter_id": id,
     }
+
+    if matter_form:
+        return render(request, "matters/activity/expense-form.html", context)
 
     return render(request, "activity/expenses/form.html", context)
 
@@ -272,7 +279,7 @@ def expenses_delete(request, id):
     entry = get_object_or_404(ExpenseEntry, pk=id)
     entry.delete()
 
-    return HttpResponse("", status=200)
+    return HttpResponse("", status=202)
 
 
 @login_required
