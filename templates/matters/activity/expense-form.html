@@ -1,0 +1,27 @@
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Add Expense Entry</h1>
+      <div>
+        <a href="#" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg"></i>
+        </a>
+      </div>
+    </div>
+    <div class="modal-body">
+      <form action="{% url 'activity:expenses-add' id=matter_id matter_form=True %}"
+            class="form-responsive expenses-form"
+            method="post"
+            role="form">
+        {% csrf_token %}
+        {{ form }}
+        <br />
+        <div class="flex-center-space">
+          <div>
+            <button type="submit" class="submit">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

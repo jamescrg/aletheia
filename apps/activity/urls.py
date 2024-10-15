@@ -31,7 +31,7 @@ app_name = "activity"
 urlpatterns = [
     path("activity/", time_list, name="time-list"),
     path("activity/time/add", time_add, name="time-add"),
-    path("activity/time/add/<int:id>", time_add, name="time-add"),
+    path("activity/time/add/<int:id>/<str:matter_form>", time_add, name="time-add"),
     path("activity/time/<int:id>/edit", time_edit, name="time-edit"),
     path("activity/time/export/<str:format>", time_export_to_csv, name="time-export"),
     path("activity/time/<int:id>/delete", time_delete, name="time-delete"),
@@ -57,7 +57,11 @@ urlpatterns = [
     ),
     path("activity/expenses", expenses_list, name="expenses-list"),
     path("activity/expenses/add", expenses_add, name="expenses-add"),
-    path("activity/expenses/add/<int:id>", expenses_add, name="expenses-add"),
+    path(
+        "activity/expenses/add/<int:id>/<str:matter_form>",
+        expenses_add,
+        name="expenses-add",
+    ),
     path("activity/expenses/<int:id>/edit", expenses_edit, name="expenses-edit"),
     path(
         "activity/expenses/export/<str:format>",
