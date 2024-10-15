@@ -192,7 +192,7 @@ def order_by_time(request, order):
 
 
 @login_required
-def time_add(request, id=None):
+def time_add(request, id=None, matter_form=None):
     # if applicable, process any post data submitted by user
     if request.method == "POST":
         form = TimeEntryForm(request.POST)
@@ -231,6 +231,10 @@ def time_add(request, id=None):
                 entry.actions = entry.actions.replace(key, val)
 
             entry.save()
+
+            if matter_form:
+                print("here 1")
+                return redirect("/activity")
 
             return render(
                 request, "activity/time/table-row.html", {"entry": entry}, status=202
@@ -291,7 +295,11 @@ def time_add(request, id=None):
         "form": form,
         "matter_list": matter_list,
         "matter_rates": matter_rates,
+        "matter_id": id,
     }
+
+    if matter_form:
+        return render(request, "matters/activity/time-form.html", context)
 
     return render(request, "activity/time/form.html", context)
 
@@ -351,7 +359,7 @@ def time_delete(request, id):
     entry = get_object_or_404(TimeEntry, pk=id)
     entry.delete()
 
-    return HttpResponse("", status=200)
+    return HttpResponse("", status=202)
 
 
 @login_required
