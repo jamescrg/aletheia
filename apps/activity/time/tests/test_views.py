@@ -57,7 +57,7 @@ def test_edit_post(client, matter, entry):
 
 def test_delete(client, entry):
     response = client.get(f"/activity/time/{entry.id}/delete")
-    assert response.status_code == 200
+    assert response.status_code == 202
     found = TimeEntry.objects.filter(pk=entry.id).exists()
     assert not found
 
