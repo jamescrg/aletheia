@@ -8,8 +8,8 @@
       <li {% if subapp == "payments" %}class="active"{% endif %}>
         <a href="{% url 'billing:payments-list' %}">Payments</a>
       </li>
-      <li {% if subapp == "collections" %}class="active"{% endif %}>
-        <a href="{% url 'billing:collections-list' %}">Collections</a>
+      <li {% if subapp == "collection" %}class="active"{% endif %}>
+        <a href="{% url 'billing:collection-list' %}">Collection</a>
       </li>
     </ul>
   </div>
