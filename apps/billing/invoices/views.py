@@ -63,6 +63,7 @@ def invoices_list(request):
 @login_required
 def invoices_detail(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
+
     context = {
         "app": "billing",
         "subapp": "preview",
@@ -70,6 +71,19 @@ def invoices_detail(request, pk):
         "invoice": invoice,
     }
     return render(request, "billing/invoices/preview/preview.html", context)
+
+
+@login_required
+def invoice_parameters(request, pk):
+    invoice = get_object_or_404(Invoice, pk=pk)
+
+    context = {
+        "app": "billing",
+        "subapp": "parameters",
+        "invoice": invoice,
+    }
+
+    return render(request, "billing/invoices/parameters.html", context)
 
 
 @login_required
@@ -154,7 +168,7 @@ def invoices_edit(request, pk):
         form = EditInvoiceForm(request.POST, instance=invoice)
         if form.is_valid():
             invoice.save()
-            return redirect("billing:invoices-detail", pk=pk)
+            return redirect("billing:invoice-time-entries", pk=pk)
     else:
         form = EditInvoiceForm(instance=invoice)
     context = {"form": form, "invoice": invoice}
