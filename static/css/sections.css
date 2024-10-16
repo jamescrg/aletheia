@@ -26,7 +26,7 @@
   border: solid 1px var(--warm-gray-200);
   border-radius: 4px;
   color: var(--lime-800);
-  padding: 4px 7px;
+  padding: 3px 7px;
 }
 
 .section-title-left {
@@ -46,7 +46,7 @@
   background-color: var(--warm-gray-150);
   border: solid 1px var(--warm-gray-200);
   color: var(--warm-gray-700);
-  padding: 6px;
+  padding: 5px;
 }
 
 .section-title-right > a,
