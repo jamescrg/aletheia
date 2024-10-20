@@ -1,10 +1,12 @@
 {% load humanize %}
 <tr id="payment-{{ payment.id }}">
-  <td class="id">
+  <td class="id">{{ payment.id }}</td>
+  <td class="date">{{ payment.date|date:"Y-m-d" }}</td>
+  <td class="matter">
     <button class="button-link"
             type="button"
             data-bs-toggle="dropdown"
-            aria-expanded="false">{{ payment.id }}</button>
+            aria-expanded="false">{{ payment.matter.name|slice:":20" }}</button>
     <ul class="dropdown-menu" aria-labelledby="paymentDropdown">
       <li>
         <a class="dropdown-item"
@@ -16,17 +18,14 @@
            data-bs-target="#htmx-modal-container">Edit</a>
       </li>
       <li>
-        <a hx-confirm="Are you sure you want to delete this payment?"
+        <a class="dropdown-item"
+           hx-confirm="Are you sure you want to delete this payment?"
            href="#!"
            hx-delete="{% url 'billing:payments-delete' payment.id %}"
            hx-swap="outerHTML"
            hx-target="#payment-{{ payment.id }}">Delete</a>
       </li>
     </ul>
-  </td>
-  <td class="date">{{ payment.date|date:"Y-m-d" }}</td>
-  <td class="matter">
-    <a href={% url 'matters:detail' id=payment.matter.id %}>{{ payment.matter.name|slice:":20" }}</a>
   </td>
   <td class="method">{{ payment.method_display }}</td>
   <td>{{ payment.detail|default:"" }}</td>
