@@ -51,7 +51,40 @@
               </td>
               <td class="intake-phone">{{ intake.phone|phone_number|default:'' }}</td>
               <td class="intake-email">{{ intake.email|default:'' }}</td>
-              <td class="intake-status">{{ intake.status }}</td>
+              <td class="intake-status">
+                <div class="dropdown">
+                  <button class="button-link"
+                          type="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false">{{ intake.status }}</button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a href="{% url 'intakes:edit-status' pk=intake.id status='Open' %}"
+                         class="dropdown-item">Open</a>
+                    </li>
+                    <li>
+                      <a href="{% url 'intakes:edit-status' pk=intake.id status='Pending' %}"
+                         class="dropdown-item">Pending</a>
+                    </li>
+                    <li>
+                      <a href="{% url 'intakes:edit-status' pk=intake.id status='Accepted' %}"
+                         class="dropdown-item">Accepted</a>
+                    </li>
+                    <li>
+                      <a href="{% url 'intakes:edit-status' pk=intake.id status='Referred Out' %}"
+                         class="dropdown-item">Referred Out</a>
+                    </li>
+                    <li>
+                      <a href="{% url 'intakes:edit-status' pk=intake.id status='Client Declined' %}"
+                         class="dropdown-item">Client Declined</a>
+                    </li>
+                    <li>
+                      <a href="{% url 'intakes:edit-status' pk=intake.id status='Unresponsive' %}"
+                         class="dropdown-item">Unresponsive</a>
+                    </li>
+                  </ul>
+                </div>
+              </td>
               <td class="intake-source">
                 {% if intake.source %}{{ intake.source|slice:':14' }}{% endif %}
               </td>

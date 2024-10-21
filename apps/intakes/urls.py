@@ -10,6 +10,7 @@ from apps.intakes.views import (
     edit,
     edit_note,
     index,
+    intake_edit_status,
     intake_filter,
     order_by,
     quick_filter_status,
@@ -34,4 +35,9 @@ urlpatterns = [
         name="quick-filter-status",
     ),
     path("intakes/order-by/<str:order>", order_by, name="order-by"),
+    path(
+        "intakes/edit-status/<int:pk>/<str:status>",
+        intake_edit_status,
+        name="edit-status",
+    ),
 ]
