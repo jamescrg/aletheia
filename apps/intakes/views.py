@@ -244,3 +244,13 @@ def delete_note(request, id):
     intake = get_object_or_404(Intake, pk=note.intake.id)
     note.delete()
     return redirect(f"/intakes/{intake.id}")
+
+
+@login_required
+def intake_edit_status(_, pk, status):
+    intake = get_object_or_404(Intake, pk=pk)
+
+    intake.status = status
+    intake.save()
+
+    return redirect("intakes:list")
