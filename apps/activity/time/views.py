@@ -244,12 +244,7 @@ def time_add(request, id=None, request_app="activity"):
             entry.save()
 
             if request_app == "activity":
-                return render(
-                    request,
-                    "activity/time/table-row.html",
-                    {"entry": entry},
-                    status=202,
-                )
+                return HttpResponse(status=204, headers={"HX-Trigger": "timeChanged"})
             elif request_app == "matters":
                 return redirect("/activity")
 
@@ -327,9 +322,7 @@ def time_edit(request, id):
             entry = form.save(commit=False)
             entry.save()
 
-            return render(
-                request, "activity/time/table-row.html", {"entry": entry}, status=202
-            )
+            return HttpResponse(status=204, headers={"HX-Trigger": "timeChanged"})
 
     else:
         # get list of matters for activity form
@@ -368,11 +361,10 @@ def time_edit(request, id):
 
 
 @login_required
-def time_delete(request, id):
-    entry = get_object_or_404(TimeEntry, pk=id)
-    entry.delete()
+def time_delete(_, id):
+    TimeEntry.objects.get(pk=id).delete()
 
-    return HttpResponse("", status=202)
+    return HttpResponse(status=204, headers={"HX-Trigger": "timeChanged"})
 
 
 @login_required
@@ -420,7 +412,6 @@ def export_old(request):
     )
 
     for entry in entries:
-
         clio_user = ""
 
         if entry.user.initials == "JC":
@@ -450,7 +441,6 @@ def export_old(request):
     entries = entries.order_by("-date", "-id")
 
     for entry in entries:
-
         clio_user = ""
 
         if entry.user.initials == "JC":
@@ -478,7 +468,6 @@ def export_old(request):
 
 @login_required
 def time_export_to_csv(request, format):
-
     # Set the file name
     current_day_and_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     filename = f"Time Entries - {current_day_and_time} - {format.title()}"
