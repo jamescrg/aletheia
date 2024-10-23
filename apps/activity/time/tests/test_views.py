@@ -16,7 +16,7 @@ def test_index(client):
     response = client.get(reverse("activity:time-list"))
     assert response.status_code == 200
 
-    assertTemplateUsed(response, "activity/list.html")
+    assertTemplateUsed(response, "activity/time/list.html")
     assert response.context["app"] == "activity"
     assert "summary" in response.context
 
@@ -30,7 +30,7 @@ def test_add_get(client):
 
 def test_add_post(client, entry_data):
     response = client.post(reverse("activity:time-add"), entry_data)
-    assert response.status_code == 202
+    assert response.status_code == 204
     found = TimeEntry.objects.filter(actions=entry_data["actions"]).first()
     assert found
 
@@ -50,21 +50,21 @@ def test_edit_post(client, matter, entry):
         "rate": 300,
     }
     response = client.post(f"/activity/time/{entry.id}/edit", data)
-    assert response.status_code == 202
+    assert response.status_code == 204
     found = TimeEntry.objects.filter(actions="new actions").exists()
     assert found
 
 
 def test_delete(client, entry):
     response = client.get(f"/activity/time/{entry.id}/delete")
-    assert response.status_code == 202
+    assert response.status_code == 204
     found = TimeEntry.objects.filter(pk=entry.id).exists()
     assert not found
 
 
 def test_filter(client):
     response = client.post("/activity/time/filter")
-    assert response.status_code == 302
+    assert response.status_code == 204
     assertTemplateUsed("activity/time-entries-filter.html")
 
 
@@ -82,14 +82,14 @@ def test_filter_update(client):
         "invoiced": "1",
     }
     response = client.post("/activity/time/filter", data)
-    assert response.status_code == 302
+    assert response.status_code == 204
     response = client.get("/activity/time/filter")
     assert response.context["form"]["entered"].value() == "0"
 
 
 def test_filter_quick(client):
     response = client.get("/activity/time/filter/quick/today")
-    assert response.status_code == 302
+    assert response.status_code == 204
     response = client.get("/activity/time/filter")
     assert client.session["time_filter"]["date_min"] == date.today().isoformat()
 
