@@ -3,8 +3,10 @@ from django.urls import path
 from apps.billing.collection.views import collection_list
 from apps.billing.invoices.views import (
     invoice_expense_entries,
+    invoice_expense_entries_index,
     invoice_ledes_98b,
     invoice_time_entires,
+    invoice_time_entires_index,
     invoices_add,
     invoices_delete,
     invoices_detail,
@@ -58,9 +60,19 @@ urlpatterns = [
         name="invoices-edit-status",
     ),
     path(
+        "billing/invoices-detail/<int:pk>/time-entries-index/",
+        invoice_time_entires_index,
+        name="invoice-time-entries-index",
+    ),
+    path(
         "billing/invoices-detail/<int:pk>/time-entries/",
         invoice_time_entires,
         name="invoice-time-entries",
+    ),
+    path(
+        "billing/invoices-detail/<int:pk>/expense-entries-index/",
+        invoice_expense_entries_index,
+        name="invoice-expense-entries-index",
     ),
     path(
         "billing/invoices-detail/<int:pk>/expense-entries/",
