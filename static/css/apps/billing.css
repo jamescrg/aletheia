@@ -30,6 +30,8 @@ List View
 
 .toggle-active {
   background: var(--selected-background) !important;
+  color: var(--selected-color) !important;
+  border: solid 1px var(--selected-border) !important;
 }
 
 .status-buttons {
