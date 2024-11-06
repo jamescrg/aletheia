@@ -20,7 +20,7 @@
             <li class="folder-item">
               <i class="bi bi-folder"></i>
               <div class="show-folder">
-                <a href="{% url 'folders:list' id=folder.id app=app %}"
+                <a href="#" hx-post="{% url 'folders:list' id=folder.id app=app %}"
                   {# agenda #}
                   {% if selected_folders and folder in selected_folders %}class="strong"{% endif %}
                   {# contacts #}
@@ -43,8 +43,9 @@
                 </li>
                 <li>
                   <a class="dropdown-item"
-                     onclick="return confirm('Are you sure you want to delete this folder?')"
-                     href="{% url 'folders:delete' id=folder.id app=app %}">Delete</a>
+                     href="#"
+                     hx-confirm='Are you sure you want to delete this folder?'
+                     hx-delete="{% url 'folders:delete' id=folder.id app=app %}">Delete</a>
                 </li>
               </ul>
             {% endif %}

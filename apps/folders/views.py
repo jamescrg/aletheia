@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 
 from apps.folders.models import Folder
 
@@ -24,7 +25,7 @@ def select(request, id, app):
 
         folder.save()
 
-    return redirect(f"/{app}")
+    return HttpResponse(status=204, headers={"HX-Trigger": "contactsChanged"})
 
 
 @login_required
@@ -34,7 +35,8 @@ def insert(request, app):
     folder.app = app
     folder.name = request.POST["name"]
     folder.save()
-    return redirect(f"/{app}")
+
+    return HttpResponse(status=204, headers={"HX-Trigger": "contactsChanged"})
 
 
 @login_required
@@ -43,7 +45,7 @@ def update(request, id, app):
     folder.name = request.POST["name"]
     folder.save()
 
-    return redirect(f"/{app}")
+    return HttpResponse(status=204, headers={"HX-Trigger": "contactsChanged"})
 
 
 @login_required
@@ -51,7 +53,7 @@ def delete(request, id, app):
     folder = get_object_or_404(Folder, pk=id)
     folder.delete()
 
-    # if deleting the selected folder, clear that from the session
     if request.session.get("contacts_selected_folder_id") == id:
         del request.session["contacts_selected_folder_id"]
-    return redirect(f"/{app}")
+
+    return HttpResponse(status=204, headers={"HX-Trigger": "contactsChanged"})

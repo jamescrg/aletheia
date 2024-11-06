@@ -1,13 +1,11 @@
 <div class="edit-folder">
   <form class="folder-form"
-        method="post"
-        action="{% url 'folders:update' id=folder.id app=app %}">
+        hx-post="{% url 'folders:update' id=folder.id app=app %}">
     {% csrf_token %}
     <label>
       <input class="form-horizontal edit-folder-input"
              type="text"
              name="name"
-             onchange="submit()"
              onblur="hideEditFolderForm()"
              value="{{ folder.name }}" />
     </label>
