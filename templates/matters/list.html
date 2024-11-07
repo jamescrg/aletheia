@@ -10,8 +10,12 @@
                   class="{% if filter_label == "custom" %}toggle-active{% endif %}"
                   data-bs-toggle="modal"
                   data-bs-target="#htmx-modal-container">Filter</button>
-          <button class="{% if filter_label == "open" %}toggle-active{% endif %}"
-                  hx-post="{% url 'matters:filter-quick' 'open' %}">Open</button>
+          <button class="{% if filter_label == "Pending" %}toggle-active{% endif %}"
+                  hx-post="{% url 'matters:filter-quick-status' 'Pending' %}">Pending</button>
+          <button class="{% if filter_label == "Open" %}toggle-active{% endif %}"
+                  hx-post="{% url 'matters:filter-quick-status' 'Open' %}">Open</button>
+          <button class="{% if filter_label == "Complete" %}toggle-active{% endif %}"
+                  hx-post="{% url 'matters:filter-quick-status' 'Complete' %}">Complete</button>
         </div>
       </div>
       <div class="section-title-right">

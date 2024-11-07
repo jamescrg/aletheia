@@ -56,11 +56,9 @@ def intake_filter(request):
 @login_required
 def quick_filter_status(request, status):
     filter_data = request.session.get("intake_filter", {})
-
     filter_data["status"] = status
     filter_data["filter_label"] = status
     request.session["intake_filter"] = filter_data
-
     return HttpResponse(status=204, headers={"HX-Trigger": "intakesChanged"})
 
 

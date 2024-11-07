@@ -21,11 +21,13 @@
                   class="{% if filter_label == "Open" %} toggle-active {% endif %}"
                   hx-post="{% url 'intakes:quick-filter-status' 'Open' %}">Open</button>
           <button href="#"
-                  class="{% if filter_label == "Pending" %} toggle-active {% endif %}"
-                  hx-post="{% url 'intakes:quick-filter-status' 'Pending' %}">Pending</button>
+                  class="{% if filter_label == "Accepted" %} toggle-active {% endif %}"
+                  hx-post="{% url 'intakes:quick-filter-status' 'Accepted' %}">Accepted</button>
         </div>
       </div>
-      <div class="section-title-right">Count: {{ number_intakes }}</div>
+      <div class="section-title-right">
+        Count: <strong>{{ number_intakes }}</strong>
+      </div>
     </div>
     <div class="table-container">
       <table class="table intake-list">
