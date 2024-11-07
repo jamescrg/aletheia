@@ -112,6 +112,15 @@ def filter_quick(request, quick_filter):
 
 
 @login_required
+def filter_quick_status(request, status):
+    filter_data = request.session.get("matter_filter", {})
+    filter_data["status"] = status
+    filter_data["filter_label"] = status
+    request.session["matter_filter"] = filter_data
+    return HttpResponse(status=204, headers={"HX-Trigger": "mattersChanged"})
+
+
+@login_required
 def order_by(request, order):
     filter_data = request.session.get("matter_filter", {})
 
