@@ -103,3 +103,20 @@ Payments
   text-align: right;
   width: 150px;
 }
+
+
+/* ==========================================================================
+Collection
+========================================================================== */
+
+.collection .numeric {
+  width: 150px;
+}
+
+.totals-table table {
+  min-width: 600px;
+}
+
+.no-borders {
+  border: none;
+}
