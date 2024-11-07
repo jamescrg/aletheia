@@ -6,7 +6,7 @@ from apps.matters.models import Matter
 
 
 @login_required
-def collection_list(request):
+def collection_index(request):
     matters = Matter.objects.filter(status__in=["Open", "Complete"])
 
     # Convert queryset to list so it's sortable by custom properties

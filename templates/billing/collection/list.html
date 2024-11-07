@@ -11,7 +11,6 @@
         <th class="numeric">Billed</th>
         <th class="numeric">Paid</th>
         <th class="numeric">Due</th>
-        <th class="numeric">Unbilled</th>
       </tr>
       {% for matter in matters %}
         <tr>
@@ -21,7 +20,6 @@
           <td class="numeric">${{ matter.value.invoices.billed|floatformat:2|intcomma }}</td>
           <td class="numeric">${{ matter.value.invoices.payment_sum|floatformat:2|intcomma }}</td>
           <td class="numeric">${{ matter.value.invoices.due|floatformat:2|intcomma }}</td>
-          <td class="numeric">${{ matter.value.unbilled.net_fees_and_expenses|floatformat:2|intcomma }}</td>
         </tr>
       {% endfor %}
     </table>
@@ -33,7 +31,6 @@
             <tr>
               <th>Total Due</th>
               <td class="numeric strong">${{ total_due|floatformat:2|intcomma }}</td>
-              <td class="numeric no-borders"></td>
             </tr>
           </table>
         </div>
