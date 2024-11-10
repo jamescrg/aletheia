@@ -16,7 +16,7 @@
     <ul class="list-group">
       {% if folders %}
         {% for folder in folders %}
-          <div id="folder-{{ folder.id }}">{% include "folders/single-folder.html" %}</div>
+          <div id="folder-{{ folder.id }}">{% include "folders/folder.html" %}</div>
         {% endfor %}
       {% endif %}
     </ul>
