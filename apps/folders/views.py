@@ -53,26 +53,29 @@ def insert(request, app, action_type=None):
 
 
 @login_required
-def update(request, id, app, action_type=None):
-    folder = get_object_or_404(Folder, pk=id)
-    folder.name = request.POST["name"]
-    folder.save()
-
-    if action_type == "db_update":
-        return redirect("contacts:add")
-
-    return render(request, "folders/single-folder.html", {"folder": folder, "app": app})
+def edit(request, folder_id):
+    folder = get_object_or_404(Folder, pk=folder_id)
+    context = {"folder": folder}
+    return render(request, "folders/edit.html", context)
 
 
 @login_required
-def delete(request, id, app, action_type=None):
+def update(request, folder_id):
+    folder = get_object_or_404(Folder, pk=folder_id)
+    folder.name = request.POST["name"]
+    folder.save()
+    context = {"app": "contacts", "folder": folder}
+    return render(request, "folders/folder.html", context)
+
+
+@login_required
+def delete(request, folder_id, app):
     folder = get_object_or_404(Folder, pk=id)
     folder.delete()
 
     if request.session.get("contacts_selected_folder_id") == id:
         del request.session["contacts_selected_folder_id"]
 
-    if action_type == "db_update":
-        return redirect("contacts:add")
-
-    return HttpResponse(status=204, headers={"HX-Trigger": "contactsChanged"})
+    folders = Folder.objects.filter(app=app).order_by("name")
+    context = {"folders": folders}
+    return render(request, "folders/list.html", context)
