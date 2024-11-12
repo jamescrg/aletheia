@@ -1,0 +1,12 @@
+<div class="add-folder">
+  <input autofocus
+         class="edit-folder-input"
+         type="text"
+         name="description"
+         hx-post="{% url 'matters:edit-description' id=matter.id %}"
+         hx-target="#matter-{{ matter.id }}"
+         hx-trigger="change, blur"
+         hx-trigger="change, blur, keyup[key=='Enter']"
+         hx-swap="outerHTML"
+         value="{{ matter.description }}" />
+</div>

@@ -21,6 +21,7 @@ from .views import (
     matter_list,
     order_by,
     print,
+    show_description,
 )
 
 app_name = "matters"
@@ -33,6 +34,11 @@ urlpatterns = [
     path("matters/add", add, name="add"),
     path("matters/<int:id>/edit", edit, name="edit"),
     path("matters/<int:id>/delete", delete, name="delete"),
+    path(
+        "matters/show-description/<int:matter_id>",
+        show_description,
+        name="show-description",
+    ),
     path(
         "matters/<int:id>/edit-description", edit_description, name="edit-description"
     ),

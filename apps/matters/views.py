@@ -222,6 +222,14 @@ def delete(request, id):
 
 
 @login_required
+def show_description(request, matter_id):
+    matter = get_object_or_404(Matter, pk=matter_id)
+    context = {"matter": matter}
+
+    return render(request, "matters/edit-status.html", context)
+
+
+@login_required
 def edit_description(request, id):
     matter = get_object_or_404(Matter, pk=id)
     matter.description = request.POST.get("description")
@@ -231,7 +239,7 @@ def edit_description(request, id):
         if request.session["matters-view"] == "detail":
             return redirect(f"/matters/{matter.id}")
         if request.session["matters-view"] == "list":
-            return redirect("/matters")
+            return HttpResponse(status=204, headers={"HX-Trigger": "mattersChanged"})
     else:
         return redirect("/matters")
 
