@@ -4,7 +4,6 @@ from itertools import chain
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
 
 from apps.activity.expenses.models import ExpenseEntry
 from apps.activity.expenses.summary import (
@@ -68,6 +67,7 @@ def invoices_list(request):
         "total": total,
         "status_options": INVOICE_STATUS,
         "selected_status": selected_status,
+        "view": "list",
     }
 
     return render(request, "billing/invoices/list.html", context)
@@ -81,9 +81,10 @@ def invoices_detail_index(request, pk):
         "app": "billing",
         "subapp": "preview",
         "invoice": invoice,
+        "view": "detail",
     }
 
-    return render(request, "billing/invoices/detail-index.html", context)
+    return render(request, "billing/invoices/detail/detail-index.html", context)
 
 
 @login_required
@@ -92,28 +93,30 @@ def invoices_detail(request, pk):
 
     context = {
         "app": "billing",
-        "subapp": "preview",
-        "file_url": reverse_lazy("billing:invoices-pdf", kwargs={"pk": invoice.pk}),
-        "invoice": invoice,
-    }
-    return render(request, "billing/invoices/preview/preview.html", context)
-
-
-@login_required
-def invoice_time_entires_index(request, pk):
-    invoice = get_object_or_404(Invoice, pk=pk)
-
-    context = {
-        "app": "billing",
         "subapp": "time",
         "invoice": invoice,
+        "view": "detail",
     }
 
     return render(request, "billing/invoices/time/index.html", context)
 
 
 @login_required
-def invoice_time_entires(request, pk):
+def invoice_time_entries_index(request, pk):
+    invoice = get_object_or_404(Invoice, pk=pk)
+
+    context = {
+        "app": "billing",
+        "subapp": "time",
+        "invoice": invoice,
+        "view": "detail",
+    }
+
+    return render(request, "billing/invoices/time/index.html", context)
+
+
+@login_required
+def invoice_time_entries(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
 
     entries = TimeEntry.objects.filter(invoice=invoice).order_by("date")
@@ -132,6 +135,7 @@ def invoice_time_entires(request, pk):
         "trigger_key": "timeChanged",
         "invoice": invoice,
         "summary": summary,
+        "view": "detail",
     }
 
     return render(request, "billing/invoices/time/list.html", context)
@@ -145,6 +149,7 @@ def invoice_expense_entries_index(request, pk):
         "app": "billing",
         "subapp": "expenses",
         "invoice": invoice,
+        "view": "detail",
     }
 
     return render(request, "billing/invoices/expenses/index.html", context)
@@ -173,6 +178,7 @@ def invoice_expense_entries(request, pk):
         "trigger_key": "expensesChanged",
         "invoice": invoice,
         "summary": summary,
+        "view": "detail",
     }
 
     return render(request, "billing/invoices/expenses/list.html", context)
@@ -320,10 +326,12 @@ def order_by_invoices(request, order):
 
 
 @login_required
-def invoices_edit_status(_, pk, status):
+def invoices_edit_status(_, pk, status, view):
     invoice = get_object_or_404(Invoice, pk=pk)
 
     invoice.status = status
     invoice.save()
 
-    return HttpResponse(status=204, headers={"HX-Trigger": "invoicesChanged"})
+    trigger = "invoicesChanged" if view == "list" else "invoiceDetailChanged"
+
+    return HttpResponse(status=204, headers={"HX-Trigger": trigger})

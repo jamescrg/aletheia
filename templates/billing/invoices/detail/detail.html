@@ -1,8 +1,6 @@
-{% extends "base.html" %}
 {% load static %}
 {% load humanize %}
 {% block head %}
-  {{ block.super }}
   <link rel="stylesheet" href="{% static 'css/apps/activity.css' %}" />
 {% endblock head %}
 {% block content %}
@@ -58,7 +56,7 @@
         </tr>
         <tr>
           <th>Status</th>
-          <td>{{ invoice.status_display }}</td>
+          <td class="status">{% include "billing/invoices/status.html" %}</td>
         </tr>
       </table>
       {% if invoice.discount %}
@@ -74,10 +72,12 @@
   <div class="subnav">
     <ul>
       <li {% if subapp == "time" %}class="active"{% endif %}>
-        <a href="{% url 'billing:invoice-time-entries-index' invoice.id %}">Time</a>
+        <a href="#"
+           hx-post="{% url 'billing:invoice-time-entries-index' invoice.id %}">Time</a>
       </li>
       <li {% if subapp == "expenses" %}class="active"{% endif %}>
-        <a href="{% url 'billing:invoice-expense-entries-index' invoice.id %}">Expenses</a>
+        <a href="#"
+           hx-post="{% url 'billing:invoice-expense-entries-index' invoice.id %}">Expenses</a>
       </li>
     </ul>
   </div>
