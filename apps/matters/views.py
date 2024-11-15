@@ -222,7 +222,14 @@ def delete(request, id):
 
 
 @login_required
-def edit_description(request, id):
+def edit_description(request, matter_id):
+    matter = get_object_or_404(Matter, pk=matter_id)
+    context = {"matter": matter}
+    return render(request, "matters/edit-description.html", context)
+
+
+@login_required
+def update_description(request, id):
     matter = get_object_or_404(Matter, pk=id)
     matter.description = request.POST.get("description")
     matter.save()
@@ -231,7 +238,7 @@ def edit_description(request, id):
         if request.session["matters-view"] == "detail":
             return redirect(f"/matters/{matter.id}")
         if request.session["matters-view"] == "list":
-            return redirect("/matters")
+            return render(request, "matters/row.html", {"matter": matter})
     else:
         return redirect("/matters")
 

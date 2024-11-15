@@ -49,11 +49,11 @@
       </table>
       <table class="invoices-detail-table">
         <tr>
-          <th>Issue Date</th>
+          <th>Issue date</th>
           <td>{{ invoice.date_issued|date:"Y-m-d" }}</td>
         </tr>
         <tr>
-          <th>Amount Due</th>
+          <th>Total amount</th>
           <td>${{ invoice.value.final_total|floatformat:2|intcomma }}</td>
         </tr>
         <tr>

@@ -33,7 +33,7 @@
             </a>
           </th>
           <th>
-            Description / Status
+            Description
             <a href="#" hx-post={% url 'matters:order-by' 'description' %}>
               <i class="bi bi-chevron-expand"></i>
             </a>
@@ -42,37 +42,7 @@
         </tr>
         {% if matters %}
           {% for matter in matters %}
-            <tr>
-              <td class="id">{{ matter.id }}</td>
-              <td class="name">
-                <a href={% url 'matters:detail' id=matter.id %}>{{ matter.name }}</a>
-              </td>
-              <td>
-                <!-- -------------------------------------------------------- -->
-                <!-- normal display, show matter link -->
-                <!-- -------------------------------------------------------- -->
-                <button class="button-link show-status-form-button"
-                        onclick="showStatusForm()">{{ matter.description }}</button>
-                <!-- -------------------------------------------------------- -->
-                <!-- edit status form -->
-                <!-- -------------------------------------------------------- -->
-                <form class="edit-status"
-                      method="post"
-                      action="{% url 'matters:edit-description' id=matter.id %}">
-                  {% csrf_token %}
-                  <label>
-                    <input type="text"
-                           class="edit-status-input"
-                           name="description"
-                           onchange="submit()"
-                           onblur="hideStatusForm()"
-                           value="{{ matter.description }}"
-                           required />
-                  </label>
-                </form>
-              </td>
-              <td class="numeric unbilled">${{ matter.value.unbilled.net_fees_and_expenses|floatformat:2|intcomma }}</td>
-            </tr>
+            {% include "matters/row.html" %}
           {% endfor %}
         {% endif %}
       </table>

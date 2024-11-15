@@ -12,11 +12,11 @@ def test_index(client, folder, contact):
     response = client.get("/contacts/")
     assert response.status_code == 200
 
-    response = client.get(reverse("contacts:contact-index"))
+    response = client.get(reverse("contacts:contacts"))
     assert response.status_code == 200
 
     # no selected folder
-    response = client.get(reverse("contacts:contact-index"))
+    response = client.get(reverse("contacts:contacts"))
     assertTemplateUsed(response, "contacts/content.html")
     assert not response.context["contacts"]
 
@@ -24,7 +24,7 @@ def test_index(client, folder, contact):
     response = client.get(reverse("contacts:select", args=[contact.id]))
     assert response.status_code == 302
 
-    response = client.get(reverse("contacts:contact-index"))
+    response = client.get(reverse("contacts:contacts"))
     assert response.context["selected_folder"] == folder
 
 
