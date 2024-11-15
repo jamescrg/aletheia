@@ -32,12 +32,17 @@ def trust_list(request):
     pending_account_balance = trust.get_pending_account_balance()
     confirmed_account_balance = trust.get_confirmed_account_balance()
 
-    pagination = CustomPaginator(contacts, per_page=50, request=request)
+    pagination = CustomPaginator(
+        contacts, per_page=50, request=request, session_key="trust_pagination"
+    )
 
     context = {
         "app": "trust",
+        "page": "summary",
         "pagination": pagination,
-        "contacts": pagination.object_list,
+        "contacts": pagination.get_object_list(),
+        "session_key": "trust_pagination",
+        "trigger_key": "trustChanged",
         "pending_account_balance": pending_account_balance,
         "confirmed_account_balance": confirmed_account_balance,
     }
@@ -49,6 +54,7 @@ def trust_list(request):
 def history_index(request, interval="30days"):
     context = {
         "app": "trust",
+        "page": "history",
         "interval": interval,
     }
 
@@ -70,6 +76,7 @@ def history(request, interval="30days"):
     context = {
         "app": "trust",
         "pagination": pagination,
+        "page": "history",
         "interval": interval,
         "pending_account_balance": pending_account_balance,
         "confirmed_account_balance": confirmed_account_balance,
@@ -86,6 +93,7 @@ def client_index(request, id):
     context = {
         "app": "trust",
         "client": client,
+        "page": "client",
     }
 
     return render(request, "trust/client-index.html", context)
@@ -103,6 +111,7 @@ def client(request, id):
     context = {
         "app": "trust",
         "client": client,
+        "page": "client",
         "pending_client_balance": pending_client_balance,
         "confirmed_client_balance": confirmed_client_balance,
         "transactions": transactions,

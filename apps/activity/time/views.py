@@ -73,7 +73,9 @@ def time_list(request):
     summary = calculate_summary(entries)
     users = CustomUser.objects.filter(is_active=True)
 
-    pagination = CustomPaginator(entries, per_page=10, request=request)
+    pagination = CustomPaginator(
+        entries, per_page=10, request=request, session_key="time_pagination"
+    )
 
     context = {
         "app": "activity",
@@ -81,10 +83,13 @@ def time_list(request):
         "edit": False,
         "objects": pagination.get_object_list(),
         "pagination": pagination,
+        "session_key": "time_pagination",
+        "trigger_key": "timeChanged",
         "number_entries": number_entries,
         "summary": summary,
         "users": users,
         "user_id": user_id,
+        "filter_label": filter_data.get("filter_label", None) if filter_data else None,
     }
 
     return render(request, "activity/time/list.html", context)
@@ -94,17 +99,18 @@ def time_list(request):
 def time_filter(request):
     def get_filter(request):
         filter_data = request.session.get("time_filter", request.POST)
-
         return TimeEntryFilter(filter_data, queryset=TimeEntry.objects.all())
 
     if request.method == "POST":
-        request.session["time_filter"] = request.POST
-
+        filter_data = {}
+        for key, val in request.POST.items():
+            filter_data[key] = val
+        filter_data["filter_label"] = "custom"
+        request.session["time_filter"] = filter_data
         return HttpResponse(status=204, headers={"HX-Trigger": "timeChanged"})
 
     else:
         filter = get_filter(request)
-
         return render(
             request,
             "activity/time/filter.html",
@@ -150,6 +156,7 @@ def time_filter_quick(request, quick_filter):
             "entered": 0,
             "invoice": 0,
             "order_by": "date",
+            "filter_label": "unbilled",
         },
         "today": {
             "date_min": date.today().strftime("%Y-%m-%d"),
@@ -161,6 +168,7 @@ def time_filter_quick(request, quick_filter):
             "entered": None,
             "invoice": None,
             "order_by": "-date",
+            "filter_label": "today",
         },
     }
 
@@ -321,7 +329,6 @@ def time_edit(request, id):
     if request.method == "POST":
         form = TimeEntryForm(request.POST, instance=entry)
         if form.is_valid():
-
             original_entry = get_object_or_404(TimeEntry, pk=id)
             entry = form.save(commit=False)
 

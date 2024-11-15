@@ -47,3 +47,13 @@ function hideAddFolderForm() {
     hide(elementId);
   }, 0);
 }
+
+function moveFocusToEnd(input) {
+  const length = input.value.length;
+
+  // Move the caret to the end of the input
+  input.setSelectionRange(length, length);
+
+  // Move the focus of the caret to the end of the input
+  input.scrollLeft = input.scrollWidth;
+}

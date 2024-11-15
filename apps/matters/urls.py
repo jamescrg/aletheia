@@ -16,10 +16,12 @@ from .views import (
     edit_description,
     filter,
     filter_quick,
+    filter_quick_status,
     matter_index,
     matter_list,
     order_by,
     print,
+    update_description,
 )
 
 app_name = "matters"
@@ -33,7 +35,14 @@ urlpatterns = [
     path("matters/<int:id>/edit", edit, name="edit"),
     path("matters/<int:id>/delete", delete, name="delete"),
     path(
-        "matters/<int:id>/edit-description", edit_description, name="edit-description"
+        "matters/edit-description/<int:matter_id>",
+        edit_description,
+        name="edit-description",
+    ),
+    path(
+        "matters/<int:id>/update-description",
+        update_description,
+        name="update-description",
     ),
     path("matters/<int:id>/print", print, name="print"),
     # Contacts
@@ -143,6 +152,11 @@ urlpatterns = [
     path("matters/filter", filter, name="filter"),
     path("matters/order-by/<str:order>", order_by, name="order-by"),
     path("matters/filter-quick/<str:quick_filter>/", filter_quick, name="filter-quick"),
+    path(
+        "matters/filter-quick-status/<str:status>",
+        filter_quick_status,
+        name="filter-quick-status",
+    ),
     # Ledger
     path("matters/<int:id>/ledger", ledger.index, name="ledger"),
     path("matters/<int:pk>/ledger/pdf/", ledger.ledger_pdf, name="ledger-pdf"),

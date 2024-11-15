@@ -56,7 +56,6 @@ def expenses_list(request):
     if filter_data:
         filter = ExpenseFilter(filter_data)
         expenses = filter.qs
-
         user_id = filter_data.get("user")
         user_id = int(user_id) if user_id not in (None, "") else None
     else:
@@ -70,7 +69,9 @@ def expenses_list(request):
     summary = calculate_summary(expenses)
     users = CustomUser.objects.filter(is_active=True)
 
-    pagination = CustomPaginator(expenses, per_page=10, request=request)
+    pagination = CustomPaginator(
+        expenses, per_page=10, request=request, session_key="expenses_pagination"
+    )
 
     context = {
         "app": "activity",
@@ -78,10 +79,13 @@ def expenses_list(request):
         "edit": False,
         "objects": pagination.get_object_list(),
         "pagination": pagination,
+        "session_key": "expenses_pagination",
+        "trigger_key": "expensesChanged",
         "number_expenses": number_expenses,
         "summary": summary,
         "users": users,
         "user_id": user_id,
+        "filter_label": filter_data.get("filter_label", None),
     }
 
     return render(request, "activity/expenses/list.html", context)
@@ -95,12 +99,15 @@ def expenses_filter(request):
         return ExpenseFilter(filter_data, queryset=ExpenseEntry.objects.all())
 
     if request.method == "POST":
-        request.session["expenses_filter"] = request.POST
-
+        filter_data = {}
+        for key, val in request.POST.items():
+            filter_data[key] = val
+        filter_data["filter_label"] = "custom"
+        request.session["expenses_filter"] = filter_data
         return HttpResponse(status=204, headers={"HX-Trigger": "expensesChanged"})
+
     else:
         filter = get_filter(request)
-
         return render(request, "activity/expenses/filter.html", {"filter": filter})
 
 
@@ -116,6 +123,7 @@ def expenses_filter_quick(request, quick_filter):
             "comp": None,
             "entered": 0,
             "invoice": 0,
+            "filter_label": "unbilled",
         },
         "today": {
             "date_min": date.today().strftime("%Y-%m-%d"),
@@ -126,6 +134,7 @@ def expenses_filter_quick(request, quick_filter):
             "comp": None,
             "entered": None,
             "invoice": None,
+            "filter_label": "today",
         },
     }
 
@@ -245,7 +254,6 @@ def expenses_edit(request, id):
     if request.method == "POST":
         form = ExpenseEntryForm(request.POST, instance=entry)
         if form.is_valid():
-
             original_entry = get_object_or_404(ExpenseEntry, pk=id)
             entry = form.save(commit=False)
 

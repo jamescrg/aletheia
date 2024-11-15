@@ -49,7 +49,9 @@ def matter_list(request):
     request.session["matter_filter"] = filter.data
     request.session.modified = True
 
-    pagination = CustomPaginator(matters, per_page=20, request=request)
+    pagination = CustomPaginator(
+        matters, per_page=20, request=request, session_key="matter_pagination"
+    )
 
     total_unbilled = 0
     for matter in matters:
@@ -58,10 +60,13 @@ def matter_list(request):
     context = {
         "app": "matters",
         "pagination": pagination,
+        "session_key": "matter_pagination",
+        "trigger_key": "mattersChanged",
         "edit": False,
         "matters": pagination.get_object_list(),
         "number_matters": matters.count(),
         "total_unbilled": total_unbilled,
+        "filter_label": filter_data.get("filter_label", None) if filter_data else None,
     }
 
     return render(request, "matters/list.html", context)
@@ -75,12 +80,15 @@ def filter(request):
         return MatterFilter(filter_data, queryset=Matter.objects.all())
 
     if request.method == "POST":
-        request.session["matter_filter"] = request.POST
-
+        filter_data = {}
+        for key, val in request.POST.items():
+            filter_data[key] = val
+        filter_data["filter_label"] = "custom"
+        request.session["matter_filter"] = filter_data
         return HttpResponse(status=204, headers={"HX-Trigger": "mattersChanged"})
+
     else:
         filter = get_filter(request)
-
         return render(request, "matters/filter.html", {"filter": filter})
 
 
@@ -93,6 +101,7 @@ def filter_quick(request, quick_filter):
             "date_start": "",
             "date_end": "",
             "order_by": "name",
+            "filter_label": "open",
         },
     }
 
@@ -103,6 +112,15 @@ def filter_quick(request, quick_filter):
     request.session["matter_filter"] = filter_data
     request.session.modified = True
 
+    return HttpResponse(status=204, headers={"HX-Trigger": "mattersChanged"})
+
+
+@login_required
+def filter_quick_status(request, status):
+    filter_data = request.session.get("matter_filter", {})
+    filter_data["status"] = status
+    filter_data["filter_label"] = status
+    request.session["matter_filter"] = filter_data
     return HttpResponse(status=204, headers={"HX-Trigger": "mattersChanged"})
 
 
@@ -204,7 +222,14 @@ def delete(request, id):
 
 
 @login_required
-def edit_description(request, id):
+def edit_description(request, matter_id):
+    matter = get_object_or_404(Matter, pk=matter_id)
+    context = {"matter": matter}
+    return render(request, "matters/edit-description.html", context)
+
+
+@login_required
+def update_description(request, id):
     matter = get_object_or_404(Matter, pk=id)
     matter.description = request.POST.get("description")
     matter.save()
@@ -213,7 +238,7 @@ def edit_description(request, id):
         if request.session["matters-view"] == "detail":
             return redirect(f"/matters/{matter.id}")
         if request.session["matters-view"] == "list":
-            return redirect("/matters")
+            return render(request, "matters/row.html", {"matter": matter})
     else:
         return redirect("/matters")
 

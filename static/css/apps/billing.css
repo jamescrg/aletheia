@@ -28,12 +28,6 @@ List View
   color: var(--orange-800)
 }
 
-.toggle-active {
-  background: var(--selected-background) !important;
-  color: var(--selected-color) !important;
-  border: solid 1px var(--selected-border) !important;
-}
-
 .status-buttons {
   display: flex;
   gap: 0.85rem;
@@ -107,5 +101,14 @@ Payments
 
 .payments .amount {
   text-align: right;
+  width: 150px;
+}
+
+
+/* ==========================================================================
+Collection
+========================================================================== */
+
+.collection .numeric {
   width: 150px;
 }

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from apps.billing.collection.views import collection_list
+from apps.billing.collection.views import collection_index, collection_list
 from apps.billing.invoices.views import (
     invoice_expense_entries,
     invoice_expense_entries_index,
@@ -32,6 +32,9 @@ from apps.billing.payments.views import (
 app_name = "billing"
 
 urlpatterns = [
+    # Collection
+    path("billing/collection/", collection_index, name="collection-index"),
+    path("billing/collection/list/", collection_list, name="collection-list"),
     # Invoices
     path("billing/", invoices_index, name="invoices-index"),
     path("billing/list/", invoices_list, name="invoices-list"),
@@ -93,6 +96,4 @@ urlpatterns = [
         order_by_payments,
         name="payments-order-by",
     ),
-    # Collection
-    path("billing/collection/", collection_list, name="collection-list"),
 ]
