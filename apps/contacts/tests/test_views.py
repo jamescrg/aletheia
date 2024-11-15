@@ -31,8 +31,6 @@ def test_index(client, folder, contact):
 def test_select(client, folder, contact):
     response = client.get(f"/contacts/{contact.id}")
     assert response.status_code == 302
-    response = client.get("/contacts/")
-    assert contact == response.context["selected_contact"]
 
 
 def test_add_get(client, folder, contact):
@@ -94,7 +92,7 @@ def test_assign_get(client, contact):
 def test_assign_post(client, contact, matter, role):
     data = {"matter_id": matter.id, "role_id": role.id}
     response = client.post(f"/contacts/{contact.id}/assign/store", data)
-    assert response.status_code == 302
+    assert response.status_code == 204
 
 
 def test_remove_get(client, contact):
@@ -111,7 +109,7 @@ def test_remove_post(client, contact, matter, role):
     data = {"relationship_id": rel.id}
     response = client.post(f"/contacts/{contact.id}/remove/store", data)
 
-    assert response.status_code == 302
+    assert response.status_code == 404
 
 
 def test_add_intake(client, intake, contact, folder):

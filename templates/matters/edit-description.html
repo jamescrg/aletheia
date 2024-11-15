@@ -1,0 +1,12 @@
+<div>
+  <input autofocus
+         class="edit-matter-description-input"
+         type="text"
+         name="description"
+         hx-post="{% url 'matters:update-description' id=matter.id %}"
+         hx-target="#matter-{{ matter.id }}"
+         hx-trigger="change, blur, keyup[key=='Enter']"
+         onfocus="moveFocusToEnd(this)"
+         hx-swap="outerHTML"
+         value="{{ matter.description }}" />
+</div>

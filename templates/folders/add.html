@@ -1,18 +1,13 @@
-<li id="add-folder-item" class="list-group-item">
-  <i class="bi bi-folder"></i>
-  <div class="edit-folder">
-    <form class="folder-form"
-          action="{% url 'folders:insert' app %}"
-          method="post">
-      {% csrf_token %}
-      <label class="hidden" for="add-folder-input"></label>
-      <input id="add-folder-input"
-             class="form-horizontal"
-             type="text"
-             name="name"
-             onchange="submit()"
-             onblur="hideAddFolderForm()"
-             value="" />
-    </form>
+<li class="folder-item-container list-group-item add-folder">
+  <div class="show-folder">
+    <i class="bi bi-folder"></i>
+    <input autofocus
+           class="edit-folder-input"
+           type="text"
+           name="name"
+           hx-post="{% url 'folders:insert' %}"
+           hx-target="#folders"
+           hx-trigger="change, blur, keyup[key=='Enter']"
+           hx-swap="innerHTML" />
   </div>
 </li>
