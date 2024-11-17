@@ -90,6 +90,8 @@ def order_by(request, order):
 
 @login_required
 def detail_index(request, id):
+    request.session["intakes-view"] = "detail"
+
     intake = get_object_or_404(Intake, pk=id)
 
     context = {
@@ -264,10 +266,14 @@ def delete_note(_, id):
 
 
 @login_required
-def intake_edit_status(_, pk, status):
+def intake_edit_status(request, pk, status):
+    view = request.session.get("intakes-view", "list")
     intake = get_object_or_404(Intake, pk=pk)
 
     intake.status = status
     intake.save()
 
-    return redirect("intakes:list")
+    if view == "detail":
+        return HttpResponse(status=204, headers={"HX-Trigger": "intakeDetailChanged"})
+    else:
+        return HttpResponse(status=204, headers={"HX-Trigger": "intakesChanged"})
