@@ -12,11 +12,11 @@ def test_index(client, folder, contact):
     response = client.get("/contacts/")
     assert response.status_code == 200
 
-    response = client.get(reverse("contacts:contacts"))
+    response = client.get(reverse("contacts:contact-index"))
     assert response.status_code == 200
 
     # no selected folder
-    response = client.get(reverse("contacts:contacts"))
+    response = client.get(reverse("contacts:contact-index"))
     assertTemplateUsed(response, "contacts/content.html")
     assert not response.context["contacts"]
 
@@ -24,7 +24,7 @@ def test_index(client, folder, contact):
     response = client.get(reverse("contacts:select", args=[contact.id]))
     assert response.status_code == 302
 
-    response = client.get(reverse("contacts:contacts"))
+    response = client.get(reverse("contacts:contact-index"))
     assert response.context["selected_folder"] == folder
 
 
@@ -92,7 +92,7 @@ def test_assign_get(client, contact):
 def test_assign_post(client, contact, matter, role):
     data = {"matter_id": matter.id, "role_id": role.id}
     response = client.post(f"/contacts/{contact.id}/assign/store", data)
-    assert response.status_code == 302
+    assert response.status_code == 204
 
 
 def test_remove_get(client, contact):
