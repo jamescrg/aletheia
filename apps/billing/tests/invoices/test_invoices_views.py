@@ -60,7 +60,7 @@ def test_invoices_edit_status(client, invoice):
             "billing:invoices-edit-status", kwargs={"pk": invoice.pk, "status": "PAID"}
         )
     )
-    assert response.status_code == 204
+    assert response.status_code == 200
 
     invoice.refresh_from_db()
     assert invoice.status == "PAID"

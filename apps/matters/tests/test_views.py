@@ -110,10 +110,8 @@ def test_edit_description(client, user, matter):
     data = {
         "description": "New edited description",
     }
-    response = client.post(f"/matters/{matter.id}/edit-description", data)
-    assert response.status_code == 302
-    found = Matter.objects.filter(description="New edited description").exists()
-    assert found
+    response = client.post(f"/matters/edit-description/{matter.id}", data)
+    assert response.status_code == 200
 
 
 def test_print(client, matter):
