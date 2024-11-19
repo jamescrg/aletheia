@@ -259,7 +259,7 @@ def expenses_delete(request, id):
     entry = get_object_or_404(ExpenseEntry, pk=id)
     entry.delete()
 
-    return HttpResponse("", status=202)
+    return HttpResponse(status=204, headers={"HX-Trigger": "expensesChanged"})
 
 
 @login_required
