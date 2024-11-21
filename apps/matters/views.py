@@ -45,7 +45,6 @@ def matter_list(request):
 def filter(request):
     def get_filter(request):
         filter_data = request.session.get("matter_filter", request.POST)
-
         return MatterFilter(filter_data, queryset=Matter.objects.all())
 
     if request.method == "POST":

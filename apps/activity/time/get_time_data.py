@@ -21,7 +21,7 @@ def get_time_data(request):
         "order_by": "date",
     }
 
-    filter_data = request.session.get("time_filter", None)
+    filter_data = request.session.get("time_filter", {})
 
     if filter_data:
         filter = TimeEntryFilter(filter_data)

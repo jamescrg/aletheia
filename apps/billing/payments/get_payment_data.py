@@ -4,7 +4,7 @@ from apps.management.pagination import CustomPaginator
 
 
 def get_payment_data(request):
-    filter_data = request.session.get("payments_filter", None)
+    filter_data = request.session.get("payments_filter", {})
 
     if filter_data:
         filter = PaymentFilter(filter_data)

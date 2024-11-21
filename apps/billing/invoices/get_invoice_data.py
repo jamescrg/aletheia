@@ -4,7 +4,7 @@ from apps.management.pagination import CustomPaginator
 
 
 def get_invoice_data(request):
-    filter_data = request.session.get("invoices_filter", None)
+    filter_data = request.session.get("invoices_filter", {})
 
     if filter_data:
         filter = InvoiceFilter(filter_data)

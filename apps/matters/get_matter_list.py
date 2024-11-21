@@ -13,7 +13,7 @@ def get_matter_list(request):
         "order_by": "name",
     }
 
-    filter_data = request.session.get("matter_filter", None)
+    filter_data = request.session.get("matter_filter", {})
 
     if filter_data:
         filter = MatterFilter(filter_data)

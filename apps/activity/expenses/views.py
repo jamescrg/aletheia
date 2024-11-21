@@ -287,7 +287,7 @@ def expenses_export_to_csv(request, format):
 
     # get the time expenses per the user filter
     expenses = ExpenseEntry.objects.all()
-    filter_data = request.session.get("expenses_filter", None)
+    filter_data = request.session.get("expenses_filter", {})
     if filter_data:
         filter = ExpenseFilter(filter_data)
         expenses = filter.qs

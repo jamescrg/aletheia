@@ -20,7 +20,7 @@ def get_expenses_data(request):
         "invoice": 0,
     }
 
-    filter_data = request.session.get("expenses_filter", None)
+    filter_data = request.session.get("expenses_filter", {})
 
     if filter_data:
         filter = ExpenseFilter(filter_data)

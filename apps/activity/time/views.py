@@ -458,7 +458,7 @@ def time_export_to_csv(request, format):
 
     # get the time entries per the user filter
     entries = TimeEntry.objects.all()
-    filter_data = request.session.get("time_filter", None)
+    filter_data = request.session.get("time_filter", {})
     if filter_data:
         filter = TimeEntryFilter(filter_data)
         entries = filter.qs
