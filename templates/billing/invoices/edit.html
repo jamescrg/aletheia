@@ -12,8 +12,8 @@
       <h2>{{ invoice.matter }}</h2>
       <br />
       <form class="form-responsive invoices-add"
-            method="post"
-            action="{% url 'billing:invoices-edit' invoice.id %}">
+            hx-target="#htmx-modal-container"
+            hx-post="{% url 'billing:invoices-edit' invoice.id %}">
         {% csrf_token %}
         {{ form }}
         <br />
