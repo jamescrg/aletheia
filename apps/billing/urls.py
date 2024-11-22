@@ -5,11 +5,12 @@ from apps.billing.invoices.views import (
     invoice_expense_entries,
     invoice_expense_entries_index,
     invoice_ledes_98b,
-    invoice_time_entires,
-    invoice_time_entires_index,
+    invoice_time_entries,
+    invoice_time_entries_index,
     invoices_add,
     invoices_delete,
     invoices_detail,
+    invoices_detail_index,
     invoices_edit,
     invoices_edit_status,
     invoices_filter,
@@ -41,7 +42,12 @@ urlpatterns = [
     path("billing/", invoices_index, name="invoices-index"),
     path("billing/list/", invoices_list, name="invoices-list"),
     path(
-        "billing/invoices-detail/<int:pk>/preview/",
+        "billing/invoices-detail/<int:pk>/",
+        invoices_detail_index,
+        name="invoices-detail-index",
+    ),
+    path(
+        "billing/invoices-detail/<int:pk>/detail/",
         invoices_detail,
         name="invoices-detail",
     ),
@@ -62,7 +68,7 @@ urlpatterns = [
     path("billing/invoices-pdf/<int:pk>/", invoices_pdf, name="invoices-pdf"),
     path("billing/invoice-ledes/<int:pk>/", invoice_ledes_98b, name="invoice-ledes"),
     path(
-        "billing/invoices-edit-status/<int:pk>/<str:status>/",
+        "billing/invoices-edit-status/<int:pk>/<str:status>/<str:view>/",
         invoices_edit_status,
         name="invoices-edit-status",
     ),
@@ -78,12 +84,12 @@ urlpatterns = [
     ),
     path(
         "billing/invoices-detail/<int:pk>/time-entries-index/",
-        invoice_time_entires_index,
+        invoice_time_entries_index,
         name="invoice-time-entries-index",
     ),
     path(
         "billing/invoices-detail/<int:pk>/time-entries/",
-        invoice_time_entires,
+        invoice_time_entries,
         name="invoice-time-entries",
     ),
     path(
