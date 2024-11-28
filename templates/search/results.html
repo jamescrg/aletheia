@@ -25,7 +25,7 @@
           {% for proceeding in proceedings %}
             <tr>
               <td>
-                <a href={% url 'matters:proceedings' id=proceeding.matter.id %}>{{ proceeding.matter.name }}</a>
+                <a href={% url 'matters:proceedings-index' id=proceeding.matter.id %}>{{ proceeding.matter.name }}</a>
               </td>
               <td>{{ proceeding.case_number }}</td>
               <td class="matter-status">{{ proceeding.status }}</td>
@@ -68,7 +68,7 @@
           {% for intake in intakes %}
             <tr>
               <td class="intake-name">
-                <a href={% url 'intakes:detail' id=intake.id %}>{{ intake.name }}</a>
+                <a href={% url 'intakes:detail-index' id=intake.id %}>{{ intake.name }}</a>
               </td>
               <td class="intake-phone">{{ intake.phone }}</td>
               <td class="intake-email">{{ intake.email }}</td>
