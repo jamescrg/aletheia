@@ -24,14 +24,14 @@ def results(request):
 
     if text:
         matters = Matter.objects.filter(
-            Q(name__contains=text)
+            Q(name__icontains=text)
             | Q(description__icontains=text)
             | Q(client_reference_id=text)
             | Q(practice_area__icontains=text)
         ).order_by("name")
 
         contacts = Contact.objects.filter(
-            Q(name__contains=text)
+            Q(name__icontains=text)
             | Q(company__icontains=text)
             | Q(address__icontains=text)
             | Q(phone1__icontains=text)
@@ -47,7 +47,9 @@ def results(request):
         )
 
         intakes = Intake.objects.filter(
-            Q(name__contains=text) | Q(phone__icontains=text) | Q(email__icontains=text)
+            Q(name__icontains=text)
+            | Q(phone__icontains=text)
+            | Q(email__icontains=text)
         ).order_by("name")
 
     else:
