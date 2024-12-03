@@ -5,7 +5,7 @@ from apps.management.pagination import CustomPaginator
 def get_table_data(request):
     table_data = {}
 
-    default_filter = {"status": "Open"}
+    default_filter = {"status": "Open", "order_by": "-date"}
 
     filter_data = request.session.get("intake_filter", {})
 
