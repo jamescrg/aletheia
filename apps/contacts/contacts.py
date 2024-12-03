@@ -4,11 +4,10 @@ from django.shortcuts import get_object_or_404
 import apps.contacts.google as google
 from apps.contacts.models import Contact
 from apps.folders.models import Folder
-from apps.matters.models import Relationship
+from apps.matters.models import Matter, Relationship
 
 
 def get_list_data(request):
-
     folders = Folder.objects.filter(app="contacts").order_by("name")
     folders = list(folders)
     folders.append({"id": 0, "name": "Unsorted"})
@@ -36,6 +35,15 @@ def get_list_data(request):
         relationships = Relationship.objects.filter(contact=selected_contact).order_by(
             "-matter__status", "matter__name"
         )
+
+        # For each matter this contact is related to, add a static relationship object
+        related_matters = Matter.objects.filter(client=selected_contact)
+
+        for matter in related_matters:
+            relationship = Relationship(contact=selected_contact, matter=matter)
+
+            relationships = list(relationships)
+            relationships.append(relationship)
 
     else:
         selected_contact = None
