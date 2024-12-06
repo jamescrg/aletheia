@@ -57,7 +57,7 @@
   <div class="contact-item"></div>
   {% if selected_contact.intake %}
     <div class="contact-item">
-      <a href={% url 'intakes:detail' id=selected_contact.intake.id %}>View Intake</a>
+      <a href={% url 'intakes:detail-index' id=selected_contact.intake.id %}>View Intake</a>
     </div>
   {% endif %}
   <div class="contacts-assignment">
