@@ -23,6 +23,7 @@
     </div>
     <table class="trust-summary">
       <tr>
+        <th class="id">Client ID</th>
         <th>Client</th>
         <th class="numeric">Pending Balance</th>
         <th class="numeric">Confirmed Balance</th>
@@ -30,6 +31,7 @@
       {% if contacts %}
         {% for contact in contacts %}
           <tr>
+            <td class="id">{{ contact.id }}</td>
             <td class="name">
               <a href={% url 'trust:client-index' id=contact.id %}>{{ contact.name }}</a>
             </td>
