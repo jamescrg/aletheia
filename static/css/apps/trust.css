@@ -77,6 +77,14 @@ Summary and History
   width: 45px;
 }
 
+.trust-summary .id {
+  width: 80px;
+}
+
+.table-container .id {
+  width: 100px;
+}
+
 /* ==========================================================================
 Trust Transaction Form
 ========================================================================== */
