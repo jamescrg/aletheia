@@ -74,7 +74,7 @@ def ledger_pdf(request, pk):
     with open(file.name, "rb") as pdf:
         response = HttpResponse(pdf.read(), content_type="application/pdf")
         filename = f'filename="Ledger - {matter.name} - {current_date}.pdf"'
-        response["Content-Disposition"] = filename
+        response["Content-Disposition"] = f"attachment; {filename}"
 
     os.unlink(file.name)
 

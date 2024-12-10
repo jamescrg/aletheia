@@ -18,6 +18,7 @@ from apps.billing.invoices.views import (
     invoices_index,
     invoices_list,
     invoices_pdf,
+    invoices_pdf_download,
     order_by_invoices,
     pdf_preview,
     pdf_preview_index,
@@ -67,6 +68,11 @@ urlpatterns = [
     ),
     path("billing/invoices-delete/<int:pk>/", invoices_delete, name="invoices-delete"),
     path("billing/invoices-pdf/<int:pk>/", invoices_pdf, name="invoices-pdf"),
+    path(
+        "billing/invoices-pdf-download/<int:pk>/",
+        invoices_pdf_download,
+        name="invoices-pdf-download",
+    ),
     path("billing/invoice-ledes/<int:pk>/", invoice_ledes_98b, name="invoice-ledes"),
     path(
         "billing/invoices-edit-status/<int:pk>/<str:status>/<str:view>/",

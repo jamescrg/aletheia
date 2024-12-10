@@ -336,12 +336,31 @@ def invoices_delete(request, pk):
 def invoices_pdf(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
     file = generate_invoice(invoice, request)
+
     notation = "DRAFT - " if invoice.status == "DRAFT" else ""
 
     with open(file.name, "rb") as pdf:
         response = HttpResponse(pdf.read(), content_type="application/pdf")
         filename = f'filename="{notation}Invoice {invoice.id} - {invoice.matter} - {invoice.date_issued}.pdf"'
         response["Content-Disposition"] = filename
+
+    os.unlink(file.name)
+
+    return response
+
+
+@login_required
+def invoices_pdf_download(request, pk):
+    invoice = get_object_or_404(Invoice, pk=pk)
+    file = generate_invoice(invoice, request)
+
+    notation = "DRAFT - " if invoice.status == "DRAFT" else ""
+
+    with open(file.name, "rb") as pdf:
+        response = HttpResponse(pdf.read(), content_type="application/pdf")
+        filename = f'filename="{notation}Invoice {invoice.id} - {invoice.matter} - {invoice.date_issued}.pdf"'
+        response["Content-Disposition"] = f"attachment; {filename}"
+
     os.unlink(file.name)
 
     return response
