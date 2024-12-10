@@ -31,7 +31,7 @@
       <table class="trust-transactions">
         {% if transactions %}
           <tr>
-            <th class="id">Client ID</th>
+            <th class="client-id">Client ID</th>
             <th>Date</th>
             <th>Client</th>
             <th>Description</th>
@@ -41,7 +41,7 @@
           </tr>
           {% for transaction in transactions %}
             <tr>
-              <td class="id">{{ transaction.contact_id }}</td>
+              <td class="client-id">{{ transaction.contact_id }}</td>
               <td class="date">{{ transaction.date|date:'Y-m-d' }}</td>
               <td class="client">
                 <a href={% url 'trust:client-index' id=transaction.contact_id %}>{{ transaction.contact.name }}</a>

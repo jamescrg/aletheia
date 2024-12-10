@@ -55,6 +55,11 @@ Summary and History
   vertical-align: top;
 }
 
+.trust-transactions .client-id,
+.trust-summary .client-id {
+  width: 100px;
+}
+
 .trust-transactions .date {
   width: 120px;
 }
@@ -75,10 +80,6 @@ Summary and History
 .trust-transactions .check {
   text-align: center;
   width: 45px;
-}
-
-.trust-summary .id {
-  width: 80px;
 }
 
 .table-container .id {
