@@ -1,5 +1,4 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 import apps.contacts.google as google
@@ -209,7 +208,7 @@ def assign_store(request, id):
     )
     relationship.save()
 
-    return HttpResponse(status=204, headers={"HX-Trigger": "contactsChanged"})
+    return redirect("/contacts")
 
 
 @login_required
@@ -218,13 +217,11 @@ def remove(request, id):
     relationships = Relationship.objects.filter(contact=contact).order_by(
         "matter__name"
     )
-
     context = {
         "app": "contacts",
         "action": "/contacts/remove/store",
         "relationships": relationships,
     }
-
     return render(request, "contacts/remove.html", context)
 
 
@@ -232,8 +229,7 @@ def remove(request, id):
 def remove_store(request):
     relationship = get_object_or_404(Relationship, pk=request.POST["relationship_id"])
     relationship.delete()
-
-    return HttpResponse(status=204, headers={"HX-Trigger": "contactsChanged"})
+    return redirect("/contacts")
 
 
 @login_required
