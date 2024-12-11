@@ -242,6 +242,9 @@ def quick_invoice_payment(request, pk, payment_type):
         },
     )
 
+    if payment_type == "trust":
+        form.fields["payment_method"].initial = "TRUST"
+
     if request.method == "POST" and form.is_valid():
         payment = form.save()
 
