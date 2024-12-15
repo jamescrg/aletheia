@@ -1,6 +1,15 @@
 from django.urls import path
 
 from apps.billing.collection.views import collection_index, collection_list
+from apps.billing.credits.views import (
+    credits_add,
+    credits_delete,
+    credits_edit,
+    credits_filter,
+    credits_index,
+    credits_list,
+    order_by_credits,
+)
 from apps.billing.invoices.views import (
     invoice_expense_entries,
     invoice_expense_entries_index,
@@ -126,4 +135,16 @@ urlpatterns = [
         order_by_payments,
         name="payments-order-by",
     ),
+    # Credits
+    path("billing/credits/", credits_index, name="credits-index"),
+    path("billing/credits/list/", credits_list, name="credits-list"),
+    path("billing/credits-add/", credits_add, name="credits-add"),
+    path("billing/credits-edit/<int:pk>/", credits_edit, name="credits-edit"),
+    path("billing/credits-delete/<int:pk>/", credits_delete, name="credits-delete"),
+    path(
+        "billing/order-by-credits/<str:order>",
+        order_by_credits,
+        name="order-by-credits",
+    ),
+    path("billing/credits-filter/", credits_filter, name="credits-filter"),
 ]

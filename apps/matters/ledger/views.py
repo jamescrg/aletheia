@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
+from apps.billing.credits.models import Credit
 from apps.billing.invoices.models import Invoice
 from apps.billing.payments.models import Payment
 from apps.matters.ledger.generate_ledger import generate_ledger
@@ -23,6 +24,7 @@ def index(request, id):
 
     invoices = Invoice.objects.filter(matter=matter).order_by("date_issued") or None
     payments = Payment.objects.filter(matter=matter).order_by("date") or None
+    credits = Credit.objects.filter(matter=matter).order_by("date") or None
 
     if invoices:
         for invoice in invoices:
@@ -47,6 +49,18 @@ def index(request, id):
             }
             transactions.append(payment_dict)
             balance_due += payment.amount
+
+    if credits:
+        for credit in credits:
+            credit_dict = {
+                "id": credit.id,
+                "date": credit.date,
+                "transaction_type": "Credit",
+                "description": f"Credit {credit.id}",
+                "amount": credit.amount,
+            }
+            transactions.append(credit_dict)
+            balance_due += credit.amount
 
     if transactions:
         transactions = sorted(transactions, key=itemgetter("transaction_type"))

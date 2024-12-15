@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from apps.billing.credits.models import Credit
 from apps.billing.invoices.models import Invoice
 from apps.billing.payments.models import Payment
 
@@ -32,5 +33,12 @@ class PaymentAdmin(admin.ModelAdmin):
     search_fields = ["matter__name", "detail"]
 
 
+class CreditsAdmin(admin.ModelAdmin):
+    list_display = ["id", "matter", "date", "detail", "amount"]
+    list_filter = ["matter"]
+    search_fields = ["matter__name", "detail"]
+
+
 admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(Payment, PaymentAdmin)
+admin.site.register(Credit, CreditsAdmin)
