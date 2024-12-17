@@ -3,7 +3,7 @@ from apps.matters.models import Relationship
 
 def load_contacts(matter):
     relationship_groups = {
-        "Client": Relationship.objects.filter(
+        "Client - Other": Relationship.objects.filter(
             matter=matter, role__name__icontains="Client"
         ),
         "Adversary": Relationship.objects.filter(
