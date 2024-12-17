@@ -5,6 +5,7 @@ import apps.contacts.google as google
 from apps.contacts.models import Contact
 from apps.folders.models import Folder
 from apps.matters.models import Matter, Relationship
+from apps.trust.models import Transaction
 
 
 def get_list_data(request):
@@ -54,6 +55,11 @@ def get_list_data(request):
     else:
         google_logged_in = False
 
+    trust = False
+    if selected_contact:
+        if Transaction.objects.filter(contact=selected_contact).exists():
+            trust = True
+
     context = {
         "app": "contacts",
         "edit": False,
@@ -63,6 +69,7 @@ def get_list_data(request):
         "selected_contact": selected_contact,
         "google_logged_in": google_logged_in,
         "relationships": relationships,
+        "trust": trust,
     }
 
     return context
