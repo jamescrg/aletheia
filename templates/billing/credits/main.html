@@ -1,0 +1,8 @@
+{% extends "billing/list.html" %}
+{% block subcontent %}
+  {% load humanize %}
+  <div id="credits"
+       hx-trigger="creditsChanged from:body"
+       hx-get="{% url 'billing:credits-list' %}"
+       hx-target="this">{% include "billing/credits/list.html" %}</div>
+{% endblock subcontent %}
