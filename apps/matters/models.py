@@ -25,6 +25,15 @@ class Matter(models.Model):
     class Meta:
         db_table = "app_matter"
 
+    def save(self, *args, **kwargs):
+        # Mark all proceedings as concluded when matter is closed
+        if self.status == "Closed":
+            from apps.matters.proceedings.models import Proceeding
+
+            Proceeding.objects.filter(matter=self).update(status="Concluded")
+
+        super().save(*args, **kwargs)
+
     @property
     def value(self):
         from apps.activity.expenses.models import ExpenseEntry
