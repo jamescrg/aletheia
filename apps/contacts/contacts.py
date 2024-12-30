@@ -7,13 +7,22 @@ from apps.folders.models import Folder
 from apps.matters.models import Matter, Relationship
 from apps.trust.models import Transaction
 
+SPECIAL_FOLDERS = ["clients", "former", "unsorted", "add"]
+
 
 def get_list_data(request):
     folders = Folder.objects.filter(app="contacts").order_by("name")
     folders = list(folders)
-    folders.append({"id": 0, "name": "Unsorted"})
+    folders.append({"id": "unsorted", "name": "Unsorted"})
 
-    if request.session.get("contacts_selected_folder_id"):
+    client_folders = [
+        {"id": "clients", "name": "Clients"},
+        {"id": "former", "name": "Former Clients"},
+    ]
+
+    con_selected_folder_id = request.session.get("contacts_selected_folder_id")
+
+    if con_selected_folder_id and con_selected_folder_id not in SPECIAL_FOLDERS:
         selected_folder_id = request.session["contacts_selected_folder_id"]
         selected_folder = get_object_or_404(Folder, pk=selected_folder_id)
     else:
@@ -22,7 +31,14 @@ def get_list_data(request):
     if selected_folder:
         contacts = Contact.objects.filter(folder_id=selected_folder_id)
     else:
-        contacts = Contact.objects.filter(folder_id__isnull=True)
+        if con_selected_folder_id == "clients":
+            contacts = Contact.objects.filter(client_status="Current")
+            selected_folder = {"id": "clients", "name": "Clients"}
+        elif con_selected_folder_id == "former":
+            contacts = Contact.objects.filter(client_status="Former")
+            selected_folder = {"id": "former", "name": "Former Clients"}
+        else:
+            contacts = Contact.objects.filter(folder_id__isnull=True)
 
     contacts = contacts.order_by("name")
 
@@ -70,6 +86,7 @@ def get_list_data(request):
         "google_logged_in": google_logged_in,
         "relationships": relationships,
         "trust": trust,
+        "client_folders": client_folders,
     }
 
     return context

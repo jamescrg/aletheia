@@ -10,6 +10,8 @@ from apps.intakes.models import Intake
 from apps.matters.models import Matter, Relationship, Role
 from config.helpers import format_phone
 
+SPECIAL_FOLDERS = ["clients", "former", "unsorted"]
+
 
 @login_required
 def contact_index(request):
@@ -21,8 +23,10 @@ def contact_index(request):
 def select(request, id):
     contact = get_object_or_404(Contact, pk=id)
 
-    if not contact.folder:
-        request.session["contacts_selected_folder_id"] = 0
+    selected_folder_id = request.session.get("contacts_selected_folder_id", "unsorted")
+
+    if selected_folder_id in SPECIAL_FOLDERS:
+        request.session["contacts_selected_folder_id"] = selected_folder_id
     else:
         request.session["contacts_selected_folder_id"] = contact.folder.id
 
