@@ -7,18 +7,19 @@ from apps.folders.models import Folder
 from apps.matters.models import Matter, Relationship
 from apps.trust.models import Transaction
 
-SPECIAL_FOLDERS = ["clients", "former", "unsorted", "add"]
+SPECIAL_FOLDERS = ["clients", "former", "unsorted", "add", "insert", "edit"]
+
+CLIENT_FOLDERS = [
+    {"id": "clients", "name": "Clients"},
+    {"id": "former", "name": "Former Clients"},
+]
 
 
 def get_list_data(request):
     folders = Folder.objects.filter(app="contacts").order_by("name")
     folders = list(folders)
-    folders.append({"id": "unsorted", "name": "Unsorted"})
 
-    client_folders = [
-        {"id": "clients", "name": "Clients"},
-        {"id": "former", "name": "Former Clients"},
-    ]
+    folders.append({"id": "unsorted", "name": "Unsorted"})
 
     con_selected_folder_id = request.session.get("contacts_selected_folder_id")
 
@@ -44,6 +45,7 @@ def get_list_data(request):
 
     if request.session.get("selected_contact_id"):
         selected_contact_id = request.session["selected_contact_id"]
+
         try:
             selected_contact = Contact.objects.get(pk=selected_contact_id)
         except ObjectDoesNotExist:
@@ -61,7 +63,6 @@ def get_list_data(request):
 
             relationships = list(relationships)
             relationships.append(relationship)
-
     else:
         selected_contact = None
         relationships = None
@@ -86,7 +87,7 @@ def get_list_data(request):
         "google_logged_in": google_logged_in,
         "relationships": relationships,
         "trust": trust,
-        "client_folders": client_folders,
+        "client_folders": CLIENT_FOLDERS,
     }
 
     return context

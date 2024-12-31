@@ -6,8 +6,8 @@ app_name = "folders"
 
 urlpatterns = [
     path("folders/<str:folder_id>", select, name="list"),
-    path("folders/add", add, name="add"),
-    path("folders/insert", insert, name="insert"),
+    path("folders/add/", add, name="add"),
+    path("folders/insert/", insert, name="insert"),
     path("folders/edit/<str:folder_id>", edit, name="edit"),
     path("folders/update/<str:folder_id>", update, name="update"),
     path("folders/delete/<str:folder_id>", delete, name="delete"),

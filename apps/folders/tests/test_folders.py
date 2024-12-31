@@ -30,7 +30,7 @@ def test_insert(client):
         "app": "agenda",
         "name": "More Tasks",
     }
-    response = client.post("/folders/insert", data)
+    response = client.post("/folders/insert/", data)
     assert response.status_code == 200
     found = Folder.objects.filter(name="More Tasks").exists()
     assert found

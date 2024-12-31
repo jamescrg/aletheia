@@ -12,6 +12,11 @@ from config.helpers import format_phone
 
 SPECIAL_FOLDERS = ["clients", "former", "unsorted"]
 
+CLIENT_FOLDERS = [
+    {"id": "clients", "name": "Clients"},
+    {"id": "former", "name": "Former Clients"},
+]
+
 
 @login_required
 def contact_index(request):
@@ -39,7 +44,9 @@ def select(request, id):
 def add(request):
     folders = Folder.objects.filter(app="contacts").order_by("name")
 
-    if request.session.get("contacts_selected_folder_id"):
+    con_selected_folder_id = request.session.get("contacts_selected_folder_id")
+
+    if con_selected_folder_id and con_selected_folder_id not in SPECIAL_FOLDERS:
         selected_folder_id = request.session["contacts_selected_folder_id"]
         selected_folder = get_object_or_404(Folder, pk=selected_folder_id)
     else:
@@ -93,6 +100,7 @@ def add(request):
         "folders": folders,
         "selected_folder": selected_folder,
         "form": form,
+        "client_folders": CLIENT_FOLDERS,
     }
 
     return render(request, "contacts/content-form.html", context)
@@ -102,7 +110,9 @@ def add(request):
 def edit(request, id):
     folders = Folder.objects.filter(app="contacts").order_by("name")
 
-    if request.session.get("contacts_selected_folder_id"):
+    con_selected_folder_id = request.session.get("contacts_selected_folder_id")
+
+    if con_selected_folder_id and con_selected_folder_id not in SPECIAL_FOLDERS:
         selected_folder_id = request.session["contacts_selected_folder_id"]
         selected_folder = get_object_or_404(Folder, pk=selected_folder_id)
     else:
@@ -159,6 +169,7 @@ def edit(request, id):
         "contact": contact,
         "google_connected": google_connected,
         "form": form,
+        "client_folders": CLIENT_FOLDERS,
     }
 
     return render(request, "contacts/content-form.html", context)
