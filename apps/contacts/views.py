@@ -41,14 +41,17 @@ def select(request, id):
 def add(request):
     folders = Folder.objects.filter(app="contacts").order_by("name")
 
-    # Client Status folders
+    contact_folder_id = request.session.get("contacts_selected_folder_id")
+
     client_folder_id = request.session.get("contacts_selected_client_folder_id")
 
     if client_folder_id:
         selected_folder = None
-    else:
+    elif contact_folder_id:
         selected_folder_id = request.session["contacts_selected_folder_id"]
         selected_folder = get_object_or_404(Folder, pk=selected_folder_id)
+    else:
+        selected_folder = None
 
     if request.method == "POST":
         form = ContactForm(request.POST, use_required_attribute=False)
@@ -108,13 +111,17 @@ def add(request):
 def edit(request, id):
     folders = Folder.objects.filter(app="contacts").order_by("name")
 
+    contact_folder_id = request.session.get("contacts_selected_folder_id")
+
     client_folder_id = request.session.get("contacts_selected_client_folder_id")
 
     if client_folder_id:
         selected_folder = None
-    else:
+    elif contact_folder_id:
         selected_folder_id = request.session["contacts_selected_folder_id"]
         selected_folder = get_object_or_404(Folder, pk=selected_folder_id)
+    else:
+        selected_folder = None
 
     contact = get_object_or_404(Contact, pk=id)
 
