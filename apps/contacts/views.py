@@ -5,17 +5,10 @@ import apps.contacts.google as google
 from apps.contacts.contacts import get_list_data
 from apps.contacts.forms import ContactForm
 from apps.contacts.models import Contact
-from apps.folders.models import Folder
+from apps.folders.models import CLIENT_FOLDERS, Folder
 from apps.intakes.models import Intake
 from apps.matters.models import Matter, Relationship, Role
 from config.helpers import format_phone
-
-SPECIAL_FOLDERS = ["clients", "former", "unsorted"]
-
-CLIENT_FOLDERS = [
-    {"id": "clients", "name": "Clients"},
-    {"id": "former", "name": "Former Clients"},
-]
 
 
 @login_required
@@ -28,10 +21,14 @@ def contact_index(request):
 def select(request, id):
     contact = get_object_or_404(Contact, pk=id)
 
-    selected_folder_id = request.session.get("contacts_selected_folder_id", "unsorted")
+    # Real folder from database
+    contact_folder_id = request.session.get("contacts_selected_folder_id", "unsorted")
 
-    if selected_folder_id in SPECIAL_FOLDERS:
-        request.session["contacts_selected_folder_id"] = selected_folder_id
+    # Client Status folders
+    client_folder_id = request.session.get("contacts_selected_client_folder_id")
+
+    if client_folder_id:
+        request.session["contacts_selected_folder_id"] = contact_folder_id
     else:
         request.session["contacts_selected_folder_id"] = contact.folder.id
 
@@ -44,13 +41,14 @@ def select(request, id):
 def add(request):
     folders = Folder.objects.filter(app="contacts").order_by("name")
 
-    con_selected_folder_id = request.session.get("contacts_selected_folder_id")
+    # Client Status folders
+    client_folder_id = request.session.get("contacts_selected_client_folder_id")
 
-    if con_selected_folder_id and con_selected_folder_id not in SPECIAL_FOLDERS:
+    if client_folder_id:
+        selected_folder = None
+    else:
         selected_folder_id = request.session["contacts_selected_folder_id"]
         selected_folder = get_object_or_404(Folder, pk=selected_folder_id)
-    else:
-        selected_folder = None
 
     if request.method == "POST":
         form = ContactForm(request.POST, use_required_attribute=False)
@@ -110,13 +108,13 @@ def add(request):
 def edit(request, id):
     folders = Folder.objects.filter(app="contacts").order_by("name")
 
-    con_selected_folder_id = request.session.get("contacts_selected_folder_id")
+    client_folder_id = request.session.get("contacts_selected_client_folder_id")
 
-    if con_selected_folder_id and con_selected_folder_id not in SPECIAL_FOLDERS:
+    if client_folder_id:
+        selected_folder = None
+    else:
         selected_folder_id = request.session["contacts_selected_folder_id"]
         selected_folder = get_object_or_404(Folder, pk=selected_folder_id)
-    else:
-        selected_folder = None
 
     contact = get_object_or_404(Contact, pk=id)
 

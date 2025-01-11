@@ -3,7 +3,7 @@
     class="folder-item-container list-group-item">
   <div class="show-folder" id="show-folder-{{ folder.id }}">
     <i class="bi bi-folder"></i>
-    <a href="{% url 'folders:list' folder_id=folder.id %}"
+    <a href="{% url 'folders:list' folder_id=folder.id folder_type=folder.name|lower %}"
        {% if selected_folder and selected_folder.id == folder.id %}class="strong"{% endif %}
        {% if selected_folder.id == None and folder.id == selected_folder %}class="strong"{% endif %}>{{ folder.name }}</a>
   </div>

@@ -3,16 +3,9 @@ from django.shortcuts import get_object_or_404
 
 import apps.contacts.google as google
 from apps.contacts.models import Contact
-from apps.folders.models import Folder
+from apps.folders.models import CLIENT_FOLDERS, Folder
 from apps.matters.models import Matter, Relationship
 from apps.trust.models import Transaction
-
-SPECIAL_FOLDERS = ["clients", "former", "unsorted", "add", "insert", "edit"]
-
-CLIENT_FOLDERS = [
-    {"id": "clients", "name": "Clients"},
-    {"id": "former", "name": "Former Clients"},
-]
 
 
 def get_list_data(request):
@@ -21,23 +14,33 @@ def get_list_data(request):
 
     folders.append({"id": "unsorted", "name": "Unsorted"})
 
-    con_selected_folder_id = request.session.get("contacts_selected_folder_id")
+    # Real folder from database
+    contact_folder_id = request.session.get("contacts_selected_folder_id")
 
-    if con_selected_folder_id and con_selected_folder_id not in SPECIAL_FOLDERS:
+    # Client Status folders
+    client_folder_id = request.session.get("contacts_selected_client_folder_id")
+
+    if client_folder_id:
+        # Case: Client Status folder is selected
+        selected_folder = None
+    elif contact_folder_id:
+        # Fetch real folder if real folder is selected
         selected_folder_id = request.session["contacts_selected_folder_id"]
         selected_folder = get_object_or_404(Folder, pk=selected_folder_id)
     else:
+        # Case: No folder is selected
         selected_folder = None
 
     if selected_folder:
         contacts = Contact.objects.filter(folder_id=selected_folder_id)
     else:
-        if con_selected_folder_id == "clients":
+        # Filter contacts based on Client Status
+        if client_folder_id == "current":
             contacts = Contact.objects.filter(client_status="Current")
-            selected_folder = {"id": "clients", "name": "Clients"}
-        elif con_selected_folder_id == "former":
+            selected_folder = {"id": "current", "name": "Current"}
+        elif client_folder_id == "former":
             contacts = Contact.objects.filter(client_status="Former")
-            selected_folder = {"id": "former", "name": "Former Clients"}
+            selected_folder = {"id": "former", "name": "Former"}
         else:
             contacts = Contact.objects.filter(folder_id__isnull=True)
 
