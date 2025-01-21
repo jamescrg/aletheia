@@ -21,6 +21,9 @@
                   class="{% if filter_label == "Open" %} toggle-active {% endif %}"
                   hx-post="{% url 'intakes:quick-filter-status' 'Open' %}">Open</button>
           <button href="#"
+                  class="{% if filter_label == "Pending" %} toggle-active {% endif %}"
+                  hx-post="{% url 'intakes:quick-filter-status' 'Pending' %}">Pending</button>
+          <button href="#"
                   class="{% if filter_label == "Accepted" %} toggle-active {% endif %}"
                   hx-post="{% url 'intakes:quick-filter-status' 'Accepted' %}">Accepted</button>
         </div>
