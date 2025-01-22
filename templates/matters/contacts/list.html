@@ -10,7 +10,7 @@
   </div>
   {% if relationship_groups %}
     {% for group, relationships in relationship_groups.items %}
-      {% if relationships %}
+      {% if relationships or group == "Client" %}
         <div class="contact-group-heading">
           <h3>{{ group }}</h3>
         </div>
