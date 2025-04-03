@@ -31,7 +31,7 @@ def get_list_data(request):
         user_id = request.user.id
 
     pagination = CustomPaginator(
-        tasks, per_page=10, request=request, session_key="tasks_pagination"
+        tasks, per_page=20, request=request, session_key="tasks_pagination"
     )
 
     list_data = {
