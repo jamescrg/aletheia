@@ -20,3 +20,7 @@ class Task(models.Model):
 
     class Meta:
         db_table = "app_task"
+
+    @property
+    def matter_first_name(self):
+        return self.matter.name.split(" ")[0]

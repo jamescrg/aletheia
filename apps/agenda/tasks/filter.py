@@ -15,8 +15,9 @@ class TasksOrderingFilter(django_filters.OrderingFilter):
     def filter(self, qs, value):
         if value in (None, ""):
             return qs
-
         ordering = [self.get_ordering_value(param) for param in value]
+        if ordering[0] == "priority":
+            return qs.order_by("-status", "priority", "description")
         return qs.order_by("-status", *ordering)
 
 
