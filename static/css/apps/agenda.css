@@ -51,6 +51,17 @@
  Tasks
 ========================================================================== */
 
+.tasks-add-quick-input {
+  background: var(--stone-25);
+  color: var(--stone-600);
+  padding-left: 10px;
+  width: 400px;
+}
+
+.tasks-add-quick-input::placeholder {
+  color: var(--stone-300);
+}
+
 .tasks-btn-status {
   color: var(--stone-400);
 }
@@ -86,15 +97,15 @@ th.priority .bi-caret-up {
 }
 
 .tasks-table .matter {
-  width: 250px;
+  width: 120px;
 }
 
 .tasks-table .user {
-  width: 110px;
+  width: 120px;
 }
 
 .tasks-table .date {
-  width: 155px;
+  width: 120px;
 }
 
 .tasks-table .priority i {
