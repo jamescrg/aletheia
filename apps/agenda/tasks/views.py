@@ -68,7 +68,8 @@ def tasks_add(request):
             task.user = CustomUser.objects.filter(pk=int(user_id)).get()
             task.status = "Pending"
             task.save()
-            request.session["tasks_matter"] = task.matter.id
+            if task.matter:
+                request.session["tasks_matter"] = task.matter.id
             return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
 
     else:
@@ -93,6 +94,24 @@ def tasks_add(request):
     }
 
     return render(request, "agenda/tasks/form.html", context)
+
+
+@login_required
+def tasks_add_quick(request):
+
+    data = request.POST
+    task = Task()
+    task.description = data["description"]
+    task.status = "Pending"
+
+    filter_data = request.session.get("tasks_filter", {})
+    user_id = filter_data.get("user", None)
+    if not user_id:
+        user_id = request.user.id
+    task.user = CustomUser.objects.filter(pk=int(user_id)).get()
+
+    task.save()
+    return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
 
 
 @login_required
@@ -228,12 +247,7 @@ def tasks_priority(request, task_id, priority):
 @login_required
 def tasks_filter_sort(request, order):
     filter_data = request.session.get("tasks_filter", {})
-    current_order = filter_data.get("order_by", "")
-    if current_order == order:
-        new_order = f"-{order}" if not current_order.startswith("-") else order
-    else:
-        new_order = order
-    filter_data["order_by"] = new_order
+    filter_data["order_by"] = order
     request.session["tasks_filter"] = filter_data
     return redirect("agenda:tasks-list")
 

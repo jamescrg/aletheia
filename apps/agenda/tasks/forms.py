@@ -57,7 +57,7 @@ class TaskForm(forms.ModelForm):
 
     def clean_matter(self):
         matter = self.cleaned_data["matter"]
-        if not matter:
-            raise ValidationError("This field is required")
+        # if not matter:
+        #     raise ValidationError("This field is required")
 
         return matter

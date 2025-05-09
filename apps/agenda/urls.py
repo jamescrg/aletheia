@@ -13,6 +13,7 @@ from apps.agenda.events.views import (
 from apps.agenda.tasks.views import (
     clear_tasks,
     tasks_add,
+    tasks_add_quick,
     tasks_delete,
     tasks_edit,
     tasks_filter,
@@ -32,6 +33,7 @@ urlpatterns = [
     path("", tasks_index, name="tasks-index"),
     path("agenda/tasks", tasks_select, name="tasks-select"),
     path("agenda/tasks/add", tasks_add, name="tasks-add"),
+    path("agenda/tasks/add/quick", tasks_add_quick, name="tasks-add-quick"),
     path("agenda/tasks/<int:id>/edit", tasks_edit, name="tasks-edit"),
     path("agenda/tasks/<int:id>/delete", tasks_delete, name="tasks-delete"),
     path("agenda/tasks/<int:id>/task-status", tasks_status, name="tasks-task-status"),
