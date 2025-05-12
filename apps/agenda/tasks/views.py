@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -65,6 +65,8 @@ def tasks_add(request):
             user_id = filter_data.get("user", None)
             if not user_id:
                 user_id = request.user.id
+            if not task.date_due:
+                task.date_due = date.today().strftime("%Y-%m-%d")
             task.user = CustomUser.objects.filter(pk=int(user_id)).get()
             task.status = "Pending"
             task.save()
@@ -103,6 +105,7 @@ def tasks_add_quick(request):
     task = Task()
     task.description = data["description"]
     task.status = "Pending"
+    task.date_due = date.today().strftime("%Y-%m-%d")
 
     filter_data = request.session.get("tasks_filter", {})
     user_id = filter_data.get("user", None)
@@ -184,13 +187,33 @@ def tasks_filter(request, user=None):
 
 @login_required
 def tasks_filter_quick(request, quick_filter):
+    end_of_week = date.today() + timedelta(days=7)
+    end_of_week = end_of_week.strftime("%Y-%m-%d")
     quick_filters = {
         "pending": {
             "status": "Pending",
-            "date_due": "",
+            "date_due_max": None,
+            "date_due_min": None,
             "matter": None,
             "user": None,
-            "order_by": "date_due",
+            "order_by": "priority",
+            "filter_label": "pending",
+        },
+        "today": {
+            "status": "Pending",
+            "date_due_max": date.today().strftime("%Y-%m-%d"),
+            "matter": None,
+            "user": None,
+            "order_by": "priority",
+            "filter_label": "today",
+        },
+        "week": {
+            "status": "Pending",
+            "date_due_max": end_of_week,
+            "matter": None,
+            "user": None,
+            "order_by": "priority",
+            "filter_label": "week",
         },
     }
     filter_data = {}

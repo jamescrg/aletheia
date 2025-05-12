@@ -43,6 +43,7 @@ def get_list_data(request):
         "today": today,
         "users": CustomUser.objects.filter(is_active=True).order_by("username"),
         "user_id": user_id,
+        "filter_label": filter_data.get("filter_label", None) if filter_data else None,
     }
 
     return list_data

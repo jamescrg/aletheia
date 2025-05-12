@@ -74,6 +74,10 @@ th.priority .bi-caret-up {
   font-size: 1.1rem;
 }
 
+.tasks-table .description {
+  min-width: 500px;
+}
+
 .tasks-table .status {
   padding-left: 7px !important;
   padding-right: 7px !important;

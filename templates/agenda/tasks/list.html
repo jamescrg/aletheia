@@ -1,44 +1,52 @@
 <div class="toolbar">
   <div class="toolbar-left">
     <div class="filter-tools">
-      <input type="text"
-             class="tasks-add-quick-input"
-             placeholder=" + Quick Task"
-             autofocus
-             name="description"
-             hx-post="{% url 'agenda:tasks-add-quick' %}"
-             hx-trigger="keyup[keyCode==13]">
-    </input>
-    <select hx-post="{% url 'agenda:tasks-filter-user' %}"
-            hx-target="#tasks"
-            hx-swap="#outerHTML"
-            class="select-user"
-            name="user">
-      <option value="">All</option>
-      {% for user in users %}
-        <option value="{{ user.id }}" {% if user.id == user_id %}selected{% endif %}>{{ user.username|title }}</option>
-      {% endfor %}
-    </select>
+      <button type="button"
+              class="btn-icon"
+              hx-get="{% url 'agenda:tasks-filter' %}"
+              hx-target="#htmx-modal-container"
+              hx-trigger="click"
+              hx-swap="#outerHTML"
+              data-bs-toggle="modal"
+              data-bs-target="#htmx-modal-container">Filter</button>
+      <button class="{% if filter_label == "pending" %}toggle-active{% endif %}"
+              hx-post="{% url 'agenda:tasks-filter-quick' 'pending' %}">Pending</button>
+      <button class="{% if filter_label == "today" %}toggle-active{% endif %}"
+              hx-post="{% url 'agenda:tasks-filter-quick' 'today' %}">Today</button>
+      <button class="{% if filter_label == "week" %}toggle-active{% endif %}"
+              hx-post="{% url 'agenda:tasks-filter-quick' 'week' %}">This Week</button>
+      <select hx-post="{% url 'agenda:tasks-filter-user' %}"
+              hx-target="#tasks"
+              hx-swap="#outerHTML"
+              class="select-user"
+              name="user">
+        <option value="">All</option>
+        {% for user in users %}
+          <option value="{{ user.id }}" {% if user.id == user_id %}selected{% endif %}>{{ user.username|title }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  <div class="toolbar-right" hx-target="#tasks-table" hx-swap="#outerHTML">
     <button type="button"
             class="btn-icon"
-            hx-get="{% url 'agenda:tasks-filter' %}"
-            hx-target="#htmx-modal-container"
-            hx-trigger="click"
-            hx-swap="#outerHTML"
-            data-bs-toggle="modal"
-            data-bs-target="#htmx-modal-container">Filter</button>
+            hx-post="{% url 'agenda:tasks-clear' %}"
+            hx-target="#tasks"
+            hx-swap="innerHTML">Clear Complete</button>
   </div>
 </div>
-<div class="toolbar-right" hx-target="#tasks-table" hx-swap="#outerHTML">
-  <button type="button"
-          class="btn-icon"
-          hx-post="{% url 'agenda:tasks-clear' %}"
-          hx-target="#tasks"
-          hx-swap="innerHTML">Clear Complete</button>
-</div>
+<div class="toolbar">
+  <input type="text"
+         class="tasks-add-quick-input"
+         placeholder=" + Quick Task"
+         autofocus
+         name="description"
+         hx-post="{% url 'agenda:tasks-add-quick' %}"
+         hx-trigger="keyup[keyCode==13]">
+</input>
 </div>
 <div class="tasks-add-quick"></div>
-<div class="table-container">
+<div class="table-container table-responsive-xl">
   <table class="table tasks-table">
     <tr>
       <th class="status">
@@ -101,7 +109,7 @@
           {% include "agenda/tasks/priority.html" %}
         </td>
         <td id="task-description"
-            class="description {% if task.date_due <= today %}urgent{% endif %} {% if task.status == 'Complete' %}complete{% endif %}">
+            class="description {% if task.date_due < today %}urgent{% endif %} {% if task.status == 'Complete' %}complete{% endif %}">
           <a href="#"
              hx-get="/agenda/tasks/{{ task.id }}/edit"
              hx-target="#htmx-modal-container"
