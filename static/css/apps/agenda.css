@@ -67,10 +67,6 @@
   color: var(--stone-400);
 }
 
-th.status .bi-check-square {
-  font-size: 0.9rem;
-}
-
 th.priority .bi-caret-up {
   font-size: 1.1rem;
 }
