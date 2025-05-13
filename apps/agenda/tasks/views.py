@@ -176,7 +176,7 @@ def tasks_filter(request, user=None):
             default_filter = {
                 "status": None,
                 "matter": None,
-                "order_by": "priority",
+                "order_by": "date_due",
                 "user": request.user.id,
             }
 
