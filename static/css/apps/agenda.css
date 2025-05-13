@@ -100,8 +100,12 @@ th.priority .bi-caret-up {
   min-width: 44px;
 }
 
+.tasks-table .date .dropdown-menu {
+  min-width: 44px;
+}
+
 .tasks-table .matter {
-  width: 120px;
+  width: 200px;
 }
 
 .tasks-table .user {
