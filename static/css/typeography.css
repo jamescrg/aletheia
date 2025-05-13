@@ -33,7 +33,8 @@ strong,
 }
 
 .urgent,
-.urgent a {
+.urgent a,
+.urgent button {
   color: var(--urgent);
 }
 

@@ -61,13 +61,6 @@ def tasks_add(request):
         form = TaskForm(request.POST, use_required_attribute=False)
         if form.is_valid():
             task = form.save(commit=False)
-            filter_data = request.session.get("tasks_filter", {})
-            user_id = filter_data.get("user", None)
-            if not user_id:
-                user_id = request.user.id
-            if not task.date_due:
-                task.date_due = date.today().strftime("%Y-%m-%d")
-            task.user = CustomUser.objects.filter(pk=int(user_id)).get()
             task.status = "Pending"
             task.save()
             if task.matter:
@@ -102,12 +95,13 @@ def tasks_add(request):
 @login_required
 def tasks_add_quick(request):
 
-    data = request.POST
     task = Task()
-    task.description = data["description"]
+    task.description = request.POST["description"]
     task.status = "Pending"
     task.date_due = date.today().strftime("%Y-%m-%d")
+    task.priority = 3
 
+    # set user the the currently selected filter value
     filter_data = request.session.get("tasks_filter", {})
     user_id = filter_data.get("user", None)
     if not user_id:
