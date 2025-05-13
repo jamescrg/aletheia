@@ -191,28 +191,28 @@ def tasks_filter_quick(request, quick_filter):
     end_of_week = end_of_week.strftime("%Y-%m-%d")
     filter_data = request.session.get("tasks_filter", {})
     quick_filters = {
-        "pending": {
-            "status": "Pending",
+        "all": {
+            "status": None,
             "date_due_max": None,
             "date_due_min": None,
             "matter": None,
             "user": None,
             "order_by": "priority",
-            "filter_label": "pending",
+            "filter_label": "all",
         },
         "today": {
-            "status": "Pending",
+            "status": None,
             "date_due_max": date.today().strftime("%Y-%m-%d"),
-            "matter": filter_data["matter"],
-            "user": filter_data["user"],
+            "matter": filter_data.get("matter"),
+            "user": filter_data.get("user"),
             "order_by": "priority",
             "filter_label": "today",
         },
         "week": {
-            "status": "Pending",
+            "status": None,
             "date_due_max": end_of_week,
-            "matter": filter_data["matter"],
-            "user": filter_data["user"],
+            "matter": filter_data.get("matter"),
+            "user": filter_data.get("user"),
             "order_by": "priority",
             "filter_label": "week",
         },
@@ -264,6 +264,23 @@ def tasks_change_user(request, task_id):
 def tasks_priority(request, task_id, priority):
     task = get_object_or_404(Task, pk=task_id)
     task.priority = priority
+    task.save()
+    return redirect("agenda:tasks-list")
+
+
+@login_required
+def tasks_date(request, task_id, amount):
+    task = get_object_or_404(Task, pk=task_id)
+    task.date_due += timedelta(days=amount)
+    task.save()
+    return redirect("agenda:tasks-list")
+
+
+@login_required
+def tasks_user(request, task_id, user):
+    task = get_object_or_404(Task, pk=task_id)
+    user = get_object_or_404(CustomUser, pk=user)
+    task.user = user
     task.save()
     return redirect("agenda:tasks-list")
 
