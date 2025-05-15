@@ -99,7 +99,11 @@
       <tr>
         <td class="status">{% include "agenda/tasks/status.html" %}</td>
         <td class="matter {% if task.status == 'Complete' %}complete{% endif %} {% if task.date_due < today %}urgent{% endif %}">
-          {% include "agenda/tasks/matter.html" %}
+          {% if task.matter %}
+            <a href="{% url 'matters:detail' task.matter.id %}">{{ task.matter_display_name }}</a>
+          {% else %}
+            Admin
+          {% endif %}
         </td>
         <td id="task-description"
             class="description {% if task.date_due < today %}urgent{% endif %} {% if task.status == 'Complete' %}complete{% endif %}">
