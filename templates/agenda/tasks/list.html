@@ -17,10 +17,6 @@
               data-bs-target="#htmx-modal-container">
         <i class="bi bi-filter"></i> &nbsp;Filter
       </button>
-      <button class="{% if filter_label == "all" %}toggle-active{% endif %}"
-              hx-post="{% url 'agenda:tasks-filter-quick' 'all' %}">
-        <i class="bi bi-box"></i> &nbsp;All
-      </button>
       <button class="{% if filter_label == "today" %}toggle-active{% endif %}"
               hx-post="{% url 'agenda:tasks-filter-quick' 'today' %}">
         <i class="bi bi-calendar-event"></i> &nbsp;Today
