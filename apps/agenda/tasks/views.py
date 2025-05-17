@@ -260,7 +260,10 @@ def tasks_date(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
 
     if request.method == "POST":
-        date_due = datetime.strptime(request.POST["date_due"], "%Y-%m-%d")
+        try:
+            date_due = datetime.strptime(request.POST["date_due"], "%Y-%m-%d")
+        except ValueError:
+            date_due = None
         task.date_due = date_due
         task.save()
         return redirect("agenda:tasks-list")
