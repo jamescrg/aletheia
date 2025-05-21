@@ -21,7 +21,7 @@ def get_list_data(request):
 
     else:
         default_filter = {
-            "status": "All",
+            "status": "Pending",
             "matter": None,
             "order_by": "priority",
             "user": request.user.id,
