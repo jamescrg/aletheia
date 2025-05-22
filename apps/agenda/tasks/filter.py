@@ -1,4 +1,5 @@
 import django_filters
+from django.db.models import F
 
 from apps.accounts.models import CustomUser
 from apps.agenda.tasks.models import Task
@@ -18,16 +19,26 @@ class TasksOrderingFilter(django_filters.OrderingFilter):
         try:
             if ordering[0] == "matter":
                 return qs.order_by(
-                    "-status", "matter", "date_due", "priority", "description"
+                    "-status",
+                    "matter",
+                    F("date_due").asc(nulls_first=True),
+                    "priority",
+                    "description",
                 )
             if ordering[0] == "description":
                 return qs.order_by("-status", "description")
             if ordering[0] == "user":
-                return qs.order_by("-status", "user", "date_due", "priority")
+                return qs.order_by(
+                    "-status", "user", F("date_due").asc(nulls_first=True), "priority"
+                )
             if ordering[0] == "date_due":
-                return qs.order_by("-status", "date_due", "priority")
+                return qs.order_by(
+                    "-status", F("date_due").asc(nulls_first=True), "priority"
+                )
             if ordering[0] == "priority":
-                return qs.order_by("-status", "priority", "date_due")
+                return qs.order_by(
+                    "-status", "priority", F("date_due").asc(nulls_first=True)
+                )
             return qs.order_by("-status", *ordering)
         except IndexError:
             return qs.order_by("-status", *ordering)
