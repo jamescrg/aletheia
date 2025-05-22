@@ -1,5 +1,3 @@
-from datetime import date
-
 from django import forms
 from django.core.exceptions import ValidationError
 
@@ -14,8 +12,8 @@ class TaskForm(forms.ModelForm):
             "matter",
             "description",
             "priority",
-            "date_due",
             "user",
+            "date_due",
         )
 
         STATUSES = (
@@ -46,7 +44,6 @@ class TaskForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["date_due"].initial = date.today().strftime("%Y-%m-%d")
         self.fields["priority"].initial = 3
 
     def clean_description(self):
