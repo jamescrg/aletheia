@@ -1,0 +1,8 @@
+{% extends "invoicing/invoices/detail/detail.html" %}
+{% block subcontent %}
+  {% load humanize %}
+  <div id="time"
+       hx-trigger="previewChanged from:body"
+       hx-get="{% url 'invoicing:invoice-pdf-preview' invoice.id %}"
+       hx-target="this">{% include "invoicing/invoices/preview/preview.html" %}</div>
+{% endblock subcontent %}

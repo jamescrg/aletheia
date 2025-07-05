@@ -1,0 +1,8 @@
+{% extends "invoicing/invoices/detail/detail.html" %}
+{% block subcontent %}
+  {% load humanize %}
+  <div id="time"
+       hx-trigger="load, timeChanged from:body"
+       hx-get="{% url 'invoicing:invoice-time-entries' invoice.id %}"
+       hx-target="this">{% include "invoicing/invoices/time/list.html" %}</div>
+{% endblock subcontent %}

@@ -1,0 +1,35 @@
+{% load humanize %}
+<tr id="payment-{{ payment.id }}">
+  <td class="id">
+    <button class="button-link"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false">{{ payment.id }}</button>
+    <ul class="dropdown-menu" aria-labelledby="paymentDropdown">
+      <li>
+        <a class="dropdown-item"
+           href="#"
+           hx-get="{% url 'invoicing:payments-edit' payment.id %}"
+           hx-target="#htmx-modal-container"
+           hx-trigger="click"
+           data-bs-toggle="modal"
+           data-bs-target="#htmx-modal-container">Edit</a>
+      </li>
+      <li>
+        <a class="dropdown-item"
+           hx-confirm="Are you sure you want to delete this payment?"
+           href="#!"
+           hx-delete="{% url 'invoicing:payments-delete' payment.id %}"
+           hx-swap="outerHTML"
+           hx-target="#payment-{{ payment.id }}">Delete</a>
+      </li>
+    </ul>
+  </td>
+  <td class="date">{{ payment.date|date:"Y-m-d" }}</td>
+  <td class="matter">
+    <a href="{% url 'matters:ledger' id=payment.matter.id %}">{{ payment.matter.name|slice:":35" }}</a>
+  </td>
+  <td class="method">{{ payment.method_display }}</td>
+  <td>{{ payment.detail|default:"" }}</td>
+  <td class="amount">${{ payment.amount|floatformat:2|intcomma }}</td>
+</tr>

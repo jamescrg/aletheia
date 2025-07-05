@@ -1,8 +1,8 @@
 from operator import itemgetter
 
-from apps.billing.credits.models import Credit
-from apps.billing.invoices.models import Invoice
-from apps.billing.payments.models import Payment
+from apps.invoicing.credits.models import Credit
+from apps.invoicing.invoices.models import Invoice
+from apps.invoicing.payments.models import Payment
 
 
 def get_ledger_data(matter):

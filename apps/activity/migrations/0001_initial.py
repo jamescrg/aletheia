@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("billing", "0001_initial"),
+        ("invoicing", "0001_initial"),
         ("matters", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
                         blank=True,
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        to="billing.invoice",
+                        to="invoicing.invoice",
                     ),
                 ),
                 (
@@ -94,7 +94,7 @@ class Migration(migrations.Migration):
                         blank=True,
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        to="billing.invoice",
+                        to="invoicing.invoice",
                     ),
                 ),
                 (

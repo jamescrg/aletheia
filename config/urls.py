@@ -32,7 +32,7 @@ urlpatterns = [
     # Settings App
     path("", include("apps.settings.urls")),
     # Billing App
-    path("", include("apps.billing.urls")),
+    path("", include("apps.invoicing.urls")),
     # Lab App
     path("", include("apps.lab.urls")),
     # Management App
