@@ -52,8 +52,8 @@ class Matter(models.Model):
     def value(self):
         from apps.activity.expenses.models import ExpenseEntry
         from apps.activity.time.models import TimeEntry
-        from apps.billing.invoices.models import Invoice
-        from apps.billing.payments.models import Payment
+        from apps.invoicing.invoices.models import Invoice
+        from apps.invoicing.payments.models import Payment
 
         # total fees
         time_entries = TimeEntry.objects.filter(matter=self)

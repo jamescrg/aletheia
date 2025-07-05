@@ -26,7 +26,7 @@
             <td class="type">{{ transaction.transaction_type }}</td>
             <td>
               {% if 'Invoice' in transaction.description %}
-                <a href="{% url 'billing:invoices-detail-index' transaction.id %}">{{ transaction.description }}</a>
+                <a href="{% url 'invoicing:invoices-detail-index' transaction.id %}">{{ transaction.description }}</a>
               {% elif 'Payment' in transaction.description %}
                 <button class="button-link"
                         type="button"
@@ -36,7 +36,7 @@
                   <li>
                     <a class="dropdown-item"
                        href="#"
-                       hx-get="{% url 'billing:payments-edit' transaction.id %}"
+                       hx-get="{% url 'invoicing:payments-edit' transaction.id %}"
                        hx-target="#htmx-modal-container"
                        hx-trigger="click"
                        data-bs-toggle="modal"
@@ -46,7 +46,7 @@
                     <a class="dropdown-item"
                        hx-confirm="Are you sure you want to delete this payment?"
                        href="#"
-                       hx-delete="{% url 'billing:payments-delete' transaction.id %}">Delete</a>
+                       hx-delete="{% url 'invoicing:payments-delete' transaction.id %}">Delete</a>
                   </li>
                 </ul>
               {% elif 'Credit' in transaction.description %}
@@ -58,7 +58,7 @@
                   <li>
                     <a class="dropdown-item"
                        href="#"
-                       hx-get="{% url 'billing:credits-edit' transaction.id %}"
+                       hx-get="{% url 'invoicing:credits-edit' transaction.id %}"
                        hx-target="#htmx-modal-container"
                        hx-trigger="click"
                        data-bs-toggle="modal"
@@ -68,7 +68,7 @@
                     <a class="dropdown-item"
                        href="#"
                        hx-confirm="Are you sure you want to delete this credit?"
-                       hx-delete="{% url 'billing:credits-delete' transaction.id %}">Delete</a>
+                       hx-delete="{% url 'invoicing:credits-delete' transaction.id %}">Delete</a>
                   </li>
                 </ul>
               {% else %}
