@@ -27,4 +27,9 @@ urlpatterns = [
         clients.client_detail_filter,
         name="client-detail-filter",
     ),
+    path(
+        "reports/clients/detail/pdf/",
+        clients.client_detail_pdf,
+        name="client-detail-pdf",
+    ),
 ]
