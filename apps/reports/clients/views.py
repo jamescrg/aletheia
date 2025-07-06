@@ -14,6 +14,7 @@ from apps.invoicing.payments.models import Payment
 from apps.management.filter_manager import FilterManager
 
 from .filters import ClientDetailFilter, ClientReportFilter
+from .functions import generate_client_detail_pdf
 
 
 @login_required
@@ -334,3 +335,53 @@ def client_detail(request):
     }
 
     return render(request, "reports/clients/detail.html", context)
+
+
+@login_required
+@staff_member_required
+def client_detail_pdf(request):
+    """Export client detail report as PDF"""
+
+    # Get current filter data from session
+    filter_data = request.session.get("client_detail_filter", {})
+
+    client_id = filter_data.get("client")
+    date_from = filter_data.get("date_from")
+    date_to = filter_data.get("date_to")
+
+    if not client_id:
+        return HttpResponse("No client selected", status=400)
+
+    try:
+        client = Contact.objects.get(id=client_id)
+    except Contact.DoesNotExist:
+        return HttpResponse("Client not found", status=404)
+
+    # Convert date strings to date objects if provided
+    date_from_obj = None
+    date_to_obj = None
+
+    if date_from:
+        try:
+            date_from_obj = datetime.strptime(date_from, "%Y-%m-%d").date()
+        except ValueError:
+            pass
+
+    if date_to:
+        try:
+            date_to_obj = datetime.strptime(date_to, "%Y-%m-%d").date()
+        except ValueError:
+            pass
+
+    # Generate PDF
+    pdf_file = generate_client_detail_pdf(client, date_from_obj, date_to_obj, request)
+
+    # Create response
+    with open(pdf_file.name, "rb") as f:
+        response = HttpResponse(f.read(), content_type="application/pdf")
+
+    # Set filename for download
+    filename = f"{client.name}_activity_report_{datetime.now().strftime('%Y%m%d')}.pdf"
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+
+    return response
