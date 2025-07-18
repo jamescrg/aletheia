@@ -163,6 +163,10 @@ def add(request, client_id=None):
                 )
             elif trust_view == "summary":
                 return HttpResponse(status=204, headers={"HX-Trigger": "trustChanged"})
+            elif trust_view == "history":
+                return HttpResponse(
+                    status=204, headers={"HX-Trigger": "trustHistoryChanged"}
+                )
 
     else:
         today = date.today().strftime("%Y-%m-%d")
