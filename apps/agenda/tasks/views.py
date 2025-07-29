@@ -331,6 +331,14 @@ def tasks_user(request, task_id, user):
 
 
 @login_required
+def tasks_term(request, task_id, term):
+    task = get_object_or_404(Task, pk=task_id)
+    task.term = term
+    task.save()
+    return redirect("agenda:tasks-list")
+
+
+@login_required
 def tasks_matter(request, task_id, matter_id):
     task = get_object_or_404(Task, pk=task_id)
     matter = get_object_or_404(Matter, pk=matter_id)

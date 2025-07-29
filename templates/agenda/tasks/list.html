@@ -97,6 +97,7 @@
           <i class="bi bi-chevron-expand"></i>
         </button>
       </th>
+      <th>Term</th>
       <th>
         Due
         <button class="btn-sort"
@@ -137,6 +138,9 @@
         </td>
         <td class="user {% if task.date_due < today %}urgent{% endif %} {% if task.status == 'Complete' %}complete{% endif %}">
           {% include "agenda/tasks/user.html" %}
+        </td>
+        <td class="term {% if task.date_due < today %}urgent{% endif %} {% if task.status == 'Complete' %}complete{% endif %}">
+          {% include "agenda/tasks/term.html" %}
         </td>
         <td class="date {% if task.date_due < today %}urgent{% endif %} {% if task.status == 'Complete' %}complete{% endif %}">
           {% include "agenda/tasks/date-display.html" %}

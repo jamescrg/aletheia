@@ -18,6 +18,8 @@ def get_list_data(request):
         tasks = filter.qs
         user_id = filter_data.get("user")
         user_id = int(user_id) if user_id not in (None, "") else None
+        matter_id = filter_data.get("matter")
+        matter_id = int(matter_id) if matter_id not in (None, "") else None
         term = filter_data.get("term")
 
     else:
@@ -31,6 +33,7 @@ def get_list_data(request):
         filter = TasksFilter(default_filter)
         tasks = filter.qs
         user_id = request.user.id
+        matter_id = None
         term = ""
 
     pagination = CustomPaginator(
@@ -46,6 +49,7 @@ def get_list_data(request):
         "today": today,
         "users": CustomUser.objects.filter(is_active=True).order_by("username"),
         "user_id": user_id,
+        "matter_id": matter_id,
         "term": term,
         "filter_label": filter_data.get("filter_label", None) if filter_data else None,
     }
