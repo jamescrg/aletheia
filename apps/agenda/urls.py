@@ -30,6 +30,7 @@ from apps.agenda.tasks.views import (
     tasks_priority,
     tasks_select,
     tasks_status,
+    tasks_term,
     tasks_user,
 )
 
@@ -52,6 +53,11 @@ urlpatterns = [
         "agenda/tasks/<int:task_id>/task-user/<int:user>",
         tasks_user,
         name="tasks-task-user",
+    ),
+    path(
+        "agenda/tasks/<int:task_id>/task-term/<str:term>",
+        tasks_term,
+        name="tasks-task-term",
     ),
     path(
         "agenda/tasks/<int:task_id>/task-matter/<int:matter_id>",
