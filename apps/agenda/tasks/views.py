@@ -225,10 +225,28 @@ def tasks_filter_quick(request, quick_filter):
 
 
 @login_required
+def tasks_filter_matter(request):
+    filter_data = request.session.get("tasks_filter", {})
+    matter = request.POST.get("matter")
+    filter_data["matter"] = matter
+    request.session["tasks_filter"] = filter_data
+    return redirect("agenda:tasks-list")
+
+
+@login_required
 def tasks_filter_user(request):
     filter_data = request.session.get("tasks_filter", {})
     user = request.POST.get("user")
     filter_data["user"] = user
+    request.session["tasks_filter"] = filter_data
+    return redirect("agenda:tasks-list")
+
+
+@login_required
+def tasks_filter_term(request):
+    filter_data = request.session.get("tasks_filter", {})
+    term = request.POST.get("term")
+    filter_data["term"] = term
     request.session["tasks_filter"] = filter_data
     return redirect("agenda:tasks-list")
 
