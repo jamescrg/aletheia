@@ -25,15 +25,35 @@
               hx-post="{% url 'agenda:tasks-filter-quick' 'week' %}">
         <i class="bi bi-calendar2"></i> &nbsp;This Week
       </button>
+      <select hx-post="{% url 'agenda:tasks-filter-matter' %}"
+              hx-target="#tasks"
+              hx-swap="#outerHTML"
+              class="select-user {% if matter_id %}toggle-active{% endif %}"
+              name="matter">
+        <option value="">Matter:</option>
+        {% for matter in matters %}
+          <option value="{{ matter.id }}"
+                  {% if matter.id == matter_id %}selected{% endif %}>{{ matter.name }}</option>
+        {% endfor %}
+      </select>
       <select hx-post="{% url 'agenda:tasks-filter-user' %}"
               hx-target="#tasks"
               hx-swap="#outerHTML"
               class="select-user {% if user_id %}toggle-active{% endif %}"
               name="user">
-        <option value="">All</option>
+        <option value="">User:</option>
         {% for user in users %}
           <option value="{{ user.id }}" {% if user.id == user_id %}selected{% endif %}>{{ user.username|title }}</option>
         {% endfor %}
+      </select>
+      <select hx-post="{% url 'agenda:tasks-filter-term' %}"
+              hx-target="#tasks"
+              hx-swap="#outerHTML"
+              class="select-user {% if term %}toggle-active{% endif %}"
+              name="term">
+        <option value="" {% if term == "" %}selected{% endif %}>Term:</option>
+        <option value="Current" {% if term == "Current" %}selected{% endif %}>Current</option>
+        <option value="Long Term" {% if term == "Long Term" %}selected{% endif %}>Long Term</option>
       </select>
     </div>
   </div>

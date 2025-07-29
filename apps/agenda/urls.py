@@ -19,8 +19,10 @@ from apps.agenda.tasks.views import (
     tasks_edit,
     tasks_filter,
     tasks_filter_default,
+    tasks_filter_matter,
     tasks_filter_quick,
     tasks_filter_sort,
+    tasks_filter_term,
     tasks_filter_user,
     tasks_index,
     tasks_list,
@@ -65,7 +67,11 @@ urlpatterns = [
         tasks_filter_quick,
         name="tasks-filter-quick",
     ),
+    path(
+        "agenda/tasks/filter/matter/", tasks_filter_matter, name="tasks-filter-matter"
+    ),
     path("agenda/tasks/filter/user/", tasks_filter_user, name="tasks-filter-user"),
+    path("agenda/tasks/filter/term/", tasks_filter_term, name="tasks-filter-term"),
     path(
         "agenda/tasks/filter/default/",
         tasks_filter_default,
