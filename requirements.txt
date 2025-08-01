@@ -6,7 +6,7 @@ Markdown==3.6
 pytz==2024.1
 django-environ==0.11.2
 django-mathfilters==1.0.0
-psycopg2-binary==2.9.9
+psycopg2-binary==2.9.10
 setuptools==70.1.1
 google-auth-oauthlib==0.4.6
 black==24.4.2
