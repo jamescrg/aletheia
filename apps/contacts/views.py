@@ -12,8 +12,18 @@ from config.helpers import format_phone
 
 
 @login_required
-def contact_index(request):
+def contact_index(request, contact_id=None):
+    if contact_id:
+        request.session["selected_contact_id"] = contact_id
+    else:
+        selected_contact_id = request.session.get("selected_contact_id")
+        if selected_contact_id:
+            return redirect(
+                "contacts:contact-index-with-id", contact_id=selected_contact_id
+            )
+
     context = get_list_data(request)
+
     return render(request, "contacts/main.html", context)
 
 
@@ -43,7 +53,7 @@ def select(request, id):
 
     request.session["selected_contact_id"] = id
 
-    return redirect("contacts:contact-index")
+    return redirect("contacts:contact-index-with-id", contact_id=id)
 
 
 @login_required
@@ -86,7 +96,7 @@ def add(request):
                 new.folder.id if new.folder else 0
             )
 
-            return redirect("/contacts")
+            return redirect("contacts:contact-index-with-id", contact_id=new.id)
 
     # if no post data has been submitted, show the contact form
     else:
@@ -154,7 +164,7 @@ def edit(request, id):
 
             contact.save()
 
-            return redirect("/contacts")
+            return redirect("contacts:contact-index-with-id", contact_id=id)
 
     else:
         if selected_folder:
@@ -208,7 +218,7 @@ def delete(request, id):
     if request.session.get("selected_contact_id", False):
         del request.session["selected_contact_id"]
 
-    return redirect("/contacts")
+    return redirect("contacts:contact-index")
 
 
 @login_required
@@ -237,7 +247,7 @@ def assign_store(request, id):
     )
     relationship.save()
 
-    return redirect("/contacts")
+    return redirect("contacts:contact-index-with-id", contact_id=id)
 
 
 @login_required
@@ -257,8 +267,9 @@ def remove(request, id):
 @login_required
 def remove_store(request):
     relationship = get_object_or_404(Relationship, pk=request.POST["relationship_id"])
+    contact_id = relationship.contact.id
     relationship.delete()
-    return redirect("/contacts")
+    return redirect("contacts:contact-index-with-id", contact_id=contact_id)
 
 
 @login_required
@@ -306,7 +317,7 @@ def toggle_google_sync(request, id):
     else:
         contact.google_id = google.add_contact(contact)
     contact.save()
-    return redirect("/contacts")
+    return redirect("contacts:contact-index-with-id", contact_id=id)
 
 
 @login_required
