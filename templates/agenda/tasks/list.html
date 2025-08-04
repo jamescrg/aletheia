@@ -17,36 +17,101 @@
               data-bs-target="#htmx-modal-container">
         <i class="bi bi-filter"></i> &nbsp;Filter
       </button>
-      <select hx-post="{% url 'agenda:tasks-filter-matter' %}"
-              hx-target="#tasks"
-              hx-swap="#outerHTML"
-              class="select-property {% if matter_id %}toggle-active{% endif %}"
-              name="matter">
-        <option value="">Matters&nbsp;&nbsp;(All)</option>
+      <button type="button"
+              id="tasks-matter-filter"
+              class="select-btn medium-btn {% if selected_matter %}toggle-active{% endif %}"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+        {{ selected_matter|default:"Matters (All)" }}
+        <small>
+          <i class="bi bi-chevron-down"></i>
+        </small>
+      </button>
+      <ul class="dropdown-menu"
+          hx-target="#tasks-matter-filter"
+          hx-swap="outerHTML">
+        <li>
+          <a class="dropdown-item"
+             href="#"
+             hx-post="{% url 'agenda:tasks-filter-matter' 0 %}"
+             hx-target="#tasks"
+             hx-swap="#outerHTML">Matters&nbsp;&nbsp;(All)</a>
+        </li>
         {% for matter in matters %}
-          <option value="{{ matter.id }}"
-                  {% if matter.id == matter_id %}selected{% endif %}>{{ matter.name }}</option>
+          <li>
+            <a class="dropdown-item {% if matter.id == matter_id %}active{% endif %}"
+               href="#"
+               hx-post="{% url 'agenda:tasks-filter-matter' matter.id %}"
+               hx-target="#tasks"
+               hx-swap="#outerHTML">{{ matter.name }}</a>
+          </li>
         {% endfor %}
-      </select>
-      <select hx-post="{% url 'agenda:tasks-filter-focus' %}"
-              hx-target="#tasks"
-              hx-swap="#outerHTML"
-              class="select-property {% if focus %}toggle-active{% endif %}"
-              name="focus">
-        <option value="" {% if focus == "" %}selected{% endif %}>Focus&nbsp;&nbsp;(All)&nbsp;&nbsp;&nbsp;&nbsp;</option>
-        <option value="Current" {% if focus == "Current" %}selected{% endif %}>Current</option>
-        <option value="Long Term" {% if focus == "Long Term" %}selected{% endif %}>Long Term</option>
-      </select>
-      <select hx-post="{% url 'agenda:tasks-filter-user' %}"
-              hx-target="#tasks"
-              hx-swap="#outerHTML"
-              class="select-property {% if user_id %}toggle-active{% endif %}"
-              name="user">
-        <option value="">Users&nbsp;&nbsp;(All)&nbsp;&nbsp;&nbsp;&nbsp;</option>
+      </ul>
+      <button type="button"
+              id="tasks-focus-filter"
+              class="select-btn small-btn {% if focus %}toggle-active{% endif %}"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+        {{ focus|default:"Focus (All)" }}
+        <small>
+          <i class="bi bi-chevron-down"></i>
+        </small>
+      </button>
+      <ul class="dropdown-menu"
+          hx-target="#tasks-focus-filter"
+          hx-swap="outerHTML">
+        <li>
+          <a class="dropdown-item"
+             href="#"
+             hx-post="{% url 'agenda:tasks-filter-focus' 'All' %}"
+             hx-target="#tasks"
+             hx-swap="#outerHTML">Focus&nbsp;&nbsp;(All)</a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if focus == 'Current' %}active{% endif %}"
+             href="#"
+             hx-post="{% url 'agenda:tasks-filter-focus' 'Current' %}"
+             hx-target="#tasks"
+             hx-swap="#outerHTML">Current</a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if focus == 'Long Term' %}active{% endif %}"
+             href="#"
+             hx-post="{% url 'agenda:tasks-filter-focus' 'Long Term' %}"
+             hx-target="#tasks"
+             hx-swap="#outerHTML">Long Term</a>
+        </li>
+      </ul>
+      <button type="button"
+              id="tasks-user-filter"
+              class="select-btn small-btn {% if user_id %}toggle-active{% endif %}"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+        {{ selected_user|default:"Users (All)" }}
+        <small>
+          <i class="bi bi-chevron-down"></i>
+        </small>
+      </button>
+      <ul class="dropdown-menu"
+          hx-target="#tasks-user-filter"
+          hx-swap="outerHTML">
+        <li>
+          <a class="dropdown-item"
+             href="#"
+             hx-post="{% url 'agenda:tasks-filter-user' 0 %}"
+             hx-target="#tasks"
+             hx-swap="#outerHTML">Users&nbsp;&nbsp;(All)</a>
+        </li>
         {% for user in users %}
-          <option value="{{ user.id }}" {% if user.id == user_id %}selected{% endif %}>{{ user.username|title }}</option>
+          <li>
+            <a class="dropdown-item {% if user.id == user_id %}active{% endif %}"
+               href="#"
+               hx-post="{% url 'agenda:tasks-filter-user' user.id %}"
+               hx-target="#tasks"
+               hx-swap="#outerHTML">{{ user.username|title }}</a>
+          </li>
         {% endfor %}
-      </select>
+      </ul>
     </div>
   </div>
 </div>
@@ -79,7 +144,15 @@
           <i class="bi bi-chevron-expand"></i>
         </button>
       </th>
-      <th>Focus</th>
+      <th>
+        Focus
+        <button class="btn-sort"
+                hx-target="#tasks"
+                hx-swap="innerHTML"
+                hx-post="{% url 'agenda:tasks-filter-sort' 'focus' %}">
+          <i class="bi bi-chevron-expand"></i>
+        </button>
+      </th>
       <th>
         User
         <button class="btn-sort"
@@ -112,7 +185,7 @@
         <td class="status">{% include "agenda/tasks/status.html" %}</td>
         <td class="matter {% if task.status == 'Complete' %}complete{% endif %} {% if task.date_due < today %}urgent{% endif %}">
           {% if task.matter %}
-            <a href="{% url 'matters:detail' task.matter.id %}">{{ task.matter.name }}</a>
+            {% include "agenda/tasks/matter-select.html" %}
           {% else %}
             Admin
           {% endif %}

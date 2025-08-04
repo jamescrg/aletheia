@@ -71,6 +71,7 @@ class TasksFilter(django_filters.FilterSet):
             ("user", "user"),
             ("date_due", "date_due"),
             ("priority", "priority"),
+            ("focus", "focus"),
         ),
     )
 

@@ -74,10 +74,20 @@ urlpatterns = [
         name="tasks-filter-quick",
     ),
     path(
-        "agenda/tasks/filter/matter/", tasks_filter_matter, name="tasks-filter-matter"
+        "agenda/tasks/filter/matter/<int:matter_id>/",
+        tasks_filter_matter,
+        name="tasks-filter-matter",
     ),
-    path("agenda/tasks/filter/user/", tasks_filter_user, name="tasks-filter-user"),
-    path("agenda/tasks/filter/focus/", tasks_filter_focus, name="tasks-filter-focus"),
+    path(
+        "agenda/tasks/filter/user/<int:user_id>/",
+        tasks_filter_user,
+        name="tasks-filter-user",
+    ),
+    path(
+        "agenda/tasks/filter/focus/<str:focus>/",
+        tasks_filter_focus,
+        name="tasks-filter-focus",
+    ),
     path(
         "agenda/tasks/filter/default/",
         tasks_filter_default,
