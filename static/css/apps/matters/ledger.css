@@ -1,4 +1,10 @@
 
+
+.ledger-totals {
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
 .ledger .date {
   width: 200px;
 }

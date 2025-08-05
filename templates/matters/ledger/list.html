@@ -11,6 +11,30 @@
          class="btn-icon">Download PDF</a>
     </div>
   </div>
+  <table class="ledger-totals">
+    <tr>
+      <th>Balance Due</th>
+      <td class="numeric">${{ balance_due|floatformat:2|intcomma }}</td>
+    </tr>
+    <tr>
+      <th>Unbilled Activity</th>
+      <td class="numeric">${{ matter.value.unbilled.net_fees_and_expenses|floatformat:2|intcomma }}</td>
+    </tr>
+    <tr>
+      <th>Total Cost to Date</th>
+      <td class="numeric">${{ matter.value.total.net_fees_and_expenses|floatformat:2|intcomma }}</td>
+    </tr>
+    <tr>
+      <th>Confirmed Trust Balance</th>
+      <td class="numeric">
+        {% if matter.client %}
+          <a href="{% url 'trust:client-index' id=matter.client.id %}">${{ client_trust_balance|floatformat:2|intcomma }}</a>
+        {% else %}
+          ${{ client_trust_balance|floatformat:2|intcomma }}
+        {% endif %}
+      </td>
+    </tr>
+  </table>
   {% if transactions %}
     <div class="table-container">
       <table class="table ledger">
@@ -85,19 +109,14 @@
           </tr>
         {% endfor %}
       </table>
-      <div class="flex-start-space">
-        <br />
-        <div class="totals-table">
-          <table>
-            <tr>
-              <td class="total">Balance Due</td>
-              <td class="numeric total">${{ balance_due|floatformat:2|intcomma }}</td>
-            </tr>
-          </table>
-        </div>
-      </div>
     </div>
   {% else %}
-    No transactions found.
+    <div class="table-container">
+      <table class="table ledger">
+        <tr>
+          <td>No transactions found.</td>
+        </tr>
+      </table>
+    </div>
   {% endif %}
 {% endblock subcontent %}

@@ -18,7 +18,6 @@ from apps.trust.trust import get_confirmed_client_balance
 def timeline_index(request, id):
     matter = get_object_or_404(Matter, pk=id)
 
-    proceeding = Proceeding.objects.filter(matter=matter.id, primary=True).first()
     facts = Fact.objects.filter(matter=matter.id).order_by("date")
 
     # Get client trust balance
@@ -34,7 +33,6 @@ def timeline_index(request, id):
         "app": "matters",
         "subapp": "timeline",
         "matter": matter,
-        "proceeding": proceeding,
         "facts": facts,
         "client_trust_balance": client_trust_balance,
         "balance_due": balance_due,
