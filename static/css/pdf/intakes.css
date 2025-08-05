@@ -1,0 +1,125 @@
+/* ==========================================================================
+Intakes Report PDF Styles - Landscape Orientation
+========================================================================== */
+
+@page {
+  size: Letter landscape;
+  margin: 0.5in;
+}
+
+/* ==========================================================================
+Header
+========================================================================== */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.header-left {
+  display: flex;
+  align-items: flex-start;
+}
+
+.header-left-left {
+  margin-right: 20px;
+}
+
+.header-left-right p {
+  margin: 0;
+  font-size: 9pt;
+  line-height: 1.3;
+}
+
+.header-right {
+  text-align: right;
+}
+
+.header-right h3 {
+  margin: 0 0 5px 0;
+  font-size: 16pt;
+}
+
+.header-right p {
+  margin: 0;
+  font-size: 10pt;
+  color: #666;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* ==========================================================================
+Table
+========================================================================== */
+
+.section {
+  margin-top: 20px;
+}
+
+.intakes-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9pt;
+}
+
+.intakes-table th,
+.intakes-table td {
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.intakes-table th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+  font-size: 8pt;
+}
+
+.month-column {
+  text-align: left !important;
+  width: 12%;
+  font-weight: 500;
+}
+
+.practice-area-column {
+  width: 8%;
+}
+
+.total-column {
+  width: 8%;
+  background-color: #f9f9f9;
+}
+
+.totals-row {
+  background-color: #f5f5f5;
+  border-top: 2px solid #333;
+}
+
+.totals-row td {
+  font-weight: bold;
+  padding: 8px;
+}
+
+.percentage {
+  font-size: 8pt;
+  color: #666;
+  font-weight: normal;
+}
+
+.center {
+  text-align: center;
+}
+
+/* ==========================================================================
+Typography
+========================================================================== */
+
+.llc {
+  font-size: 8pt;
+  vertical-align: super;
+}

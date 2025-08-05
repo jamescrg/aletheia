@@ -1,0 +1,122 @@
+{% load humanize %}
+{% load static %}
+{% load cache_buster %}
+{% load dict_extras %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" content="" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <title>Intakes Report</title>
+    <link rel="shortcut icon" href={% static 'images/briefcase-fill.svg' %} />
+    <link rel="stylesheet" href={% static_v 'css/pdf/general.css' %} />
+    <link rel="stylesheet" href={% static_v 'css/pdf/intakes.css' %} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+          rel="stylesheet" />
+  </head>
+  <body>
+    <div class="template">
+      <div class="header">
+        <div class="header-left">
+          <div class="header-left-left">
+            <img width="100"
+                 height="auto"
+                 class="cb-logo"
+                 alt="cb_logo"
+                 src="{% static 'images/cb_logo.png' %}" />
+          </div>
+          <div class="header-left-right">
+            <p>
+              CB Legal, <span class="llc">LLC</span>
+            </p>
+            <p>5565 Glenridge Connector</p>
+            <p>Suite 350</p>
+            <p>Atlana, GA 30342</p>
+            <p>(770) 426 - 7740</p>
+            <p>jcraig@cblegal.law</p>
+          </div>
+        </div>
+        <div class="header-right">
+          <h3 class="text-right">Intakes Report</h3>
+          <p class="text-right">Monthly Summary by Practice Area</p>
+          {% if date_from or date_to %}
+            <p class="text-right">
+              {% if date_from %}From: {{ date_from }}{% endif %}
+              {% if date_from and date_to %}-{% endif %}
+              {% if date_to %}To: {{ date_to }}{% endif %}
+            </p>
+          {% endif %}
+          <p class="text-right">Generated: {{ generated_date }}</p>
+        </div>
+      </div>
+      <div class="section">
+        <table class="intakes-table">
+          <thead>
+            <tr>
+              <th class="month-column">Month</th>
+              {% for practice_area in practice_areas %}<th class="practice-area-column">{{ practice_area }}</th>{% endfor %}
+              <th class="total-column">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in intake_data %}
+              <tr>
+                <td class="month-column">{{ item.month }}</td>
+                {% for practice_area in practice_areas %}
+                  <td class="practice-area-column">
+                    {% if item.practice_areas|get_item:practice_area %}
+                      {{ item.practice_areas|get_item:practice_area }}
+                      {% if item.percentages|get_item:practice_area %}
+                        <span class="percentage">({{ item.percentages|get_item:practice_area }}%)</span>
+                      {% endif %}
+                    {% else %}
+                      0
+                    {% endif %}
+                  </td>
+                {% endfor %}
+                <td class="total-column">
+                  <strong>{{ item.total }}</strong>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="{{ practice_areas|length|add:2 }}" class="center">
+                  No intakes found
+                  {% if date_from or date_to %}for the selected date range{% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+            {% if intake_data %}
+              <tr class="totals-row">
+                <td class="month-column">
+                  <strong>Total</strong>
+                </td>
+                {% for practice_area in practice_areas %}
+                  <td class="practice-area-column">
+                    <strong>
+                      {% if totals_by_practice_area|get_item:practice_area %}
+                        {{ totals_by_practice_area|get_item:practice_area }}
+                      {% else %}
+                        0
+                      {% endif %}
+                    </strong>
+                    {% if percentages_by_practice_area|get_item:practice_area %}
+                      <br>
+                      <span class="percentage">({{ percentages_by_practice_area|get_item:practice_area }}%)</span>
+                    {% endif %}
+                  </td>
+                {% endfor %}
+                <td class="total-column">
+                  <strong>{{ total_intakes }}</strong>
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

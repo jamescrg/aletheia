@@ -1,0 +1,96 @@
+{% load humanize %}
+{% load dict_extras %}
+<div class="toolbar">
+  <div class="toolbar-left">
+    <h2>Intakes Report - Monthly Summary by Practice Area</h2>
+    <div class="filter-tools">
+      <button type="button"
+              class="btn-icon"
+              hx-get="{% url 'reports:intakes-filter' %}"
+              hx-target="#htmx-modal-container"
+              hx-trigger="click"
+              data-bs-toggle="modal"
+              data-bs-target="#htmx-modal-container">
+        <i class="bi bi-funnel"></i> Filter
+      </button>
+      <a href="{% url 'reports:intakes-pdf' %}"
+         class="btn-icon"
+         target="_blank">
+        <i class="bi bi-download"></i> Download PDF
+      </a>
+    </div>
+  </div>
+</div>
+<div class="table-container">
+  <table class="table">
+    <tr>
+      <th>Month</th>
+      {% for practice_area in practice_areas %}<th class="numeric">{{ practice_area }}</th>{% endfor %}
+      <th class="numeric">
+        <strong>Total</strong>
+      </th>
+    </tr>
+    {% for item in intake_data %}
+      <tr>
+        <td>{{ item.month }}</td>
+        {% for practice_area in practice_areas %}
+          <td class="numeric">
+            {% if item.practice_areas|get_item:practice_area %}
+              {{ item.practice_areas|get_item:practice_area }}
+              {% if item.percentages|get_item:practice_area %}
+                <small class="text-muted">({{ item.percentages|get_item:practice_area }}%)</small>
+              {% endif %}
+            {% else %}
+              0
+            {% endif %}
+          </td>
+        {% endfor %}
+        <td class="numeric">
+          <strong>{{ item.total }}</strong>
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="{{ practice_areas|length|add:2 }}" class="center">
+          No intakes found
+          {% if date_from or date_to %}for the selected date range{% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    {% if intake_data %}
+      <tr class="table-total">
+        <td>
+          <strong>Total</strong>
+        </td>
+        {% for practice_area in practice_areas %}
+          <td class="numeric">
+            <strong>
+              {% if totals_by_practice_area|get_item:practice_area %}
+                {{ totals_by_practice_area|get_item:practice_area }}
+                {% if percentages_by_practice_area|get_item:practice_area %}
+                  <br>
+                  <small class="text-muted">({{ percentages_by_practice_area|get_item:practice_area }}%)</small>
+                {% endif %}
+              {% else %}
+                0
+              {% endif %}
+            </strong>
+          </td>
+        {% endfor %}
+        <td class="numeric">
+          <strong>{{ total_intakes }}</strong>
+        </td>
+      </tr>
+    {% endif %}
+  </table>
+</div>
+{% if date_from or date_to %}
+  <div class="filter-info">
+    <p>
+      Filtered by:
+      {% if date_from %}From {{ date_from }}{% endif %}
+      {% if date_from and date_to %}-{% endif %}
+      {% if date_to %}To {{ date_to }}{% endif %}
+    </p>
+  </div>
+{% endif %}

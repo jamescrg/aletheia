@@ -14,6 +14,9 @@
       <li {% if subapp == "client-detail" %}class="active"{% endif %}>
         <a href="{% url 'reports:client-detail' %}">Client Detail</a>
       </li>
+      <li {% if subapp == "intakes" %}class="active"{% endif %}>
+        <a href="{% url 'reports:intakes-index' %}">Intakes</a>
+      </li>
     </ul>
   </div>
   <div class="section subsection">

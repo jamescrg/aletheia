@@ -31,13 +31,14 @@ class IntakeForm(forms.ModelForm):
 
         PRACTICE_AREAS = (
             ("General", "General"),
-            ("Boundary Dispute", "Boundary Dispute"),
-            ("Title Dispute", "Title Dispute"),
+            ("Boundary", "Boundary"),
+            ("Title", "Title"),
             ("LLT - LL", "LLT - LL"),
             ("LLT - T", "LLT - T"),
-            ("Quiet Title", "Quiet Title"),
+            ("QT", "QT"),
             ("HOA", "HOA"),
-            ("Home Defect", "Home Defect"),
+            ("Fraud", "Fraud"),
+            ("Construction", "Construction"),
         )
 
         SOURCES = (

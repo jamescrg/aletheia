@@ -2,6 +2,7 @@ from django.urls import path
 
 from .activity import views as activity
 from .clients import views as clients
+from .intakes import views as intakes
 from .revenue import views as revenue
 from .views import reports_index, reports_list
 
@@ -32,4 +33,9 @@ urlpatterns = [
         clients.client_detail_pdf,
         name="client-detail-pdf",
     ),
+    # Intakes
+    path("reports/intakes/", intakes.intakes_index, name="intakes-index"),
+    path("reports/intakes/list/", intakes.intakes_list, name="intakes"),
+    path("reports/intakes/filter/", intakes.intakes_filter, name="intakes-filter"),
+    path("reports/intakes/pdf/", intakes.intakes_pdf, name="intakes-pdf"),
 ]
