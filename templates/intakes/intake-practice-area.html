@@ -1,0 +1,55 @@
+<div class="dropdown" id="intake-practice-area-dropdown-{{ intake.id }}">
+  <button class="button-link"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false">{{ intake.practice_area }}</button>
+  <ul hx-target="#intake-practice-area-dropdown-{{ intake.id }}"
+      hx-swap="outerHTML"
+      class="dropdown-menu">
+    <li>
+      <a href="#"
+         hx-post="{% url 'intakes:edit-practice-area' pk=intake.id practice_area='General' %}"
+         class="dropdown-item">General</a>
+    </li>
+    <li>
+      <a href="#"
+         hx-post="{% url 'intakes:edit-practice-area' pk=intake.id practice_area='Boundary' %}"
+         class="dropdown-item">Boundary</a>
+    </li>
+    <li>
+      <a href="#"
+         hx-post="{% url 'intakes:edit-practice-area' pk=intake.id practice_area='Title' %}"
+         class="dropdown-item">Title</a>
+    </li>
+    <li>
+      <a href="#"
+         hx-post="{% url 'intakes:edit-practice-area' pk=intake.id practice_area='LLT - LL' %}"
+         class="dropdown-item">LLT - LL</a>
+    </li>
+    <li>
+      <a href="#"
+         hx-post="{% url 'intakes:edit-practice-area' pk=intake.id practice_area='LLT - T' %}"
+         class="dropdown-item">LLT - T</a>
+    </li>
+    <li>
+      <a href="#"
+         hx-post="{% url 'intakes:edit-practice-area' pk=intake.id practice_area='QT' %}"
+         class="dropdown-item">QT</a>
+    </li>
+    <li>
+      <a href="#"
+         hx-post="{% url 'intakes:edit-practice-area' pk=intake.id practice_area='HOA' %}"
+         class="dropdown-item">HOA</a>
+    </li>
+    <li>
+      <a href="#"
+         hx-post="{% url 'intakes:edit-practice-area' pk=intake.id practice_area='Fraud' %}"
+         class="dropdown-item">Fraud</a>
+    </li>
+    <li>
+      <a href="#"
+         hx-post="{% url 'intakes:edit-practice-area' pk=intake.id practice_area='Construction' %}"
+         class="dropdown-item">Construction</a>
+    </li>
+  </ul>
+</div>

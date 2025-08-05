@@ -135,3 +135,11 @@ def test_note_delete(client, note):
     assert response.status_code == 204
     found = Note.objects.filter(pk=note.id).exists()
     assert not found
+
+
+def test_intake_edit_practice_area(client, intake):
+    response = client.post(f"/intakes/edit-practice-area/{intake.id}/Title")
+    assert response.status_code == 200
+    assertTemplateUsed(response, "intakes/intake-practice-area.html")
+    intake.refresh_from_db()
+    assert intake.practice_area == "Title"

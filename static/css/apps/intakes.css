@@ -16,23 +16,23 @@ List View
 }
 
 .intake-name {
-  width: 300px;
+  /* width: 300px; */
 }
 
 .intake-phone {
-  width: 180px
+  width: 160px
 }
 
 .intake-email {
-  width: 180px
+  width: 200px
 }
 
 .intake-status {
   width: 140px;
 }
 
-.intake-source {
-  width: 120px
+.intake-practice-area {
+  width: 180px
 }
 
 .intake-list th a {

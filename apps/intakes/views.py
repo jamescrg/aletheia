@@ -295,3 +295,15 @@ def intake_edit_status(request, pk, status):
     context = {"intake": intake}
 
     return render(request, "intakes/intake-status.html", context)
+
+
+@login_required
+def intake_edit_practice_area(request, pk, practice_area):
+    intake = get_object_or_404(Intake, pk=pk)
+
+    intake.practice_area = practice_area
+    intake.save()
+
+    context = {"intake": intake}
+
+    return render(request, "intakes/intake-practice-area.html", context)
