@@ -43,7 +43,7 @@
                  data-bs-toggle="modal"
                  data-bs-target="#htmx-modal-container">{{ fact.description }}</a>
             </td>
-            <td class="citation {% if fact.emphasis == 'Yes' %}highlighted{% endif %}">{{ fact.citation|default_if_none:'' }}</td>
+            <td class="citation {% if fact.emphasis == 'Yes' %}highlighted{% endif %}">{{ fact.citations|default_if_none:'' }}</td>
           </tr>
         {% endfor %}
       {% endif %}

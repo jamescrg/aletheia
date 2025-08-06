@@ -35,7 +35,7 @@ def test_edit_post(client, matter, fact):
     data = {
         "date": "2020-08-07",
         "description": "Purchse of property",
-        "citation": "Evidence",
+        "citations": "Evidence",
         "emphasis": "No",
     }
     response = client.post(f"/matters/{matter.id}/timeline/{fact.id}/edit", data)

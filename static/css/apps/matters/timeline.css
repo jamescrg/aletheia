@@ -14,7 +14,7 @@ Display
 }
 
 
-.timeline-list .citation {
+.timeline-list .citations {
   width: 350px;
 }
 
@@ -33,7 +33,7 @@ Form
 }
 
 
-.timeline-form #id_citation {
+.timeline-form #id_citations {
   width: 350px;
 }
 

@@ -11,7 +11,7 @@ class FactForm(forms.ModelForm):
             "date",
             "time",
             "description",
-            "citation",
+            "citations",
             "emphasis",
         )
 
