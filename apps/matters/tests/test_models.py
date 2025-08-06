@@ -13,7 +13,7 @@ def test_string(matter):
 def test_content(matter):
     expected_values = {
         "name": "Sample Test Matter",
-        "description": "Awaiting response from OC",
+        "work_status": "Awaiting response from OC",
         "status": "Open",
         "practice_area": "General",
     }

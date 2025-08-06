@@ -42,7 +42,7 @@ def matter(user):
     matter = Matter.objects.create(
         user_id=user.id,
         name="Sample Test Matter",
-        description="Awaiting response from OC",
+        work_status="Awaiting response from OC",
         status="Open",
         practice_area="General",
     )

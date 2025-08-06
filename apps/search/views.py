@@ -25,7 +25,7 @@ def results(request):
     if text:
         matters = Matter.objects.filter(
             Q(name__icontains=text)
-            | Q(description__icontains=text)
+            | Q(work_status__icontains=text)
             | Q(client_reference_id=text)
             | Q(practice_area__icontains=text)
         ).order_by("name")

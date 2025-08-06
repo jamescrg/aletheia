@@ -71,7 +71,7 @@ def contact_data(contact):
 def matter():
     matter = Matter.objects.create(
         name="Sample Test Matter",
-        description="Awaiting response from OC",
+        work_status="Awaiting response from OC",
         status="Open",
         practice_area="General",
     )
