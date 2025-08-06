@@ -47,7 +47,7 @@ def test_edit_post(client, user, matter):
     data = {
         "user_id": user.id,
         "name": "Sample Test Matter",
-        "description": "New description",
+        "work_status": "New description",
         "status": "Open",
         "date_start": "2020-08-07",
         "date_end": "2022-08-07",
@@ -60,7 +60,7 @@ def test_edit_post(client, user, matter):
     response = client.post(f"/matters/{matter.id}/edit", data)
     assert response.status_code == 302
 
-    found = Matter.objects.filter(description="New description").exists()
+    found = Matter.objects.filter(work_status="New description").exists()
     assert found
 
 
