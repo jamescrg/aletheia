@@ -8,10 +8,6 @@
   width: 100%;
 }
 
-.matter-contacts .name {
-  width: 250px;
-}
-
 .matter-contacts .phone1 {
   width: 150px;
 }
@@ -21,7 +17,7 @@
 }
 
 .matter-contacts .email	{
-  width: 400px;
+  width: 300px;
 }
 
 .main-client {
