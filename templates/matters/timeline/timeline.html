@@ -27,9 +27,9 @@
                 <th>Description</th>
               </tr>
               {% for fact in facts %}
-                <tr>
-                  <td class="date-time {% if fact.emphasis == 'Yes' %}strong{% endif %}">{{ fact.date|date:'Y-m-d' }}</td>
-                  <td class="description {% if fact.emphasis == 'Yes' %}strong{% endif %}">
+                <tr class="{% if fact.color %}fact-color-{{ fact.color|lower }}{% endif %}">
+                  <td class="date-time">{{ fact.date|date:'Y-m-d' }}</td>
+                  <td class="description">
                     {{ fact.description }}&nbsp;&nbsp;
                     {% if fact.citations %}({{ fact.citations|slice:":25"|default_if_none:'' }}.){% endif %}
                   </td>
