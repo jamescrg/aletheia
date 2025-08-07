@@ -20,10 +20,10 @@ def get_matter_tasks_data(request, matter_id):
     # Get filter data from session, but ensure it's scoped to this matter
     filter_data = request.session.get("matter_tasks_filter", {})
 
-    # Always filter by the current matter
-    filter_data["matter"] = matter_id
+    # Check if we have meaningful filter data (more than just the matter key)
+    has_existing_filter = any(key != "matter" for key in filter_data.keys())
 
-    if filter_data:
+    if has_existing_filter:
         filter_data = {
             **filter_data,
             "order_by": filter_data.get("order_by", "-priority"),
@@ -35,7 +35,7 @@ def get_matter_tasks_data(request, matter_id):
         user_id = int(user_id) if user_id not in (None, "") else None
         focus = filter_data.get("focus")
     else:
-        # Default filter for matter tasks - show all users and all focus by default
+        # Default filter for matter tasks - show pending tasks, all users and all focus by default
         default_filter = {
             "status": "Pending",
             "matter": matter_id,
