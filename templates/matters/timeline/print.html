@@ -9,12 +9,10 @@
     </tr>
     {% if facts %}
       {% for fact in facts %}
-        <tr>
-          <td class="date {% if fact.emphasis == 'Yes' %}strong{% endif %}">{{ fact.date|date:'Y-m-d' }}</td>
-          <td class="description {% if fact.emphasis == 'Yes' %}strong{% endif %}">{{ fact.description }}</td>
-          <td class="citation {% if fact.emphasis == 'Yes' %}strong{% endif %}">
-            {{ fact.citations|slice:":25"|default_if_none:'' }}
-          </td>
+        <tr class="{% if fact.color %}fact-color-{{ fact.color|lower }}{% endif %}">
+          <td class="date">{{ fact.date|date:'Y-m-d' }}</td>
+          <td class="description">{{ fact.description }}</td>
+          <td class="citation">{{ fact.citations|slice:":25"|default_if_none:'' }}</td>
         </tr>
       {% endfor %}
     {% endif %}

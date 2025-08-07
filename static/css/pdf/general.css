@@ -146,3 +146,35 @@ Utility Classes
 .text-left {
   text-align: left;
 }
+
+/* ==========================================================================
+Fact Color Classes
+========================================================================== */
+
+.fact-color-blue td {
+  background-color: hsl(210, 50%, 95%) !important;
+}
+
+.fact-color-gray td {
+  background-color: hsl(0, 0%, 95%) !important;
+}
+
+.fact-color-green td {
+  background-color: hsl(120, 50%, 95%) !important;
+}
+
+.fact-color-orange td {
+  background-color: hsl(30, 50%, 95%) !important;
+}
+
+.fact-color-purple td {
+  background-color: hsl(270, 50%, 95%) !important;
+}
+
+.fact-color-red td {
+  background-color: hsl(0, 50%, 95%) !important;
+}
+
+.fact-color-yellow td {
+  background-color: hsl(55, 50%, 95%) !important;
+}
