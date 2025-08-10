@@ -54,7 +54,7 @@
 .tasks-add-quick-input {
   background: var(--stone-25);
   color: var(--stone-600);
-  padding: 6px 10px;
+  padding-left: 1rem;
   width: 550px;
 }
 

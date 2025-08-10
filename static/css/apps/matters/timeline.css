@@ -100,18 +100,18 @@ Form
 Filter form
 ------------------------------------------------*/
 
+.toolbar .filter-tools {
+  align-items: center;
+}
+
 .filter-form {
   display: inline-flex;
-  gap: 0.5rem;
+  gap: 0.7rem;
   align-items: center;
 }
 
 .filter-form .filter-input {
   border: solid 1px var(--stone-300);
-  border-radius: 3px;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
-  height: 32px;
 }
 
 .filter-form input[type="date"].filter-input {
