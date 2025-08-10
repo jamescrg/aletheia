@@ -16,3 +16,4 @@ weasyprint==66.0
 django-cleanup==8.1.0
 django-filter==24.3
 pytest-xdist==3.8.0
+django-storages[s3]==1.14.6

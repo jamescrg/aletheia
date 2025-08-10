@@ -133,6 +133,23 @@ DATABASES = {
     }
 }
 
+STORAGES = {
+    "default": {
+        # S3 Storage for Digital Ocean Spaces
+        "BACKEND": "storages.backends.s3.S3Storage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+# Digital Ocean Spaces Settings
+AWS_S3_REGION_NAME = env("DIGITAL_OCEAN_REGION_NAME")
+AWS_S3_ENDPOINT_URL = env("DIGITAL_OCEAN_ENDPOINT_URL")
+AWS_STORAGE_BUCKET_NAME = env("DIGITAL_OCEAN_BUCKET_NAME")
+AWS_S3_ACCESS_KEY_ID = env("DIGITAL_OCEAN_ACCESS_KEY_ID")
+AWS_S3_SECRET_ACCESS_KEY = env("DIGITAL_OCEAN_SECRET_ACCESS_KEY")
+
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
