@@ -23,7 +23,7 @@ textarea {
   border: solid 1px var(--stone-300);
   border-radius: 3px;
   outline: none;
-  padding: 0.25rem;
+  padding: 0.4rem;
 }
 
 select {
