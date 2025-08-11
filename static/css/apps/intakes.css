@@ -39,27 +39,27 @@ List View
 Intakes form
 ========================================================================== */
 
-#id_name {
+.intake-form #id_name {
   max-width: 400px;
   width: 100%;
 }
 
-#id_address {
+.intake-form #id_address {
   max-width: 400px;
   width: 100%;
 }
 
-#id_phone {
+.intake-form #id_phone {
   max-width: 400px;
   width: 100%;
 }
 
-#id_email {
+.intake-form #id_email {
   max-width: 400px;
   width: 100%;
 }
 
-.intake-contact {
+.intake-form .intake-contact {
   float: right;
 }
 

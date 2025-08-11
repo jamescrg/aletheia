@@ -150,6 +150,18 @@ select {
   grid-column: span 5;
 }
 
+.form-compact .span2 {
+  grid-column: span 2;
+}
+
+.form-compact .span3 {
+  grid-column: span 3;
+}
+
+.form-compact .span5 {
+  grid-column: span 5;
+}
+
 .form-compact .form-group label {
   margin-bottom: 0.5rem;
 }

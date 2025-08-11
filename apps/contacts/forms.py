@@ -2,6 +2,8 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
+from config.settings import CustomFormRendererCompact
+
 from .models import Contact
 
 
@@ -50,6 +52,10 @@ class ContactForm(forms.ModelForm):
             "phone3_label": forms.Select(choices=PHONE_LABELS),
             "client_status": forms.Select(choices=CLIENT_STATUSES),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.renderer = CustomFormRendererCompact()
 
     def clean_name(self):
         name = self.cleaned_data["name"]
