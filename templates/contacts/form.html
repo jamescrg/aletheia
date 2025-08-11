@@ -14,7 +14,7 @@
     <form {% if action_type == 'db_update' %}action="{{ action }}"{% else %}hx-post="{{ action }}"{% endif %}
           method="post"
           role="form"
-          class="form-responsive contacts-form">
+          class="form-responsive form-spacious contacts-form">
       {% csrf_token %}
       {% if intake_id %}<input type="hidden" name="intake_id" value="{{ intake_id }}" />{% endif %}
       {{ form }}

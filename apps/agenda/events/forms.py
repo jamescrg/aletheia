@@ -1,9 +1,16 @@
 from django import forms
 
+from config.settings import CustomFormRendererCompact
+
 from .models import Event
 
 
 class EventForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.renderer = CustomFormRendererCompact()
+
     class Meta:
         model = Event
         fields = (

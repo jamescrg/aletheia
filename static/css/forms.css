@@ -70,30 +70,75 @@ textarea {
   padding-top: 1rem;
 }
 
-/* responsive layout */
+/* spacious layout */
 
-.form-responsive {
+.form-spacious {
   display: grid;
   gap: 0.5rem;
 }
 
-.form-responsive .form-group label {
-  font-weight: 500;
+.form-spacious > label {
+  font-weight: 600;
 }
 
-.form-responsive > div {
+.form-spacious > div {
   margin-block-end: 1rem;
 }
 
-.form-responsive {
+@media screen and (min-width: 800px) and (max-width: 1199px) {
+  .form-spacious {
+    grid-template-columns: 1fr 3fr;
+  }
+
+  .modal-md .form-spacious {
+    grid-template-columns: 1fr 2fr;
+  }
+
+  .modal-lg .form-spacious {
+    grid-template-columns: 1fr 4fr;
+  }
+}
+
+
+@media screen and (min-width: 1200px) {
+  .form-spacious {
+    grid-template-columns: 1fr 4fr;
+  }
+
+  .modal-md .form-spacious {
+    grid-template-columns: 1fr 2fr;
+  }
+
+  .modal-lg .form-spacious {
+    grid-template-columns: 1fr 4fr;
+  }
+}
+
+
+/* compact layout */
+
+.form-compact {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.form-compact .form-group label {
+  font-weight: 500;
+}
+
+.form-compact > div {
+  margin-block-end: 1rem;
+}
+
+.form-compact {
   grid-template-columns: 1fr 4fr;
 }
 
-.modal-md .form-responsive {
+.modal-md .form-compact {
   grid-template-columns: 1fr 1fr;
 }
 
-.modal-lg .form-responsive {
+.modal-lg .form-compact {
   grid-template-columns: 1fr 1fr;
 }
 
