@@ -40,8 +40,6 @@ class TimeEntryForm(forms.ModelForm):
                     "class": "span2",
                 }
             ),
-            "hours": forms.TextInput(attrs={"type": "number"}),
-            "rate": forms.TextInput(attrs={"type": "number"}),
             "comp": forms.Select(choices=COMP_CHOICES),
             "entered": forms.Select(choices=ENTERED_CHOICES),
         }
