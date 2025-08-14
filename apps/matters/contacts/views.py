@@ -41,7 +41,7 @@ def assign_results(request, id):
     text = request.POST.get("search_text")
 
     if text:
-        contacts = Contact.objects.filter(name__contains=text).order_by("name")
+        contacts = Contact.objects.filter(name__icontains=text).order_by("name")
     else:
         contacts = None
 

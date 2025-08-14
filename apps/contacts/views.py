@@ -207,7 +207,7 @@ def assign_store(request, id):
     )
     relationship.save()
 
-    return redirect("contacts:index", contact_id=id)
+    return redirect("contacts:index")
 
 
 @login_required
