@@ -52,7 +52,7 @@ def get_ledger_data(matter):
                 "id": credit.id,
                 "date": credit.date,
                 "transaction_type": "Credit",
-                "detail": credit.detail,
+                "description": credit.detail,
                 "amount": credit.amount,
                 "affects_balance": True,  # Credits always affect balance
             }
