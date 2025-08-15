@@ -33,7 +33,7 @@ def client_status(request, status):
 @login_required
 def select(request, folder_id):
 
-    saved_folder = request.session["contacts_selected_folder_id"]
+    saved_folder = request.session.get("contacts_selected_folder_id")
     if folder_id == saved_folder:
         request.session["contacts_selected_folder_id"] = None
     else:

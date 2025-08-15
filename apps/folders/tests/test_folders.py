@@ -21,7 +21,7 @@ def test_content(folder_data):
 
 
 def test_select(client, folder_data):
-    response = client.get(f"/folders/{folder_data.id}/current/")
+    response = client.get(f"/folders/select/{folder_data.id}/")
     assert response.status_code == 302
 
 

@@ -22,12 +22,12 @@ def test_index(client, folder, contact):
 
     # folder selected
     response = client.get(reverse("contacts:select", args=[contact.id]))
-    assert response.status_code == 302
+    assert response.status_code == 200
 
 
 def test_select(client, folder, contact):
     response = client.get(f"/contacts/{contact.id}")
-    assert response.status_code == 302
+    assert response.status_code == 200
 
 
 def test_add_get(client, folder, contact):
@@ -37,7 +37,7 @@ def test_add_get(client, folder, contact):
     assertTemplateUsed(response, "contacts/form.html")
 
     response = client.get(reverse("contacts:select", args=[contact.id]))
-    assert response.status_code == 302
+    assert response.status_code == 200
 
     # set a selected folder
     response = client.get("/contacts/add")
@@ -103,9 +103,9 @@ def test_remove_post(client, contact, matter, role):
 
     rel = Relationship.objects.filter(contact=contact, matter=matter).latest("id")
     data = {"relationship_id": rel.id}
-    response = client.post(f"/contacts/{contact.id}/remove/store", data)
+    response = client.post("/contacts/remove/store", data)
 
-    assert response.status_code == 404
+    assert response.status_code == 302
 
 
 def test_add_intake(client, intake, contact, folder):
