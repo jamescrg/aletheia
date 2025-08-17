@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 
 from apps.documents.filters import DocumentsFilter
 from apps.documents.forms import DocumentsForm
@@ -79,21 +79,23 @@ def documents_sort(request, order):
 @login_required
 def documents_add(request):
     if request.method == "POST":
-        form = DocumentsForm(request.POST, request.FILES, use_required_attribute=False)
+        form = DocumentsForm(request.POST, use_required_attribute=False)
 
-        if form.is_valid():
+        uploaded_file = request.FILES.get("file")
+
+        # Validate file is uploaded
+        if not uploaded_file:
+            form.add_error(None, "FILE_REQUIRED: Please select a file to upload.")
+
+        if form.is_valid() and uploaded_file:
             document = form.save(commit=False)
+
             document.uploaded_by = request.user
+            document.file = uploaded_file
+
             document.save()
 
-            # Check if HTMX request
-            if request.headers.get("HX-Request"):
-                return HttpResponse(
-                    status=204, headers={"HX-Trigger": "documentsChanged"}
-                )
-            else:
-                # Regular form submission
-                return redirect("documents:index")
+            return HttpResponse(status=204, headers={"HX-Trigger": "documentsChanged"})
 
         # Form has errors
         return render(request, "documents/add_form.html", {"form": form})
