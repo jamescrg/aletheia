@@ -48,9 +48,53 @@ const initializeDocumentDropzone = () => {
       `,
 
       init: function () {
+        const existingFile = dropzoneElement.dataset.existingFile;
+        const existingSize = dropzoneElement.dataset.existingSize;
+
+        if (existingFile) {
+          const filename = existingFile.split("/").pop() || existingFile;
+
+          const mockFile = {
+            name: filename,
+            size: parseInt(existingSize) || 0,
+            accepted: true,
+            status: Dropzone.SUCCESS,
+            isExistingFile: true,
+          };
+
+          this.files.push(mockFile);
+          this.emit("addedfile", mockFile);
+          this.emit("complete", mockFile);
+
+          const preview = mockFile.previewElement;
+          if (preview) {
+            const filenameSpan = preview.querySelector(".dz-filename span");
+
+            if (filenameSpan) {
+              filenameSpan.textContent = mockFile.name + " (current file)";
+            }
+
+            preview.classList.add("dz-success", "clickable-preview");
+
+            const documentId = form.action.split("/").slice(-2, -1)[0]; // Extract ID from URL
+            const downloadUrl = `/documents/download/${documentId}/`;
+
+            preview.style.cursor = "pointer";
+            preview.title = "Click to download and view current file";
+
+            preview.addEventListener("click", (e) => {
+              // Don't trigger download if clicking the remove button
+              if (!e.target.closest(".dz-remove")) {
+                window.open(downloadUrl, "_blank");
+              }
+            });
+          }
+        }
+
         // Ensure only one file
-        this.on("addedfile", () => {
+        this.on("addedfile", (file) => {
           if (this.files.length > 1) {
+            // Remove the oldest file (keep the newest)
             this.removeFile(this.files[0]);
           }
         });
@@ -70,10 +114,13 @@ const initializeDocumentDropzone = () => {
           const formData = new FormData(form);
 
           // Add file from dropzone to form
-          if (this.getQueuedFiles().length > 0) {
-            const file = this.getQueuedFiles()[0];
-
-            formData.append("file", file);
+          const queuedFiles = this.getQueuedFiles();
+          if (queuedFiles.length > 0) {
+            const file = queuedFiles[0];
+            // Only append if it's a real file (not a mock file for existing documents)
+            if (!file.isExistingFile && file instanceof File) {
+              formData.append("file", file);
+            }
           }
 
           fetch(form.action, {

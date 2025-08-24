@@ -77,6 +77,7 @@ textarea {
   gap: 0.5rem;
   flex: 1;
   min-width: 0;
+  cursor: pointer;
 }
 
 .dropzone .dz-preview .dz-filename {
@@ -103,6 +104,7 @@ textarea {
   border-radius: 3px;
   transition: background-color 0.2s;
   flex-shrink: 0;
+  cursor: pointer;
 }
 
 .dropzone .dz-preview .dz-remove:hover {
@@ -122,6 +124,26 @@ textarea {
 .dropzone .dz-preview .dz-error-message,
 .dropzone .dz-preview .dz-details {
   display: none !important;
+}
+
+.dropzone .dz-preview.dz-success.clickable-preview {
+  transition: all 0.2s ease;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px;
+  margin: 4px 0;
+  cursor: pointer !important;
+}
+
+.dropzone .dz-preview.dz-success.clickable-preview:hover {
+  background-color: #f8f9fa;
+  border-color: #007bff;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.1);
+}
+
+.dropzone .dz-preview.dz-success.clickable-preview:hover .dz-filename span {
+  color: #007bff;
+  text-decoration: underline;
 }
 
 select {

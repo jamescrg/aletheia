@@ -98,11 +98,65 @@ def documents_add(request):
             return HttpResponse(status=204, headers={"HX-Trigger": "documentsChanged"})
 
         # Form has errors
-        return render(request, "documents/add_form.html", {"form": form})
+        return render(request, "documents/form.html", {"form": form, "edit": False})
     else:
         form = DocumentsForm(use_required_attribute=False)
 
-        return render(request, "documents/add_form.html", {"form": form})
+        return render(request, "documents/form.html", {"form": form, "edit": False})
+
+
+@login_required
+def documents_edit(request, document_id):
+    try:
+        document = Document.objects.get(id=document_id)
+    except Document.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == "POST":
+        form = DocumentsForm(
+            request.POST, instance=document, use_required_attribute=False
+        )
+
+        uploaded_file = request.FILES.get("file")
+
+        if not uploaded_file and not document.file:
+            form.add_error(None, "FILE_REQUIRED: Please select a file to upload.")
+
+        if form.is_valid():
+            document = form.save(commit=False)
+
+            document.uploaded_by = request.user
+            if uploaded_file:
+                document.file = uploaded_file
+
+            document.save()
+
+            return HttpResponse(status=204, headers={"HX-Trigger": "documentsChanged"})
+
+        # Form has errors
+        return render(
+            request,
+            "documents/form.html",
+            {"form": form, "document": document, "edit": True},
+        )
+    else:
+        form = DocumentsForm(instance=document, use_required_attribute=False)
+
+        return render(
+            request,
+            "documents/form.html",
+            {"form": form, "document": document, "edit": True},
+        )
+
+
+@login_required
+def documents_delete(request, document_id):
+    try:
+        Document.objects.get(id=document_id).delete()
+    except Document.DoesNotExist:
+        return HttpResponse(status=404)
+
+    return HttpResponse(status=204, headers={"HX-Trigger": "documentsChanged"})
 
 
 @login_required
