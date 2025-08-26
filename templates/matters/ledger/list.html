@@ -14,7 +14,11 @@
   </div>
   <table class="ledger-totals">
     <tr>
-      <th>Balance Due</th>
+      <th>Total Payments</th>
+      <td class="numeric">${{ matter.value.invoices.payment_sum|floatformat:2|intcomma }}</td>
+    </tr>
+    <tr>
+      <th>Unpaid Invoices</th>
       <td class="numeric">${{ balance_due|floatformat:2|intcomma }}</td>
     </tr>
     <tr>
@@ -23,10 +27,10 @@
     </tr>
     <tr>
       <th>Total Cost to Date</th>
-      <td class="numeric">${{ matter.value.total.net_fees_and_expenses|floatformat:2|intcomma }}</td>
+      <td class="numeric">${{ total_cost|floatformat:2|intcomma }}</td>
     </tr>
     <tr>
-      <th>Confirmed Trust Balance</th>
+      <th>Clent Trust Balance (Confirmed)</th>
       <td class="numeric">
         {% if matter.client %}
           <a href="{% url 'trust:client-index' id=matter.client.id %}">${{ client_trust_balance|floatformat:2|intcomma }}</a>
