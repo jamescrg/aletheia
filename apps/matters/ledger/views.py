@@ -8,7 +8,6 @@ from django.shortcuts import get_object_or_404, render
 from apps.matters.ledger.generate_ledger import generate_ledger
 from apps.matters.ledger.get_ledger_data import get_ledger_data
 from apps.matters.models import Matter
-from apps.matters.proceedings.models import Proceeding
 from apps.trust.trust import get_confirmed_client_balance
 
 
@@ -22,11 +21,18 @@ def ledger_index(request, id):
     if matter.client:
         client_trust_balance = get_confirmed_client_balance(matter.client.id)
 
+    total_cost = (
+        matter.value["invoices"]["payment_sum"]
+        + ledger_data["balance_due"]
+        + matter.value["unbilled"]["net_fees_and_expenses"]
+    )
+
     context = {
         "app": "matters",
         "subapp": "ledger",
         "matter": matter,
         "client_trust_balance": client_trust_balance,
+        "total_cost": total_cost,
     } | ledger_data
 
     return render(request, "matters/ledger/main.html", context)
@@ -35,8 +41,6 @@ def ledger_index(request, id):
 @login_required
 def ledger_list(request, id):
     matter = get_object_or_404(Matter, pk=id)
-    proceeding = Proceeding.objects.filter(matter=matter.id).order_by("-id").first()
-
     ledger_data = get_ledger_data(matter)
 
     # Get client trust balance
@@ -48,7 +52,6 @@ def ledger_list(request, id):
         "app": "matters",
         "subapp": "ledger",
         "matter": matter,
-        "proceeding": proceeding,
         "client_trust_balance": client_trust_balance,
     } | ledger_data
 
