@@ -1,4 +1,4 @@
-<div class="modal-dialog modal-lg">
+<div class="modal-dialog modal-md">
   <div class="modal-content">
     <div class="modal-header">
       <h1 class="modal-title">Add Payment</h1>
@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="modal-body">
-      <form class="form-responsive form-spacious invoices-add"
+      <form class="form-compact col2 invoices-add"
             hx-post="{% url 'invoicing:quick-invoice-payment' pk=invoice.id payment_type=payment_type %}"
             hx-target="#htmx-modal-container"
             role="form">
