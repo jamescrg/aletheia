@@ -2,6 +2,7 @@ from django.urls import path
 
 from .activity import views as activity
 from .contacts import views as contacts
+from .documents import views as documents
 from .events import views as events
 from .ledger import views as ledger
 from .proceedings import views as proceedings
@@ -243,5 +244,17 @@ urlpatterns = [
         "matters/<int:id>/activity-report/",
         activity.activity_report,
         name="activity-report",
+    ),
+    # Documents
+    path(
+        "matters/<int:id>/documents/", documents.documents_index, name="documents-index"
+    ),
+    path(
+        "matters/<int:id>/documents/list/", documents.documents_list, name="documents"
+    ),
+    path(
+        "matters/documents/sort/<str:order>/",
+        documents.matters_documents_sort,
+        name="documents-sort",
     ),
 ]
