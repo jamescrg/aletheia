@@ -16,6 +16,7 @@ app_name = "documents"
 urlpatterns = [
     path("documents/", index, name="index"),
     path("documents/add/", documents_add, name="add"),
+    path("documents/add/<int:matter_id>/", documents_add, name="add-with-matter"),
     path("documents/edit/<int:document_id>/", documents_edit, name="edit"),
     path("documents/delete/<int:document_id>/", documents_delete, name="delete"),
     path("documents/list/", documents_list, name="list"),

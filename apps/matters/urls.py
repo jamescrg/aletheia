@@ -257,4 +257,9 @@ urlpatterns = [
         documents.matters_documents_sort,
         name="documents-sort",
     ),
+    path(
+        "matters/<int:matter_id>/documents/filter/",
+        documents.matters_documents_filter,
+        name="documents-filter",
+    ),
 ]

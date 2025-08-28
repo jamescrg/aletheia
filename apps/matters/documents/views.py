@@ -2,6 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
+from apps.documents.filters import DocumentsFilter
+from apps.documents.models import Document
 from apps.matters.documents.get_matter_documents import get_matter_documents
 from apps.matters.models import Matter
 
@@ -51,4 +53,41 @@ def matters_documents_sort(request, id, order):
     filter_data["order_by"] = new_order
     request.session["matters_documents_filter"] = filter_data
 
-    return HttpResponse(status=204, headers={"HX-Trigger": "matterDocChanged"})
+    return HttpResponse(status=204, headers={"HX-Trigger": "documentsChanged"})
+
+
+@login_required
+def matters_documents_filter(request, matter_id):
+    if request.method == "POST":
+        filter_data = request.POST.copy()
+        filter_data["matter"] = matter_id
+
+        request.session["matters_documents_filter"] = filter_data
+
+        return HttpResponse(status=204, headers={"HX-Trigger": "documentsChanged"})
+    else:
+        filter_data = request.session.get("matters_documents_filter", {})
+        filter_data["matter"] = matter_id
+
+        if filter_data:
+            filter = DocumentsFilter(
+                filter_data,
+                queryset=Document.objects.filter(matter__id=matter_id)
+                .select_related("matter", "uploaded_by")
+                .order_by("-uploaded_at"),
+            )
+        else:
+            default_filter = {"order_by": "-uploaded_at", "matter": matter_id}
+
+            filter = DocumentsFilter(
+                default_filter,
+                queryset=Document.objects.filter(matter__id=matter_id)
+                .select_related("matter", "uploaded_by")
+                .order_by("-uploaded_at"),
+            )
+
+        return render(
+            request,
+            "matters/documents/filter.html",
+            {"filter": filter, "matter_id": matter_id},
+        )

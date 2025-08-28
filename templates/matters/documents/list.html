@@ -2,14 +2,24 @@
   <div class="toolbar">
     <div class="toolbar-left">
       <h2>Documents</h2>
-    </div>
-    <div class="toolbar-right">
-      <!-- <button hx-get="/events/add/{{ matter.id }}/matters" -->
-      <!--         hx-target="#htmx-modal-container" -->
-      <!--         data-bs-toggle="modal" -->
-      <!--         data-bs-target="#htmx-modal-container"> -->
-      <!--   <i class="bi bi-plus-lg"></i> -->
-      <!-- </button> -->
+      <div class="filter-tools">
+        <button hx-get="{% url 'documents:add-with-matter' matter_id=matter.id %}"
+                hx-target="#htmx-modal-container"
+                data-bs-toggle="modal"
+                data-bs-target="#htmx-modal-container">
+          <i class="bi bi-plus-lg"></i>
+        </button>
+        <button type="button"
+                class="btn-icon"
+                hx-get="{% url 'matters:documents-filter' matter_id=matter.id %}"
+                hx-target="#htmx-modal-container"
+                hx-trigger="click"
+                hx-swap="#outerHTML"
+                data-bs-toggle="modal"
+                data-bs-target="#htmx-modal-container">
+          <i class="bi bi-filter"></i> &nbsp;Filter
+        </button>
+      </div>
     </div>
   </div>
   <div class="table-container">
