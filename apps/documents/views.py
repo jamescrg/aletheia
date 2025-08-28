@@ -78,7 +78,7 @@ def documents_sort(request, order):
 
 
 @login_required
-def documents_add(request):
+def documents_add(request, matter_id=None):
     if request.method == "POST":
         form = DocumentsForm(request.POST, use_required_attribute=False)
 
@@ -106,6 +106,14 @@ def documents_add(request):
         form.fields["matter"].queryset = Matter.objects.filter(status="Open").order_by(
             "name"
         )
+
+        # Pre-select matter if matter_id is provided
+        if matter_id:
+            try:
+                matter = Matter.objects.get(id=matter_id)
+                form.initial["matter"] = matter
+            except Matter.DoesNotExist:
+                pass
 
         return render(request, "documents/form.html", {"form": form, "edit": False})
 
@@ -143,7 +151,10 @@ def documents_edit(request, document_id):
 
             document.save()
 
-            return HttpResponse(status=204, headers={"HX-Trigger": "documentsChanged"})
+            return HttpResponse(
+                status=204,
+                headers={"HX-Trigger": "documentsChanged"},
+            )
 
         # Form has errors
         return render(

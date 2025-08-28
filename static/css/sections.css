@@ -53,7 +53,6 @@
 .filter-tools {
   display: flex;
   gap: 1.5rem;
-  margin: 3px 0 0 0;
 }
 
 .select-property {
