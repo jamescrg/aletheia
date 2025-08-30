@@ -1,5 +1,6 @@
 from django.urls import path
 
+from apps.intakes.api_views import receive_inquiry
 from apps.intakes.views import (
     add,
     add_note,
@@ -50,4 +51,5 @@ urlpatterns = [
         intake_edit_practice_area,
         name="edit-practice-area",
     ),
+    path("api/receive-inquiry/", receive_inquiry, name="api-receive-inquiry"),
 ]
