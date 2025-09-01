@@ -18,6 +18,7 @@
 
 .matter-contacts .email	{
   width: 300px;
+  position: relative;
 }
 
 .main-client {

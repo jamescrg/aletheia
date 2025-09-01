@@ -23,7 +23,17 @@
                   <a href={% url 'contacts:select' contact_id=matter.client.id %}>{{ matter.client.name }}</a>
                 </td>
                 <td class="phone1 main-client">{{ matter.client.phone1|default:'' }}</td>
-                <td class="email main-client">{{ matter.client.email|default:'' }}</td>
+                <td class="email main-client">
+                  {{ matter.client.email|default:'' }}
+                  {% if matter.client.email %}
+                    <button type="button"
+                            class="copy-btn btn btn-sm btn-outline-secondary"
+                            data-copy="{{ matter.client.email }}"
+                            title="Copy email">
+                      <i class="bi bi-clipboard"></i>
+                    </button>
+                  {% endif %}
+                </td>
               </tr>
             {% endif %}
             {% for relationship in relationships %}
@@ -35,7 +45,17 @@
                   <a href="{% url 'contacts:select' contact_id=relationship.contact.id %}">{{ relationship.contact.name }}</a>
                 </td>
                 <td class="phone1">{{ relationship.contact.phone1|default:'' }}</td>
-                <td class="email">{{ relationship.contact.email|default:'' }}</td>
+                <td class="email">
+                  {{ relationship.contact.email|default:'' }}
+                  {% if relationship.contact.email %}
+                    <button type="button"
+                            class="copy-btn btn btn-sm btn-outline-secondary"
+                            data-copy="{{ relationship.contact.email }}"
+                            title="Copy email">
+                      <i class="bi bi-clipboard"></i>
+                    </button>
+                  {% endif %}
+                </td>
               </tr>
             {% endfor %}
           </table>

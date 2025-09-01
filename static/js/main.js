@@ -63,3 +63,28 @@ htmx.on("shown.bs.modal", () => {
 htmx.on("hidden.bs.modal", () => {
   document.getElementById("htmx-modal-container").innerHTML = "";
 });
+
+// Copy value logic
+document.addEventListener('DOMContentLoaded', function() {
+  const copyButtons = document.querySelectorAll('.copy-btn');
+
+  copyButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const data = this.getAttribute('data-copy');
+
+      navigator.clipboard.writeText(data).then(() => {
+        const originalHtml = this.innerHTML;
+
+        this.innerHTML = '<i class="bi bi-check-lg"></i>';
+        this.style.color = 'green';
+
+        setTimeout(() => {
+          this.innerHTML = originalHtml;
+          this.style.color = '';
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy value: ', err);
+      });
+    });
+  });
+});

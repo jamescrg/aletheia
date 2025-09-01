@@ -72,3 +72,22 @@
 .dropdown-item:active {
   background-color: var(--stone-350);
 }
+
+.copy-btn {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 2px 6px;
+  border-color: var(--stone-300);
+
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  &:hover {
+    color: var(--stone-900);
+    background: var(--stone-200);
+  }
+}

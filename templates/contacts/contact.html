@@ -23,7 +23,17 @@
   <div class="contact-item">
     <div class="strong">{{ selected_contact.name }}</div>
     {% if selected_contact.company %}<div>{{ selected_contact.company }}</div>{% endif %}
-    {% if selected_contact.address %}<div id="contact-address">{{ selected_contact.address|linebreaks }}</div>{% endif %}
+    {% if selected_contact.address %}
+      <div id="contact-address">
+        {{ selected_contact.address|linebreaks }}
+        <button type="button"
+                class="copy-btn btn btn-sm btn-outline-secondary"
+                data-copy="{{ selected_contact.address }}"
+                title="Copy address">
+          <i class="bi bi-clipboard"></i>
+        </button>
+      </div>
+    {% endif %}
   </div>
   {% if selected_contact.phone1 %}
     <div class="contact-item">{{ selected_contact.phone1|phone_number }} - {{ selected_contact.phone1_label|lower }}</div>
@@ -34,7 +44,17 @@
   {% if selected_contact.phone3 %}
     <div class="contact-item">{{ selected_contact.phone3|phone_number }} - {{ selected_contact.phone3_label|lower }}</div>
   {% endif %}
-  {% if selected_contact.email != null %}<div class="contact-item">{{ selected_contact.email }}</div>{% endif %}
+  {% if selected_contact.email != null %}
+    <div class="contact-item">
+      {{ selected_contact.email }}
+      <button type="button"
+              class="copy-btn btn btn-sm btn-outline-secondary"
+              data-copy="{{ selected_contact.email }}"
+              title="Copy email">
+        <i class="bi bi-clipboard"></i>
+      </button>
+    </div>
+  {% endif %}
   {% if selected_contact.website %}
     <div class="contact-item">
       <a href="{{ selected_contact.website }}">{{ selected_contact.website }}</a>

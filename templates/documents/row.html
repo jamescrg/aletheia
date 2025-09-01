@@ -1,4 +1,5 @@
 <tr>
+  <td>{{ document.date|date:'Y-m-d' }}</td>
   <td>
     <a href="#"
        hx-get="{% url 'documents:edit' document.id %}"
@@ -8,7 +9,6 @@
        data-bs-target="#htmx-modal-container">{{ document.name }}</a>
   </td>
   <td>{{ document.description }}</td>
-  <td>{{ document.date|date:'Y-m-d' }}</td>
   <td>{{ document.uploaded_by.full_name }}</td>
   <td>
     <a href="{% url 'documents:download' document.id %}" class="button-link">

@@ -15,10 +15,12 @@
 
 .contact-item {
   margin-bottom: 10px;
+  position: relative;
 }
 
 #contact-address {
   margin-bottom: 10px;
+  position: relative;
 }
 
 .contacts-related {
