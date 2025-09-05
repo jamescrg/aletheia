@@ -56,3 +56,7 @@ th {
 .totals-table .numeric {
   width: 150px;
 }
+
+.td-date {
+  width: 120px;
+}
