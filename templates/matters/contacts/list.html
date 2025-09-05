@@ -22,18 +22,18 @@
                 <td class="name hl-gray">
                   <a href={% url 'contacts:select' contact_id=matter.client.id %}>{{ matter.client.name }}</a>
                 </td>
-                <td class="phone1 hl-gray">{{ matter.client.phone1|default:'' }}</td>
                 <td class="email hl-gray">
-                  {{ matter.client.email|default:'' }}
                   {% if matter.client.email %}
                     <button type="button"
-                            class="copy-btn btn btn-sm btn-outline-secondary"
+                            class="btn btn-sm copy-btn copy-btn-left"
                             data-copy="{{ matter.client.email }}"
                             title="Copy email">
                       <i class="bi bi-clipboard"></i>
                     </button>
                   {% endif %}
+                  {{ matter.client.email|default:'' }}
                 </td>
+                <td class="phone1 hl-gray">{{ matter.client.phone1|default:'' }}</td>
               </tr>
             {% endif %}
             {% for relationship in relationships %}
@@ -44,18 +44,18 @@
                 <td class="name">
                   <a href="{% url 'contacts:select' contact_id=relationship.contact.id %}">{{ relationship.contact.name }}</a>
                 </td>
-                <td class="phone1">{{ relationship.contact.phone1|default:'' }}</td>
                 <td class="email">
-                  {{ relationship.contact.email|default:'' }}
                   {% if relationship.contact.email %}
                     <button type="button"
-                            class="copy-btn btn btn-sm btn-outline-secondary"
+                            class="btn btn-sm copy-btn copy-btn-left"
                             data-copy="{{ relationship.contact.email }}"
                             title="Copy email">
                       <i class="bi bi-clipboard"></i>
                     </button>
                   {% endif %}
+                  {{ relationship.contact.email|default:'' }}
                 </td>
+                <td class="phone1">{{ relationship.contact.phone1|default:'' }}</td>
               </tr>
             {% endfor %}
           </table>

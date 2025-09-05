@@ -23,6 +23,14 @@ body {
   justify-content: space-between;
 }
 
+.flex-start-left {
+  align-items: start;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+}
+
+
 .flex-center-space {
   align-items: center;
   display: flex;

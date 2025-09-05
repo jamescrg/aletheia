@@ -18,7 +18,15 @@
   position: relative;
 }
 
-#contact-address {
+.contact-item-left {
+  width: 200px;
+}
+
+.contact-copy-button {
+  padding-left: 3rem;
+}
+
+.contact-address-block {
   margin-bottom: 10px;
   position: relative;
 }

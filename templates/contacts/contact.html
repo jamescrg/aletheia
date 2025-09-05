@@ -21,82 +21,92 @@
     </div>
   </div>
   <div class="contact-item">
-    <div class="strong">{{ selected_contact.name }}</div>
-    {% if selected_contact.company %}<div>{{ selected_contact.company }}</div>{% endif %}
-    {% if selected_contact.address %}
-      <div id="contact-address">
-        {{ selected_contact.address|linebreaks }}
-        <button type="button"
-                class="copy-btn btn btn-sm btn-outline-secondary"
-                data-copy="{{ selected_contact.name }}&#10;{{ selected_contact.address }}"
-                title="Copy address">
-          <i class="bi bi-clipboard"></i>
-        </button>
+    <div class="contact-address-block flex-start-left">
+      <div class="contact-item-left">
+        <span class="strong">{{ selected_contact.name }}</span>
+        <br />
+        {% if selected_contact.company %}
+          {{ selected_contact.company }}
+          <br />
+        {% endif %}
+        {% if selected_contact.address %}{{ selected_contact.address|linebreaks }}{% endif %}
+      </div>
+      <div class="contact-copy-button">
+        {% if selected_contact.address %}
+          <button type="button"
+                  class="btn btn-sm copy-btn copy-btn-left"
+                  data-copy="{{ selected_contact.name }}&#10;{% if selected_contact.company %}{{ selected_contact.company }}&#10;{% endif %}{{ selected_contact.address }}"
+                  title="Copy address">
+            <i class="bi bi-clipboard"></i>
+          </button>
+        {% endif %}
+      </div>
+    </div>
+    {% if selected_contact.phone1 %}
+      <div class="contact-item">{{ selected_contact.phone1|phone_number }} - {{ selected_contact.phone1_label|lower }}</div>
+    {% endif %}
+    {% if selected_contact.phone2 %}
+      <div class="contact-item">{{ selected_contact.phone2|phone_number }} - {{ selected_contact.phone2_label|lower }}</div>
+    {% endif %}
+    {% if selected_contact.phone3 %}
+      <div class="contact-item">{{ selected_contact.phone3|phone_number }} - {{ selected_contact.phone3_label|lower }}</div>
+    {% endif %}
+    {% if selected_contact.email != null %}
+      <div class="contact-item flex-start-left">
+        <div class="contact-item-left">{{ selected_contact.email }}</div>
+        <div class="contact-copy-button">
+          <button type="button"
+                  class="btn btn-sm copy-btn copy-btn-left"
+                  data-copy="{{ selected_contact.email }}"
+                  title="Copy email">
+            <i class="bi bi-clipboard"></i>
+          </button>
+        </div>
       </div>
     {% endif %}
-  </div>
-  {% if selected_contact.phone1 %}
-    <div class="contact-item">{{ selected_contact.phone1|phone_number }} - {{ selected_contact.phone1_label|lower }}</div>
-  {% endif %}
-  {% if selected_contact.phone2 %}
-    <div class="contact-item">{{ selected_contact.phone2|phone_number }} - {{ selected_contact.phone2_label|lower }}</div>
-  {% endif %}
-  {% if selected_contact.phone3 %}
-    <div class="contact-item">{{ selected_contact.phone3|phone_number }} - {{ selected_contact.phone3_label|lower }}</div>
-  {% endif %}
-  {% if selected_contact.email != null %}
-    <div class="contact-item">
-      {{ selected_contact.email }}
-      <button type="button"
-              class="copy-btn btn btn-sm btn-outline-secondary"
-              data-copy="{{ selected_contact.email }}"
-              title="Copy email">
-        <i class="bi bi-clipboard"></i>
-      </button>
+    {% if selected_contact.website %}
+      <div class="contact-item">
+        <a href="{{ selected_contact.website }}">{{ selected_contact.website }}</a>
+      </div>
+    {% endif %}
+    {% if selected_contact.map %}
+      <div class="contact-item">
+        <a href="{{ selected_contact.map }}">Map</a>
+      </div>
+    {% endif %}
+    {% if selected_contact.notes %}<div class="contact-item">{{ selected_contact.notes|linebreaks }}</div>{% endif %}
+    {% if relationships %}
+      <div id="contact-matters">
+        <div class="contacts-related">Related Matters</div>
+        <ul>
+          {% for relationship in relationships %}
+            <li>
+              <a href={% url 'matters:contacts' id=relationship.matter.id %}>{{ relationship.matter.name }}</a> -
+              {{ relationship.matter.status }}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+    <div class="contact-item"></div>
+    {% if selected_contact.intake %}
+      <a href={% url 'intakes:detail-index' id=selected_contact.intake.id %}>View Intake</a>&nbsp;&nbsp;&nbsp;&nbsp;
+    {% endif %}
+    {% if trust %}
+      <a href={% url 'trust:client-index' selected_contact.id %}>View Trust</a>
+    {% endif %}
+    <div class="contacts-assignment">
+      <a href="#"
+         hx-get="/contacts/{{ selected_contact.id }}/assign"
+         hx-target="#htmx-modal-container"
+         data-bs-toggle="modal"
+         data-bs-target="#htmx-modal-container">Assign</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="#"
+         hx-get="/contacts/{{ selected_contact.id }}/remove"
+         hx-target="#htmx-modal-container"
+         data-bs-toggle="modal"
+         data-bs-target="#htmx-modal-container">Remove</a>
     </div>
-  {% endif %}
-  {% if selected_contact.website %}
-    <div class="contact-item">
-      <a href="{{ selected_contact.website }}">{{ selected_contact.website }}</a>
-    </div>
-  {% endif %}
-  {% if selected_contact.map %}
-    <div class="contact-item">
-      <a href="{{ selected_contact.map }}">Map</a>
-    </div>
-  {% endif %}
-  {% if selected_contact.notes %}<div class="contact-item">{{ selected_contact.notes|linebreaks }}</div>{% endif %}
-  {% if relationships %}
-    <div id="contact-matters">
-      <div class="contacts-related">Related Matters</div>
-      <ul>
-        {% for relationship in relationships %}
-          <li>
-            <a href={% url 'matters:contacts' id=relationship.matter.id %}>{{ relationship.matter.name }}</a> -
-            {{ relationship.matter.status }}
-          </li>
-        {% endfor %}
-      </ul>
-    </div>
-  {% endif %}
-  <div class="contact-item"></div>
-  {% if selected_contact.intake %}
-    <a href={% url 'intakes:detail-index' id=selected_contact.intake.id %}>View Intake</a>&nbsp;&nbsp;&nbsp;&nbsp;
-  {% endif %}
-  {% if trust %}
-    <a href={% url 'trust:client-index' selected_contact.id %}>View Trust</a>
-  {% endif %}
-  <div class="contacts-assignment">
-    <a href="#"
-       hx-get="/contacts/{{ selected_contact.id }}/assign"
-       hx-target="#htmx-modal-container"
-       data-bs-toggle="modal"
-       data-bs-target="#htmx-modal-container">Assign</a>
-    &nbsp;&nbsp;|&nbsp;&nbsp;
-    <a href="#"
-       hx-get="/contacts/{{ selected_contact.id }}/remove"
-       hx-target="#htmx-modal-container"
-       data-bs-toggle="modal"
-       data-bs-target="#htmx-modal-container">Remove</a>
   </div>
 </div>
