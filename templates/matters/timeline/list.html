@@ -13,23 +13,25 @@
               hx-get="/matters/{{ matter.id }}/timeline/list"
               hx-target="#timeline-container"
               hx-trigger="change, keyup delay:500ms from:input[name='keyword']">
-          <label for="date_start">From</label>
-          <input type="date"
+          <input type="text"
+                 onfocus="(this.type='date')"
+                 onblur="(this.type='text')"
                  id="date_start"
                  name="date_start"
                  placeholder="Start Date"
                  value="{{ request.GET.date_start }}"
-                 class="filter-input">
-          <label for="date_end">To</label>
-          <input type="date"
+                 class="filter-input-date">
+          <input type="text"
+                 onfocus="(this.type='date')"
+                 onblur="(this.type='text')"
                  id="date_end"
                  name="date_end"
                  placeholder="End Date"
                  value="{{ request.GET.date_end }}"
-                 class="filter-input">
-          <label for="keyword">Search</label>
+                 class="filter-input-date">
           <input type="text"
                  name="keyword"
+                 placeholder="Keyword"
                  value="{{ request.GET.keyword }}"
                  class="filter-input">
         </form>

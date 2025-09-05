@@ -114,12 +114,12 @@ Filter form
   border: solid 1px var(--stone-300);
 }
 
-.filter-form input[type="date"].filter-input {
+.filter-form input[type="date"].filter-input-date {
   background: var(--stone-25);
-  width: 140px;
+  width: 150px;
 }
 
-.filter-form input[type="text"].filter-input {
+.filter-form input[type="text"].filter-input-date {
   background: var(--stone-25);
-  width: 250px;
+  width: 150px;
 }
