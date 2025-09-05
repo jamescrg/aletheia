@@ -17,6 +17,13 @@
   {% endif %}
 </td>
 <td class="hours">{{ entry.hours|floatformat:1 }}</td>
+<td class="rate">
+  {% if entry.comp %}
+    comp
+  {% else %}
+    ${{ entry.rate }}
+  {% endif %}
+</td>
 <td class="fee">
   {% if entry.comp %}
     comp
