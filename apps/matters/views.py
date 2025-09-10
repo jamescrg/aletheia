@@ -192,7 +192,8 @@ def edit(request, id):
 def delete(request, id):
     matter = get_object_or_404(Matter, pk=id)
     matter.delete()
-    return redirect("/matters")
+
+    return HttpResponse(status=204, headers={"HX-Redirect": "/matters"})
 
 
 @login_required
