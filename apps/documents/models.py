@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.files.storage import default_storage as storage
 from django.db import models
 
 from apps.documents.utils import sanitize_filename
@@ -107,5 +108,24 @@ class Document(models.Model):
 
     def save(self, *args, **kwargs):
         self.full_clean()
+
+        # Check if updating an existing document
+        if self.pk:
+            old_document = Document.objects.get(pk=self.pk)
+
+            # Update file path if matter, name, or category has changed
+            if (
+                old_document.matter != self.matter
+                or old_document.name != self.name
+                or old_document.category != self.category
+            ):
+                old_path = old_document.file.name
+                new_path = document_upload_path(self, self.file.name)
+
+                if storage.exists(old_path):
+                    storage.save(new_path, self.file)
+                    storage.delete(old_path)
+
+                    self.file.name = new_path
 
         super().save(*args, **kwargs)
