@@ -1,6 +1,6 @@
 from django import forms
 
-from apps.documents.models import Document
+from apps.documents.models import Document, Label
 from apps.matters.proceedings.models import Proceeding
 from config.settings import CustomFormRendererCompact
 
@@ -17,6 +17,7 @@ class DocumentsForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.renderer = CustomFormRendererCompact()
 
         # Add HTMX attributes to matter field
@@ -37,3 +38,19 @@ class DocumentsForm(forms.ModelForm):
             self.fields["proceeding"].queryset = (
                 self.instance.matter.proceeding_set.all()
             )
+
+
+class LabelsForm(forms.ModelForm):
+    class Meta:
+        model = Label
+        fields = ["name", "matter", "color"]
+        widgets = {
+            "name": forms.TextInput(attrs={"class": "span2"}),
+            "matter": forms.Select(attrs={"class": "span2"}),
+            "color": forms.TextInput(attrs={"type": "color", "class": "span1"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.renderer = CustomFormRendererCompact()
