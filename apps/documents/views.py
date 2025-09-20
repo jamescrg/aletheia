@@ -2,10 +2,11 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 
-from apps.documents.filters import DocumentsFilter
-from apps.documents.forms import DocumentsForm
+from apps.documents.filters import DocumentsFilter, LabelsFilter
+from apps.documents.forms import DocumentsForm, LabelsForm
 from apps.documents.get_document_data import get_document_data
-from apps.documents.models import Document, document_upload_path
+from apps.documents.get_label_data import get_label_data
+from apps.documents.models import Document, Label, document_upload_path
 from apps.matters.models import Matter
 from apps.matters.proceedings.models import Proceeding
 
@@ -16,9 +17,10 @@ def index(request):
 
     context = {
         "app": "documents",
+        "subapp": "documents",
     } | documents_data
 
-    return render(request, "documents/main.html", context)
+    return render(request, "documents/documents/main.html", context)
 
 
 @login_required
@@ -27,9 +29,10 @@ def documents_list(request):
 
     context = {
         "app": "documents",
+        "subapp": "documents",
     } | documents_data
 
-    return render(request, "documents/list.html", context)
+    return render(request, "documents/documents/list.html", context)
 
 
 @login_required
@@ -58,7 +61,7 @@ def documents_filter(request):
                 .order_by("-uploaded_at"),
             )
 
-        return render(request, "documents/filter.html", {"filter": filter})
+        return render(request, "documents/documents/filter.html", {"filter": filter})
 
 
 @login_required
@@ -137,7 +140,9 @@ def documents_add(request, matter_id=None):
             return HttpResponse(status=204, headers={"HX-Trigger": "documentsChanged"})
 
         # Form has errors
-        return render(request, "documents/form.html", {"form": form, "edit": False})
+        return render(
+            request, "documents/documents/form.html", {"form": form, "edit": False}
+        )
 
     else:
         form = DocumentsForm(use_required_attribute=False)
@@ -162,7 +167,9 @@ def documents_add(request, matter_id=None):
             except Matter.DoesNotExist:
                 pass
 
-        return render(request, "documents/form.html", {"form": form, "edit": False})
+        return render(
+            request, "documents/documents/form.html", {"form": form, "edit": False}
+        )
 
 
 @login_required
@@ -248,7 +255,7 @@ def documents_edit(request, document_id):
 
         return render(
             request,
-            "documents/form.html",
+            "documents/documents/form.html",
             {"form": form, "document": document, "edit": True},
         )
 
@@ -300,5 +307,144 @@ def get_proceedings(request):
             pass
 
     return render(
-        request, "documents/proceeding_options.html", {"proceedings": proceedings}
+        request,
+        "documents/documents/proceeding_options.html",
+        {"proceedings": proceedings},
     )
+
+
+@login_required
+def labels_index(request):
+    label_data = get_label_data(request)
+
+    context = {
+        "app": "documents",
+        "subapp": "labels",
+    } | label_data
+
+    return render(request, "documents/labels/main.html", context)
+
+
+@login_required
+def labels_list(request):
+    label_data = get_label_data(request)
+
+    context = {
+        "app": "documents",
+        "subapp": "labels",
+    } | label_data
+
+    return render(request, "documents/labels/list.html", context)
+
+
+@login_required
+def add_label(request):
+    if request.method == "POST":
+        form = LabelsForm(request.POST, use_required_attribute=False)
+        form.fields["matter"].queryset = Matter.objects.filter(status="Open").order_by(
+            "name"
+        )
+
+        if form.is_valid():
+            form.save()
+
+            return HttpResponse(status=204, headers={"HX-Trigger": "labelsChanged"})
+
+        return render(
+            request, "documents/labels/form.html", {"form": form, "edit": False}
+        )
+    else:
+        form = LabelsForm(use_required_attribute=False)
+        form.fields["matter"].queryset = Matter.objects.filter(status="Open").order_by(
+            "name"
+        )
+
+        return render(
+            request, "documents/labels/form.html", {"form": form, "edit": False}
+        )
+
+
+@login_required
+def edit_label(request, label_id):
+    try:
+        label = Label.objects.get(id=label_id)
+    except Label.DoesNotExist:
+        return HttpResponse(status=404)
+
+    matter_list = Matter.objects.filter(status="Open").order_by("name")
+
+    if label.matter not in matter_list:
+        matter_list |= Matter.objects.filter(pk=label.matter.id)
+
+    if request.method == "POST":
+        form = LabelsForm(request.POST, instance=label, use_required_attribute=False)
+
+        form.fields["matter"].queryset = matter_list
+
+        if form.is_valid():
+            form.save()
+
+            return HttpResponse(
+                status=204,
+                headers={"HX-Trigger": "labelsChanged"},
+            )
+
+        return render(
+            request,
+            "documents/labels/form.html",
+            {"form": form, "label": label, "edit": True},
+        )
+    else:
+        form = LabelsForm(instance=label, use_required_attribute=False)
+
+        form.fields["matter"].queryset = matter_list
+
+        return render(
+            request,
+            "documents/labels/form.html",
+            {"form": form, "label": label, "edit": True},
+        )
+
+
+@login_required
+def labels_filter(request):
+    if request.method == "POST":
+        request.session["labels_filter"] = request.POST
+
+        return HttpResponse(status=204, headers={"HX-Trigger": "labelsChanged"})
+    else:
+        filter_data = request.session.get("labels_filter", {})
+
+        if filter_data:
+            filter = LabelsFilter(
+                filter_data,
+                queryset=Label.objects.all()
+                .select_related("matter")
+                .order_by("matter__name", "name"),
+            )
+        else:
+            default_filter = {"order_by": "name"}
+
+            filter = LabelsFilter(
+                default_filter,
+                queryset=Label.objects.all().select_related("matter").order_by("name"),
+            )
+
+        return render(request, "documents/labels/filter.html", {"filter": filter})
+
+
+@login_required
+def labels_sort(request, order):
+    filter_data = request.session.get("labels_filter", {})
+
+    current_order = filter_data.get("order_by", "")
+
+    if current_order == order:
+        new_order = f"-{order}" if not current_order.startswith("-") else order
+    else:
+        new_order = order
+
+    filter_data["order_by"] = new_order
+    request.session["labels_filter"] = filter_data
+
+    return HttpResponse(status=204, headers={"HX-Trigger": "labelsChanged"})
