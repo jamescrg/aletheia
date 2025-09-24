@@ -129,6 +129,10 @@ class Document(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
 
+        # Set category to "Record" if proceeding is set
+        if self.proceeding and self.category != "Record":
+            self.category = "Record"
+
         # Check if updating an existing document
         if self.pk:
             old_document = Document.objects.get(pk=self.pk)
