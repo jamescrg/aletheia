@@ -133,10 +133,19 @@ def documents_add(request, matter_id=None):
             "name"
         )
 
-        # Pre-select matter if matter_id is provided
+        filter_data = request.session.get("documents_filter", {})
+        filter_matter_id = filter_data.get("matter")
+
+        # Pre-select matter if ID is provided
         if matter_id:
             try:
                 matter = Matter.objects.get(id=matter_id)
+                form.initial["matter"] = matter
+            except Matter.DoesNotExist:
+                pass
+        elif filter_matter_id and filter_matter_id != 0:
+            try:
+                matter = Matter.objects.get(id=filter_matter_id)
                 form.initial["matter"] = matter
             except Matter.DoesNotExist:
                 pass
