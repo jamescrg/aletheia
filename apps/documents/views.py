@@ -5,7 +5,7 @@ from django.shortcuts import redirect, render
 from apps.documents.filters import DocumentsFilter
 from apps.documents.forms import DocumentsForm
 from apps.documents.get_document_data import get_document_data
-from apps.documents.models import Document
+from apps.documents.models import Document, document_upload_path
 from apps.matters.models import Matter
 from apps.matters.proceedings.models import Proceeding
 
@@ -115,6 +115,18 @@ def documents_add(request, matter_id=None):
             form.add_error(None, "FILE_REQUIRED: Please select a file to upload.")
 
         if form.is_valid() and uploaded_file:
+            upload_path = document_upload_path(form.instance, uploaded_file.name)
+            all_documents = Document.objects.all()
+
+            if all_documents.filter(file=upload_path).exists():
+                form.add_error(
+                    "name", "A document with the same upload path already exists."
+                )
+
+                return render(
+                    request, "documents/form.html", {"form": form, "edit": False}
+                )
+
             document = form.save(commit=False)
 
             document.uploaded_by = request.user
@@ -133,10 +145,19 @@ def documents_add(request, matter_id=None):
             "name"
         )
 
-        # Pre-select matter if matter_id is provided
+        filter_data = request.session.get("documents_filter", {})
+        filter_matter_id = filter_data.get("matter")
+
+        # Pre-select matter if ID is provided
         if matter_id:
             try:
                 matter = Matter.objects.get(id=matter_id)
+                form.initial["matter"] = matter
+            except Matter.DoesNotExist:
+                pass
+        elif filter_matter_id and filter_matter_id != 0:
+            try:
+                matter = Matter.objects.get(id=filter_matter_id)
                 form.initial["matter"] = matter
             except Matter.DoesNotExist:
                 pass
@@ -187,6 +208,26 @@ def documents_edit(request, document_id):
             if uploaded_file:
                 document.file = uploaded_file
 
+            if uploaded_file:
+                upload_path = document_upload_path(document, uploaded_file.name)
+            else:
+                upload_path = document_upload_path(document, document.file.name)
+
+            print(f"Upload Path: {upload_path}")
+
+            all_documents = Document.objects.exclude(id=document.id)
+
+            if all_documents.filter(file=upload_path).exists():
+                form.add_error(
+                    "name", "A document with the same upload path already exists."
+                )
+
+                return render(
+                    request,
+                    "documents/form.html",
+                    {"form": form, "document": document, "edit": True},
+                )
+
             document.save()
 
             return HttpResponse(
@@ -234,9 +275,13 @@ def download_document(request, document_id):
         content_type="application/octet-stream",
     )
 
-    response["Content-Disposition"] = (
-        f'attachment; filename="{document.name}.{document.file.name.split(".")[-1]}"'
-    )
+    file_extension = document.file.name.split(".")[-1]
+    full_file_name = f"{document.name}.{file_extension}"
+
+    if document.category == "Record" and document.date:
+        full_file_name = f"{document.date}_{full_file_name}"
+
+    response["Content-Disposition"] = f'attachment; filename="{full_file_name}"'
     response["Content-Length"] = document.file.size
 
     return response

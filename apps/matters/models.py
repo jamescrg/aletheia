@@ -62,6 +62,12 @@ class Matter(models.Model):
                     file_extension = old_path.split(".")[-1].lower()
                     sanitized_matter_name = sanitize_filename(self.name)
 
+                    full_file_name = f"{document.name}.{file_extension}"
+
+                    if document.category == "Record" and document.date:
+                        file_name = f"{document.date}_{document.name}"
+                        full_file_name = f"{file_name}.{file_extension}"
+
                     if document.proceeding and document.proceeding.case_number:
                         case_number = (
                             sanitize_filename(document.proceeding.case_number)
@@ -78,13 +84,13 @@ class Matter(models.Model):
                             f"documents/{sanitized_matter_name}_{self.id}/"
                             f"{document.category.capitalize()}/"
                             f"{forum}_{case_number}_{document.proceeding.id}/"
-                            f"{document.name}.{file_extension}"
+                            f"{full_file_name}"
                         )
                     else:
                         new_path = (
                             f"documents/{sanitized_matter_name}_{self.id}/"
                             f"{document.category.capitalize()}/"
-                            f"{document.name}.{file_extension}"
+                            f"{full_file_name}"
                         )
 
                     if storage.exists(old_path):

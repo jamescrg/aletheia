@@ -8,12 +8,20 @@
  */
 
 let documentDropzone = null;
+let preservedDropzoneFiles = [];
 
 const initializeDocumentDropzone = () => {
   const dropzoneElement = document.querySelector("#document-dropzone");
   const form = document.querySelector("#document-form");
 
   if (dropzoneElement && form) {
+    // Preserve files from existing dropzone before destroying
+    if (documentDropzone && documentDropzone.files) {
+      preservedDropzoneFiles = documentDropzone.files.filter(
+        (file) => !file.isExistingFile,
+      );
+    }
+
     // Clean up any existing dropzone instance
     if (documentDropzone) {
       documentDropzone.destroy();
@@ -91,6 +99,14 @@ const initializeDocumentDropzone = () => {
           }
         }
 
+        // Restore preserved files from previous dropzone instance
+        if (preservedDropzoneFiles.length > 0) {
+          preservedDropzoneFiles.forEach((file) => {
+            this.addFile(file);
+          });
+          preservedDropzoneFiles = []; // Clear after restoring
+        }
+
         // Ensure only one file
         this.on("addedfile", (file) => {
           if (this.files.length > 1) {
@@ -114,13 +130,11 @@ const initializeDocumentDropzone = () => {
           const formData = new FormData(form);
 
           // Add file from dropzone to form
-          const queuedFiles = this.getQueuedFiles();
-          if (queuedFiles.length > 0) {
-            const file = queuedFiles[0];
-            // Only append if it's a real file (not a mock file for existing documents)
-            if (!file.isExistingFile && file instanceof File) {
-              formData.append("file", file);
-            }
+          const allFiles = this.files || [];
+          const realFiles = allFiles.filter(file => !file.isExistingFile && file instanceof File);
+          if (realFiles.length > 0) {
+            const file = realFiles[0];
+            formData.append("file", file);
           }
 
           fetch(form.action, {
@@ -130,9 +144,11 @@ const initializeDocumentDropzone = () => {
             .then((response) => {
               if (response.redirected) {
                 // Success - redirect to new URL -- Normal form submission
+                preservedDropzoneFiles = []; // Clear preserved files on success
                 window.location.href = response.url;
               } else if (response.status === 204) {
                 // Close modal and refresh -- HTMX
+                preservedDropzoneFiles = []; // Clear preserved files on success
                 const modalElement = document.querySelector(
                   "#htmx-modal-container",
                 );
@@ -163,7 +179,9 @@ const initializeDocumentDropzone = () => {
                   // Re-add the preserved files to the dropzone
                   if (preservedFiles.length > 0 && documentDropzone) {
                     preservedFiles.forEach((file) => {
-                      documentDropzone.addFile(file);
+                      if (!file.isExistingFile) {
+                        documentDropzone.addFile(file);
+                      }
                     });
                   }
                 });
@@ -244,4 +262,10 @@ document.addEventListener("DOMContentLoaded", initializeFileUploadForms);
 // Also initialize when HTMX loads new content
 document.body.addEventListener("htmx:afterSwap", () => {
   initializeFileUploadForms();
+});
+
+// Clear preserved files when modal is closed/hidden
+document.body.addEventListener("hidden.bs.modal", () => {
+  documentDropzone = null;
+  preservedDropzoneFiles = [];
 });
