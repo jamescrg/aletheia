@@ -12,6 +12,13 @@ class DocumentsFilter(django_filters.FilterSet):
         .order_by("name"),
         empty_label="All",
     )
+    label = django_filters.ModelChoiceFilter(
+        queryset=Label.objects.filter(documents__isnull=False)
+        .distinct()
+        .order_by("name"),
+        empty_label="All",
+        field_name="labels",
+    )
     order_by = django_filters.OrderingFilter(
         fields=[
             ("name", "name"),
@@ -24,7 +31,7 @@ class DocumentsFilter(django_filters.FilterSet):
 
     class Meta:
         model = Document
-        fields = ["name", "matter", "order_by"]
+        fields = ["name", "matter", "label", "order_by"]
 
 
 class LabelsFilter(django_filters.FilterSet):

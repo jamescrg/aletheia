@@ -75,6 +75,16 @@ def documents_filter_matter(request, matter_id):
 
 
 @login_required
+def documents_filter_label(request, label_id):
+    filter_data = request.session.get("documents_filter", {})
+    filter_data["label"] = label_id
+
+    request.session["documents_filter"] = filter_data
+
+    return redirect("documents:list")
+
+
+@login_required
 def documents_sort(request, order):
     filter_data = request.session.get("documents_filter", {})
 
@@ -458,3 +468,17 @@ def delete_label(request, label_id):
         return HttpResponse(status=404)
 
     return HttpResponse(status=204, headers={"HX-Trigger": "labelsChanged"})
+
+
+@login_required
+def toggle_document_select(request, document_id):
+    selected_documents = request.session.get("selected_documents", [])
+
+    if document_id in selected_documents:
+        selected_documents.remove(document_id)
+    else:
+        selected_documents.append(document_id)
+
+    request.session["selected_documents"] = selected_documents
+
+    return HttpResponse(status=204, headers={"HX-Trigger": "documentsChanged"})

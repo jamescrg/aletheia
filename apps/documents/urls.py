@@ -7,6 +7,7 @@ from apps.documents.views import (
     documents_delete,
     documents_edit,
     documents_filter,
+    documents_filter_label,
     documents_filter_matter,
     documents_list,
     documents_sort,
@@ -18,6 +19,7 @@ from apps.documents.views import (
     labels_index,
     labels_list,
     labels_sort,
+    toggle_document_select,
 )
 
 app_name = "documents"
@@ -36,6 +38,11 @@ urlpatterns = [
         documents_filter_matter,
         name="filter-matter",
     ),
+    path(
+        "documents/filter/label/<int:label_id>/",
+        documents_filter_label,
+        name="filter-label",
+    ),
     path("documents/sort/<str:order>/", documents_sort, name="sort"),
     path("documents/download/<int:document_id>/", download_document, name="download"),
     path("documents/get-proceedings/", get_proceedings, name="get-proceedings"),
@@ -47,4 +54,9 @@ urlpatterns = [
     path("documents/labels/delete/<int:label_id>/", delete_label, name="delete-label"),
     path("documents/labels/filter/", labels_filter, name="filter-labels"),
     path("documents/labels/sort/<str:order>/", labels_sort, name="sort-labels"),
+    path(
+        "documents/toggle-select/<int:document_id>/",
+        toggle_document_select,
+        name="toggle-select",
+    ),
 ]

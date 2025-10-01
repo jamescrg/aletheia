@@ -50,12 +50,49 @@
             </li>
           {% endfor %}
         </ul>
+        <button type="button"
+                id="documents-label-filter"
+                class="select-btn large-btn {% if selected_label %}toggle-active{% endif %}"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+          {{ selected_label|default:"Labels (All)" }}
+          <small>
+            <i class="bi bi-chevron-down"></i>
+          </small>
+        </button>
+        <ul class="dropdown-menu"
+            hx-target="#documents-label-filter"
+            hx-swap="outerHTML">
+          <li>
+            <a class="dropdown-item"
+               href="#"
+               hx-post="{% url 'documents:filter-label' 0 %}"
+               hx-target="#documents"
+               hx-swap="#outerHTML">Labels&nbsp;&nbsp;(All)</a>
+          </li>
+          {% for label in labels %}
+            <li>
+              <a class="dropdown-item {% if label.id == label_id %}active{% endif %}"
+                 href="#"
+                 hx-post="{% url 'documents:filter-label' label.id %}"
+                 hx-target="#documents"
+                 hx-swap="#outerHTML">
+                {% load color_utils %}
+                <span class="badge"
+                      style="background-color: {{ label.color }};
+                             color: {{ label.color|contrast_color }};
+                             margin-right: 5px">{{ label.name }}</span>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
       </div>
     </div>
   </div>
   <div class="table-container">
     <table id="documents-list" class="table">
       <tr>
+        <th class="checkmark"></th>
         <th>Date</th>
         <th>
           Document
