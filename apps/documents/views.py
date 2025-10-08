@@ -265,6 +265,18 @@ def documents_edit(request, document_id):
 def documents_delete(request, document_id):
     try:
         Document.objects.get(id=document_id).delete()
+
+        # If the deleted document was the only one for its matter, remove the matter filter
+        filter_data = request.session.get("documents_filter", {})
+
+        matter_id = filter_data.get("matter")
+        if matter_id:
+            remaining_docs = Document.objects.filter(matter_id=matter_id).exists()
+
+            if not remaining_docs:
+                filter_data["matter"] = None
+                request.session["documents_filter"] = filter_data
+
     except Document.DoesNotExist:
         return HttpResponse(status=404)
 
