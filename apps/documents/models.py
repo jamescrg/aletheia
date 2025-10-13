@@ -48,6 +48,12 @@ def document_upload_path(instance, filename):
     file_name = instance.name if instance.name else filename
     file_name = sanitize_filename(file_name)
 
+    full_file_name = f"{file_name}.{file_extension}"
+
+    if instance.category == "Record" and instance.date:
+        file_name = f"{instance.date}_{file_name}"
+        full_file_name = f"{file_name}.{file_extension}"
+
     matter_name = instance.matter.name if instance.matter else "unknown"
     matter_name = sanitize_filename(matter_name)
 
@@ -66,10 +72,10 @@ def document_upload_path(instance, filename):
         return (
             f"documents/{matter_name}_{instance.matter_id}/"
             f"{instance.category.capitalize()}/{forum}_{case_number}_{instance.proceeding.id}/"
-            f"{file_name}.{file_extension}"
+            f"{full_file_name}"
         )
 
-    return f"documents/{matter_name}_{instance.matter_id}/{instance.category.capitalize()}/{file_name}.{file_extension}"
+    return f"documents/{matter_name}_{instance.matter_id}/{instance.category.capitalize()}/{full_file_name}"
 
 
 class Document(models.Model):
@@ -129,6 +135,10 @@ class Document(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
 
+        # Set category to "Record" if proceeding is set
+        if self.proceeding and self.category != "Record":
+            self.category = "Record"
+
         # Check if updating an existing document
         if self.pk:
             old_document = Document.objects.get(pk=self.pk)
@@ -139,6 +149,7 @@ class Document(models.Model):
                 or old_document.name != self.name
                 or old_document.category != self.category
                 or old_document.proceeding != self.proceeding
+                or old_document.date != self.date
             ):
                 old_path = old_document.file.name
                 new_path = document_upload_path(self, self.file.name)
