@@ -20,7 +20,6 @@ def get_pending_client_balance(contact_id):
     contact = get_object_or_404(Contact, pk=contact_id)
     transactions = Transaction.objects.filter(contact=contact)
     balance = calculate_balance(transactions)
-    print(contact.name, ": ", balance)
     return balance
 
 
