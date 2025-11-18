@@ -7,7 +7,7 @@
     <meta charset="UTF-8" content="" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
-    <title>{{ client.name }} - Client Statement</title>
+    <title>Client Statement - {{ client.name }}</title>
     <link rel="shortcut icon" href={% static 'images/briefcase-fill.svg' %} />
     <link rel="stylesheet" href={% static_v 'css/pdf/general.css' %} />
     <link rel="stylesheet" href={% static_v 'css/pdf/invoice-craig.css' %} />
@@ -32,10 +32,10 @@
           </div>
         </div>
         <div class="header-right">
-          <p class="text-right">Client Statement</p>
-          <p class="text-right">{{ current_date|date:"Y-m-d" }}</p>
-          <br />
+          <p class="text-right doc-title">Client Statement</p>
           <p class="text-right">{{ client.name }}</p>
+          <br />
+          <p class="text-right">Generated {{ current_date|date:"Y-m-d" }}</p>
           {% if date_from and date_to %}
             <p class="text-right">{{ date_from|date:"Y-m-d" }} to {{ date_to|date:"Y-m-d" }}</p>
           {% elif date_from %}
@@ -69,6 +69,14 @@
             <td class="text-right total">{{ total_hours|floatformat:1 }} hours</td>
             <td class="money total">${{ total_fees|add:total_expenses|floatformat:2|intcomma }}</td>
           </tr>
+          {% if interpleader_total %}
+            <tr>
+              <td>Interpleaders (deferred)</td>
+              <td class="text-right">-</td>
+              <td class="text-right">-</td>
+              <td class="money">-${{ interpleader_total|floatformat:2|intcomma }}</td>
+            </tr>
+          {% endif %}
           {% if is_cb_client %}
             <tr>
               <td>Pre-Payment</td>
@@ -90,7 +98,6 @@
         <div class="section">
           <h3>{{ matter_data.matter.name }}</h3>
           <!-- Time Entries for this matter -->
-          <h4>Time Entries</h4>
           {% if matter_data.time_entries %}
             <table class="table">
               <tr>
@@ -127,8 +134,7 @@
           {% endif %}
           <!-- Expenses for this matter -->
           {% if matter_data.expense_entries %}
-            <h4>Expenses</h4>
-            <table class="table">
+            <table class="table expenses-table">
               <tr>
                 <th class="text-left">Date</th>
                 <th class="text-left">Description</th>

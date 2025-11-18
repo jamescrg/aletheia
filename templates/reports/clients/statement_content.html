@@ -48,6 +48,14 @@
             <td class="numeric total">{{ total_hours|floatformat:1 }} hours</td>
             <td class="numeric total">${{ total_fees|add:total_expenses|floatformat:2|intcomma }}</td>
           </tr>
+          {% if interpleader_total %}
+            <tr>
+              <td>Interpleaders (deferred)</td>
+              <td class="numeric">-</td>
+              <td class="numeric">-</td>
+              <td class="numeric">-${{ interpleader_total|floatformat:2|intcomma }}</td>
+            </tr>
+          {% endif %}
           {% if is_cb_client %}
             <tr>
               <td>Pre-Payment</td>
@@ -70,7 +78,6 @@
       <div class="section">
         <h1>{{ matter_data.matter.name }}</h1>
         <!-- Time Entries for this matter -->
-        <h2>Time Entries</h2>
         {% if matter_data.time_entries %}
           <div class="table-container">
             <table class="table activity">
@@ -117,7 +124,6 @@
         {% endif %}
         <!-- Expenses for this matter -->
         {% if matter_data.expense_entries %}
-          <h2>Expenses</h2>
           <div class="table-container">
             <table class="table activity">
               <tr>
