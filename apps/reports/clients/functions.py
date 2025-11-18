@@ -59,14 +59,33 @@ def generate_client_statement_pdf(
         matter_time_entries = data["time_entries"]
         matter_expense_entries = data["expense_entries"]
 
+        # Calculate fee totals
+        gross_fees = sum(entry.fee for entry in matter_time_entries)
+        comp_fees = sum(entry.fee for entry in matter_time_entries if entry.comp)
+        net_fees = gross_fees - comp_fees
+
+        # Calculate expense totals
+        gross_expenses = sum(entry.amount for entry in matter_expense_entries)
+        comp_expenses = sum(
+            entry.amount for entry in matter_expense_entries if entry.comp
+        )
+        net_expenses = gross_expenses - comp_expenses
+
         matters_data.append(
             {
                 "matter": data["matter"],
                 "time_entries": matter_time_entries,
                 "expense_entries": matter_expense_entries,
                 "total_hours": sum(entry.hours for entry in matter_time_entries),
-                "total_fees": sum(entry.fee for entry in matter_time_entries),
-                "total_expenses": sum(entry.amount for entry in matter_expense_entries),
+                "gross_fees": gross_fees,
+                "comp_fees": comp_fees,
+                "net_fees": net_fees,
+                "gross_expenses": gross_expenses,
+                "comp_expenses": comp_expenses,
+                "net_expenses": net_expenses,
+                # For backwards compatibility
+                "total_fees": net_fees,
+                "total_expenses": net_expenses,
             }
         )
 
