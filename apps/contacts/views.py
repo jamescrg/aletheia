@@ -55,8 +55,8 @@ def select(request, contact_id):
         request.session["contacts_client_status"] = None
         request.session["contacts_selected_folder_id"] = None
 
-    # Redirect to the contact info tab
-    return redirect("contacts:detail-info", contact_id=contact.id)
+    # Redirect to the contact details tab
+    return redirect("contacts:detail-details", contact_id=contact.id)
 
 
 @login_required
@@ -335,12 +335,12 @@ def google_list(request):
 
 
 @login_required
-def detail_info(request, contact_id):
-    """Contact detail - Info tab"""
+def detail_details(request, contact_id):
+    """Contact detail - Details tab"""
     request.session["selected_contact_id"] = contact_id
     context = get_list_data(request)
-    context["contact_subapp"] = "info"
-    return render(request, "contacts/detail/info.html", context)
+    context["contact_subapp"] = "details"
+    return render(request, "contacts/detail/details.html", context)
 
 
 @login_required
@@ -353,12 +353,12 @@ def detail_matters(request, contact_id):
 
 
 @login_required
-def detail_financial(request, contact_id):
-    """Contact detail - Financial tab"""
+def detail_trust(request, contact_id):
+    """Contact detail - Trust tab"""
     request.session["selected_contact_id"] = contact_id
     context = get_list_data(request)
-    context["contact_subapp"] = "financial"
-    return render(request, "contacts/detail/financial.html", context)
+    context["contact_subapp"] = "trust"
+    return render(request, "contacts/detail/trust.html", context)
 
 
 @login_required

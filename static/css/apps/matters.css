@@ -28,6 +28,7 @@ Matter List
 
 .matter-list .id {
   width: 80px;
+  text-align: right;
 }
 
 .matter-list .name {

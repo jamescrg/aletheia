@@ -4,11 +4,13 @@
     <div class="contact-intake-section">
       <h3>Intake Information</h3>
       <p class="intake-description">This contact was created from an intake submission.</p>
-      <a href="{% url 'intakes:detail-index' id=selected_contact.intake.id %}"
-         class="btn btn-primary">
-        <i class="bi bi-file-earmark-text"></i>
-        View Intake Details
-      </a>
+      <div class="action-buttons">
+        <a href="{% url 'intakes:detail-index' id=selected_contact.intake.id %}"
+           class="btn btn-outline-primary">
+          <i class="bi bi-file-earmark-text"></i>
+          View Intake Details
+        </a>
+      </div>
     </div>
   {% else %}
     <div class="contact-empty-state">

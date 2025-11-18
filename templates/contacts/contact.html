@@ -38,15 +38,15 @@
 </div>
 <div class="subnav detail-subnav">
   <ul>
-    <li {% if not contact_subapp or contact_subapp == 'info' %}class="active"{% endif %}>
-      <a href="{% url 'contacts:detail-info' selected_contact.id %}">Contact Info</a>
+    <li {% if not contact_subapp or contact_subapp == 'details' %}class="active"{% endif %}>
+      <a href="{% url 'contacts:detail-details' selected_contact.id %}">Details</a>
     </li>
     {% if selected_contact.client_status == 'Current' or selected_contact.client_status == 'Pending' or selected_contact.client_status == 'Former' %}
       <li {% if contact_subapp == 'matters' %}class="active"{% endif %}>
         <a href="{% url 'contacts:detail-matters' selected_contact.id %}">Matters</a>
       </li>
-      <li {% if contact_subapp == 'financial' %}class="active"{% endif %}>
-        <a href="{% url 'contacts:detail-financial' selected_contact.id %}">Financial</a>
+      <li {% if contact_subapp == 'trust' %}class="active"{% endif %}>
+        <a href="{% url 'contacts:detail-trust' selected_contact.id %}">Trust</a>
       </li>
       <li {% if contact_subapp == 'intake' %}class="active"{% endif %}>
         <a href="{% url 'contacts:detail-intake' selected_contact.id %}">Intake</a>
@@ -55,15 +55,15 @@
   </ul>
 </div>
 <div class="section subsection">
-  {% if contact_subapp == 'info' %}
-    {% include "contacts/tabs/contact_info.html" %}
+  {% if contact_subapp == 'details' %}
+    {% include "contacts/tabs/details.html" %}
   {% elif contact_subapp == 'matters' %}
     {% include "contacts/tabs/matters.html" %}
-  {% elif contact_subapp == 'financial' %}
-    {% include "contacts/tabs/financial.html" %}
+  {% elif contact_subapp == 'trust' %}
+    {% include "contacts/tabs/trust.html" %}
   {% elif contact_subapp == 'intake' %}
     {% include "contacts/tabs/intake.html" %}
   {% else %}
-    {% include "contacts/tabs/contact_info.html" %}
+    {% include "contacts/tabs/details.html" %}
   {% endif %}
 </div>

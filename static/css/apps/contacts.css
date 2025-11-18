@@ -84,11 +84,6 @@
   display: inline-block;
   padding: 4px 12px;
   border-radius: 4px;
-  background: var(--selected-background);
-  border: solid 1px var(--selected-border);
-}
-
-.client-status-badge.status-nonclient {
   background-color: var(--stone-150);
   color: var(--stone-600);
   border: 1px solid var(--stone-300);
@@ -193,7 +188,7 @@
 /* Matters Tab */
 .contact-matters-section h3,
 .contact-matter-actions h3,
-.contact-financial-section h3,
+.contact-trust-section h3,
 .contact-intake-section h3 {
   font-size: 1rem;
   font-weight: 600;
@@ -207,11 +202,8 @@
 
 .matter-status-heading {
   font-size: 1rem;
-  font-weight: normal;
-  /* color: var(--stone-500); */
   margin-bottom: 12px;
   padding-bottom: 8px;
-  border-bottom: 1px solid var(--stone-200);
 }
 
 .matters-list {
@@ -226,10 +218,6 @@
   border-radius: 6px;
   margin-bottom: 8px;
   transition: background-color 0.2s;
-}
-
-.matter-item:hover {
-  background-color: var(--stone-50);
 }
 
 .matter-info {
@@ -249,11 +237,6 @@
   font-weight: 500;
   color: var(--stone-700);
   text-decoration: none;
-}
-
-.matter-name:hover {
-  color: var(--stone-900);
-  text-decoration: underline;
 }
 
 .matter-number {
@@ -306,27 +289,32 @@
 .action-buttons .btn-outline-primary {
   color: var(--stone-700);
   border-color: var(--stone-300);
+
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
 }
 
 .action-buttons .btn-outline-primary:hover {
-  background-color: var(--stone-700);
-  border-color: var(--stone-700);
-  color: white;
+  color: var(--stone-700);
+  background-color: transparent;
+  border-color: var(--stone-300);
 }
 
 .action-buttons .btn-outline-secondary {
   color: var(--stone-600);
+  background-color: transparent;
   border-color: var(--stone-300);
 }
 
 .action-buttons .btn-outline-secondary:hover {
-  background-color: var(--stone-600);
-  border-color: var(--stone-600);
-  color: white;
+  color: var(--stone-600);
+  border-color: var(--stone-300);
 }
 
-/* Financial Tab */
-.contact-financial-section {
+/* Trust Tab */
+.contact-trust-section {
   margin-bottom: 32px;
 }
 
@@ -356,6 +344,11 @@
   color: var(--stone-900);
 }
 
+.trust-balance-amount {
+  text-align: right;
+  font-weight: 600;
+}
+
 .balance-positive {
   color: var(--green-600);
 }
@@ -364,30 +357,20 @@
   color: var(--red-600);
 }
 
-.trust-actions,
+.contact-trust-section .action-buttons,
 .contact-intake-section {
   margin-top: 16px;
 }
 
-.trust-actions .btn-outline-primary {
+.contact-trust-section .btn-outline-primary {
   color: var(--stone-700);
   border-color: var(--stone-300);
 }
 
-.trust-actions .btn-outline-primary:hover {
+.contact-trust-section .btn-outline-primary:hover {
   background-color: var(--stone-700);
   border-color: var(--stone-700);
   color: white;
-}
-
-.contact-intake-section .btn-primary {
-  background-color: var(--stone-700);
-  border-color: var(--stone-700);
-}
-
-.contact-intake-section .btn-primary:hover {
-  background-color: var(--stone-800);
-  border-color: var(--stone-800);
 }
 
 .intake-description {
