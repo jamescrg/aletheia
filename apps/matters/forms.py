@@ -32,9 +32,15 @@ class MatterForm(forms.ModelForm):
         )
 
         PRACTICE_AREAS = (
-            ("CB", "CB"),
             ("General", "General"),
-            ("Old Republic", "Old Republic"),
+            ("Interpleader", "Interpleader"),
+            ("Construction", "Construction"),
+            ("Boundary", "Boundary"),
+            ("LLT-L", "LLT-L"),
+            ("LLT-T", "LLT-T"),
+            ("QT", "QT"),
+            ("HOA", "HOA"),
+            ("Fraud", "Fraud"),
         )
 
         widgets = {
