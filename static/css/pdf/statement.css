@@ -3,3 +3,13 @@ Client Statement PDF Styles
 ========================================================================== */
 
 /* Craig Legal header styles are inherited from invoice-craig.css */
+
+/* ==========================================================================
+Table Column Widths
+========================================================================== */
+
+/* Activity Summary table - narrow entries and hours columns */
+.invoice-totals td:nth-child(2),
+.invoice-totals td:nth-child(3) {
+  width: 0.9in;
+}
