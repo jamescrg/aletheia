@@ -22,11 +22,28 @@
   font-style: italic;
 }
 
-/* Intakes report specific styles */
-.reports-section-heading {
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
+.reports {
+
+  h1, h2 {
+    margin-bottom: 1.2rem;
+  }
+
+  .client-name {
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+  }
+
+  .section {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .table-container {
+    margin-bottom: 1.2rem;
+  }
+
 }
+
 
 .reports-filter-info {
   margin-top: 1.5rem;

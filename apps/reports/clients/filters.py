@@ -23,7 +23,7 @@ class ClientReportFilter(django_filters.FilterSet):
         fields = ["date_from", "date_to"]
 
 
-class ClientDetailFilter(django_filters.FilterSet):
+class ClientStatementFilter(django_filters.FilterSet):
     client = django_filters.ModelChoiceFilter(
         queryset=Contact.objects.filter(client_status="Current").order_by("name"),
         empty_label="Select Client",

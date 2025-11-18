@@ -24,16 +24,18 @@ urlpatterns = [
     path("reports/clients/", clients.clients_index, name="clients-index"),
     path("reports/clients/list/", clients.clients_list, name="clients"),
     path("reports/clients/filter/", clients.clients_filter, name="clients-filter"),
-    path("reports/clients/detail/", clients.client_detail, name="client-detail"),
     path(
-        "reports/clients/detail/filter/",
-        clients.client_detail_filter,
-        name="client-detail-filter",
+        "reports/clients/statement/", clients.client_statement, name="client-statement"
     ),
     path(
-        "reports/clients/detail/pdf/",
-        clients.client_detail_pdf,
-        name="client-detail-pdf",
+        "reports/clients/statement/filter/",
+        clients.client_statement_filter,
+        name="client-statement-filter",
+    ),
+    path(
+        "reports/clients/statement/pdf/",
+        clients.client_statement_pdf,
+        name="client-statement-pdf",
     ),
     # Intakes
     path("reports/intakes/", intakes.intakes_index, name="intakes-index"),

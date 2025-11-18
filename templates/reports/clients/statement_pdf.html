@@ -76,6 +76,20 @@
             <td class="numeric total">{{ total_hours|floatformat:1 }} hours</td>
             <td class="money total">${{ total_fees|add:total_expenses|floatformat:2|intcomma }}</td>
           </tr>
+          {% if is_cb_client %}
+            <tr>
+              <td>Pre-Payment</td>
+              <td class="numeric">-</td>
+              <td class="numeric">-</td>
+              <td class="money">${{ prepayment|floatformat:2|intcomma }}</td>
+            </tr>
+            <tr>
+              <td class="total">Amount Due</td>
+              <td class="numeric total">-</td>
+              <td class="numeric total">-</td>
+              <td class="money total">${{ amount_due|floatformat:2|intcomma }}</td>
+            </tr>
+          {% endif %}
         </table>
       </div>
       <!-- Matter Sections -->

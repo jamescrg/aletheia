@@ -10,7 +10,7 @@ from apps.activity.time.models import TimeEntry
 from apps.contacts.models import Contact
 
 
-def generate_client_detail_pdf(
+def generate_client_statement_pdf(
     client: Contact, date_from=None, date_to=None, request: WSGIRequest = None
 ) -> NamedTemporaryFile:
     """
@@ -82,6 +82,12 @@ def generate_client_detail_pdf(
         len(matter["expense_entries"]) for matter in matters_data
     )
 
+    # Campbell & Brannon prepayment logic
+    is_cb_client = client and client.name == "Campbell & Brannon"
+    prepayment = 3500 if is_cb_client else 0
+    total_activity = total_fees + total_expenses
+    amount_due = max(0, total_activity - prepayment) if is_cb_client else 0
+
     context = {
         "client": client,
         "matters_data": matters_data,
@@ -90,12 +96,15 @@ def generate_client_detail_pdf(
         "total_hours": total_hours,
         "total_fees": total_fees,
         "total_expenses": total_expenses,
+        "is_cb_client": is_cb_client,
+        "prepayment": prepayment,
+        "amount_due": amount_due,
         "date_from": date_from,
         "date_to": date_to,
         "current_date": datetime.now().date(),
     }
 
-    html_string = render_to_string("reports/clients/client_detail_pdf.html", context)
+    html_string = render_to_string("reports/clients/client_statement_pdf.html", context)
 
     if request:
         base_url = request.build_absolute_uri("/").rstrip("/")

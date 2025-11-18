@@ -13,8 +13,8 @@ from apps.invoicing.invoices.models import Invoice
 from apps.invoicing.payments.models import Payment
 from apps.management.filter_manager import FilterManager
 
-from .filters import ClientDetailFilter, ClientReportFilter
-from .functions import generate_client_detail_pdf
+from .filters import ClientReportFilter, ClientStatementFilter
+from .functions import generate_client_statement_pdf
 
 
 @login_required
@@ -223,29 +223,33 @@ def clients_filter(request):
 
 @login_required
 @staff_member_required
-def client_detail_filter(request):
-    filter_manager = FilterManager(request, ClientDetailFilter, "client_detail_filter")
+def client_statement_filter(request):
+    filter_manager = FilterManager(
+        request, ClientStatementFilter, "client_statement_filter"
+    )
 
     if filter_manager.process_filter():
-        return HttpResponse(status=204, headers={"HX-Trigger": "clientDetailChanged"})
+        return HttpResponse(
+            status=204, headers={"HX-Trigger": "clientStatementChanged"}
+        )
 
     # Get current filter data from session for display
-    filter_data = request.session.get("client_detail_filter", {})
+    filter_data = request.session.get("client_statement_filter", {})
     clients = Contact.objects.filter(client_status="Current").order_by("name")
 
     return render(
         request,
-        "reports/clients/detail_filter.html",
+        "reports/clients/statement_filter.html",
         {"filter_data": filter_data, "clients": clients},
     )
 
 
 @login_required
 @staff_member_required
-def client_detail(request):
+def client_statement(request):
 
     # Get current filter data from session
-    filter_data = request.session.get("client_detail_filter", {})
+    filter_data = request.session.get("client_statement_filter", {})
 
     client_id = filter_data.get("client")
     date_from = filter_data.get("date_from")
@@ -331,9 +335,15 @@ def client_detail(request):
         len(matter["expense_entries"]) for matter in matters_data
     )
 
+    # Campbell & Brannon prepayment logic
+    is_cb_client = client and client.name == "Campbell & Brannon"
+    prepayment = 3500 if is_cb_client else 0
+    total_activity = total_fees + total_expenses
+    amount_due = max(0, total_activity - prepayment) if is_cb_client else 0
+
     context = {
         "app": "reports",
-        "subapp": "client-detail",
+        "subapp": "client-statement",
         "client": client,
         "matters_data": matters_data,
         "filter_data": filter_data,
@@ -342,22 +352,25 @@ def client_detail(request):
         "total_hours": total_hours,
         "total_fees": total_fees,
         "total_expenses": total_expenses,
+        "is_cb_client": is_cb_client,
+        "prepayment": prepayment,
+        "amount_due": amount_due,
     }
 
     # Return partial template for HTMX requests
     if request.headers.get("HX-Request"):
-        return render(request, "reports/clients/detail_content.html", context)
+        return render(request, "reports/clients/statement_content.html", context)
 
-    return render(request, "reports/clients/detail.html", context)
+    return render(request, "reports/clients/statement.html", context)
 
 
 @login_required
 @staff_member_required
-def client_detail_pdf(request):
-    """Export client detail report as PDF"""
+def client_statement_pdf(request):
+    """Export client statement report as PDF"""
 
     # Get current filter data from session
-    filter_data = request.session.get("client_detail_filter", {})
+    filter_data = request.session.get("client_statement_filter", {})
 
     client_id = filter_data.get("client")
     date_from = filter_data.get("date_from")
@@ -388,7 +401,9 @@ def client_detail_pdf(request):
             pass
 
     # Generate PDF
-    pdf_file = generate_client_detail_pdf(client, date_from_obj, date_to_obj, request)
+    pdf_file = generate_client_statement_pdf(
+        client, date_from_obj, date_to_obj, request
+    )
 
     # Create response
     with open(pdf_file.name, "rb") as f:
