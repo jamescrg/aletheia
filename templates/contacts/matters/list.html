@@ -37,7 +37,7 @@
   {% endif %}
   {# Matter Assignment Actions #}
   <div class="contact-matter-actions">
-    <h3>Actions</h3>
+    <p>Actions</p>
     <div class="action-buttons">
       <a href="#"
          class="btn btn-outline-primary"
@@ -49,7 +49,7 @@
         Assign to Matter
       </a>
       <a href="#"
-         class="btn btn-outline-secondary"
+         class="btn btn-outline-primary"
          hx-get="/contacts/{{ selected_contact.id }}/remove"
          hx-target="#htmx-modal-container"
          data-bs-toggle="modal"

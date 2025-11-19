@@ -332,39 +332,3 @@ def google_list(request):
     }
 
     return render(request, "contacts/google.html", context)
-
-
-@login_required
-def detail_details(request, contact_id):
-    """Contact detail - Details tab"""
-    request.session["selected_contact_id"] = contact_id
-    context = get_list_data(request)
-    context["contact_subapp"] = "details"
-    return render(request, "contacts/detail/details.html", context)
-
-
-@login_required
-def detail_matters(request, contact_id):
-    """Contact detail - Matters tab"""
-    request.session["selected_contact_id"] = contact_id
-    context = get_list_data(request)
-    context["contact_subapp"] = "matters"
-    return render(request, "contacts/detail/matters.html", context)
-
-
-@login_required
-def detail_trust(request, contact_id):
-    """Contact detail - Trust tab"""
-    request.session["selected_contact_id"] = contact_id
-    context = get_list_data(request)
-    context["contact_subapp"] = "trust"
-    return render(request, "contacts/detail/trust.html", context)
-
-
-@login_required
-def detail_intake(request, contact_id):
-    """Contact detail - Intake tab"""
-    request.session["selected_contact_id"] = contact_id
-    context = get_list_data(request)
-    context["contact_subapp"] = "intake"
-    return render(request, "contacts/detail/intake.html", context)

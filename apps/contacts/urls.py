@@ -1,15 +1,16 @@
 from django.urls import path
 
+# Import subfolder views
+from apps.contacts.details import views as details
+from apps.contacts.intake import views as intake
+from apps.contacts.matters import views as matters
+from apps.contacts.trust import views as trust
 from apps.contacts.views import (  # go_to_contact,
     add,
     add_intake,
     assign,
     assign_store,
     delete,
-    detail_details,
-    detail_intake,
-    detail_matters,
-    detail_trust,
     edit,
     google_list,
     index,
@@ -38,8 +39,8 @@ urlpatterns = [
         name="toggle-google-sync",
     ),
     path("contacts/google_list", google_list, name="google"),
-    path("contacts/<int:contact_id>/details", detail_details, name="detail-details"),
-    path("contacts/<int:contact_id>/matters", detail_matters, name="detail-matters"),
-    path("contacts/<int:contact_id>/trust", detail_trust, name="detail-trust"),
-    path("contacts/<int:contact_id>/intake", detail_intake, name="detail-intake"),
+    path("contacts/<int:contact_id>/details", details.index, name="detail-details"),
+    path("contacts/<int:contact_id>/matters", matters.index, name="detail-matters"),
+    path("contacts/<int:contact_id>/trust", trust.index, name="detail-trust"),
+    path("contacts/<int:contact_id>/intake", intake.index, name="detail-intake"),
 ]

@@ -16,6 +16,15 @@
   color: var(--stone-300);
 }
 
+.btn-outline-primary,
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background: transparent;
+  border-color: var(--stone-300);
+  box-shadow: none;
+  color: var(--stone-600);
+}
+
 .icon-green {
   color: var(--icon-green) !important;
 }

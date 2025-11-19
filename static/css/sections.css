@@ -105,7 +105,7 @@ Detail Views
   padding-bottom: 0;
 }
 
-.detail-title .toolbar > a,
+.detail-title .toolbar a,
 .detail-title .toolbar button {
   border: solid 1px var(--stone-300);
 }

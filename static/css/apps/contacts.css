@@ -94,7 +94,7 @@
   position: relative;
   background-color: var(--stone-50);
   border: 1px solid var(--stone-200);
-  border-radius: 8px;
+  border-radius: 3px;
   padding: 20px;
   margin-bottom: 16px;
   line-height: 1.6;
@@ -284,16 +284,6 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-}
-
-.action-buttons .btn-outline-primary {
-  color: var(--stone-700);
-  border-color: var(--stone-300);
-
-  &:focus {
-    outline: none;
-    box-shadow: none;
-  }
 }
 
 .action-buttons .btn-outline-primary:hover {
