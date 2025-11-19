@@ -1,5 +1,24 @@
 {% load phone_numbers %}
 <div class="contact-tab-content">
+  {# Hidden div for copying all contact details #}
+  <div id="contact-full-details" class="hidden">
+    {{ selected_contact.name }}
+    {% if selected_contact.company %}{{ selected_contact.company }}{% endif %}
+    {% if selected_contact.address %}{{ selected_contact.address }}{% endif %}
+    {% if selected_contact.email %}Email: {{ selected_contact.email }}{% endif %}
+    {% if selected_contact.phone1 %}
+      Phone: {{ selected_contact.phone1|phone_number }}
+      {% if selected_contact.phone1_label %}- {{ selected_contact.phone1_label }}{% endif %}
+    {% endif %}
+    {% if selected_contact.phone2 %}
+      Phone: {{ selected_contact.phone2|phone_number }}
+      {% if selected_contact.phone2_label %}- {{ selected_contact.phone2_label }}{% endif %}
+    {% endif %}
+    {% if selected_contact.phone3 %}
+      Phone: {{ selected_contact.phone3|phone_number }}
+      {% if selected_contact.phone3_label %}- {{ selected_contact.phone3_label }}{% endif %}
+    {% endif %}
+  </div>
   {# Address Block Card #}
   {% if selected_contact.address %}
     <div class="contact-card">

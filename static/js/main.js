@@ -70,7 +70,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
   copyButtons.forEach(button => {
     button.addEventListener('click', function() {
-      const data = this.getAttribute('data-copy');
+      let data = this.getAttribute('data-copy');
+
+      // If data-copy-target is specified, get text from target element
+      const targetSelector = this.getAttribute('data-copy-target');
+      if (targetSelector) {
+        const targetElement = document.querySelector(targetSelector);
+        if (targetElement) {
+          data = targetElement.textContent.trim();
+        }
+      }
 
       navigator.clipboard.writeText(data).then(() => {
         const originalHtml = this.innerHTML;
