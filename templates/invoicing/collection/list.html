@@ -16,9 +16,9 @@
           <td>
             <a href="{% url 'matters:ledger' matter.id %}">{{ matter.name }}</a>
           </td>
-          <td class="numeric">${{ matter.value.invoices.billed|floatformat:2|intcomma }}</td>
-          <td class="numeric">${{ matter.value.invoices.payment_sum|floatformat:2|intcomma }}</td>
-          <td class="numeric strong">${{ matter.value.invoices.due|floatformat:2|intcomma }}</td>
+          <td class="numeric">${{ matter.billed|floatformat:2|intcomma }}</td>
+          <td class="numeric">${{ matter.paid|floatformat:2|intcomma }}</td>
+          <td class="numeric strong">${{ matter.due|floatformat:2|intcomma }}</td>
         </tr>
       {% endfor %}
     </table>
