@@ -110,6 +110,10 @@ Detail Views
   border: solid 1px var(--stone-300);
 }
 
+.detail-title .dropdown-menu a {
+  border: none;
+}
+
 .detail-subnav {
   border-top-left-radius: 0;
   border-top-right-radius: 0;

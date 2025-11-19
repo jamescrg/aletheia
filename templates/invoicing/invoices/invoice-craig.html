@@ -111,26 +111,6 @@
           </table>
         </div>
       {% endif %}
-      {% if confirmed_balance > 0 %}
-        <div class="section">
-          <h3>Funds in Trust</h3>
-          <table class="table">
-            <tr>
-              <td>Retainer Balance *</td>
-              <td class="money">${{ confirmed_balance|floatformat:2|intcomma }}</td>
-            </tr>
-          </table>
-          <p class="trust-caption">
-            * Please note: these funds are not applied as billed. They are held for the full duration of the matter as described in Paragraph 4.3 of the Attorney Client Agreement, and if applicable, the Retainer Addendum. This invoice does not indicate any change in your trust balance. Please pay the amount due highlighted below.
-          </p>
-        </div>
-      {% endif %}
-      {% if invoice.message %}
-        <div class="section">
-          <h3>Client Message</h3>
-          <p class="note">{{ invoice.message }}</p>
-        </div>
-      {% endif %}
       <div class="section">
         <h3>Invoice Total</h3>
         <table class="table invoice-totals">
@@ -154,6 +134,26 @@
           </tr>
         </table>
       </div>
+      {% if confirmed_balance > 0 %}
+        <div class="section">
+          <h3>Funds in Trust</h3>
+          <table class="table">
+            <tr>
+              <td>Retainer Balance *</td>
+              <td class="money">${{ confirmed_balance|floatformat:2|intcomma }}</td>
+            </tr>
+          </table>
+          <p class="trust-caption">
+            * Please note: funds on retainer are not applied to invoices before the end of the case. They are held for the full duration of the matter as described in Paragraph 4.3 of your Attorney Client Agreement, and if applicable, your Retainer Addendum. This invoice does not indicate any change in your trust balance. Please pay the amount due highlighted above.
+          </p>
+        </div>
+      {% endif %}
+      {% if invoice.message %}
+        <div class="section">
+          <h3>Client Message</h3>
+          <p class="note">{{ invoice.message }}</p>
+        </div>
+      {% endif %}
     </div>
   </body>
 </html>

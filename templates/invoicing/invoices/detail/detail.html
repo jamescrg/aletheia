@@ -36,26 +36,24 @@
             <i class="bi bi-pencil"></i>
           </button>
         {% endif %}
-        <div class="dropdown">
-          <button class="button-link"
-                  type="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false">
-            <i class="bi bi-download"></i>
-          </button>
-          <ul class="dropdown-menu">
-            <li>
-              <a class="dropdown-item"
-                 target="_blank"
-                 href="{% url 'invoicing:invoices-pdf-download' invoice.id %}">Download PDF</a>
-            </li>
-            <li>
-              <a class="dropdown-item"
-                 target="_blank"
-                 href="{% url 'invoicing:invoice-ledes' invoice.id %}">Download Ledes</a>
-            </li>
-          </ul>
-        </div>
+        <button class="button-link"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+          <i class="bi bi-download"></i>
+        </button>
+        <ul class="dropdown-menu">
+          <li>
+            <a class="dropdown-item"
+               target="_blank"
+               href="{% url 'invoicing:invoices-pdf-download' invoice.id %}">Download PDF</a>
+          </li>
+          <li>
+            <a class="dropdown-item"
+               target="_blank"
+               href="{% url 'invoicing:invoice-ledes' invoice.id %}">Download Ledes</a>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
