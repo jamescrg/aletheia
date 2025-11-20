@@ -243,3 +243,8 @@ th {
 .unbilled-table td:nth-child(3) {
   width: 34%;
 }
+
+.show-more {
+  font-weight: normal;
+  font-size: 0.875rem;
+}

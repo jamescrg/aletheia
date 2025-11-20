@@ -13,7 +13,7 @@
                   <div class="d-flex justify-content-between align-items-center">
                     <span>Upcoming Events</span>
                     {% if upcoming_events|length > 3 %}
-                      <a href="{% url 'agenda:events-select' %}" class="small">Show more →</a>
+                      <a href="{% url 'agenda:events-select' %}" class="show-more"><i class="bi bi-box-arrow-up-left"></i>&nbsp; Show more</a>
                     {% endif %}
                   </div>
                 </th>
@@ -211,7 +211,7 @@
                     <td>
                       <a href="{% url 'matters:detail' id=matter.id %}">{{ matter.name|truncatechars:22 }}</a>
                     </td>
-                    <td class="numeric">${{ matter.clearance|floatformat:2|intcomma }}</td>
+                    <td class="numeric {% if matter.clearance < 0 %}urgent{% endif %}">${{ matter.clearance|floatformat:2|intcomma }}</td>
                   </tr>
                 {% endfor %}
               {% else %}
