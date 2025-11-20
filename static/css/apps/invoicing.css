@@ -153,6 +153,20 @@ Credits
   background: var(--stone-150);
 }
 
+.create-invoice-icon {
+  float: right;
+  color: var(--stone-400);
+  font-size: 1.1rem;
+  margin-left: 8px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.create-invoice-icon:hover {
+  opacity: 1;
+  color: var(--stone-500);
+}
+
 /* ==========================================================================
  Collection
 ========================================================================== */

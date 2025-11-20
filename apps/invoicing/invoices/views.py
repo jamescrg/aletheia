@@ -301,6 +301,9 @@ def invoices_add(request):
     else:
         form = InvoiceForm(use_required_attribute=False)
 
+        # Check if a matter was specified via GET parameter
+        matter_id = request.GET.get("matter")
+
         entries = TimeEntry.objects.filter(
             invoice__isnull=True, entered=0, date__gte="2024-01-01"
         ).values_list("matter", flat=True)
@@ -309,10 +312,14 @@ def invoices_add(request):
             invoice__isnull=True, entered=0
         ).values_list("matter", flat=True)
 
+        # Combine all matter IDs (including the specified one if provided)
+        matter_ids = list(chain(entries, expenses))
+        if matter_id:
+            matter_ids.append(int(matter_id))
+            form.fields["matter"].initial = matter_id
+
         matter_list = (
-            Matter.objects.filter(id__in=chain(entries, expenses))
-            .distinct()
-            .order_by("name")
+            Matter.objects.filter(id__in=matter_ids).distinct().order_by("name")
         )
 
         # Create a list of matters with unbilled time for the dropdown
