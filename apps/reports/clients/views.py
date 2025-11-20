@@ -499,7 +499,9 @@ def client_statement_pdf(request):
         response = HttpResponse(f.read(), content_type="application/pdf")
 
     # Set filename for download
-    filename = f"{client.name}_activity_report_{datetime.now().strftime('%Y%m%d')}.pdf"
+    filename = (
+        f"{datetime.now().strftime('%Y-%m-%d')} Client Statement - {client.name}.pdf"
+    )
     response["Content-Disposition"] = f'attachment; filename="{filename}"'
 
     return response
