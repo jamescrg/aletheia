@@ -123,10 +123,41 @@ def tasks_add_quick(request):
     if not request.POST["description"]:
         return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
 
+    # Get the description and extract first word for smart matter matching
+    description = request.POST["description"].strip()
+    words = description.split(None, 1)  # Split on whitespace, max 2 parts
+
+    # Try to match first word to a matter
+    matched_matter = None
+    if words:
+        first_word = words[0]
+
+        # Find matters whose name starts with the first word (case-insensitive)
+        matching_matters = Matter.objects.filter(
+            status__in=["Pending", "Open"], name__istartswith=first_word
+        ).order_by("name")
+
+        if matching_matters.exists():
+            # Use the first match alphabetically
+            matched_matter = matching_matters.first()
+
+            # Remove the first word from description if there are more words
+            if len(words) > 1:
+                description = words[1]
+            else:
+                # If only one word and it matched a matter, don't create empty task
+                return HttpResponse(
+                    status=204, headers={"HX-Trigger": "tasksListChanged"}
+                )
+
+    # Prevent creation of tasks with empty description after processing
+    if not description.strip():
+        return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
+
     # set task description and some property values
-    task.description = request.POST["description"]
+    task.description = description
     task.status = "Pending"
-    task.priority = 3
+    task.priority = 5
 
     # get filter values to auto populate task properties
     filter_data = request.session.get("tasks_filter", {})
@@ -142,12 +173,15 @@ def tasks_add_quick(request):
     if focus:
         task.focus = focus
     else:
-        task.focus = "Long Term"
+        task.focus = "Current"
 
-    # auto populate the matter
-    matter_id = filter_data.get("matter", None)
-    if matter_id:
-        task.matter = Matter.objects.filter(pk=int(matter_id)).get()
+    # Set matter: prefer matched_matter from smart matching, then filter matter
+    if matched_matter:
+        task.matter = matched_matter
+    else:
+        matter_id = filter_data.get("matter", None)
+        if matter_id:
+            task.matter = Matter.objects.filter(pk=int(matter_id)).get()
 
     task.save()
     return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
@@ -378,8 +412,11 @@ def tasks_focus(request, task_id, focus):
 @login_required
 def tasks_matter(request, task_id, matter_id):
     task = get_object_or_404(Task, pk=task_id)
-    matter = get_object_or_404(Matter, pk=matter_id)
-    task.matter = matter
+    if matter_id == 0:
+        task.matter = None
+    else:
+        matter = get_object_or_404(Matter, pk=matter_id)
+        task.matter = matter
     task.save()
     return redirect("agenda:tasks-list")
 

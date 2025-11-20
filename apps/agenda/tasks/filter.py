@@ -29,24 +29,33 @@ class TasksOrderingFilter(django_filters.OrderingFilter):
                     F("date_due").asc(nulls_first=True),
                     "priority",
                     "description",
+                    "id",
                 )
             if ordering[0] == "description":
-                return qs.order_by("-status", "description")
+                return qs.order_by("-status", "description", "id")
             if ordering[0] == "user":
                 return qs.order_by(
-                    "-status", "user", F("date_due").asc(nulls_first=True), "priority"
+                    "-status",
+                    "user",
+                    F("date_due").asc(nulls_first=True),
+                    "priority",
+                    "id",
                 )
             if ordering[0] == "date_due":
                 return qs.order_by(
-                    "-status", F("date_due").asc(nulls_first=True), "priority"
+                    "-status", F("date_due").asc(nulls_first=True), "priority", "id"
                 )
             if ordering[0] == "priority":
                 return qs.order_by(
-                    "-status", "priority", F("date_due").asc(nulls_first=True)
+                    "-status",
+                    "priority",
+                    "matter__name",
+                    F("date_due").asc(nulls_first=True),
+                    "id",
                 )
-            return qs.order_by("-status", *ordering)
+            return qs.order_by("-status", *ordering, "id")
         except IndexError:
-            return qs.order_by("-status", *ordering)
+            return qs.order_by("-status", *ordering, "id")
 
 
 class TasksFilter(django_filters.FilterSet):

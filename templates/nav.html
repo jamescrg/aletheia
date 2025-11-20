@@ -33,7 +33,7 @@
         <li class="nav-item {% if app == 'invoicing' %}nav-active{% endif %}">
           <a id="nav-invoicing"
              class="nav-link"
-             href="{% url 'invoicing:invoices-index' %}">Invoicing</a>
+             href="{% url 'invoicing:unbilled-index' %}">Invoicing</a>
         </li>
         <li class="nav-item {% if app == 'trust' %}nav-active{% endif %}">
           <a id="nav-trust" class="nav-link" href={% url 'trust:index' %}>Trust</a>
