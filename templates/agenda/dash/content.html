@@ -1,0 +1,206 @@
+{% load humanize %}
+<div class="dashboard">
+  <div class="dashboard-grid">
+    {# Upcoming Events #}
+    <div class="dashboard-card">
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th colspan="2">Upcoming Events</th>
+          </tr>
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if upcoming_events %}
+            {% for event in upcoming_events %}
+              <tr {% if event.date == today %}class="due-today"{% elif event.date == tomorrow %}class="due-tomorrow"{% endif %}>
+                <td class="date">{{ event.date|date:'Y-m-d' }}</td>
+                <td>
+                  {% if event.matter %}
+                    <a href="{% url 'matters:detail' id=event.matter.id %}">{{ event.matter.name|truncatechars:22 }}</a> - {{ event.description }}
+                  {% else %}
+                    {{ event.description }}
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="2" class="empty-message">No upcoming events</td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+    {# Open Intakes #}
+    <div class="dashboard-card">
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th colspan="2">Open Intakes</th>
+          </tr>
+          <tr>
+            <th>Name</th>
+            <th>Practice Area</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if open_intakes %}
+            {% for intake in open_intakes %}
+              <tr>
+                <td>
+                  <a href="{% url 'intakes:detail' intake.id %}">{{ intake.name|truncatechars:40 }}</a>
+                </td>
+                <td>{{ intake.practice_area }}</td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="2" class="empty-message">No open intakes</td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+    {# Urgent Tasks #}
+    <div class="dashboard-card">
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th colspan="2">Urgent Tasks</th>
+          </tr>
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if urgent_tasks %}
+            {% for task in urgent_tasks %}
+              <tr {% if task.date_due == today %}class="due-today"{% elif task.date_due == tomorrow %}class="due-tomorrow"{% endif %}>
+                <td class="date">{{ task.date_due|date:'Y-m-d' }}</td>
+                <td>
+                  {% if task.matter %}
+                    <a href="{% url 'matters:detail' id=task.matter.id %}">{{ task.matter.name }}</a> - {{ task.description }}
+                  {% else %}
+                    {{ task.description }}
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="2" class="empty-message">No urgent tasks</td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+    {# Low Clearance Matters #}
+    <div class="dashboard-card">
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th colspan="2">Low Clearance Matters</th>
+          </tr>
+          <tr>
+            <th>Matter</th>
+            <th class="numeric">Clearance</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if low_clearance_matters %}
+            {% for matter in low_clearance_matters %}
+              <tr>
+                <td>
+                  <a href="{% url 'matters:detail' id=matter.id %}">{{ matter.name|truncatechars:40 }}</a>
+                </td>
+                <td class="numeric">${{ matter.clearance|floatformat:2|intcomma }}</td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="2" class="empty-message">No low clearance matters</td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+    {# Unbilled by User #}
+    <div class="dashboard-card">
+      <table class="dashboard-table unbilled-table">
+        <thead>
+          <tr>
+            <th colspan="3">Unbilled by User</th>
+          </tr>
+          <tr>
+            <th>User</th>
+            <th class="numeric">Hours</th>
+            <th class="numeric">Fees</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if unbilled_by_user %}
+            {% for entry in unbilled_by_user %}
+              <tr>
+                <td>
+                  <a href="{% url 'activity:time-index' %}">{{ entry.user__username|title }}</a>
+                </td>
+                <td class="numeric">{{ entry.total_hours|floatformat:1 }}</td>
+                <td class="numeric">${{ entry.total_fees|floatformat:2|intcomma }}</td>
+              </tr>
+            {% endfor %}
+            <tr class="total-row">
+              <td>
+                <strong>Total</strong>
+              </td>
+              <td class="numeric">
+                <strong>{{ unbilled_total_hours|floatformat:1 }}</strong>
+              </td>
+              <td class="numeric">
+                <strong>${{ unbilled_total_fees|floatformat:2|intcomma }}</strong>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="3" class="empty-message">No unbilled time</td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+    {# Balance Due Matters #}
+    <div class="dashboard-card">
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th colspan="2">Matters with a Balance Due</th>
+          </tr>
+          <tr>
+            <th>Matter</th>
+            <th class="numeric">Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if balance_due_matters %}
+            {% for matter in balance_due_matters %}
+              <tr>
+                <td>
+                  <a href="{% url 'matters:detail' id=matter.id %}">{{ matter.name|truncatechars:40 }}</a>
+                </td class="numeric">
+                <td>${{ matter.balance_due|floatformat:2|intcomma }}</td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="2" class="empty-message">No outstanding balances</td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

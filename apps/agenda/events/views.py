@@ -48,6 +48,13 @@ def events_list(request):
 
 
 @login_required
+def events_select(request):
+    request.session["show_dash"] = False
+    request.session["hide_expire"] = date.today().strftime("%s")
+    return redirect("agenda:events-index")
+
+
+@login_required
 def events_filter(request):
     filter_manager = FilterManager(request, EventFilter, "events_filter")
 

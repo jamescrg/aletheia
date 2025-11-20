@@ -185,3 +185,64 @@ th.priority .bi-caret-up {
 .tasks-form #id_date {
   width: 100%
 }
+
+
+/* ==========================================================================
+ Dashboard
+========================================================================== */
+
+.dashboard {
+  padding: 1rem 0;
+}
+
+.dashboard-grid {
+  column-width: 400px;
+  column-gap: 1.5rem;
+}
+
+.dashboard-card {
+  break-inside: avoid;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.dashboard-table {
+  width: 100%;
+}
+
+.dashboard-table .due-today {
+  background: var(--hl-orange);
+}
+
+.dashboard-table .due-tomorrow {
+  background: var(--hl-yellow);
+}
+
+.dashboard-table .empty-message {
+  color: var(--stone-400);
+  font-style: italic;
+  text-align: center;
+}
+
+th {
+  background: var(--stone-150);
+}
+
+.dashboard-table .date {
+  width: 12ch;
+}
+
+.unbilled-table th:nth-child(1),
+.unbilled-table td:nth-child(1) {
+  width: 43%;
+}
+
+.unbilled-table th:nth-child(2),
+.unbilled-table td:nth-child(2) {
+  width: 23%;
+}
+
+.unbilled-table th:nth-child(3),
+.unbilled-table td:nth-child(3) {
+  width: 34%;
+}

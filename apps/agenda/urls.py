@@ -1,5 +1,6 @@
 from django.urls import path
 
+from apps.agenda.dash.views import dash_index
 from apps.agenda.events.views import (
     events_add,
     events_deadline_form,
@@ -10,6 +11,7 @@ from apps.agenda.events.views import (
     events_filter_quick,
     events_index,
     events_list,
+    events_select,
 )
 from apps.agenda.tasks.views import (
     clear_tasks,
@@ -113,6 +115,7 @@ urlpatterns = [
     ),
     path("events/", events_index, name="events-index"),
     path("events/list/", events_list, name="events-list"),
+    path("events/select", events_select, name="events-select"),
     path("events/add", events_add, name="events-add"),
     path("events/add/<str:origin>", events_add, name="events-add-origin"),
     path(
@@ -145,4 +148,5 @@ urlpatterns = [
         events_filter_quick,
         name="events-filter-quick",
     ),
+    path("dash/", dash_index, name="dash-index"),
 ]
