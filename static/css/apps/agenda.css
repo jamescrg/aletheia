@@ -225,8 +225,34 @@ th {
   background: var(--stone-150);
 }
 
-.dashboard-table .date {
-  width: 12ch;
+/* Dashboard Events Table - match events-table column widths */
+.dashboard-table.events .date {
+  width: 120px;
+}
+
+.dashboard-table.events .matter {
+  width: 250px;
+}
+
+.dashboard-table.events .party {
+  width: 120px;
+}
+
+/* Dashboard Tasks Table - match tasks-table column widths */
+.dashboard-table.tasks .matter {
+  width: 250px;
+}
+
+.dashboard-table.tasks .description {
+}
+
+.dashboard-table.tasks .user {
+  width: 100px;
+}
+
+.dashboard-table.tasks .date {
+  white-space: nowrap;
+  width: 120px;
 }
 
 .unbilled-table th:nth-child(1),
