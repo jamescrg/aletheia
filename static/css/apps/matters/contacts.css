@@ -21,6 +21,42 @@
   position: relative;
 }
 
+.matter-contacts .email .copy-btn {
+  display: inline-block;
+  margin-right: 0.25rem;
+  vertical-align: middle;
+}
+
+
+/* ==========================================================================
+ Mobile Responsive
+========================================================================== */
+
+@media (max-width: 768px) {
+
+  /* Compress relationship column */
+  .matter-contacts .relationship {
+    width: 90px;
+    min-width: 90px;
+  }
+
+  /* Name column: set minimum width to prevent tight wrapping */
+  .matter-contacts .name {
+    min-width: 120px;
+    width: 40%;
+  }
+
+  /* Email column: reduce width, prevent wrapping under button */
+  .matter-contacts .email {
+    width: auto;
+    white-space: nowrap;
+  }
+
+  .matter-contacts .email .copy-btn {
+    flex-shrink: 0;
+  }
+}
+
 
 /* ------------------------------------------------------------------------- */
 /* assign a contact */

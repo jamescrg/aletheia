@@ -136,4 +136,25 @@ Detail Views
     min-width: 120px;
     max-width: 100%;
   }
+
+  /* Detail page toolbar: stack title and buttons vertically, hide matter ID */
+  .detail-title .toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .detail-title .toolbar-left {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .detail-title .toolbar-left h1 {
+    margin-bottom: 0.75rem;
+    margin-right: 0;
+  }
+
+  .detail-title .toolbar-right {
+    display: none;
+  }
 }
