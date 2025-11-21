@@ -11,38 +11,15 @@
 }
 
 /* applies to all of the anchor tags in the list items in the nav bar */
-.navbar-expand-lg .navbar-nav .nav-link {
+.navbar .navbar-nav .nav-link {
   color: var(--stone-600);
   padding: 12px 25px;
-
 }
 
 /* applies to the active page's anchor tag */
 .nav-active {
   background: var(--stone-300);
   border-radius: 5px 5px 0 0;
-}
-
-.navbar-toggler-icon {
-  color: var(--link);
-  font-size: 1.8rem;
-}
-
-.navbar-toggler-chevron {
-  color: var(--link);
-  font-size: 1rem;
-}
-
-.navbar-toggler {
-  padding-bottom: 0;
-  padding-left: 0.5rem;
-  padding-top: 1rem;
-}
-
-.navbar-toggler:focus,
-.navbar-toggler:active {
-  box-shadow: none;
-  outline: none;
 }
 
 .navbar-nav .settings-link {
@@ -52,11 +29,45 @@
 
 
 /* ==========================================================================
- Responsive - Prevent nav wrapping on mid-size screens
+ Horizontal Scroll Container
 ========================================================================== */
 
-@media screen and (min-width: 992px) and (max-width: 1399px) {
-  .navbar-expand-lg .navbar-nav .nav-link {
-    padding: 12px 18px;
+.nav-scroll-container {
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}
+
+.nav-scroll-container .navbar-nav {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+
+.navbar-nav .nav-item {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Keep right-aligned items at the end */
+.navbar-nav.ms-auto {
+  margin-left: auto !important;
+}
+
+
+/* ==========================================================================
+ Responsive - Tighter spacing on mobile
+========================================================================== */
+
+@media (max-width: 991px) {
+  .navbar .navbar-nav .nav-link {
+    padding: 12px 15px;
+    font-size: 0.9rem;
+  }
+
+  .navbar-nav .settings-link {
+    padding: 10px 15px 7px 15px !important;
   }
 }
