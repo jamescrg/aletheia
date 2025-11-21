@@ -52,6 +52,7 @@
 
 .filter-tools {
   display: flex;
+  flex-wrap: wrap;
   gap: 1.5rem;
 }
 
@@ -117,4 +118,22 @@ Detail Views
 .detail-subnav {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+
+/* ==========================================================================
+ Mobile Responsive
+========================================================================== */
+
+@media (max-width: 768px) {
+  .filter-tools {
+    gap: 0.75rem;
+  }
+
+  .filter-tools .select-btn.large-btn,
+  .filter-tools .select-btn.small-btn {
+    width: auto;
+    min-width: 120px;
+    max-width: 100%;
+  }
 }

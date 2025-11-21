@@ -49,3 +49,14 @@
   font-size: 1.2rem;
   padding: 10px 25px 7px 25px !important;
 }
+
+
+/* ==========================================================================
+ Responsive - Prevent nav wrapping on mid-size screens
+========================================================================== */
+
+@media screen and (min-width: 992px) and (max-width: 1399px) {
+  .navbar-expand-lg .navbar-nav .nav-link {
+    padding: 12px 18px;
+  }
+}

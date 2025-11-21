@@ -60,3 +60,13 @@ th {
 .td-date {
   width: 120px;
 }
+
+
+/* ==========================================================================
+ Responsive Table Container
+========================================================================== */
+
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
