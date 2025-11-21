@@ -69,7 +69,8 @@ class TasksFilter(django_filters.FilterSet):
         empty_label="All",
     )
     user = django_filters.ModelChoiceFilter(
-        queryset=CustomUser.objects.all(), empty_label="All"
+        queryset=CustomUser.objects.filter(is_active=True).order_by("username"),
+        empty_label="All",
     )
 
     order_by = TasksOrderingFilter(
@@ -87,3 +88,10 @@ class TasksFilter(django_filters.FilterSet):
     class Meta:
         model = Task
         fields = ["status", "focus", "date_due", "matter", "user"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Customize user field to show title case usernames
+        self.filters["user"].field.label_from_instance = (
+            lambda obj: obj.username.title()
+        )

@@ -272,14 +272,45 @@ def tasks_delete(request, id):
 @login_required
 def tasks_filter(request, user=None):
     if request.method == "POST":
-        request.session["tasks_filter"] = request.POST
+        # Convert QueryDict to regular dict, excluding CSRF token
+        filter_data = {
+            key: value
+            for key, value in request.POST.items()
+            if key != "csrfmiddlewaretoken"
+        }
+        request.session["tasks_filter"] = filter_data
         return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
 
     else:
         filter_data = request.session.get("tasks_filter", {})
 
         if filter_data:
-            filter = TasksFilter(filter_data, queryset=Task.objects.all())
+            # Sanitize filter data to remove invalid values
+            sanitized_data = filter_data.copy()
+
+            # Validate user field - remove if invalid or inactive
+            if "user" in sanitized_data and sanitized_data["user"]:
+                try:
+                    user_id = int(sanitized_data["user"])
+                    if not CustomUser.objects.filter(
+                        id=user_id, is_active=True
+                    ).exists():
+                        sanitized_data.pop("user", None)
+                except (ValueError, TypeError):
+                    sanitized_data.pop("user", None)
+
+            # Validate matter field - remove if invalid
+            if "matter" in sanitized_data and sanitized_data["matter"]:
+                try:
+                    matter_id = int(sanitized_data["matter"])
+                    if not Matter.objects.filter(
+                        id=matter_id, status__in=["Pending", "Open"]
+                    ).exists():
+                        sanitized_data.pop("matter", None)
+                except (ValueError, TypeError):
+                    sanitized_data.pop("matter", None)
+
+            filter = TasksFilter(sanitized_data, queryset=Task.objects.all())
         else:
             default_filter = {
                 "status": "Pending",
