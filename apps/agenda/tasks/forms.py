@@ -60,8 +60,8 @@ class TaskForm(forms.ModelForm):
 
     def clean_description(self):
         description = self.cleaned_data["description"]
-        if len(description) < 2:
-            raise ValidationError("Description must be greater than 2 characters.")
+        if len(description) < 4:
+            raise ValidationError("Description must be 4 or more  characters.")
         if len(description) > 200:
             raise ValidationError("Description is limited to 200 character.")
         return description
