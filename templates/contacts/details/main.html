@@ -28,12 +28,26 @@
           {% if selected_contact.company %}<span>{{ selected_contact.company }}</span>{% endif %}
           <span>{{ selected_contact.address|linebreaks }}</span>
         </div>
-        <button type="button"
-                class="btn btn-sm copy-btn card-copy-btn-right"
-                data-copy="{{ selected_contact.name }}&#10;{% if selected_contact.company %}{{ selected_contact.company }}&#10;{% endif %}{{ selected_contact.address }}"
-                title="Copy address">
-          <i class="bi bi-clipboard"></i>
-        </button>
+        <div class="contact-card-buttons">
+          <button type="button"
+                  class="btn btn-sm copy-btn card-copy-btn-right"
+                  data-copy="{{ selected_contact.name }}&#10;{% if selected_contact.company %}{{ selected_contact.company }}&#10;{% endif %}{{ selected_contact.address }}"
+                  title="Copy address">
+            <i class="bi bi-clipboard"></i>
+          </button>
+          <a href="https://www.google.com/maps/search/?api=1&query={{ selected_contact.address|urlencode }}"
+             target="_blank"
+             class="btn btn-sm copy-btn card-copy-btn-right"
+             title="Open in Google Maps">
+            <i class="bi bi-geo-alt"></i>
+          </a>
+          <a href="https://www.zillow.com/homes/{{ selected_contact.address|zillow_address }}_rb/"
+             target="_blank"
+             class="btn btn-sm copy-btn card-copy-btn-right"
+             title="Search on Zillow">
+            <i class="bi bi-house"></i>
+          </a>
+        </div>
       </div>
     </div>
   {% endif %}

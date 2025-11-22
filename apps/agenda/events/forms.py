@@ -15,6 +15,9 @@ class EventForm(forms.ModelForm):
             "date",
             "matter",
             "description",
+            "start_time",
+            "end_time",
+            "location",
         )
         PARTIES = (
             ("Client", "Client"),
@@ -29,6 +32,8 @@ class EventForm(forms.ModelForm):
         )
         widgets = {
             "date": forms.DateInput(attrs={"type": "date"}),
+            "start_time": forms.TimeInput(attrs={"type": "time"}),
+            "end_time": forms.TimeInput(attrs={"type": "time"}),
             "description": forms.TextInput(
                 attrs={
                     "autofocus": "autofocus",
@@ -43,3 +48,13 @@ class EventForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.renderer = CustomFormRendererCompact()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start_time = cleaned_data.get("start_time")
+        end_time = cleaned_data.get("end_time")
+
+        if start_time and end_time and start_time >= end_time:
+            raise forms.ValidationError("End time must be after start time.")
+
+        return cleaned_data

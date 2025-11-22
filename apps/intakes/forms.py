@@ -15,11 +15,13 @@ class IntakeForm(forms.ModelForm):
             "status",
             "date",
             "name",
-            "address",
             "phone",
             "email",
             "practice_area",
             "source",
+            "address",
+            "disputed_property",
+            "value",
         )
 
         STATUSES = (
@@ -60,7 +62,19 @@ class IntakeForm(forms.ModelForm):
                     "class": "span2",
                 }
             ),
-            "address": forms.TextInput(attrs={"class": "span2"}),
+            "address": forms.Textarea(
+                attrs={
+                    "class": "span2",
+                    "rows": 4,
+                }
+            ),
+            "disputed_property": forms.Textarea(
+                attrs={
+                    "class": "span2",
+                    "rows": 4,
+                }
+            ),
+            "value": forms.TextInput(attrs={"class": "span2"}),
             "status": forms.Select(choices=STATUSES),
             "practice_area": forms.Select(choices=PRACTICE_AREAS),
             "source": forms.Select(choices=SOURCES),
@@ -70,6 +84,8 @@ class IntakeForm(forms.ModelForm):
         labels = {
             "date": "Open Date",
             "practice_area": "Practice Area",
+            "disputed_property": "Disputed Property (if different from address)",
+            "value": "Disputed Property Value",
         }
 
     def __init__(self, *args, **kwargs):
@@ -90,6 +106,15 @@ class IntakeForm(forms.ModelForm):
             if len(address) > 250:
                 raise ValidationError("Address must be fewer than 250 characters.")
         return address
+
+    def clean_disputed_property(self):
+        disputed_property = self.cleaned_data["disputed_property"]
+        if disputed_property:
+            if len(disputed_property) > 250:
+                raise ValidationError(
+                    "Disputed property must be fewer than 250 characters."
+                )
+        return disputed_property
 
     def clean_phone(self):
         phone = self.cleaned_data["phone"]

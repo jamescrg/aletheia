@@ -18,6 +18,9 @@ from apps.intakes.views import (
     order_by,
     quick_filter_all,
     quick_filter_status,
+    value_display,
+    value_edit,
+    value_update,
 )
 
 app_name = "intakes"
@@ -51,5 +54,8 @@ urlpatterns = [
         intake_edit_practice_area,
         name="edit-practice-area",
     ),
+    path("intakes/<int:pk>/value-edit/", value_edit, name="value-edit"),
+    path("intakes/<int:pk>/value-update/", value_update, name="value-update"),
+    path("intakes/<int:pk>/value-display/", value_display, name="value-display"),
     path("api/receive-inquiry/", receive_inquiry, name="api-receive-inquiry"),
 ]

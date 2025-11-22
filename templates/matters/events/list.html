@@ -19,11 +19,16 @@
           <th>Date</th>
           <th>Party</th>
           <th>Description</th>
+          <th class="duration">Duration</th>
+          <th>Location</th>
           <th>Status</th>
         </tr>
         {% for event in pending_events %}
           <tr>
-            <td class="date">{{ event.date|date:"Y-m-d" }}</td>
+            <td class="date">
+              {{ event.date|date:"Y-m-d" }}
+              {% if event.start_time %}{{ event.start_time|time:"g:i A" }}{% endif %}
+            </td>
             <td class="party">{{ event.party }}</td>
             <td class="description {% if event.date < third_day and event.status == 'Pending' %}urgent{% endif %}">
               <a href="#"
@@ -33,6 +38,13 @@
                  data-bs-toggle="modal"
                  data-bs-target="#htmx-modal-container">{{ event.description }}</a>
             </td>
+            <td class="duration">
+              {% if event.duration %}
+                {{ event.duration }} hr
+                {% if event.duration != 1 %}s{% endif %}
+              {% endif %}
+            </td>
+            <td class="location">{{ event.location|default:"" }}</td>
             <td class="status">{{ event.status }}</td>
           </tr>
         {% endfor %}
@@ -61,11 +73,16 @@
           <th>Date</th>
           <th>Party</th>
           <th>Description</th>
+          <th class="duration">Duration</th>
+          <th>Location</th>
           <th>Status</th>
         </tr>
         {% for event in past_events %}
           <tr>
-            <td class="date">{{ event.date|date:"Y-m-d" }}</td>
+            <td class="date">
+              {{ event.date|date:"Y-m-d" }}
+              {% if event.start_time %}{{ event.start_time|time:"g:i A" }}{% endif %}
+            </td>
             <td class="party">{{ event.party }}</td>
             <td class="description {% if event.date < third_day and event.status == 'Pending' %}urgent{% endif %}">
               <a href="#"
@@ -75,6 +92,13 @@
                  data-bs-target="#htmx-modal-container"
                  hx-get="{% url 'agenda:events-edit-origin' id=event.id origin='matters' %}">{{ event.description }}</a>
             </td>
+            <td class="duration">
+              {% if event.duration %}
+                {{ event.duration }} hr
+                {% if event.duration != 1 %}s{% endif %}
+              {% endif %}
+            </td>
+            <td class="location">{{ event.location|default:"" }}</td>
             <td class="status">{{ event.status }}</td>
           </tr>
         {% endfor %}

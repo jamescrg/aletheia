@@ -10,7 +10,7 @@ from apps.contacts.models import Contact
 from apps.intakes.filter_intakes import IntakeFilter
 from apps.intakes.forms import IntakeForm, NoteForm
 from apps.intakes.intakes import get_table_data
-from apps.intakes.models import Intake, Note
+from apps.intakes.models import Intake, Note, UserIntakeView
 from config.helpers import format_phone
 
 
@@ -99,6 +99,14 @@ def detail_index(request, id):
 
     # get the intake
     intake = get_object_or_404(Intake, pk=id)
+
+    # Track view for badge notification system (only for open intakes)
+    if intake.status == "Open":
+        UserIntakeView.objects.update_or_create(
+            user=request.user,
+            intake=intake,
+            # last_viewed_at auto-updates with auto_now=True
+        )
 
     notes = Note.objects.filter(intake=intake).order_by("-date", "-time")
     for note in notes:
@@ -307,3 +315,27 @@ def intake_edit_practice_area(request, pk, practice_area):
     context = {"intake": intake}
 
     return render(request, "intakes/intake-practice-area.html", context)
+
+
+@login_required
+def value_edit(request, pk):
+    intake = get_object_or_404(Intake, pk=pk)
+    context = {"intake": intake}
+    return render(request, "intakes/value-edit.html", context)
+
+
+@login_required
+def value_update(request, pk):
+    intake = get_object_or_404(Intake, pk=pk)
+    value = request.POST.get("value", "")
+    intake.value = int(value) if value else None
+    intake.save()
+    context = {"intake": intake}
+    return render(request, "intakes/value-display.html", context)
+
+
+@login_required
+def value_display(request, pk):
+    intake = get_object_or_404(Intake, pk=pk)
+    context = {"intake": intake}
+    return render(request, "intakes/value-display.html", context)

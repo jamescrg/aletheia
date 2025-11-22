@@ -1,0 +1,9 @@
+<input autofocus
+       type="number"
+       name="value"
+       class="intake-value-input"
+       value="{{ intake.value|default:'' }}"
+       hx-post="{% url 'intakes:value-update' intake.id %}"
+       hx-target="closest td"
+       hx-swap="innerHTML"
+       hx-trigger="blur delay:100ms, keyup[key=='Enter'], change" />

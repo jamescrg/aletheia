@@ -37,35 +37,85 @@
           {% load phone_numbers %}
           <table class="intake-details">
             <tr>
-              <td class="strong">Email</td>
+              <th>Email</th>
               <td>{{ intake.email|default:'' }}</td>
             </tr>
             <tr>
-              <td class="strong">Phone</td>
+              <th>Phone</th>
               <td>{{ intake.phone|phone_number|default:'' }}</td>
             </tr>
+            {% if intake.address %}
+              <tr>
+                <th>Address</th>
+                <td>
+                  <div class="intake-address-container">
+                    <div>{{ intake.address|linebreaks }}</div>
+                    <div class="intake-address-buttons">
+                      <a href="https://www.google.com/maps/search/?api=1&query={{ intake.address|urlencode }}"
+                         target="_blank"
+                         class="btn btn-sm copy-btn"
+                         title="Open in Google Maps">
+                        <i class="bi bi-geo-alt"></i>
+                      </a>
+                      <a href="https://www.zillow.com/homes/{{ intake.address|zillow_address }}_rb/"
+                         target="_blank"
+                         class="btn btn-sm copy-btn"
+                         title="Search on Zillow">
+                        <i class="bi bi-house"></i>
+                      </a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            {% endif %}
+            {% if intake.disputed_property %}
+              <tr>
+                <th>
+                  Disputed
+                  <br />
+                  Property
+                </th>
+                <td>
+                  <div class="intake-address-container">
+                    <div>{{ intake.disputed_property|linebreaks }}</div>
+                    <div class="intake-address-buttons">
+                      <a href="https://www.google.com/maps/search/?api=1&query={{ intake.disputed_property|urlencode }}"
+                         target="_blank"
+                         class="btn btn-sm copy-btn"
+                         title="Open in Google Maps">
+                        <i class="bi bi-geo-alt"></i>
+                      </a>
+                      <a href="https://www.zillow.com/homes/{{ intake.disputed_property|zillow_address }}_rb/"
+                         target="_blank"
+                         class="btn btn-sm copy-btn"
+                         title="Search on Zillow">
+                        <i class="bi bi-house"></i>
+                      </a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            {% endif %}
             <tr>
-              <td class="strong">Address</td>
-              <td>
-                {% if intake.address %}{{ intake.address|linebreaks }}{% endif %}
-              </td>
+              <th>Value</th>
+              <td class="intake-value">{% include "intakes/value-display.html" %}</td>
             </tr>
           </table>
           <table class="width100">
             <tr>
-              <td class="strong">Status</td>
+              <th>Status</th>
               <td class="intake-status">{% include "intakes/intake-status.html" %}</td>
             </tr>
             <tr>
-              <td class="strong">Date Opened</td>
+              <th>Date Opened</th>
               <td>{{ intake.date|date:'Y-m-d' }}</td>
             </tr>
             <tr>
-              <td class="strong">Practice Area</td>
+              <th>Practice Area</th>
               <td class="intake-practice-area">{% include "intakes/intake-practice-area.html" %}</td>
             </tr>
             <tr>
-              <td class="strong">Source</td>
+              <th>Source</th>
               <td>{{ intake.source|default:'' }}</td>
             </tr>
           </table>

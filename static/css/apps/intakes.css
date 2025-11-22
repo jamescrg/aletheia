@@ -142,3 +142,55 @@ Markdown
 .intake-note-details a {
   text-decoration: underline;
 }
+
+/* ==========================================================================
+Address Buttons
+========================================================================== */
+
+.intake-address-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.intake-address-container p {
+  margin-bottom: 0;
+}
+
+.intake-address-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+Value Inline Edit
+========================================================================== */
+
+.empty-value-icon {
+  color: var(--stone-400);
+  opacity: 0.5;
+}
+
+.empty-value-icon:hover {
+  opacity: 1;
+}
+
+.intake-value-input {
+  border: 1px solid var(--stone-300);
+  border-radius: 3px;
+  padding: 4px 8px;
+  margin-right: 0.5rem;
+}
+
+/* ==========================================================================
+Badge Icon (New Notes Indicator)
+========================================================================== */
+
+.intake-badge-icon {
+  color: var(--slate-700);
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}

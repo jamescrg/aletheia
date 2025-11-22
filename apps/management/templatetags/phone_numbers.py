@@ -48,3 +48,14 @@ def phone_tel(original):
         return new if new else original
     else:
         return ""
+
+
+@register.filter("zillow_address")
+def zillow_address(address):
+    """Format address for Zillow URL - replace spaces and newlines with dashes."""
+    if address:
+        # Replace newlines and multiple spaces with single space first
+        formatted = " ".join(address.split())
+        # Replace spaces with dashes
+        return formatted.replace(" ", "-")
+    return ""

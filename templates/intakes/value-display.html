@@ -1,0 +1,13 @@
+{% load humanize %}
+{% if intake.value %}
+  <a href="#"
+     hx-get="{% url 'intakes:value-edit' intake.id %}"
+     hx-target="closest td">${{ intake.value|intcomma }}</a>
+{% else %}
+  <a href="#"
+     class="empty-value-icon"
+     hx-get="{% url 'intakes:value-edit' intake.id %}"
+     hx-target="closest td">
+    <i class="bi bi-pencil"></i>
+  </a>
+{% endif %}

@@ -12,15 +12,23 @@
 }
 
 .events-table .date {
-  width: 120px;
+  width: 180px;
 }
 
 .events-table .party {
-  width: 180px;
+  width: 120px;
 }
 
 .events-table .matter {
   width: 250px;
+}
+
+.events-table .duration {
+  width: 100px;
+}
+
+.events-table .location {
+  width: 120px;
 }
 
 .events-form {
@@ -236,11 +244,15 @@ th.priority .bi-caret-up {
 }
 
 .dashboard-table.events .date {
-  width: 120px;
+  width: 200px;
 }
 
 .dashboard-table.events .matter {
   width: 250px;
+}
+
+.dashboard-table.events .location {
+  width: 120px;
 }
 
 .dashboard-table.events .party {

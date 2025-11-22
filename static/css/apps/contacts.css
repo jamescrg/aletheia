@@ -166,6 +166,13 @@
   align-self: flex-start;
 }
 
+.contact-card-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
 /* Contact Info Section */
 .contact-info-section {
   margin-bottom: 24px;

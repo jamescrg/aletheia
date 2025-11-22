@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 from dateutil import parser
 from django.contrib.auth.decorators import login_required
@@ -94,6 +94,12 @@ def events_add(request, matter_id=None, origin="events"):
             event = form.save(commit=False)
             event.user_id = request.user.id
 
+            # Auto-set end_time to 1 hour after start_time if only start_time provided
+            if event.start_time and not event.end_time:
+                start_datetime = datetime.combine(date.today(), event.start_time)
+                end_datetime = start_datetime + timedelta(hours=1)
+                event.end_time = end_datetime.time()
+
             # add to google account
             # check for test user
             if request.user.username != "Ollie":
@@ -181,6 +187,12 @@ def events_edit(request, id, origin="events"):
         if form.is_valid():
             event = form.save(commit=False)
             event.user_id = request.user.id
+
+            # Auto-set end_time to 1 hour after start_time if only start_time provided
+            if event.start_time and not event.end_time:
+                start_datetime = datetime.combine(date.today(), event.start_time)
+                end_datetime = start_datetime + timedelta(hours=1)
+                event.end_time = end_datetime.time()
 
             if google.check_credentials() and event.google_id:
                 google.edit_event(event)

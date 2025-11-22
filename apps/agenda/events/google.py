@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import timedelta
+from datetime import datetime, timedelta
 from logging import getLogger
 
 import google.oauth2.credentials
@@ -56,15 +56,35 @@ def add_event(event):
     if service:
         new_event = {
             "summary": f"{event.matter} - {event.description}",
-            "start": {
-                "date": str(event.date),
-                "timezone": "US/Eastern",
-            },
-            "end": {
-                "date": str(event.date + timedelta(days=1)),
-                "timezone": "US/Eastern",
-            },
         }
+
+        # Handle timed events vs all-day events
+        if event.start_time and event.end_time:
+            # Timed event - use dateTime format
+            start_datetime = datetime.combine(event.date, event.start_time)
+            end_datetime = datetime.combine(event.date, event.end_time)
+            new_event["start"] = {
+                "dateTime": start_datetime.isoformat(),
+                "timeZone": "US/Eastern",
+            }
+            new_event["end"] = {
+                "dateTime": end_datetime.isoformat(),
+                "timeZone": "US/Eastern",
+            }
+        else:
+            # All-day event - use date format
+            new_event["start"] = {
+                "date": str(event.date),
+                "timeZone": "US/Eastern",
+            }
+            new_event["end"] = {
+                "date": str(event.date + timedelta(days=1)),
+                "timeZone": "US/Eastern",
+            }
+
+        # Add location if provided
+        if event.location:
+            new_event["location"] = event.location
 
         google_event = (
             service.events().insert(calendarId=CALENDAR_ID, body=new_event).execute()
@@ -197,13 +217,33 @@ def edit_event(event):
     if service:
         revised_event = {
             "summary": f"{event.matter} - {event.description}",
-            "start": {
-                "date": str(event.date),
-            },
-            "end": {
-                "date": str(event.date + timedelta(days=1)),
-            },
         }
+
+        # Handle timed events vs all-day events
+        if event.start_time and event.end_time:
+            # Timed event - use dateTime format
+            start_datetime = datetime.combine(event.date, event.start_time)
+            end_datetime = datetime.combine(event.date, event.end_time)
+            revised_event["start"] = {
+                "dateTime": start_datetime.isoformat(),
+                "timeZone": "US/Eastern",
+            }
+            revised_event["end"] = {
+                "dateTime": end_datetime.isoformat(),
+                "timeZone": "US/Eastern",
+            }
+        else:
+            # All-day event - use date format
+            revised_event["start"] = {
+                "date": str(event.date),
+            }
+            revised_event["end"] = {
+                "date": str(event.date + timedelta(days=1)),
+            }
+
+        # Add location if provided
+        if event.location:
+            revised_event["location"] = event.location
 
         result = (
             service.events()

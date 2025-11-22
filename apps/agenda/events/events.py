@@ -1,3 +1,4 @@
+from datetime import datetime
 from logging import getLogger
 
 from apps.accounts.models import CustomUser
@@ -41,10 +42,23 @@ def get_table_data(request):
         events, per_page=10, request=request, session_key="events_pagination"
     )
 
+    # Calculate duration for each event
+    event_list = pagination.get_object_list()
+    for event in event_list:
+        if event.start_time and event.end_time:
+            # Combine times with a date to do time arithmetic
+            start = datetime.combine(datetime.today(), event.start_time)
+            end = datetime.combine(datetime.today(), event.end_time)
+            duration_delta = end - start
+            # Convert to hours (as a float for fractional hours)
+            event.duration = duration_delta.total_seconds() / 3600
+        else:
+            event.duration = None
+
     table_data["pagination"] = pagination
     table_data["session_key"] = "events_pagination"
     table_data["trigger_key"] = "eventsChanged"
-    table_data["objects"] = pagination.get_object_list()
+    table_data["objects"] = event_list
     table_data["matters"] = Matter.objects.filter(
         status__in=["Pending", "Open"]
     ).order_by("name")
