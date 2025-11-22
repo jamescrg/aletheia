@@ -60,7 +60,7 @@
 
 /* Dashboard Tasks Table - match tasks-table column widths */
 .dashboard-table.tasks .matter {
-  width: 250px;
+  width: 190px;
 }
 
 .dashboard-table.tasks .description {
