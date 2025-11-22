@@ -109,14 +109,17 @@
               {% if upcoming_events %}
                 {% for event in upcoming_events|slice:":3" %}
                   <tr {% if event.date == today %}class="due-today"{% elif event.date == tomorrow %}class="due-tomorrow"{% endif %}>
-                    <td class="date">{{ event.date|date:'Y-m-d' }}</td>
+                    <td class="date">
+                      {{ event.date|date:"Y-m-d" }}
+                      {% if event.start_time %}{{ event.start_time|time:"g:i A" }}{% endif %}
+                    </td>
                     <td class="matter">
                       {% if event.matter %}
-                        <a href="{% url 'matters:detail' id=event.matter.id %}">{{ event.matter.name|truncatechars:30 }}</a>
+                        <a href="{% url 'matters:events' id=event.matter.id %}">{{ event.matter.name|truncatechars:30 }}</a>
                       {% endif %}
                     </td>
                     <td class="description">{{ event.description }}</td>
-                    <td class="party">{{ event.party|default:'' }}</td>
+                    <td class="location">{{ event.location|default:'' }}</td>
                   </tr>
                 {% endfor %}
               {% else %}

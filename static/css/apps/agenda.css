@@ -244,7 +244,7 @@ th.priority .bi-caret-up {
 }
 
 .dashboard-table.events .date {
-  width: 180px;
+  max-width: 160px;
 }
 
 .dashboard-table.events .matter {
