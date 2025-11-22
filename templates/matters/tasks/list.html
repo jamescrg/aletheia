@@ -18,39 +18,6 @@
         <i class="bi bi-filter"></i> &nbsp;Filter
       </button>
       <button type="button"
-              id="tasks-focus-filter"
-              class="select-btn small-btn {% if focus %}toggle-active{% endif %}"
-              data-bs-toggle="dropdown"
-              aria-expanded="false">
-        {{ focus|default:"Focus (All)" }}
-        <small>
-          <i class="bi bi-chevron-down"></i>
-        </small>
-      </button>
-      <ul class="dropdown-menu" hx-target="#matterTasks" hx-swap="outerHTML">
-        <li>
-          <a class="dropdown-item"
-             href="#"
-             hx-post="{% url 'matters:tasks-filter-focus' matter.id 'All' %}"
-             hx-target="#matterTasks"
-             hx-swap="#outerHTML">Focus&nbsp;&nbsp;(All)</a>
-        </li>
-        <li>
-          <a class="dropdown-item {% if focus == 'Current' %}active{% endif %}"
-             href="#"
-             hx-post="{% url 'matters:tasks-filter-focus' matter.id 'Current' %}"
-             hx-target="#matterTasks"
-             hx-swap="#outerHTML">Current</a>
-        </li>
-        <li>
-          <a class="dropdown-item {% if focus == 'Long Term' %}active{% endif %}"
-             href="#"
-             hx-post="{% url 'matters:tasks-filter-focus' matter.id 'Long Term' %}"
-             hx-target="#matterTasks"
-             hx-swap="#outerHTML">Long Term</a>
-        </li>
-      </ul>
-      <button type="button"
               id="tasks-user-filter"
               class="select-btn small-btn {% if user_id %}toggle-active{% endif %}"
               data-bs-toggle="dropdown"
@@ -108,19 +75,13 @@
                 hx-swap="innerHTML"
                 hx-post="{% url 'matters:tasks-filter-sort' matter.id 'status' %}">Status</button>
       </th>
-      <th>
-        <button class="btn-sort"
-                hx-target="#matterTasks"
-                hx-swap="innerHTML"
-                hx-post="{% url 'matters:tasks-filter-sort' matter.id 'focus' %}">Focus</button>
-      </th>
-      <th>
+      <th class="user">
         <button class="btn-sort"
                 hx-target="#matterTasks"
                 hx-swap="innerHTML"
                 hx-post="{% url 'matters:tasks-filter-sort' matter.id 'user' %}">User</button>
       </th>
-      <th>
+      <th class="date">
         <button class="btn-sort"
                 hx-target="#matterTasks"
                 hx-swap="innerHTML"
@@ -143,9 +104,6 @@
              hx-swap="innerHTML">{{ task.description }}</a>
         </td>
         <td class="status">{% include "matters/tasks/status.html" %}</td>
-        <td class="focus {% if task.date_due < today %}urgent{% endif %} {% if task.status == 'Complete' %}complete{% endif %}">
-          {% include "matters/tasks/focus.html" %}
-        </td>
         <td class="user {% if task.date_due < today %}urgent{% endif %} {% if task.status == 'Complete' %}complete{% endif %}">
           {% include "matters/tasks/user.html" %}
         </td>

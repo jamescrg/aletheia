@@ -8,7 +8,7 @@ from django.shortcuts import render
 from apps.activity.expenses.models import ExpenseEntry
 from apps.activity.time.models import TimeEntry
 from apps.agenda.events.models import Event
-from apps.agenda.tasks.tasks import get_upcoming_tasks
+from apps.agenda.tasks.models import Task
 from apps.intakes.models import Intake
 from apps.matters.models import Matter
 from apps.trust.trust import get_confirmed_client_balance
@@ -25,8 +25,11 @@ def dash_index(request):
         date__gte=today, date__lte=end_date
     ).order_by("date", "party")[:10]
 
-    # Urgent tasks (next 3 days) - use existing function
-    urgent_tasks = get_upcoming_tasks(request)[:10]
+    # Urgent tasks (next 3 days)
+    urgent_end_date = today + timedelta(days=2)
+    urgent_tasks = Task.objects.filter(
+        date_due__gte=today, date_due__lte=urgent_end_date, status="Pending"
+    ).order_by("date_due", "priority")[:10]
 
     # Unbilled hours and fees by user
     unbilled_by_user = (

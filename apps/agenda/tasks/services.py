@@ -10,7 +10,7 @@ def process_quick_task_description(description, last_matter_id=None):
     Process a quick task description with intelligent matter matching.
 
     Supports two matching modes:
-    1. Semicolon notation: "Matter Name; task description" - fuzzy matches matter name
+    1. Dash notation: "Matter Name - task description" - fuzzy matches matter name
     2. First word: "MatterWord task description" - exact match on first word
 
     Args:
@@ -27,14 +27,18 @@ def process_quick_task_description(description, last_matter_id=None):
     matched_matter = None
     use_smart_matching = False
 
-    # Check for semicolon notation first (e.g., "Smith Estate; review will")
-    if ";" in description:
-        prefix, remainder = description.split(";", 1)
+    # Check for dash notation first (e.g., "Smith Estate - review will")
+    if "-" in description:
+        prefix, remainder = description.split("-", 1)
         prefix = prefix.strip()
         remainder = remainder.strip()
 
-        # Always use the remainder as the description when semicolon is present
+        # Always use the remainder as the description when dash is present
         description = remainder if remainder else ""
+
+        # Auto-capitalize first letter of description
+        if description:
+            description = description[0].upper() + description[1:]
 
         # Check if prefix is "Admin"
         if prefix.lower() == "admin":
@@ -101,16 +105,20 @@ def process_quick_task_description(description, last_matter_id=None):
                     except Matter.DoesNotExist:
                         matched_matter = None
 
-        # Semicolon notation always uses smart matching
+        # Dash notation always uses smart matching
         return description, matched_matter, use_smart_matching
 
-    # No semicolon - use last matter from session if available
+    # No dash - use last matter from session if available
     if last_matter_id:
         use_smart_matching = True
         try:
             matched_matter = Matter.objects.get(pk=last_matter_id)
         except Matter.DoesNotExist:
             matched_matter = None
+
+    # Auto-capitalize first letter of description
+    if description:
+        description = description[0].upper() + description[1:]
 
     return description, matched_matter, use_smart_matching
 

@@ -54,23 +54,11 @@
  Tasks
 ========================================================================== */
 
-.tasks-table .upcoming-task {
-  /* border-left: 3px solid var(--orange-400); */
-}
-
-.tasks-table .due-today {
-  background: var(--hl-orange);
-}
-
-.tasks-table .upcoming-not-today {
-  background: var(--hl-yellow);
-}
-
 .tasks-add-quick-input {
   background: var(--stone-25);
   color: var(--stone-600);
   padding-left: 1rem;
-  width: 550px;
+  width: 705px;
 }
 
 
@@ -79,7 +67,6 @@
 }
 
 .filter-tools .return-to-agenda {
-  margin-left: 1rem;
   color: var(--link);
 }
 
@@ -95,20 +82,44 @@ th.priority .bi-caret-up {
   font-size: 1.1rem;
 }
 
-.tasks-table .description {
-  min-width: 500px;
-}
-
-.tasks-table .status {
-  width: 100px;
-}
-
 .tasks-table .priority {
   overflow: visible;
   padding-left: 7px !important;
   padding-right: 7px !important;
   text-align: center;
   width: 20px;
+}
+
+.tasks-table .priority .dropdown-menu {
+  min-width: 44px;
+  position: absolute;
+  z-index: 1050;
+}
+
+.tasks-table .matter {
+  width: 250px;
+}
+
+.tasks-table .description {
+  min-width: 500px;
+}
+
+.tasks-table .status {
+  width: 140px;
+}
+
+.tasks-table .user {
+  width: 140px;
+}
+
+.tasks-table .date {
+  overflow: visible;
+  white-space: nowrap;
+  width: 140px;
+}
+
+.tasks-table .date .dropdown-menu {
+  min-width: 44px;
 }
 
 /* Fix dropdown overflow issues */
@@ -127,32 +138,12 @@ th.priority .bi-caret-up {
   overflow: visible;
 }
 
+#matterTasks .tasks-table {
+  max-width: 1000px;
+}
+
 .status .bi-chevron-expand {
   margin: 0;
-}
-
-.tasks-table .priority .dropdown-menu {
-  min-width: 44px;
-  position: absolute;
-  z-index: 1050;
-}
-
-.tasks-table .date .dropdown-menu {
-  min-width: 44px;
-}
-
-.tasks-table .matter {
-  width: 250px;
-}
-
-.tasks-table .user {
-  width: 100px;
-}
-
-.tasks-table .date {
-  overflow: visible;
-  white-space: nowrap;
-  width: 120px;
 }
 
 .tasks-table .date .empty-date-icon {
@@ -165,10 +156,6 @@ th.priority .bi-caret-up {
 
 .tasks-table .date:hover .empty-date-icon {
   opacity: 1;
-}
-
-.tasks-table .focus {
-  width: 120px;
 }
 
 .task-date {
@@ -198,7 +185,6 @@ th.priority .bi-caret-up {
 
 .tasks-form #id_description,
 .tasks-form #id_matter,
-.tasks-form #id_focus,
 .tasks-form #id_user,
 .tasks-form #id_priority,
 .tasks-form #id_date {
@@ -227,7 +213,7 @@ th.priority .bi-caret-up {
 }
 
 .dashboard-table .due-today {
-  background: var(--hl-orange);
+  background: var(--hl-yellow);
 }
 
 .dashboard-table .due-tomorrow {
@@ -245,6 +231,10 @@ th.priority .bi-caret-up {
 }
 
 /* Dashboard Events Table - match events-table column widths */
+.dashboard-table.events {
+  margin-bottom: 0;
+}
+
 .dashboard-table.events .date {
   width: 120px;
 }

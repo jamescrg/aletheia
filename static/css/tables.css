@@ -45,6 +45,7 @@ th {
   align-items: start;
   display: flex;
   flex-direction: row;
+  flex-shrink: 1;
   justify-content: right;
 }
 
@@ -55,6 +56,23 @@ th {
 
 .totals-table .numeric {
   width: 150px;
+}
+
+.flex-start-space > div:first-child {
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .totals-table {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .totals-table table {
+    margin: 1rem 0 0 0;
+    min-width: auto;
+    width: 100%;
+  }
 }
 
 .td-date {
