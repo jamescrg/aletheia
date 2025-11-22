@@ -79,10 +79,6 @@ th.priority .bi-caret-up {
   overflow: visible;
 }
 
-#matterTasks .tasks-table {
-  max-width: 1000px;
-}
-
 .status .bi-chevron-expand {
   margin: 0;
 }

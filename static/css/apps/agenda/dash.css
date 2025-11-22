@@ -48,6 +48,11 @@
 
 .dashboard-table.events .matter {
   width: 250px;
+  min-width: 250px;
+}
+
+.dashboard-table.events .description {
+  min-width: 300px;
 }
 
 .dashboard-table.events .location {
@@ -61,9 +66,11 @@
 /* Dashboard Tasks Table - match tasks-table column widths */
 .dashboard-table.tasks .matter {
   width: 190px;
+  min-width: 190px;
 }
 
 .dashboard-table.tasks .description {
+  min-width: 300px;
 }
 
 .dashboard-table.tasks .user {
@@ -93,4 +100,34 @@
 .show-more {
   font-weight: normal;
   font-size: 0.875rem;
+}
+
+/* ==========================================================================
+ Mobile Responsive
+========================================================================== */
+
+@media (max-width: 1199px) {
+  /* Swap column order - financial column on top */
+  .dashboard .row {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dashboard .col-12.col-xl-8 {
+    order: 2;
+  }
+
+  .dashboard .col-12.col-xl-4 {
+    order: 1;
+  }
+
+  /* Make events and tasks tables scrollable */
+  .dashboard-card {
+    overflow-x: auto;
+  }
+
+  .dashboard-table.events,
+  .dashboard-table.tasks {
+    min-width: 600px;
+  }
 }

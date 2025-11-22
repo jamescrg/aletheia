@@ -18,11 +18,41 @@
         <i class="bi bi-filter"></i> &nbsp;Filter
       </button>
       <button type="button"
+              id="tasks-priority-filter"
+              class="select-btn small-btn {% if priority_value %}toggle-active{% endif %}"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+        {{ selected_priority|default:"All Priorities" }}
+        <small>
+          <i class="bi bi-chevron-down"></i>
+        </small>
+      </button>
+      <ul class="dropdown-menu"
+          hx-target="#tasks-priority-filter"
+          hx-swap="outerHTML">
+        <li>
+          <a class="dropdown-item"
+             href="#"
+             hx-post="{% url 'matters:tasks-filter-priority' matter.id 0 %}"
+             hx-target="#matterTasks"
+             hx-swap="#outerHTML">All Priorities</a>
+        </li>
+        {% for priority in priorities %}
+          <li>
+            <a class="dropdown-item {% if priority == priority_value %}active{% endif %}"
+               href="#"
+               hx-post="{% url 'matters:tasks-filter-priority' matter.id priority %}"
+               hx-target="#matterTasks"
+               hx-swap="#outerHTML">{{ priority }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+      <button type="button"
               id="tasks-user-filter"
               class="select-btn small-btn {% if user_id %}toggle-active{% endif %}"
               data-bs-toggle="dropdown"
               aria-expanded="false">
-        {{ selected_user|default:"Users (All)" }}
+        {{ selected_user|default:"All Users" }}
         <small>
           <i class="bi bi-chevron-down"></i>
         </small>
@@ -33,7 +63,7 @@
              href="#"
              hx-post="{% url 'matters:tasks-filter-user' matter.id 0 %}"
              hx-target="#matterTasks"
-             hx-swap="#outerHTML">Users&nbsp;&nbsp;(All)</a>
+             hx-swap="#outerHTML">All Users</a>
         </li>
         {% for user in users %}
           <li>
@@ -60,38 +90,30 @@
                 hx-target="#matterTasks"
                 hx-swap="innerHTML"
                 hx-post="{% url 'matters:tasks-filter-sort' matter.id 'priority' %}">
-          <i class="bi bi-exclamation-square"></i>
+          <i class="bi bi-chevron-expand"></i>
         </button>
       </th>
-      <th class="description">
+      <th class="matter">Matter</th>
+      <th class="description">Description</th>
+      <th class="status">Status</th>
+      <th class="user">User</th>
+      <th>
+        Due
         <button class="btn-sort"
                 hx-target="#matterTasks"
                 hx-swap="innerHTML"
-                hx-post="{% url 'matters:tasks-filter-sort' matter.id 'description' %}">Description</button>
-      </th>
-      <th class="status">
-        <button class="btn-sort"
-                hx-target="#matterTasks"
-                hx-swap="innerHTML"
-                hx-post="{% url 'matters:tasks-filter-sort' matter.id 'status' %}">Status</button>
-      </th>
-      <th class="user">
-        <button class="btn-sort"
-                hx-target="#matterTasks"
-                hx-swap="innerHTML"
-                hx-post="{% url 'matters:tasks-filter-sort' matter.id 'user' %}">User</button>
-      </th>
-      <th class="date">
-        <button class="btn-sort"
-                hx-target="#matterTasks"
-                hx-swap="innerHTML"
-                hx-post="{% url 'matters:tasks-filter-sort' matter.id 'date_due' %}">Due</button>
+                hx-post="{% url 'matters:tasks-filter-sort' matter.id 'date_due' %}">
+          <i class="bi bi-chevron-expand"></i>
+        </button>
       </th>
     </tr>
     {% for task in objects %}
       <tr>
         <td class="priority {% if task.status == 'Complete' %}complete{% endif %} {% if task.date_due < today %}urgent{% endif %}">
           {% include "matters/tasks/priority.html" %}
+        </td>
+        <td class="matter {% if task.status == 'Complete' %}complete{% endif %} {% if task.date_due < today %}urgent{% endif %}">
+          {{ matter.name }}
         </td>
         <td id="task-description"
             class="description {% if task.date_due < today %}urgent{% endif %} {% if task.status == 'Complete' %}complete{% endif %}">

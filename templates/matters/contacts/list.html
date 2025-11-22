@@ -1,4 +1,5 @@
 {% extends "matters/detail.html" %}
+{% load phone_numbers %}
 {% block subcontent %}
   <div class="toolbar">
     <div class="toolbar-left">
@@ -25,15 +26,30 @@
                 <td class="email hl-gray">
                   {% if matter.client.email %}
                     <button type="button"
-                            class="btn btn-sm copy-btn copy-btn-left"
+                            class="btn btn-sm copy-btn"
                             data-copy="{{ matter.client.email }}"
                             title="Copy email">
                       <i class="bi bi-clipboard"></i>
                     </button>
+                    <a href="mailto:{{ matter.client.email }}">{{ matter.client.email }}</a>
                   {% endif %}
-                  {{ matter.client.email|default:'' }}
                 </td>
-                <td class="phone1 hl-gray">{{ matter.client.phone1|default:'' }}</td>
+                <td class="phone1 hl-gray">
+                  {% if matter.client.phone1 %}
+                    <button type="button"
+                            class="btn btn-sm copy-btn"
+                            data-copy="{{ matter.client.phone1|phone_number }}"
+                            title="Copy phone number">
+                      <i class="bi bi-clipboard"></i>
+                    </button>
+                    {{ matter.client.phone1|phone_number }}
+                    <a href="tel:{{ matter.client.phone1|phone_tel }}"
+                       class="btn btn-sm copy-btn contact-call-btn"
+                       title="Call">
+                      <i class="bi bi-telephone-outbound"></i>
+                    </a>
+                  {% endif %}
+                </td>
               </tr>
             {% endif %}
             {% for relationship in relationships %}
@@ -47,15 +63,30 @@
                 <td class="email">
                   {% if relationship.contact.email %}
                     <button type="button"
-                            class="btn btn-sm copy-btn copy-btn-left"
+                            class="btn btn-sm copy-btn"
                             data-copy="{{ relationship.contact.email }}"
                             title="Copy email">
                       <i class="bi bi-clipboard"></i>
                     </button>
+                    <a href="mailto:{{ relationship.contact.email }}">{{ relationship.contact.email }}</a>
                   {% endif %}
-                  {{ relationship.contact.email|default:'' }}
                 </td>
-                <td class="phone1">{{ relationship.contact.phone1|default:'' }}</td>
+                <td class="phone1">
+                  {% if relationship.contact.phone1 %}
+                    <button type="button"
+                            class="btn btn-sm copy-btn"
+                            data-copy="{{ relationship.contact.phone1|phone_number }}"
+                            title="Copy phone number">
+                      <i class="bi bi-clipboard"></i>
+                    </button>
+                    {{ relationship.contact.phone1|phone_number }}
+                    <a href="tel:{{ relationship.contact.phone1|phone_tel }}"
+                       class="btn btn-sm copy-btn contact-call-btn"
+                       title="Call">
+                      <i class="bi bi-telephone-outbound"></i>
+                    </a>
+                  {% endif %}
+                </td>
               </tr>
             {% endfor %}
           </table>

@@ -6,3 +6,7 @@
 .return-to-agenda:hover {
   color: var(--link-hover);
 }
+
+.tasks-table {
+  width: 100%;
+}

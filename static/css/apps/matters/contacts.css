@@ -9,46 +9,49 @@
 }
 
 .matter-contacts .phone1 {
-  width: 150px;
+  width: 300px;
+  min-width: 300px;
 }
 
 .matter-contacts .relationship	{
   width: 250px;
 }
 
+.matter-contacts .name {
+  min-width: 200px;
+}
+
 .matter-contacts .email	{
-  width: 400px;
+  width: 350px;
+  min-width: 350px;
   position: relative;
 }
 
-.matter-contacts .email .copy-btn {
+.matter-contacts .copy-btn {
   display: inline-block;
-  margin-right: 0.25rem;
+  margin-right: 0.5rem;
   vertical-align: middle;
 }
 
+.matter-contacts .bi-envelope {
+  margin-right: 0.5rem;
+  position: relative;
+  bottom: -1px;
+}
+
+/* Hide call buttons on desktop, show only on mobile */
+@media (min-width: 769px) {
+  .matter-contacts .contact-call-btn {
+    display: none;
+  }
+}
 
 /* ==========================================================================
- Mobile Responsive
+ Mobile Responsive - Favor horizontal scroll over compression
 ========================================================================== */
 
 @media (max-width: 768px) {
-
-  /* Compress relationship column */
-  .matter-contacts .relationship {
-    width: 90px;
-    min-width: 90px;
-  }
-
-  /* Name column: set minimum width to prevent tight wrapping */
-  .matter-contacts .name {
-    min-width: 120px;
-    width: 40%;
-  }
-
-  /* Email column: reduce width, prevent wrapping under button */
-  .matter-contacts .email {
-    width: auto;
+  .matter-contacts {
     white-space: nowrap;
   }
 

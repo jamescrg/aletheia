@@ -115,6 +115,11 @@ urlpatterns = [
         name="tasks-filter-user",
     ),
     path(
+        "matters/<int:id>/tasks/filter-priority/<int:priority_value>",
+        tasks.tasks_filter_priority,
+        name="tasks-filter-priority",
+    ),
+    path(
         "matters/<int:id>/tasks/filter-focus/<str:focus>",
         tasks.tasks_filter_focus,
         name="tasks-filter-focus",

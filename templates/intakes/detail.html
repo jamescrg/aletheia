@@ -57,12 +57,6 @@
                          title="Open in Google Maps">
                         <i class="bi bi-geo-alt"></i>
                       </a>
-                      <a href="https://www.zillow.com/homes/{{ intake.address|zillow_address }}_rb/"
-                         target="_blank"
-                         class="btn btn-sm copy-btn"
-                         title="Search on Zillow">
-                        <i class="bi bi-house"></i>
-                      </a>
                     </div>
                   </div>
                 </td>
@@ -85,12 +79,6 @@
                          title="Open in Google Maps">
                         <i class="bi bi-geo-alt"></i>
                       </a>
-                      <a href="https://www.zillow.com/homes/{{ intake.disputed_property|zillow_address }}_rb/"
-                         target="_blank"
-                         class="btn btn-sm copy-btn"
-                         title="Search on Zillow">
-                        <i class="bi bi-house"></i>
-                      </a>
                     </div>
                   </div>
                 </td>
@@ -98,7 +86,19 @@
             {% endif %}
             <tr>
               <th>Value</th>
-              <td class="intake-value">{% include "intakes/value-display.html" %}</td>
+              <td class="intake-value">
+                <div class="intake-value-container">
+                  <div>{% include "intakes/value-display.html" %}</div>
+                  {% if intake.disputed_property %}
+                    <a href="https://www.zillow.com/homes/{{ intake.disputed_property|zillow_address }}_rb/"
+                       target="_blank"
+                       class="btn btn-sm copy-btn"
+                       title="Search on Zillow">
+                      <i class="bi bi-house"></i>
+                    </a>
+                  {% endif %}
+                </div>
+              </td>
             </tr>
           </table>
           <table class="width100">

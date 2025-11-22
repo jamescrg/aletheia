@@ -60,6 +60,8 @@ def get_matter_tasks_data(request, matter_id):
     if user_id:
         selected_user = CustomUser.objects.filter(id=user_id).first()
 
+    priority_value = filter_data.get("priority") if filter_data else None
+
     list_data = {
         "pagination": pagination,
         "session_key": "matter_tasks_pagination",
@@ -70,6 +72,9 @@ def get_matter_tasks_data(request, matter_id):
         "users": CustomUser.objects.filter(is_active=True).order_by("username"),
         "user_id": user_id,
         "selected_user": selected_user.username.capitalize() if selected_user else None,
+        "priorities": list(range(1, 10)),
+        "priority_value": priority_value,
+        "selected_priority": f"Priority ≤ {priority_value}" if priority_value else "",
         "focus": focus,
         "filter_label": filter_data.get("filter_label", None) if filter_data else None,
     }
@@ -286,6 +291,18 @@ def tasks_filter_focus(request, id, focus):
         focus = None
 
     filter_data["focus"] = focus
+    request.session["matter_tasks_filter"] = filter_data
+    return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
+
+
+@login_required
+def tasks_filter_priority(request, id, priority_value):
+    """Filter tasks by priority for a matter"""
+    filter_data = request.session.get("matter_tasks_filter", {})
+    filter_data["matter"] = id
+    # Set to None when 0 (All) is selected, otherwise use the value
+    filter_data["priority"] = None if priority_value == 0 else priority_value
+
     request.session["matter_tasks_filter"] = filter_data
     return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
 
