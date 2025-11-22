@@ -12,7 +12,6 @@ class TaskForm(forms.ModelForm):
 
         fields = (
             "matter",
-            "focus",
             "description",
             "user",
             "priority",
@@ -46,7 +45,6 @@ class TaskForm(forms.ModelForm):
                     "class": "span2",
                 }
             ),
-            "focus": forms.Select(attrs={"class": "span1"}),
             "user": forms.Select(attrs={"class": ""}),
             "status": forms.Select(choices=STATUSES),
             "date_due": forms.DateInput(attrs={"type": "date", "class": ""}),

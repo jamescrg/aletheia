@@ -10,11 +10,6 @@ STATUS_CHOICES = (
     ("Complete", "Complete"),
 )
 
-FOCUS_CHOICES = (
-    ("Current", "Current"),
-    ("Long Term", "Long Term"),
-)
-
 
 class TasksOrderingFilter(django_filters.OrderingFilter):
     def filter(self, qs, value):
@@ -22,35 +17,21 @@ class TasksOrderingFilter(django_filters.OrderingFilter):
             return qs
         ordering = [self.get_ordering_value(param) for param in value]
         try:
-            if ordering[0] == "matter":
-                return qs.order_by(
-                    "-status",
-                    "matter__name",
-                    F("date_due").asc(nulls_first=True),
-                    "priority",
-                    "description",
-                    "id",
-                )
-            if ordering[0] == "description":
-                return qs.order_by("-status", "description", "id")
-            if ordering[0] == "user":
-                return qs.order_by(
-                    "-status",
-                    "user",
-                    F("date_due").asc(nulls_first=True),
-                    "priority",
-                    "id",
-                )
             if ordering[0] == "date_due":
                 return qs.order_by(
-                    "-status", F("date_due").asc(nulls_first=True), "priority", "id"
+                    F("date_due").asc(nulls_first=True),
+                    "priority",
+                    "matter__name",
+                    "description",
+                    "id",
+                    "id",
                 )
             if ordering[0] == "priority":
                 return qs.order_by(
                     "-status",
                     "priority",
                     "matter__name",
-                    F("date_due").asc(nulls_first=True),
+                    "description",
                     "id",
                 )
             return qs.order_by("-status", *ordering, "id")
@@ -60,7 +41,6 @@ class TasksOrderingFilter(django_filters.OrderingFilter):
 
 class TasksFilter(django_filters.FilterSet):
     status = django_filters.ChoiceFilter(choices=STATUS_CHOICES, empty_label="All")
-    focus = django_filters.ChoiceFilter(choices=FOCUS_CHOICES, empty_label="All")
     date_due = django_filters.DateFromToRangeFilter(
         widget=django_filters.widgets.RangeWidget(attrs={"type": "date"})
     )
@@ -72,22 +52,28 @@ class TasksFilter(django_filters.FilterSet):
         queryset=CustomUser.objects.filter(is_active=True).order_by("username"),
         empty_label="All",
     )
+    priority = django_filters.NumberFilter(
+        field_name="priority",
+        lookup_expr="lte",
+        label="Priority (≤)",
+    )
 
     order_by = TasksOrderingFilter(
         fields=(
-            ("status", "status"),
-            ("matter", "matter"),
-            ("description", "description"),
-            ("user", "user"),
             ("date_due", "date_due"),
             ("priority", "priority"),
-            ("focus", "focus"),
         ),
     )
 
     class Meta:
         model = Task
-        fields = ["status", "focus", "date_due", "matter", "user"]
+        fields = [
+            "status",
+            "priority",
+            "matter",
+            "user",
+            "date_due",
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

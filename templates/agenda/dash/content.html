@@ -14,7 +14,7 @@
             </thead>
             <tbody>
               {% if unbilled_by_user %}
-                <tr class="total-row {% if unbilled_total_fees < 10000 %}hl-red{% elif unbilled_total_fees < 20000 %}hl-orange{% elif unbilled_total_fees < 30000 %}hl-yellow{% elif unbilled_total_fees < 40000 %}hl-green{% else %}hl-blue{% endif %}">
+                <tr class="total-row {% if unbilled_total_fees < 10000 %}hl-yellow{% elif unbilled_total_fees < 20000 %}hl-yellow{% elif unbilled_total_fees < 30000 %}hl-yellow{% elif unbilled_total_fees < 40000 %}hl-green{% else %}hl-blue{% endif %}">
                   <td>
                     <strong>Total</strong>
                   </td>
@@ -90,38 +90,6 @@
     {# Left Column: Events and Tasks (2/3 width) #}
     <div class="col-12 col-xl-8">
       <div class="d-flex flex-column gap-custom">
-        {# Upcoming Tasks #}
-        <div class="dashboard-card">
-          <table class="dashboard-table tasks">
-            <thead>
-              <tr>
-                <th colspan="4">Upcoming Tasks</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% if urgent_tasks %}
-                {% for task in urgent_tasks %}
-                  <tr {% if task.date_due == today %}class="due-today"{% elif task.date_due == tomorrow %}class="due-tomorrow"{% endif %}>
-                    <td class="date">{{ task.date_due|date:'Y-m-d' }}</td>
-                    <td class="matter">
-                      {% if task.matter %}
-                        <a href="{% url 'matters:detail' id=task.matter.id %}">{{ task.matter.name|truncatechars:30 }}</a>
-                      {% else %}
-                        <a href="{% url 'agenda:tasks-select' %}">Admin</a>
-                      {% endif %}
-                    </td>
-                    <td class="description">{{ task.description }}</td>
-                    <td class="user">{{ task.user.username|title }}</td>
-                  </tr>
-                {% endfor %}
-              {% else %}
-                <tr>
-                  <td colspan="4" class="empty-message">No urgent tasks</td>
-                </tr>
-              {% endif %}
-            </tbody>
-          </table>
-        </div>
         {# Upcoming Events #}
         <div class="dashboard-card">
           <table class="dashboard-table events">
@@ -154,6 +122,38 @@
               {% else %}
                 <tr>
                   <td colspan="4" class="empty-message">No upcoming events</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+        {# Upcoming Tasks #}
+        <div class="dashboard-card">
+          <table class="dashboard-table tasks">
+            <thead>
+              <tr>
+                <th colspan="4">Upcoming Tasks</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if urgent_tasks %}
+                {% for task in urgent_tasks %}
+                  <tr {% if task.date_due == today %}class="due-today"{% elif task.date_due == tomorrow %}class="due-tomorrow"{% endif %}>
+                    <td class="date">{{ task.date_due|date:'Y-m-d' }}</td>
+                    <td class="matter">
+                      {% if task.matter %}
+                        <a href="{% url 'matters:detail' id=task.matter.id %}">{{ task.matter.name|truncatechars:30 }}</a>
+                      {% else %}
+                        <a href="{% url 'agenda:tasks-select' %}">Admin</a>
+                      {% endif %}
+                    </td>
+                    <td class="description">{{ task.description }}</td>
+                    <td class="user">{{ task.user.username|title }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="4" class="empty-message">No upcoming tasks</td>
                 </tr>
               {% endif %}
             </tbody>

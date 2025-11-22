@@ -9,7 +9,7 @@ from apps.agenda.tasks.filter import TasksFilter
 from apps.agenda.tasks.forms import TaskForm
 from apps.agenda.tasks.models import Task
 from apps.agenda.tasks.services import process_quick_task_description
-from apps.agenda.tasks.tasks import get_list_data, get_upcoming_tasks
+from apps.agenda.tasks.tasks import get_list_data
 from apps.matters.models import Matter
 
 
@@ -31,29 +31,12 @@ def tasks_index(request):
             request.session["show_dash"] = True
             return redirect("/dash/")
 
-    # Check whether upcoming tasks section has been hidden
-    show_upcoming_tasks = request.session.get("show_upcoming_tasks", True)
-    if not show_upcoming_tasks:
-        # Check if the hide date has expired (new day)
-        hide_upcoming_expire = request.session.get("hide_upcoming_expire")
-        if hide_upcoming_expire:
-            old_date = date.fromtimestamp(int(hide_upcoming_expire))
-            if today > old_date:
-                show_upcoming_tasks = True
-                request.session["show_upcoming_tasks"] = True
-
-    # Get upcoming tasks
-    upcoming_tasks = get_upcoming_tasks(request) if show_upcoming_tasks else []
-
     context = get_list_data(request)
 
     context = context | {
         "app": "agenda",
         "subapp": "tasks",
         "show_dash": show_dash,
-        "show_upcoming_tasks": show_upcoming_tasks,
-        "upcoming_tasks": upcoming_tasks,
-        "today": today,
     }
 
     return render(request, "agenda/tasks/tasks.html", context)
@@ -61,29 +44,7 @@ def tasks_index(request):
 
 @login_required
 def tasks_list(request):
-    today = date.today()
-
-    # Check whether upcoming tasks section has been hidden
-    show_upcoming_tasks = request.session.get("show_upcoming_tasks", True)
-    if not show_upcoming_tasks:
-        # Check if the hide date has expired (new day)
-        hide_upcoming_expire = request.session.get("hide_upcoming_expire")
-        if hide_upcoming_expire:
-            old_date = date.fromtimestamp(int(hide_upcoming_expire))
-            if today > old_date:
-                show_upcoming_tasks = True
-                request.session["show_upcoming_tasks"] = True
-
-    # Get upcoming tasks
-    upcoming_tasks = get_upcoming_tasks(request) if show_upcoming_tasks else []
-
     context = get_list_data(request)
-
-    context = context | {
-        "show_upcoming_tasks": show_upcoming_tasks,
-        "upcoming_tasks": upcoming_tasks,
-    }
-
     return render(request, "agenda/tasks/list.html", context)
 
 
@@ -92,19 +53,6 @@ def tasks_select(request):
     request.session["show_dash"] = False
     request.session["hide_expire"] = date.today().strftime("%s")
     return redirect("agenda:tasks-index")
-
-
-@login_required
-def tasks_toggle_upcoming(request):
-    # Toggle the show_upcoming_tasks setting
-    show_upcoming = request.session.get("show_upcoming_tasks", True)
-    request.session["show_upcoming_tasks"] = not show_upcoming
-
-    # If hiding, set expiry for tomorrow
-    if not request.session["show_upcoming_tasks"]:
-        request.session["hide_upcoming_expire"] = date.today().strftime("%s")
-
-    return redirect("agenda:tasks-list")
 
 
 @login_required
@@ -132,7 +80,6 @@ def tasks_add(request):
         if not tasks_matter:
             tasks_matter = request.session.get("tasks_matter")
 
-        focus = filter_data.get("focus")
         if user_id and user_id != "":
             try:
                 initial_user = CustomUser.objects.get(pk=int(user_id))
@@ -145,7 +92,6 @@ def tasks_add(request):
             initial={
                 "user": initial_user,
                 "matter": tasks_matter,
-                "focus": focus,
             },
             use_required_attribute=False,
         )
@@ -197,13 +143,6 @@ def tasks_add_quick(request):
     if not user_id:
         user_id = request.user.id
     task.user = CustomUser.objects.filter(pk=int(user_id)).get()
-
-    # auto populate the focus
-    focus = filter_data.get("focus", None)
-    if focus:
-        task.focus = focus
-    else:
-        task.focus = "Current"
 
     # Set matter: use smart matching if applicable, otherwise use filter matter
     if use_smart_matching:
@@ -295,9 +234,9 @@ def tasks_filter(request, user=None):
                     if not CustomUser.objects.filter(
                         id=user_id, is_active=True
                     ).exists():
-                        sanitized_data.pop("user", None)
+                        sanitized_data["user"] = ""
                 except (ValueError, TypeError):
-                    sanitized_data.pop("user", None)
+                    sanitized_data["user"] = ""
 
             # Validate matter field - remove if invalid
             if "matter" in sanitized_data and sanitized_data["matter"]:
@@ -306,11 +245,21 @@ def tasks_filter(request, user=None):
                     if not Matter.objects.filter(
                         id=matter_id, status__in=["Pending", "Open"]
                     ).exists():
-                        sanitized_data.pop("matter", None)
+                        sanitized_data["matter"] = ""
                 except (ValueError, TypeError):
-                    sanitized_data.pop("matter", None)
+                    sanitized_data["matter"] = ""
 
             filter = TasksFilter(sanitized_data, queryset=Task.objects.all())
+
+            # If the filter is invalid, reset to defaults
+            if not filter.form.is_valid():
+                default_filter = {
+                    "status": "Pending",
+                    "matter": None,
+                    "order_by": "date_due",
+                    "user": request.user.id,
+                }
+                filter = TasksFilter(default_filter, queryset=Task.objects.all())
         else:
             default_filter = {
                 "status": "Pending",
@@ -376,13 +325,10 @@ def tasks_filter_user(request, user_id):
 
 
 @login_required
-def tasks_filter_focus(request, focus):
+def tasks_filter_priority(request, priority_value):
     filter_data = request.session.get("tasks_filter", {})
-
-    if focus == "All":
-        focus = None
-
-    filter_data["focus"] = focus
+    # Set to empty string when 0 (All) is selected, otherwise use the value
+    filter_data["priority"] = "" if priority_value == 0 else priority_value
 
     request.session["tasks_filter"] = filter_data
 
@@ -399,7 +345,6 @@ def tasks_filter_default(request):
         "matter": None,
         "user": request.user.id,
         "order_by": "priority",
-        "focus": "Current",
     }
     request.session["tasks_filter"] = filter_data
     request.session.modified = True
@@ -473,14 +418,6 @@ def tasks_user(request, task_id, user):
     task = get_object_or_404(Task, pk=task_id)
     user = get_object_or_404(CustomUser, pk=user)
     task.user = user
-    task.save()
-    return redirect("agenda:tasks-list")
-
-
-@login_required
-def tasks_focus(request, task_id, focus):
-    task = get_object_or_404(Task, pk=task_id)
-    task.focus = focus
     task.save()
     return redirect("agenda:tasks-list")
 

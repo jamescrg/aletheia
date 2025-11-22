@@ -11,6 +11,10 @@
   width: 137px;
 }
 
+.filter input[type="number"] {
+  min-width: 95%;
+}
+
 form .errorlist {
   padding: 0;
   margin: 0;

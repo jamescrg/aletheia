@@ -6,20 +6,13 @@ from apps.matters.models import Matter
 
 
 class Task(models.Model):
-    FOCUS_CHOICES = [
-        ("Current", "Current"),
-        ("Long Term", "Long Term"),
-    ]
-
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
     folder = models.ForeignKey(Folder, on_delete=models.SET_NULL, null=True)
     description = models.CharField(max_length=200, null=True)
     date_due = models.DateField(blank=True, null=True)
     matter = models.ForeignKey(Matter, on_delete=models.CASCADE, blank=True, null=True)
     status = models.CharField(max_length=50, null=True)
-    urgent = models.BooleanField(default=False)
     priority = models.IntegerField(default=5)
-    focus = models.CharField(max_length=20, choices=FOCUS_CHOICES, default="Current")
 
     def __str__(self):
         return f"{self.description} : {self.id}"
