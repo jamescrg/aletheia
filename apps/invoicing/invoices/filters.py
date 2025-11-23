@@ -8,6 +8,7 @@ from config.helpers import MultipleOrderingFilter
 class InvoiceFilter(django_filters.FilterSet):
     matter = django_filters.ModelChoiceFilter(
         queryset=Matter.objects.filter(invoice__isnull=False)
+        .exclude(status__in=["Pending", "Closed"])
         .distinct()
         .order_by("name"),
         empty_label="All",
