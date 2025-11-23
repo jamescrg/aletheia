@@ -13,6 +13,7 @@ from apps.activity.expenses.summary import (
 )
 from apps.activity.time.models import TimeEntry
 from apps.activity.time.summary import calculate_summary as calculate_time_summary
+from apps.invoicing.applications.models import PaymentApplication
 from apps.invoicing.invoices.functions import generate_ledes_98b
 from apps.invoicing.invoices.get_invoice_data import get_invoice_data
 from apps.invoicing.payments.forms import PaymentForm
@@ -262,9 +263,14 @@ def quick_invoice_payment(request, pk, payment_type):
     if request.method == "POST" and form.is_valid():
         payment = form.save()
 
-        if payment.amount == invoice_value:
-            invoice.status = "PAID"
-            invoice.save()
+        # Auto-allocate payment to invoice
+        amount_to_allocate = min(payment.amount, invoice.amount_remaining)
+        if amount_to_allocate > 0:
+            PaymentApplication.objects.create(
+                payment=payment,
+                invoice=invoice,
+                amount_applied=amount_to_allocate,
+            )
 
         if payment_type == "trust":
             Transaction.objects.create(

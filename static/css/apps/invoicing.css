@@ -178,3 +178,43 @@ Credits
 .collection .numeric {
   width: 150px;
 }
+
+/* ==========================================================================
+ Application
+========================================================================== */
+
+.payment-info-table {
+  width: 100%;
+}
+
+.payment-info-table td:last-child {
+  text-align: right;
+}
+
+.application-table {
+  table-layout: fixed;
+}
+
+.application-table th.text-right {
+  text-align: right;
+}
+
+.application-table td {
+  padding-left: 1rem;
+}
+
+.application-table td.text-right {
+  text-align: right;
+}
+
+.application-table input.form-control.application-input {
+  width: 140px;
+}
+
+.application-table .text-right input {
+  display: inline;
+}
+
+.to-apply {
+  margin-right: 1rem;
+}

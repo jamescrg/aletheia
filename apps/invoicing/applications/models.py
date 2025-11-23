@@ -37,6 +37,25 @@ class PaymentApplication(models.Model):
     def __str__(self):
         return f"${self.amount_applied} from Payment #{self.payment_id} to Invoice #{self.invoice_id}"
 
+    def save(self, *args, **kwargs):
+        """Override save to auto-update invoice status when fully allocated."""
+        super().save(*args, **kwargs)
+        # Refresh invoice and check if fully paid
+        self.invoice.refresh_from_db()
+        if self.invoice.amount_remaining == 0 and self.invoice.status != "PAID":
+            self.invoice.status = "PAID"
+            self.invoice.save()
+
+    def delete(self, *args, **kwargs):
+        """Override delete to revert invoice status if needed."""
+        invoice = self.invoice
+        super().delete(*args, **kwargs)
+        # After deletion, check if invoice should revert to SENT
+        invoice.refresh_from_db()
+        if invoice.status == "PAID" and invoice.amount_remaining > 0:
+            invoice.status = "SENT"
+            invoice.save()
+
     class Meta:
         db_table = "app_invoicing_payment_application"
         indexes = [
@@ -82,6 +101,25 @@ class CreditApplication(models.Model):
 
     def __str__(self):
         return f"${self.amount_applied} from Credit #{self.credit_id} to Invoice #{self.invoice_id}"
+
+    def save(self, *args, **kwargs):
+        """Override save to auto-update invoice status when fully allocated."""
+        super().save(*args, **kwargs)
+        # Refresh invoice and check if fully paid
+        self.invoice.refresh_from_db()
+        if self.invoice.amount_remaining == 0 and self.invoice.status != "PAID":
+            self.invoice.status = "PAID"
+            self.invoice.save()
+
+    def delete(self, *args, **kwargs):
+        """Override delete to revert invoice status if needed."""
+        invoice = self.invoice
+        super().delete(*args, **kwargs)
+        # After deletion, check if invoice should revert to SENT
+        invoice.refresh_from_db()
+        if invoice.status == "PAID" and invoice.amount_remaining > 0:
+            invoice.status = "SENT"
+            invoice.save()
 
     class Meta:
         db_table = "app_invoicing_credit_application"

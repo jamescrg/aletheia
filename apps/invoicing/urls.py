@@ -3,7 +3,9 @@ from django.urls import path
 from apps.invoicing.collection.views import collection_index, collection_list
 from apps.invoicing.credits.views import (
     credits_add,
+    credits_apply,
     credits_delete,
+    credits_delete_application,
     credits_edit,
     credits_filter,
     credits_index,
@@ -37,8 +39,9 @@ from apps.invoicing.invoices.views import (
 from apps.invoicing.payments.views import (
     order_by_payments,
     payments_add,
-    payments_allocate,
+    payments_apply,
     payments_delete,
+    payments_delete_application,
     payments_edit,
     payments_filter,
     payments_index,
@@ -146,9 +149,14 @@ urlpatterns = [
     ),
     path("invoicing/payments-edit/<int:pk>/", payments_edit, name="payments-edit"),
     path(
-        "invoicing/payments-allocate/<int:pk>/",
-        payments_allocate,
-        name="payments-allocate",
+        "invoicing/payments-apply/<int:pk>/",
+        payments_apply,
+        name="payments-apply",
+    ),
+    path(
+        "invoicing/payments-application-delete/<int:pk>/",
+        payments_delete_application,
+        name="payments-application-delete",
     ),
     path("invoicing/payments-filter/", payments_filter, name="payments-filter"),
     path(
@@ -161,6 +169,16 @@ urlpatterns = [
     path("invoicing/credits/list/", credits_list, name="credits-list"),
     path("invoicing/credits-add/", credits_add, name="credits-add"),
     path("invoicing/credits-edit/<int:pk>/", credits_edit, name="credits-edit"),
+    path(
+        "invoicing/credits-apply/<int:pk>/",
+        credits_apply,
+        name="credits-apply",
+    ),
+    path(
+        "invoicing/credits-application-delete/<int:pk>/",
+        credits_delete_application,
+        name="credits-application-delete",
+    ),
     path("invoicing/credits-delete/<int:pk>/", credits_delete, name="credits-delete"),
     path(
         "invoicing/order-by-credits/<str:order>",

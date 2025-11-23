@@ -25,6 +25,14 @@ td {
   vertical-align: top;
 }
 
+thead {
+  border-bottom: none;
+}
+
+tbody {
+  border-top: none !important;
+}
+
 .center-data {
   text-align: center;
 }

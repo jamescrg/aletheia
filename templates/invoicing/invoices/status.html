@@ -25,12 +25,6 @@
          hx-post="{% url 'invoicing:invoices-edit-status' pk=invoice.id status='SENT' view=view %}">Sent</a>
     </li>
     <li>
-      <a class="dropdown-item {% if invoice.status == "PAID" %}toggle-active{% endif %}"
-         href="#"
-         hx-target="#status-dropdown-{{ invoice.id }}"
-         hx-post="{% url 'invoicing:invoices-edit-status' pk=invoice.id status='PAID' view=view %}">Paid</a>
-    </li>
-    <li>
       <a class="dropdown-item {% if invoice.status == "WAIVED" %}toggle-active{% endif %}"
          href="#"
          hx-target="#status-dropdown-{{ invoice.id }}"

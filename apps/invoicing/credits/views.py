@@ -4,10 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
+from apps.invoicing.applications.models import CreditApplication
 from apps.invoicing.credits.filters import CreditsFilter
 from apps.invoicing.credits.forms import CreditsForm
 from apps.invoicing.credits.get_credits_data import get_credits_data
 from apps.invoicing.credits.models import Credit
+from apps.invoicing.invoices.models import Invoice
 from apps.matters.models import Matter
 
 
@@ -139,3 +141,160 @@ def credits_filter(request):
         filter = get_filter(request)
 
         return render(request, "invoicing/credits/filter.html", {"filter": filter})
+
+
+@login_required
+def credits_apply(request, pk):
+    credit = get_object_or_404(Credit, pk=pk)
+
+    # Get unpaid invoices for this credit's matter
+    unpaid_invoices = (
+        Invoice.objects.filter(matter=credit.matter, status="SENT")
+        .select_related("matter")
+        .order_by("date_issued")
+    )
+
+    # Build list with amount_remaining for each invoice
+    invoice_data = []
+    for invoice in unpaid_invoices:
+        remaining = invoice.amount_remaining
+        if remaining > 0:
+            invoice_data.append({"invoice": invoice, "amount_remaining": remaining})
+
+    if request.method == "POST":
+        from decimal import Decimal, InvalidOperation
+
+        errors = []
+        applications_to_create = []
+        total_to_apply = Decimal("0")
+
+        # Validate all applications before creating any
+        for invoice_dict in invoice_data:
+            invoice = invoice_dict["invoice"]
+            amount_key = f"amount_{invoice.id}"
+            amount_str = request.POST.get(amount_key, "").strip()
+
+            if amount_str:
+                try:
+                    amount_applied = Decimal(amount_str)
+
+                    if amount_applied <= 0:
+                        errors.append(
+                            f"Invoice #{invoice.id}: Amount must be greater than 0"
+                        )
+                        continue
+
+                    # Check doesn't exceed invoice remaining
+                    if amount_applied > invoice_dict["amount_remaining"]:
+                        errors.append(
+                            f"Invoice #{invoice.id}: Cannot apply ${amount_applied} "
+                            f"(only ${invoice_dict['amount_remaining']} remaining)"
+                        )
+                        continue
+
+                    total_to_apply += amount_applied
+                    applications_to_create.append((invoice, amount_applied))
+
+                except (InvalidOperation, ValueError):
+                    errors.append(
+                        f"Invoice #{invoice.id}: Invalid amount '{amount_str}'"
+                    )
+
+        # Check total doesn't exceed credit available
+        if total_to_apply > credit.amount_unapplied:
+            errors.append(
+                f"Total application ${total_to_apply} exceeds "
+                f"available credit amount ${credit.amount_unapplied}"
+            )
+
+        # If validation errors, return them
+        if errors:
+            context = {
+                "credit": credit,
+                "invoice_data": invoice_data,
+                "amount_unapplied": credit.amount_unapplied,
+                "errors": errors,
+            }
+            return render(request, "invoicing/credits/apply.html", context, status=400)
+
+        # Create applications and track affected invoices
+        affected_invoices = set()
+        for invoice, amount_applied in applications_to_create:
+            CreditApplication.objects.create(
+                credit=credit, invoice=invoice, amount_applied=amount_applied
+            )
+            affected_invoices.add(invoice)
+
+        # Auto-update invoice status if fully paid
+        for invoice in affected_invoices:
+            invoice.refresh_from_db()
+            if invoice.amount_remaining == 0 and invoice.status != "PAID":
+                invoice.status = "PAID"
+                invoice.save()
+
+        return HttpResponse(
+            status=204,
+            headers={
+                "HX-Trigger": json.dumps(
+                    {"creditsChanged": "", "matterLedgerChanged": ""}
+                )
+            },
+        )
+
+    # Get existing applications for this credit
+    existing_applications = (
+        CreditApplication.objects.filter(credit=credit)
+        .select_related("invoice")
+        .order_by("created_at")
+    )
+
+    context = {
+        "credit": credit,
+        "invoice_data": invoice_data,
+        "amount_unapplied": credit.amount_unapplied,
+        "existing_applications": existing_applications,
+    }
+
+    return render(request, "invoicing/credits/apply.html", context)
+
+
+@login_required
+def credits_delete_application(request, pk):
+    """Delete a credit application and update invoice status if needed."""
+    application = get_object_or_404(CreditApplication, pk=pk)
+    credit = application.credit
+
+    # Delete will trigger the model's delete() method which handles invoice status
+    application.delete()
+
+    # Get updated data for the modal
+    unpaid_invoices = (
+        Invoice.objects.filter(matter=credit.matter, status="SENT")
+        .select_related("matter")
+        .order_by("date_issued")
+    )
+
+    invoice_data = []
+    for invoice in unpaid_invoices:
+        remaining = invoice.amount_remaining
+        if remaining > 0:
+            invoice_data.append({"invoice": invoice, "amount_remaining": remaining})
+
+    existing_applications = (
+        CreditApplication.objects.filter(credit=credit)
+        .select_related("invoice")
+        .order_by("created_at")
+    )
+
+    context = {
+        "credit": credit,
+        "invoice_data": invoice_data,
+        "amount_unapplied": credit.amount_unapplied,
+        "existing_applications": existing_applications,
+    }
+
+    response = render(request, "invoicing/credits/apply.html", context)
+    response["HX-Trigger"] = json.dumps(
+        {"creditsChanged": "", "matterLedgerChanged": ""}
+    )
+    return response

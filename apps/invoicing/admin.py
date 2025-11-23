@@ -19,6 +19,7 @@ class InvoiceAdmin(admin.ModelAdmin):
     list_filter = ["created_by", "matter"]
     search_fields = ["matter__name", "comment", "created_by__username", "status"]
     ordering = ["-created_at"]
+    readonly_fields = ["status"]
 
 
 class PaymentAdmin(admin.ModelAdmin):

@@ -25,12 +25,17 @@ class Payment(models.Model):
         return dict(PAYMENT_METHOD_CHOICES).get(self.payment_method)
 
     @property
-    def amount_unallocated(self):
-        """Calculate the amount of this payment not yet allocated to invoices."""
-        allocated = (
+    def amount_unapplied(self):
+        """Calculate the amount of this payment not yet applied to invoices."""
+        applied = (
             self.applications.aggregate(models.Sum("amount_applied"))[
                 "amount_applied__sum"
             ]
             or 0
         )
-        return self.amount - allocated
+        return self.amount - applied
+
+    @property
+    def applied_status(self):
+        """Return application status: Applied or Unapplied."""
+        return "Applied" if self.amount_unapplied == 0 else "Unapplied"

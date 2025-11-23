@@ -17,12 +17,12 @@ class Credit(models.Model):
         db_table = "app_invoicing_credit"
 
     @property
-    def amount_unallocated(self):
-        """Calculate the amount of this credit not yet allocated to invoices."""
-        allocated = (
+    def amount_unapplied(self):
+        """Calculate the amount of this credit not yet applied to invoices."""
+        applied = (
             self.applications.aggregate(models.Sum("amount_applied"))[
                 "amount_applied__sum"
             ]
             or 0
         )
-        return self.amount - allocated
+        return self.amount - applied

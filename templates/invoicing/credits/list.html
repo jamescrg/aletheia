@@ -48,6 +48,7 @@
             </a>
           </th>
           <th class="amount">Amount</th>
+          <th class="amount">Unapplied</th>
         </tr>
         {% for credit in objects %}
           <tr>
@@ -69,6 +70,15 @@
                 <li>
                   <a class="dropdown-item"
                      href="#"
+                     hx-get="{% url 'invoicing:credits-apply' credit.id %}"
+                     hx-target="#htmx-modal-container"
+                     hx-trigger="click"
+                     data-bs-toggle="modal"
+                     data-bs-target="#htmx-modal-container">Apply</a>
+                </li>
+                <li>
+                  <a class="dropdown-item"
+                     href="#"
                      hx-confirm="Are you sure you want to delete this credit?"
                      hx-delete="{% url 'invoicing:credits-delete' credit.id %}">Delete</a>
                 </li>
@@ -80,6 +90,7 @@
             </td>
             <td>{{ credit.detail|default:"" }}</td>
             <td class="amount">${{ credit.amount|floatformat:2|intcomma }}</td>
+            <td class="amount">${{ credit.amount_unapplied|floatformat:2|intcomma }}</td>
           </tr>
         {% endfor %}
       </table>
