@@ -39,9 +39,9 @@ def get_table_data(request):
         if intake.status == "Open":
             last_viewed = view_times.get(intake.id)
             if last_viewed:
-                # Check if there are notes created after last view
+                # Check if there are notes created after last view (precise datetime)
                 intake.has_new_notes = Note.objects.filter(
-                    intake=intake, date__gt=last_viewed.date()
+                    intake=intake, created_at__gt=last_viewed
                 ).exists()
             else:
                 # Never viewed - always show badge

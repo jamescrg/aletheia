@@ -45,6 +45,7 @@ class Note(models.Model):
     time = models.TimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
     type = models.CharField(max_length=50, blank=True, null=True)
     details = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
         return f"{self.type} : {self.id}"
