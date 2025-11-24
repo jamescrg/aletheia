@@ -199,7 +199,7 @@ Badge Icon (New Notes Indicator)
 ========================================================================== */
 
 .intake-badge-icon {
-  color: var(--slate-700);
+  color: var(--purple-800);
   font-size: 0.9rem;
   margin-left: 0.5rem;
   vertical-align: middle;
