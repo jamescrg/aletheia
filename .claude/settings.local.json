@@ -9,7 +9,8 @@
       "Bash(python manage.py:*)",
       "Bash(grep:*)",
       "Bash(git add:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(xargs cat:*)"
     ],
     "deny": []
   }

@@ -315,3 +315,10 @@ def events_deadline_form(request):
         "today": today,
     }
     return render(request, "agenda/events/deadline-calculator-form.html", context)
+
+
+@login_required
+def events_deadline_modal(request):
+    today = date.today().strftime("%Y-%m-%d")
+    context = {"today": today}
+    return render(request, "agenda/events/deadline-calculator-modal.html", context)
