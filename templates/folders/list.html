@@ -44,11 +44,11 @@
       </div>
     </div>
     <ul class="list-group">
-      {% if folders %}
-        {% for folder in folders %}
-          {% include "folders/folder.html" %}
-        {% endfor %}
-      {% endif %}
+      {% for folder in folders %}
+        {% include "folders/folder.html" %}
+      {% empty %}
+        <li class="list-group-item empty-message">No folders found.</li>
+      {% endfor %}
     </ul>
   </div>
 </div>

@@ -24,48 +24,50 @@
     </div>
     <div class="table-container">
       <table id="transactions" class="trust-transactions">
-        {% if transactions %}
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th class="amount">Withdrawal</th>
+          <th class="amount">Deposit</th>
+          <th class="check">C</th>
+        </tr>
+        {% for transaction in transactions %}
           <tr>
-            <th>Date</th>
-            <th>Description</th>
-            <th class="amount">Withdrawal</th>
-            <th class="amount">Deposit</th>
-            <th class="check">C</th>
+            <td class="date">{{ transaction.date|date:'Y-m-d' }}</td>
+            <td class="note">
+              <a href="#"
+                 hx-get="/trust/{{ transaction.id }}/edit"
+                 hx-target="#htmx-modal-container"
+                 data-bs-toggle="modal"
+                 data-bs-target="#htmx-modal-container">{{ transaction.description }}</a>
+            </td>
+            <td class="amount urgent">
+              {% if transaction.type == 'Withdrawal' %}
+                $
+                {{ transaction.amount|intcomma }}
+              {% endif %}
+            </td>
+            <td class="amount">
+              {% if transaction.type == 'Deposit' %}
+                $
+                {{ transaction.amount|intcomma }}
+              {% endif %}
+            </td>
+            <td class="check">
+              <a href="#" hx-post={% url 'trust:confirmed' id=transaction.id %}>
+                {% if transaction.confirmed %}
+                  <i class="bi bi-check-square"></i>
+                {% else %}
+                  <i class="bi bi-square"></i>
+                {% endif %}
+              </a>
+            </td>
           </tr>
-          {% for transaction in transactions %}
-            <tr>
-              <td class="date">{{ transaction.date|date:'Y-m-d' }}</td>
-              <td class="note">
-                <a href="#"
-                   hx-get="/trust/{{ transaction.id }}/edit"
-                   hx-target="#htmx-modal-container"
-                   data-bs-toggle="modal"
-                   data-bs-target="#htmx-modal-container">{{ transaction.description }}</a>
-              </td>
-              <td class="amount urgent">
-                {% if transaction.type == 'Withdrawal' %}
-                  $
-                  {{ transaction.amount|intcomma }}
-                {% endif %}
-              </td>
-              <td class="amount">
-                {% if transaction.type == 'Deposit' %}
-                  $
-                  {{ transaction.amount|intcomma }}
-                {% endif %}
-              </td>
-              <td class="check">
-                <a href="#" hx-post={% url 'trust:confirmed' id=transaction.id %}>
-                  {% if transaction.confirmed %}
-                    <i class="bi bi-check-square"></i>
-                  {% else %}
-                    <i class="bi bi-square"></i>
-                  {% endif %}
-                </a>
-              </td>
-            </tr>
-          {% endfor %}
-        {% endif %}
+        {% empty %}
+          <tr>
+            <td colspan="5" class="empty-message">No trust transactions found for this client.</td>
+          </tr>
+        {% endfor %}
       </table>
     </div>
     <div class="flex-start-space">

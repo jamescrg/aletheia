@@ -17,11 +17,16 @@ def get_credits_data(request):
         credits, per_page=10, request=request, session_key="credits_pagination"
     )
 
+    # Get current order and strip leading '-' for comparison
+    current_order = filter_data.get("order_by", "date") if filter_data else "date"
+    current_order = current_order.lstrip("-")
+
     context = {
         "pagination": pagination,
         "session_key": "credits_pagination",
         "trigger_key": "creditsChanged",
         "objects": pagination.get_object_list(),
+        "current_order": current_order,
     }
 
     return context

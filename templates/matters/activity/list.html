@@ -28,41 +28,43 @@
           <th class="numeric rate">Rate</th>
           <th class="numeric fee">Fee</th>
         </tr>
-        {% if entries %}
-          {% for entry in entries %}
-            <tr id="time-{{ entry.id }}">
-              <td class="date">{{ entry.date|date:'Y-m-d' }}</td>
-              <td class="user">{{ entry.user.initials }}</td>
-              <td class="actions">
-                {% if entry.invoice and not entry.invoice.status == 'DRAFT' %}
-                  {{ entry.actions }}
-                {% else %}
-                  <a href="#"
-                     hx-get="{% url 'activity:time-edit' id=entry.id %}"
-                     hx-target="#htmx-modal-container"
-                     hx-trigger="click"
-                     data-bs-toggle="modal"
-                     data-bs-target="#htmx-modal-container">{{ entry.actions }}</a>
-                {% endif %}
-              </td>
-              <td class="hours numeric">{{ entry.hours|floatformat:1 }}</td>
-              <td class="rate numeric">
-                {% if entry.comp %}
-                  comp
-                {% else %}
-                  ${{ entry.rate }}
-                {% endif %}
-              </td>
-              <td class="fee numeric">
-                {% if entry.comp %}
-                  comp
-                {% else %}
-                  ${{ entry.fee|floatformat:2|intcomma }}
-                {% endif %}
-              </td>
-            </tr>
-          {% endfor %}
-        {% endif %}
+        {% for entry in entries %}
+          <tr id="time-{{ entry.id }}">
+            <td class="date">{{ entry.date|date:'Y-m-d' }}</td>
+            <td class="user">{{ entry.user.initials }}</td>
+            <td class="actions">
+              {% if entry.invoice and not entry.invoice.status == 'DRAFT' %}
+                {{ entry.actions }}
+              {% else %}
+                <a href="#"
+                   hx-get="{% url 'activity:time-edit' id=entry.id %}"
+                   hx-target="#htmx-modal-container"
+                   hx-trigger="click"
+                   data-bs-toggle="modal"
+                   data-bs-target="#htmx-modal-container">{{ entry.actions }}</a>
+              {% endif %}
+            </td>
+            <td class="hours numeric">{{ entry.hours|floatformat:1 }}</td>
+            <td class="rate numeric">
+              {% if entry.comp %}
+                comp
+              {% else %}
+                ${{ entry.rate }}
+              {% endif %}
+            </td>
+            <td class="fee numeric">
+              {% if entry.comp %}
+                comp
+              {% else %}
+                ${{ entry.fee|floatformat:2|intcomma }}
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="empty-message">No time entries found for this matter.</td>
+          </tr>
+        {% endfor %}
       </table>
     </div>
     <div class="flex-start-space">

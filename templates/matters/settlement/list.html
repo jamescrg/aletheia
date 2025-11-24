@@ -15,37 +15,39 @@
   </div>
   <div class="overflow-x">
     <table class="table settlement-list">
-      {% if entries %}
+      <tr>
+        <th>Date</th>
+        <th>Medium</th>
+        <th>Type</th>
+        <th>Notes</th>
+        <th class="amount">Amount</th>
+      </tr>
+      {% for entry in entries %}
         <tr>
-          <th>Date</th>
-          <th>Medium</th>
-          <th>Type</th>
-          <th>Notes</th>
-          <th class="amount">Amount</th>
+          <td class="date {% if entry.type == 'Authorization' %}strong{% endif %}">{{ entry.date|date:'Y-m-d' }}</td>
+          <td class="medium {% if entry.type == 'Authorization' %}strong{% endif %}">{{ entry.medium }}</td>
+          <td class="type {% if entry.type == 'Authorization' %}strong{% endif %}">
+            <a href="#"
+               hx-get="/matters/{{ entry.matter.id }}/settlement/{{ entry.id }}/edit"
+               hx-target="#htmx-modal-container"
+               hx-trigger="click"
+               data-bs-toggle="modal"
+               data-bs-target="#htmx-modal-container">{{ entry.type }}</a>
+          </td>
+          <td class="notes {% if entry.type == 'Authorization' %}strong{% endif %}">{{ entry.notes }}</td>
+          <td class="amount {% if entry.type == 'Authorization' %}strong{% endif %}">
+            {% if entry.amount|floatformat:2|intcomma %}
+              ${{ entry.amount|floatformat:2|intcomma }}
+            {% else %}
+              NA
+            {% endif %}
+          </td>
         </tr>
-        {% for entry in entries %}
-          <tr>
-            <td class="date {% if entry.type == 'Authorization' %}strong{% endif %}">{{ entry.date|date:'Y-m-d' }}</td>
-            <td class="medium {% if entry.type == 'Authorization' %}strong{% endif %}">{{ entry.medium }}</td>
-            <td class="type {% if entry.type == 'Authorization' %}strong{% endif %}">
-              <a href="#"
-                 hx-get="/matters/{{ entry.matter.id }}/settlement/{{ entry.id }}/edit"
-                 hx-target="#htmx-modal-container"
-                 hx-trigger="click"
-                 data-bs-toggle="modal"
-                 data-bs-target="#htmx-modal-container">{{ entry.type }}</a>
-            </td>
-            <td class="notes {% if entry.type == 'Authorization' %}strong{% endif %}">{{ entry.notes }}</td>
-            <td class="amount {% if entry.type == 'Authorization' %}strong{% endif %}">
-              {% if entry.amount|floatformat:2|intcomma %}
-                ${{ entry.amount|floatformat:2|intcomma }}
-              {% else %}
-                NA
-              {% endif %}
-            </td>
-          </tr>
-        {% endfor %}
-      {% endif %}
+      {% empty %}
+        <tr>
+          <td colspan="5" class="empty-message">No settlement entries found for this matter.</td>
+        </tr>
+      {% endfor %}
     </table>
   </div>
 {% endblock subcontent %}

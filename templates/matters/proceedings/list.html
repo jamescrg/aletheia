@@ -14,39 +14,41 @@
   </div>
   <div class="table-container">
     <table class="table proceedings-list">
-      {% if proceedings %}
+      <tr>
+        <th>Date Filed</th>
+        <th>Case No</th>
+        <th>Forum and Description</th>
+        <th>Status</th>
+        <th class="primary">Primary</th>
+      </tr>
+      {% for proceeding in proceedings %}
         <tr>
-          <th>Date Filed</th>
-          <th>Case No</th>
-          <th>Forum and Description</th>
-          <th>Status</th>
-          <th class="primary">Primary</th>
+          <td class="date-filed">{{ proceeding.date_filed|date:'Y-m-d' }}</td>
+          <td class="case-no">{{ proceeding.case_number }}</td>
+          <td class="forum">
+            <a href="#"
+               type="button"
+               class="btn-icon"
+               hx-get="/matters/{{ matter.id }}/proceedings/{{ proceeding.id }}/edit"
+               hx-target="#htmx-modal-container"
+               hx-trigger="click"
+               data-bs-toggle="modal"
+               data-bs-target="#htmx-modal-container">{{ proceeding.forum }}</a>
+          </td>
+          <td class="status">{{ proceeding.status }}</td>
+          <td class="center-data">
+            {% if proceeding.primary %}
+              <i class="bi bi-check-circle-fill true-bool"></i>
+            {% else %}
+              <i class="bi bi-x-circle-fill error false-bool"></i>
+            {% endif %}
+          </td>
         </tr>
-        {% for proceeding in proceedings %}
-          <tr>
-            <td class="date-filed">{{ proceeding.date_filed|date:'Y-m-d' }}</td>
-            <td class="case-no">{{ proceeding.case_number }}</td>
-            <td class="forum">
-              <a href="#"
-                 type="button"
-                 class="btn-icon"
-                 hx-get="/matters/{{ matter.id }}/proceedings/{{ proceeding.id }}/edit"
-                 hx-target="#htmx-modal-container"
-                 hx-trigger="click"
-                 data-bs-toggle="modal"
-                 data-bs-target="#htmx-modal-container">{{ proceeding.forum }}</a>
-            </td>
-            <td class="status">{{ proceeding.status }}</td>
-            <td class="center-data">
-              {% if proceeding.primary %}
-                <i class="bi bi-check-circle-fill true-bool"></i>
-              {% else %}
-                <i class="bi bi-x-circle-fill error false-bool"></i>
-              {% endif %}
-            </td>
-          </tr>
-        {% endfor %}
-      {% endif %}
+      {% empty %}
+        <tr>
+          <td colspan="5" class="empty-message">No proceedings found for this matter.</td>
+        </tr>
+      {% endfor %}
     </table>
   </div>
 {% endblock subcontent %}

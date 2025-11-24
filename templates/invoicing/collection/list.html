@@ -20,6 +20,10 @@
           <td class="numeric">${{ matter.paid|floatformat:2|intcomma }}</td>
           <td class="numeric strong">${{ matter.due|floatformat:2|intcomma }}</td>
         </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4" class="empty-message">No outstanding balances found.</td>
+        </tr>
       {% endfor %}
     </table>
     <div class="flex-start-space">

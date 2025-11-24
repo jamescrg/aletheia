@@ -28,7 +28,7 @@
     <tr>
       <th>
         Username
-        <button class="btn-sort btn-task-status"
+        <button class="btn-sort {% if current_order == 'username' %}active{% endif %}"
                 hx-target="#users"
                 hx-swap="innerHTML"
                 hx-post="{% url 'settings:user-sort' 'username' %}">
@@ -38,7 +38,7 @@
       <th>Name</th>
       <th>
         E-Mail
-        <button class="btn-sort btn-task-status"
+        <button class="btn-sort {% if current_order == 'email' %}active{% endif %}"
                 hx-target="#users"
                 hx-swap="innerHTML"
                 hx-post="{% url 'settings:user-sort' 'email' %}">
@@ -47,7 +47,7 @@
       </th>
       <th>
         Role
-        <button class="btn-sort btn-task-status"
+        <button class="btn-sort {% if current_order == 'role' %}active{% endif %}"
                 hx-target="#users"
                 hx-swap="innerHTML"
                 hx-post="{% url 'settings:user-sort' 'role' %}">
@@ -56,7 +56,7 @@
       </th>
       <th>
         Initials
-        <button class="btn-sort btn-task-status"
+        <button class="btn-sort {% if current_order == 'initials' %}active{% endif %}"
                 hx-target="#users"
                 hx-swap="innerHTML"
                 hx-post="{% url 'settings:user-sort' 'initials' %}">
@@ -65,7 +65,7 @@
       </th>
       <th>
         Attorney
-        <button class="btn-sort btn-task-status"
+        <button class="btn-sort {% if current_order == 'is_attorney' %}active{% endif %}"
                 hx-target="#users"
                 hx-swap="innerHTML"
                 hx-post="{% url 'settings:user-sort' 'is_attorney' %}">
@@ -74,7 +74,7 @@
       </th>
       <th>
         Hourly Rate
-        <button class="btn-sort btn-task-status"
+        <button class="btn-sort {% if current_order == 'user_rate' %}active{% endif %}"
                 hx-target="#users"
                 hx-swap="innerHTML"
                 hx-post="{% url 'settings:user-sort' 'user_rate' %}">
@@ -83,7 +83,7 @@
       </th>
       <th class="center-data">
         Active
-        <button class="btn-sort btn-task-status"
+        <button class="btn-sort {% if current_order == 'is_active' %}active{% endif %}"
                 hx-target="#users"
                 hx-swap="innerHTML"
                 hx-post="{% url 'settings:user-sort' 'is_active' %}">
@@ -145,6 +145,10 @@
             <i class="bi bi-x-circle-fill error false-bool"></i>
           {% endif %}
         </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="8" class="empty-message">No users found.</td>
       </tr>
     {% endfor %}
   </table>

@@ -168,6 +168,10 @@
             {% include "agenda/tasks/date-display.html" %}
           </td>
         </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5" class="empty-message">No tasks found.</td>
+        </tr>
       {% endfor %}
     </tbody>
   </table>

@@ -12,26 +12,28 @@
     <tr>
       <th class="unbilled-matter">
         Matter
-        <a href="#" hx-post="{% url 'invoicing:unbilled-sort' 'name' %}">
+        <button class="btn-sort {% if current_order == 'name' %}active{% endif %}"
+                hx-post="{% url 'invoicing:unbilled-sort' 'name' %}">
           <i class="bi bi-chevron-expand"></i>
-        </a>
+        </button>
       </th>
       <th class="numeric unbilled-hours">Hours</th>
       <th class="numeric unbilled-col">Fees</th>
       <th class="numeric unbilled-col">Expenses</th>
       <th class="numeric unbilled-col">
         Activity
-        <a href="#"
-           hx-post="{% url 'invoicing:unbilled-sort' 'total_activity' %}">
+        <button class="btn-sort {% if current_order == 'total_activity' %}active{% endif %}"
+                hx-post="{% url 'invoicing:unbilled-sort' 'total_activity' %}">
           <i class="bi bi-chevron-expand"></i>
-        </a>
+        </button>
       </th>
       <th class="numeric unbilled-col">Trust</th>
       <th class="numeric unbilled-col">
         Clearance
-        <a href="#" hx-post="{% url 'invoicing:unbilled-sort' 'clearance' %}">
+        <button class="btn-sort {% if current_order == 'clearance' %}active{% endif %}"
+                hx-post="{% url 'invoicing:unbilled-sort' 'clearance' %}">
           <i class="bi bi-chevron-expand"></i>
-        </a>
+        </button>
       </th>
     </tr>
     {% for matter in matters %}
@@ -56,6 +58,10 @@
         <td class="numeric unbilled-col{% if matter.clearance < 0 %} clearance-negative{% endif %}">
           ${{ matter.clearance|floatformat:2|intcomma }}
         </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="7" class="empty-message">No unbilled activity found.</td>
       </tr>
     {% endfor %}
     <tr class="total-row">

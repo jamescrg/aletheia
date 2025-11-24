@@ -20,12 +20,17 @@ def get_payment_data(request):
         payments, per_page=10, request=request, session_key="payments_pagination"
     )
 
+    # Get current order and strip leading '-' for comparison
+    current_order = filter_data.get("order_by", "date") if filter_data else "date"
+    current_order = current_order.lstrip("-")
+
     context = {
         "pagination": pagination,
         "session_key": "payments_pagination",
         "trigger_key": "paymentsChanged",
         "objects": pagination.get_object_list(),
         "payments_total": payments_total,
+        "current_order": current_order,
     }
 
     return context

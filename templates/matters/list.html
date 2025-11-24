@@ -34,23 +34,27 @@
         <tr>
           <th class="matter-name">
             Matter
-            <a href="#" hx-post={% url 'matters:order-by' 'name' %}>
+            <button class="btn-sort {% if current_order == 'name' %}active{% endif %}"
+                    hx-post="{% url 'matters:order-by' 'name' %}">
               <i class="bi bi-chevron-expand"></i>
-            </a>
+            </button>
           </th>
           <th>
             Work Status
-            <a href="#" hx-post={% url 'matters:order-by' 'description' %}>
+            <button class="btn-sort {% if current_order == 'description' %}active{% endif %}"
+                    hx-post="{% url 'matters:order-by' 'description' %}">
               <i class="bi bi-chevron-expand"></i>
-            </a>
+            </button>
           </th>
           <th class="id">ID</th>
         </tr>
-        {% if matters %}
-          {% for matter in matters %}
-            {% include "matters/row.html" %}
-          {% endfor %}
-        {% endif %}
+        {% for matter in matters %}
+          {% include "matters/row.html" %}
+        {% empty %}
+          <tr>
+            <td colspan="3" class="empty-message">No matters found.</td>
+          </tr>
+        {% endfor %}
       </table>
     </div>
     <div class="flex-start-space">

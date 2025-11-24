@@ -144,6 +144,9 @@ def get_unbilled_data(request):
         session_key="unbilled_pagination",
     )
 
+    # Get current order and strip leading '-' for comparison
+    current_order = order_by.lstrip("-")
+
     unbilled_data["matters"] = pagination.get_object_list()
     unbilled_data["matter_count"] = len(matters_list)
     unbilled_data["pagination"] = pagination
@@ -156,5 +159,6 @@ def get_unbilled_data(request):
     unbilled_data["total_trust"] = total_trust
     unbilled_data["total_clearance"] = total_clearance
     unbilled_data["order_by"] = order_by
+    unbilled_data["current_order"] = current_order
 
     return unbilled_data

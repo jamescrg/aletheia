@@ -65,6 +65,10 @@ def get_expenses_data(request):
     if user_id:
         selected_user = users.filter(id=user_id).first().username.capitalize()
 
+    # Get current order and strip leading '-' for comparison
+    current_order = filter_data.get("order_by", "date") if filter_data else "date"
+    current_order = current_order.lstrip("-")
+
     context = {
         "edit": False,
         "objects": pagination.get_object_list(),
@@ -77,6 +81,7 @@ def get_expenses_data(request):
         "selected_user": selected_user,
         "user_id": user_id,
         "filter_label": filter_data.get("filter_label", None),
+        "current_order": current_order,
     }
 
     return context

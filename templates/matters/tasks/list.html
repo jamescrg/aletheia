@@ -86,7 +86,7 @@
   <table class="table tasks-table">
     <tr>
       <th class="priority">
-        <button class="btn-sort btn-task-status"
+        <button class="btn-sort btn-task-status {% if current_order == 'priority' %}active{% endif %}"
                 hx-target="#matterTasks"
                 hx-swap="innerHTML"
                 hx-post="{% url 'matters:tasks-filter-sort' matter.id 'priority' %}">
@@ -99,7 +99,7 @@
       <th class="user">User</th>
       <th>
         Due
-        <button class="btn-sort"
+        <button class="btn-sort {% if current_order == 'date_due' %}active{% endif %}"
                 hx-target="#matterTasks"
                 hx-swap="innerHTML"
                 hx-post="{% url 'matters:tasks-filter-sort' matter.id 'date_due' %}">
@@ -132,6 +132,10 @@
         <td class="date {% if task.date_due < today %}urgent{% endif %} {% if task.status == 'Complete' %}complete{% endif %}">
           {% include "matters/tasks/date-display.html" %}
         </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="6" class="empty-message">No tasks found for this matter.</td>
       </tr>
     {% endfor %}
   </table>

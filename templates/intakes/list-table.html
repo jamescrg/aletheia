@@ -38,39 +38,43 @@
       <table class="table intake-list">
         <tr>
           <th class="intake-date">
-            <a href="#" hx-post={% url 'intakes:order-by' 'date' %}>
-              Date
+            Date
+            <button class="btn-sort {% if current_order == 'date' %}active{% endif %}"
+                    hx-post="{% url 'intakes:order-by' 'date' %}">
               <i class="bi bi-chevron-expand"></i>
-            </a>
+            </button>
           </th>
           <th class="intake-name">
-            <a href="#" hx-post={% url 'intakes:order-by' 'name' %}>
-              Name
+            Name
+            <button class="btn-sort {% if current_order == 'name' %}active{% endif %}"
+                    hx-post="{% url 'intakes:order-by' 'name' %}">
               <i class="bi bi-chevron-expand"></i>
-            </a>
+            </button>
           </th>
           <th class="intake-phone">Phone</th>
           <th class="intake-source">Source</th>
           <th class="intake-practice-area">Practice Area</th>
           <th class="intake-status">Status</th>
         </tr>
-        {% if intakes %}
-          {% for intake in intakes %}
-            <tr>
-              <td class="intake-date">{{ intake.date|date:"Y-m-d" }}</td>
-              <td class="intake-name">
-                <a href={% url 'intakes:detail-index' id=intake.id %}>{{ intake.name }}</a>
-                {% if intake.has_new_notes %}<i class="bi bi-chat-left intake-badge-icon"></i>{% endif %}
-              </td>
-              <td class="intake-phone">{{ intake.phone|phone_number|default:'' }}</td>
-              <td class="intake-source">{{ intake.source|default:'' }}</td>
-              <td class="intake-practice-area">
-                {% if intake.source %}{{ intake.practice_area|slice:':14' }}{% endif %}
-              </td>
-              <td class="intake-status">{% include "intakes/intake-status.html" %}</td>
-            </tr>
-          {% endfor %}
-        {% endif %}
+        {% for intake in intakes %}
+          <tr>
+            <td class="intake-date">{{ intake.date|date:"Y-m-d" }}</td>
+            <td class="intake-name">
+              <a href={% url 'intakes:detail-index' id=intake.id %}>{{ intake.name }}</a>
+              {% if intake.has_new_notes %}<i class="bi bi-chat-left intake-badge-icon"></i>{% endif %}
+            </td>
+            <td class="intake-phone">{{ intake.phone|phone_number|default:'' }}</td>
+            <td class="intake-source">{{ intake.source|default:'' }}</td>
+            <td class="intake-practice-area">
+              {% if intake.source %}{{ intake.practice_area|slice:':14' }}{% endif %}
+            </td>
+            <td class="intake-status">{% include "intakes/intake-status.html" %}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="empty-message">No intakes found.</td>
+          </tr>
+        {% endfor %}
       </table>
       {% include "pagination.html" %}
     </div>

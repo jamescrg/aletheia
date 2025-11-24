@@ -49,6 +49,10 @@ def get_table_data(request):
         else:
             intake.has_new_notes = False
 
+    # Get current order and strip leading '-' for comparison
+    current_order = filter_data.get("order_by", "date") if filter_data else "date"
+    current_order = current_order.lstrip("-")
+
     table_data = {
         "pagination": pagination,
         "intakes": intake_list,
@@ -56,6 +60,7 @@ def get_table_data(request):
         "trigger_key": "intakesChanged",
         "number_intakes": number_intakes,
         "filter_label": filter_data.get("filter_label", None) if filter_data else None,
+        "current_order": current_order,
     }
 
     return table_data

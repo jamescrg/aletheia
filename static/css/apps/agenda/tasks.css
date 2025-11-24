@@ -32,6 +32,10 @@
   width: 100%;
 }
 
+.matter-cell-content .btn-sort {
+  margin-left: 0;
+}
+
 th.matter .btn-drag-handle i {
   margin-left: 0;
 }
@@ -47,23 +51,6 @@ th.matter .btn-drag-handle i {
   background: none;
   line-height: 1;
   cursor: pointer;
-}
-
-.btn-sort {
-  color: var(--stone-400);
-  transition: color 0.2s ease;
-}
-
-.btn-sort i {
-  color: inherit;
-}
-
-.btn-sort:hover {
-  color: var(--stone-500);
-}
-
-.btn-sort.active {
-  color: var(--stone-600);
 }
 
 .tasks-table .description {
@@ -102,10 +89,6 @@ th.matter .btn-drag-handle i {
 
 .tasks-table {
   overflow: visible;
-}
-
-.status .bi-chevron-expand {
-  margin: 0;
 }
 
 .tasks-table .date .empty-date-icon {

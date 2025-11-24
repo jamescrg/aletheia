@@ -26,6 +26,10 @@
                data-bs-target="#htmx-modal-container">${{ rate.matter_rate }}</a>
           </td>
         </tr>
+      {% empty %}
+        <tr>
+          <td colspan="2" class="empty-message">No custom rates set for this matter.</td>
+        </tr>
       {% endfor %}
     </table>
   </div>

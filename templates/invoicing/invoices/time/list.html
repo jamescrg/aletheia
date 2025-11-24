@@ -31,6 +31,10 @@
       <tr id="time-table"></tr>
       {% for entry in objects %}
         <tr id="time-{{ entry.id }}">{% include "activity/time/table-row.html" %}</tr>
+      {% empty %}
+        <tr>
+          <td colspan="7" class="empty-message">No time entries found for this invoice.</td>
+        </tr>
       {% endfor %}
     </table>
   </div>

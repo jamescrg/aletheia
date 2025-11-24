@@ -59,6 +59,10 @@
           <td class="location">{{ event.location|default:"" }}</td>
           <td class="party">{{ event.party }}</td>
         </tr>
+      {% empty %}
+        <tr>
+          <td colspan="6" class="empty-message">No events found.</td>
+        </tr>
       {% endfor %}
     </table>
     {% include "pagination.html" %}

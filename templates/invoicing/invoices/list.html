@@ -45,22 +45,24 @@
         <th class="invoice-id">ID</th>
         <th class="date">
           Issue Date
-          <a href="#"
-             hx-get="{% url 'invoicing:invoices-order-by' 'date_issued' %}">
+          <button class="btn-sort {% if current_order == 'date_issued' %}active{% endif %}"
+                  hx-get="{% url 'invoicing:invoices-order-by' 'date_issued' %}">
             <i class="bi bi-chevron-expand"></i>
-          </a>
+          </button>
         </th>
         <th>
           Matter
-          <a href="#" hx-get="{% url 'invoicing:invoices-order-by' 'matter' %}">
+          <button class="btn-sort {% if current_order == 'matter' %}active{% endif %}"
+                  hx-get="{% url 'invoicing:invoices-order-by' 'matter' %}">
             <i class="bi bi-chevron-expand"></i>
-          </a>
+          </button>
         </th>
         <th class="status">
           Status
-          <a href="#" hx-get="{% url 'invoicing:invoices-order-by' 'status' %}">
+          <button class="btn-sort {% if current_order == 'status' %}active{% endif %}"
+                  hx-get="{% url 'invoicing:invoices-order-by' 'status' %}">
             <i class="bi bi-chevron-expand"></i>
-          </a>
+          </button>
         </th>
         <th class="amount">Fees</th>
         <th class="amount">Expenses</th>
@@ -72,6 +74,10 @@
       </tr>
       {% for invoice in objects %}
         {% include "invoicing/invoices/row.html" %}
+      {% empty %}
+        <tr>
+          <td colspan="9" class="empty-message">No invoices found.</td>
+        </tr>
       {% endfor %}
     </table>
     <div class="flex-start-space">

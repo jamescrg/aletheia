@@ -31,34 +31,41 @@
           <th class="id">ID</th>
           <th class="date">
             Date
-            <a href="#" hx-post="{% url 'invoicing:payments-order-by' 'date' %}">
+            <button class="btn-sort {% if current_order == 'date' %}active{% endif %}"
+                    hx-post="{% url 'invoicing:payments-order-by' 'date' %}">
               <i class="bi bi-chevron-expand"></i>
-            </a>
+            </button>
           </th>
           <th>
             Matter
-            <a href="#" hx-post="{% url 'invoicing:payments-order-by' 'matter' %}">
+            <button class="btn-sort {% if current_order == 'matter' %}active{% endif %}"
+                    hx-post="{% url 'invoicing:payments-order-by' 'matter' %}">
               <i class="bi bi-chevron-expand"></i>
-            </a>
+            </button>
           </th>
           <th>
             Method
-            <a href="#"
-               hx-post="{% url 'invoicing:payments-order-by' 'payment_method' %}">
+            <button class="btn-sort {% if current_order == 'payment_method' %}active{% endif %}"
+                    hx-post="{% url 'invoicing:payments-order-by' 'payment_method' %}">
               <i class="bi bi-chevron-expand"></i>
-            </a>
+            </button>
           </th>
           <th>
             Detail
-            <a href="#" hx-post="{% url 'invoicing:payments-order-by' 'detail' %}">
+            <button class="btn-sort {% if current_order == 'detail' %}active{% endif %}"
+                    hx-post="{% url 'invoicing:payments-order-by' 'detail' %}">
               <i class="bi bi-chevron-expand"></i>
-            </a>
+            </button>
           </th>
           <th class="amount">Amount</th>
           <th class="amount">Unapplied</th>
         </tr>
         {% for payment in objects %}
           {% include "invoicing/payments/row.html" %}
+        {% empty %}
+          <tr>
+            <td colspan="7" class="empty-message">No payments found.</td>
+          </tr>
         {% endfor %}
       </table>
       <div class="flex-start-space">

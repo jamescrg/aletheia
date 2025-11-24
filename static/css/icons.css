@@ -38,11 +38,6 @@
   color: var(--orange-800);
 }
 
-.bi-chevron-expand {
-  color: var(--stone-600);
-  margin-left: 5px;
-}
-
 .bi-square,
 .bi-caret-up,
 .bi-check-square,

@@ -62,6 +62,12 @@ def get_matter_tasks_data(request, matter_id):
 
     priority_value = filter_data.get("priority") if filter_data else None
 
+    # Get current order and strip leading '-' for comparison
+    current_order = (
+        filter_data.get("order_by", "priority") if filter_data else "priority"
+    )
+    current_order = current_order.lstrip("-")
+
     list_data = {
         "pagination": pagination,
         "session_key": "matter_tasks_pagination",
@@ -77,6 +83,7 @@ def get_matter_tasks_data(request, matter_id):
         "selected_priority": f"Priority ≤ {priority_value}" if priority_value else "",
         "focus": focus,
         "filter_label": filter_data.get("filter_label", None) if filter_data else None,
+        "current_order": current_order,
     }
 
     return list_data

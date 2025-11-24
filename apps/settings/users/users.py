@@ -18,10 +18,17 @@ def get_user_list(request):
     page = request.GET.get("page")
     pagination = Paginator(users, 10).get_page(page)
 
+    # Get current order and strip leading '-' for comparison
+    current_order = (
+        filter_data.get("order_by", "username") if filter_data else "username"
+    )
+    current_order = current_order.lstrip("-")
+
     context = {
         "subapp": "users",
         "users": pagination.object_list,
         "pagination": pagination,
+        "current_order": current_order,
     }
 
     return context

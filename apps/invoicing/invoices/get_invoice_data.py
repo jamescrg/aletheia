@@ -26,6 +26,12 @@ def get_invoice_data(request):
 
     selected_status = filter_data.get("status", "") if filter_data else ""
 
+    # Get current order and strip leading '-' for comparison
+    current_order = (
+        filter_data.get("order_by", "date_issued") if filter_data else "date_issued"
+    )
+    current_order = current_order.lstrip("-")
+
     context = {
         "pagination": pagination,
         "session_key": "invoices_pagination",
@@ -36,6 +42,7 @@ def get_invoice_data(request):
         "total": total,
         "status_options": INVOICE_STATUS,
         "selected_status": selected_status,
+        "current_order": current_order,
     }
 
     return context

@@ -42,6 +42,10 @@ def get_matter_list(request):
         matters_list, per_page=20, request=request, session_key="matter_pagination"
     )
 
+    # Get current order and strip leading '-' for comparison
+    current_order = filter_data.get("order_by", "name") if filter_data else "name"
+    current_order = current_order.lstrip("-")
+
     list_data["pagination"] = pagination
     list_data["session_key"] = "matter_pagination"
     list_data["trigger_key"] = "mattersChanged"
@@ -51,5 +55,6 @@ def get_matter_list(request):
     list_data["filter_label"] = (
         filter_data.get("filter_label", None) if filter_data else None
     )
+    list_data["current_order"] = current_order
 
     return list_data
