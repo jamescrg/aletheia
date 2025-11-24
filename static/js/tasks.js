@@ -127,22 +127,25 @@ style.textContent = `
 
     .sortable-ghost {
         background: transparent !important;
+        height: 2px !important;
+        border-top: 2px solid var(--stone-400) !important;
+        border-bottom: none !important;
     }
 
     .sortable-ghost td {
         border: none !important;
         padding: 0 !important;
-        height: 4px !important;
+        height: 0 !important;
         background: transparent !important;
+        overflow: hidden !important;
+        font-size: 0 !important;
+        line-height: 0 !important;
+        box-sizing: border-box !important;
     }
 
     .sortable-ghost td * {
         display: none !important;
-    }
-
-    .sortable-ghost td:first-child {
-        background: var(--stone-400, #a8a29e) !important;
-        border-radius: 2px;
+        visibility: hidden !important;
     }
 
     .sortable-drag {
