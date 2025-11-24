@@ -26,19 +26,37 @@
       </div>
     </div>
     <div class="modal-body">
-      <form action="{% url 'activity:time-add' id=matter_id request_app='matters' %}"
-            class="form-compact"
-            method="post"
-            role="form">
+      <form hx-post="{% url 'activity:time-add' id=matter_id request_app='matters' %}"
+            hx-target="#htmx-modal-container"
+            class="form-compact col2 time-form"
+            id="time-entry-form">
         {% csrf_token %}
-        {{ form }}
+        {{ form.matter }}
+        {{ form.date }}
+        {{ form.actions }}
+        <div id="actions-preview" class="actions-preview span2">
+          <small class="text-muted">Preview:</small>
+          <div id="actions-preview-text"></div>
+        </div>
+        {{ form.hours }}
+        {{ form.rate }}
+        {{ form.comp }}
+        {{ form.entered }}
         <br />
         <div class="flex-center-space span2">
           <div>
             <button type="submit" class="submit">Submit</button>
           </div>
+          <div>
+            <a class="button-link codes-reference-link"
+               href="#"
+               hx-get="{% url 'activity:codes-reference' %}"
+               hx-target="#codes-reference-container"
+               hx-swap="innerHTML">View Abbreviation Codes</a>
+          </div>
         </div>
       </form>
+      <div id="codes-reference-container"></div>
     </div>
   </div>
 </div>
