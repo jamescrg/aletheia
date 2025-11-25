@@ -19,6 +19,7 @@ class Contact(models.Model):
     phone3 = models.CharField(max_length=50, blank=True, null=True)
     phone3_label = models.CharField(max_length=10, blank=True, null=True)
     email = models.EmailField(max_length=100, blank=True, null=True)
+    email2 = models.EmailField(max_length=100, blank=True, null=True)
     website = models.CharField(max_length=255, blank=True, null=True)
     map = models.CharField(max_length=255, blank=True, null=True)
     notes = models.CharField(max_length=255, blank=True, null=True)

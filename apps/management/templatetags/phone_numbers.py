@@ -13,7 +13,9 @@ def phone_number(value):
     extension = ""
     if "x" in value.lower():
         idx = value.lower().index("x")
-        extension = " " + value[idx:]
+        ext_digits = "".join(c for c in value[idx:] if c.isdigit())
+        if ext_digits:
+            extension = " x " + ext_digits
         value = value[:idx]
 
     # Strip any non-digits (for legacy data)

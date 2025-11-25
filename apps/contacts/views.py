@@ -210,7 +210,7 @@ def delete(request, id):
     if request.session.get("selected_contact_id", False):
         del request.session["selected_contact_id"]
 
-    return redirect("contacts:index")
+    return HttpResponse(status=204, headers={"HX-Refresh": "true"})
 
 
 @login_required

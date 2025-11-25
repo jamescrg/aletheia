@@ -8,7 +8,8 @@
 {{ selected_contact.company }}{% else %}
 {{ selected_contact.name }}{% endif %}
 {% if selected_contact.address %}{{ selected_contact.address }}{% endif %}{% if selected_contact.email %}
-{{ selected_contact.email }}{% endif %}{% if selected_contact.phone1 %}
+{{ selected_contact.email }}{% endif %}{% if selected_contact.email2 %}
+{{ selected_contact.email2 }}{% endif %}{% if selected_contact.phone1 %}
 {{ selected_contact.phone1|phone_number }}{% if selected_contact.phone1_label %} - {{ selected_contact.phone1_label }}{% endif %}{% endif %}{% if selected_contact.phone2 %}
 {{ selected_contact.phone2|phone_number }}{% if selected_contact.phone2_label %} - {{ selected_contact.phone2_label }}{% endif %}{% endif %}{% if selected_contact.phone3 %}
 {{ selected_contact.phone3|phone_number }}{% if selected_contact.phone3_label %} - {{ selected_contact.phone3_label }}{% endif %}{% endif %}</div>
@@ -56,6 +57,23 @@
         <button type="button"
                 class="btn btn-sm copy-btn card-copy-btn-right"
                 data-copy="{{ selected_contact.email }}"
+                title="Copy email">
+          <i class="bi bi-clipboard"></i>
+        </button>
+      </div>
+    </div>
+  {% endif %}
+  {# Email 2 Card #}
+  {% if selected_contact.email2 %}
+    <div class="contact-card">
+      <div class="contact-card-content-with-copy">
+        <div class="contact-card-text">
+          <i class="bi bi-envelope contact-card-icon"></i>
+          <a href="mailto:{{ selected_contact.email2 }}">{{ selected_contact.email2 }}</a>
+        </div>
+        <button type="button"
+                class="btn btn-sm copy-btn card-copy-btn-right"
+                data-copy="{{ selected_contact.email2 }}"
                 title="Copy email">
           <i class="bi bi-clipboard"></i>
         </button>

@@ -18,7 +18,7 @@ def normalize_phone_value(value):
 
     # Extract extension if present
     extension = ""
-    ext_patterns = [" x", " ext", " ext.", ","]
+    ext_patterns = [" x ", " x", " ext", " ext.", ",", "x"]
     lower = value.lower()
     for pattern in ext_patterns:
         if pattern in lower:

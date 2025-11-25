@@ -24,6 +24,7 @@ class ContactForm(forms.ModelForm):
             "phone3",
             "phone3_label",
             "email",
+            "email2",
             "notes",
         )
 
@@ -52,6 +53,7 @@ class ContactForm(forms.ModelForm):
             ),
             "company": forms.TextInput(attrs={"class": "span2"}),
             "email": forms.TextInput(attrs={"class": "span2"}),
+            "email2": forms.TextInput(attrs={"class": "span2"}),
             "address": forms.Textarea(
                 attrs={
                     "class": "span2",
