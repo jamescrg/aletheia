@@ -62,9 +62,20 @@ def get_contact_list(request, matter):
     if isinstance(current_order, list):
         current_order = current_order[0] if current_order else "group"
 
+    # Add band index for visual grouping when sorted by group
+    order_field = current_order.lstrip("-")
+    if order_field == "group":
+        current_group = None
+        band = 0
+        for item in contact_list:
+            if item["group"] != current_group:
+                current_group = item["group"]
+                band = 1 - band
+            item["band"] = band
+
     return {
         "contacts": contact_list,
-        "current_order": current_order.lstrip("-"),
+        "current_order": order_field,
         "session_key": session_key,
     }
 

@@ -8,6 +8,10 @@
   width: 100%;
 }
 
+.matter-contacts tr.band-alt td {
+  background-color: var(--hl-gray) !important;
+}
+
 .matter-contacts .phone1 {
   width: 300px;
   min-width: 300px;
