@@ -1,0 +1,103 @@
+{% load phone_numbers %}
+<div class="toolbar">
+  <div class="toolbar-left">
+    <h2>Related Contacts</h2>
+    <div class="filter-tools">
+      <a href="{% url 'matters:contacts-assign' id=matter.id %}">Assign</a>
+      <button type="button"
+              class="btn-icon"
+              hx-get="{% url 'matters:contacts-filter' id=matter.id %}"
+              hx-target="#htmx-modal-container"
+              hx-trigger="click"
+              data-bs-toggle="modal"
+              data-bs-target="#htmx-modal-container">
+        <i class="bi bi-filter"></i> Filter
+      </button>
+    </div>
+  </div>
+</div>
+<div class="table-container">
+  <table class="table matter-contacts">
+    <thead>
+      <tr>
+        <th>
+          Group
+          <button class="btn-sort {% if current_order == 'group' %}active{% endif %}"
+                  hx-target="#contacts"
+                  hx-swap="innerHTML"
+                  hx-post="{% url 'matters:contacts-sort' id=matter.id order='group' %}">
+            <i class="bi bi-chevron-expand"></i>
+          </button>
+        </th>
+        <th>
+          Role
+          <button class="btn-sort {% if current_order == 'role' %}active{% endif %}"
+                  hx-target="#contacts"
+                  hx-swap="innerHTML"
+                  hx-post="{% url 'matters:contacts-sort' id=matter.id order='role' %}">
+            <i class="bi bi-chevron-expand"></i>
+          </button>
+        </th>
+        <th>
+          Name
+          <button class="btn-sort {% if current_order == 'name' %}active{% endif %}"
+                  hx-target="#contacts"
+                  hx-swap="innerHTML"
+                  hx-post="{% url 'matters:contacts-sort' id=matter.id order='name' %}">
+            <i class="bi bi-chevron-expand"></i>
+          </button>
+        </th>
+        <th>Email</th>
+        <th>Phone</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in contacts %}
+        <tr {% if item.is_client %}class="hl-gray"{% endif %}>
+          <td>{{ item.group }}</td>
+          <td>
+            {% if item.is_client %}
+              Client
+            {% else %}
+              <a href="{% url 'matters:contacts-assign-edit' id=item.relationship_id %}">{{ item.role_name }}</a>
+            {% endif %}
+          </td>
+          <td>
+            <a href="{% url 'contacts:select' contact_id=item.contact.id %}">{{ item.contact.name }}</a>
+          </td>
+          <td>
+            {% if item.contact.email %}
+              <button type="button"
+                      class="btn btn-sm copy-btn"
+                      data-copy="{{ item.contact.email }}"
+                      title="Copy email">
+                <i class="bi bi-clipboard"></i>
+              </button>
+              <a href="mailto:{{ item.contact.email }}">{{ item.contact.email }}</a>
+            {% endif %}
+          </td>
+          <td>
+            {% if item.contact.phone1 %}
+              <button type="button"
+                      class="btn btn-sm copy-btn"
+                      data-copy="{{ item.contact.phone1|phone_number }}"
+                      title="Copy phone number">
+                <i class="bi bi-clipboard"></i>
+              </button>
+              {{ item.contact.phone1|phone_number }}
+              <a href="tel:{{ item.contact.phone1|phone_tel }}"
+                 class="btn btn-sm copy-btn contact-call-btn"
+                 title="Call">
+                <i class="bi bi-telephone-outbound"></i>
+              </a>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5" class="empty-message">No contacts found.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

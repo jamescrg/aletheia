@@ -2,17 +2,11 @@ from apps.matters.models import Relationship
 
 
 def load_contacts(matter):
-    base_qs = Relationship.objects.select_related("contact", "role").filter(
-        matter=matter
+    """
+    Returns a queryset of relationships with group included.
+    """
+    return (
+        Relationship.objects.select_related("contact", "role", "group")
+        .filter(matter=matter)
+        .order_by("group__order", "contact__name")
     )
-
-    relationship_groups = {
-        "Client": base_qs.filter(role__name__icontains="Client"),
-        "Adversary": base_qs.filter(role__name__icontains="Adversary"),
-        "Court": base_qs.filter(role__name__icontains="Court"),
-        "Other": base_qs.exclude(role__name__icontains="Client")
-        .exclude(role__name__icontains="Adversary")
-        .exclude(role__name__icontains="Court"),
-    }
-
-    return relationship_groups

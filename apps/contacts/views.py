@@ -8,7 +8,7 @@ from apps.contacts.forms import ContactForm
 from apps.contacts.models import Contact
 from apps.folders.models import Folder
 from apps.intakes.models import Intake
-from apps.matters.models import Matter, Relationship, Role
+from apps.matters.models import Group, Matter, Relationship, Role
 
 
 @login_required
@@ -216,12 +216,14 @@ def delete(request, id):
 @login_required
 def assign(request, id):
     matters = Matter.objects.filter(status="Open").order_by("name")
+    groups = Group.objects.all().order_by("order")
     roles = Role.objects.all().order_by("name")
 
     context = {
         "app": "contacts",
         "action": f"/contacts/{id}/assign/store",
         "matters": matters,
+        "groups": groups,
         "roles": roles,
     }
 
@@ -232,14 +234,12 @@ def assign(request, id):
 def assign_store(request, id):
     matter = get_object_or_404(Matter, pk=request.POST["matter_id"])
     contact = get_object_or_404(Contact, pk=id)
+    group = get_object_or_404(Group, pk=request.POST["group_id"])
     role = get_object_or_404(Role, pk=request.POST["role_id"])
 
-    relationship = Relationship.objects.create(
-        matter=matter, contact=contact, role=role
-    )
-    relationship.save()
+    Relationship.objects.create(matter=matter, contact=contact, group=group, role=role)
 
-    return redirect("contacts:select", contact_id=id)
+    return redirect("contacts:detail-matters", contact_id=id)
 
 
 @login_required
@@ -261,7 +261,7 @@ def remove_store(request):
     relationship = get_object_or_404(Relationship, pk=request.POST["relationship_id"])
     contact_id = relationship.contact.id
     relationship.delete()
-    return redirect("contacts:select", contact_id=contact_id)
+    return redirect("contacts:detail-matters", contact_id=contact_id)
 
 
 @login_required

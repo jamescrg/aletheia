@@ -200,6 +200,18 @@ class Matter(models.Model):
         }
 
 
+class Group(models.Model):
+    name = models.CharField(max_length=50)
+    order = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = "app_matter_group"
+        ordering = ["order"]
+
+
 class Role(models.Model):
     name = models.CharField(max_length=50)
 
@@ -216,7 +228,8 @@ class Relationship(models.Model):
         on_delete=models.CASCADE,
     )
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
-    role = models.ForeignKey(Role, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.PROTECT)
+    group = models.ForeignKey(Group, on_delete=models.PROTECT)
 
     class Meta:
         db_table = "app_matter_relationship"

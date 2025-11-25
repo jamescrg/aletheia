@@ -4,9 +4,9 @@
     <div class="toolbar-left">
       <h1>
         {% if edit %}
-          Edit Contact Role
+          Edit Contact Assignment
         {% else %}
-          Assign Contact Role
+          Assign Contact
         {% endif %}
       </h1>
     </div>
@@ -19,29 +19,59 @@
   </div>
   <form class="assign-role" action="{{ action }}" method="post" role="form">
     {% csrf_token %}
+    <input type="hidden" name="contact_id" value="{{ contact.id }}" />
+    <input type="hidden" name="matter_id" value="{{ matter.id }}" />
     <table>
       <tr>
         <td>
-          {{ contact.name }}
-          <input type="hidden" name="contact_id" value="{{ contact.id }}" />
-          <input type="hidden" name="matter_id" value="{{ matter.id }}" />
+          <strong>Contact:</strong>
+        </td>
+        <td>{{ contact.name }}</td>
+      </tr>
+      <tr>
+        <td>
+          <label for="group_id">Group:</label>
+        </td>
+        <td>
+          <select name="group_id" id="group_id" required>
+            <option value="">Select a group...</option>
+            {% for group in groups %}
+              <option value="{{ group.id }}"
+                      {% if relationship and relationship.group_id == group.id %}selected{% endif %}>
+                {{ group.name }}
+              </option>
+            {% endfor %}
+          </select>
         </td>
       </tr>
       <tr>
         <td>
-          <label>
-            <select name="role_id" class="role" onchange="submit()">
-              <option>Select a role . . .</option>
-              {% for role in roles %}
-                <option value="{{ role.id }}"
-                        {% if relationship %}  roleid="{{ role.id }}" relationshipid="{{ relationship.role.id }}"  {% if relationship.role.id == role.id %}selected{% endif %}
-                        {% endif %}>{{ role.name }}</option>
-              {% endfor %}
-            </select>
-          </label>
+          <label for="role_id">Role:</label>
+        </td>
+        <td>
+          <select name="role_id" id="role_id" required>
+            <option value="">Select a role...</option>
+            {% for role in roles %}
+              <option value="{{ role.id }}"
+                      {% if relationship and relationship.role_id == role.id %}selected{% endif %}>
+                {{ role.name }}
+              </option>
+            {% endfor %}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <button type="submit" class="submit">
+            {% if edit %}
+              Update
+            {% else %}
+              Assign
+            {% endif %}
+          </button>
         </td>
       </tr>
     </table>
   </form>
-  <div class="matter-section-data"></div>
 {% endblock subcontent %}

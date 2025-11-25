@@ -10,7 +10,11 @@
       "Bash(grep:*)",
       "Bash(git add:*)",
       "WebSearch",
-      "Bash(xargs cat:*)"
+      "Bash(xargs cat:*)",
+      "Bash(black:*)",
+      "Bash(flake8:*)",
+      "Bash(python:*)",
+      "Bash(pytest:*)"
     ],
     "deny": []
   }

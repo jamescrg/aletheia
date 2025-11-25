@@ -48,6 +48,19 @@ urlpatterns = [
     path("matters/<int:id>/print", print, name="print"),
     # Contacts
     path("matters/<int:id>/contacts", contacts.index, name="contacts"),
+    path(
+        "matters/<int:id>/contacts/list/", contacts.contact_list, name="contacts-list"
+    ),
+    path(
+        "matters/<int:id>/contacts/filter/",
+        contacts.contact_filter,
+        name="contacts-filter",
+    ),
+    path(
+        "matters/<int:id>/contacts/sort/<str:order>/",
+        contacts.contact_sort,
+        name="contacts-sort",
+    ),
     path("matters/<int:id>/contacts/assign", contacts.assign, name="contacts-assign"),
     path(
         "matters/<int:id>/contacts/assign/results",

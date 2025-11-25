@@ -20,6 +20,12 @@
             {% for matter in matters %}<option value="{{ matter.id }}">{{ matter.name }}</option>{% endfor %}
           </select>
         </label>
+        <label class="control-label">Group:</label>
+        <label>
+          <select class="contacts-assignment-select" name="group_id">
+            {% for group in groups %}<option value="{{ group.id }}">{{ group.name }}</option>{% endfor %}
+          </select>
+        </label>
         <label class="control-label">Role:</label>
         <label>
           <select class="contacts-assignment-select" name="role_id">

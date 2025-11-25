@@ -1,0 +1,13 @@
+{% extends "settings/main.html" %}
+{% block subcontent %}
+  <div class="settings-contacts-container">
+    <div id="groups"
+         hx-trigger="groupListReload from:body"
+         hx-get="{% url 'settings:group-list' %}"
+         hx-target="this">{% include "settings/contacts/group-table.html" %}</div>
+    <div id="roles"
+         hx-trigger="roleListReload from:body"
+         hx-get="{% url 'settings:role-list' %}"
+         hx-target="this">{% include "settings/contacts/role-table.html" %}</div>
+  </div>
+{% endblock subcontent %}

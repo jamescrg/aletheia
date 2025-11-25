@@ -85,8 +85,8 @@ def test_assign_get(client, contact):
     assertTemplateUsed(response, "contacts/assign.html")
 
 
-def test_assign_post(client, contact, matter, role):
-    data = {"matter_id": matter.id, "role_id": role.id}
+def test_assign_post(client, contact, matter, group, role):
+    data = {"matter_id": matter.id, "group_id": group.id, "role_id": role.id}
     response = client.post(f"/contacts/{contact.id}/assign/store", data)
     assert response.status_code == 302
 
@@ -97,8 +97,8 @@ def test_remove_get(client, contact):
     assertTemplateUsed(response, "contacts/remove.html")
 
 
-def test_remove_post(client, contact, matter, role):
-    data = {"matter_id": matter.id, "role_id": role.id}
+def test_remove_post(client, contact, matter, group, role):
+    data = {"matter_id": matter.id, "group_id": group.id, "role_id": role.id}
     client.post(f"/contacts/{contact.id}/assign/store", data)
 
     rel = Relationship.objects.filter(contact=contact, matter=matter).latest("id")

@@ -5,7 +5,7 @@ from apps.accounts.models import CustomUser
 from apps.contacts.models import Contact
 from apps.folders.models import Folder
 from apps.intakes.models import Intake
-from apps.matters.models import Matter, Relationship, Role
+from apps.matters.models import Group, Matter, Relationship, Role
 
 
 @pytest.fixture
@@ -90,6 +90,16 @@ def role():
     )
     role.save()
     return role
+
+
+@pytest.fixture
+def group():
+    group = Group.objects.create(
+        name="Client",
+        order=1,
+    )
+    group.save()
+    return group
 
 
 @pytest.fixture
