@@ -1,0 +1,47 @@
+<div class="modal-dialog modal-sm">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Assign Contact</h1>
+      <div>
+        <a href="#" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg"></i>
+        </a>
+      </div>
+    </div>
+    <div class="modal-body">
+      <h2>{{ contact.name }}</h2>
+      <form hx-post="{% url 'matters:contacts-assign-store' %}"
+            hx-target="#htmx-modal-container"
+            class="form-compact">
+        {% csrf_token %}
+        <input type="hidden" name="contact_id" value="{{ contact.id }}" />
+        <input type="hidden" name="matter_id" value="{{ matter.id }}" />
+        <div class="form-group"></div>
+        <div class="form-group">
+          <label for="group_id">Group</label>
+          <select name="group_id" id="group_id" required>
+            <option value="">Select a group...</option>
+            {% for group in groups %}<option value="{{ group.id }}">{{ group.name }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="role_id">Role</label>
+          <select name="role_id" id="role_id" required>
+            <option value="">Select a role...</option>
+            {% for role in roles %}<option value="{{ role.id }}">{{ role.name }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="flex-center-space">
+          <div>
+            <button type="submit" class="submit">Assign</button>
+          </div>
+          <div>
+            <a href="#"
+               hx-get="{% url 'matters:contacts-assign' id=matter.id %}"
+               hx-target="#htmx-modal-container">Back</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

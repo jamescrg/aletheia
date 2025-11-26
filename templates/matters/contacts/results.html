@@ -2,7 +2,9 @@
   <ul class="assign-results">
     {% for contact in contacts %}
       <li>
-        <a href="{% url 'matters:contacts-assign-role' matter_id=matter.id contact_id=contact.id %}">{{ contact.name }}</a>
+        <a href="#"
+           hx-get="{% url 'matters:contacts-assign-role' matter_id=matter.id contact_id=contact.id %}"
+           hx-target="#htmx-modal-container">{{ contact.name }}</a>
       </li>
     {% endfor %}
   </ul>

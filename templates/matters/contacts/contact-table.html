@@ -3,7 +3,12 @@
   <div class="toolbar-left">
     <h2>Related Contacts</h2>
     <div class="filter-tools">
-      <a href="{% url 'matters:contacts-assign' id=matter.id %}">Assign</a>
+      <a href="#"
+         hx-get="{% url 'matters:contacts-assign' id=matter.id %}"
+         hx-target="#htmx-modal-container"
+         hx-trigger="click"
+         data-bs-toggle="modal"
+         data-bs-target="#htmx-modal-container">+ Assign</a>
       <button type="button"
               class="btn-icon"
               hx-get="{% url 'matters:contacts-filter' id=matter.id %}"
@@ -59,7 +64,12 @@
             {% if item.is_client %}
               Client
             {% else %}
-              <a href="{% url 'matters:contacts-assign-edit' id=item.relationship_id %}">{{ item.role_name }}</a>
+              <a href="#"
+                 hx-get="{% url 'matters:contacts-assign-edit' id=item.relationship_id %}"
+                 hx-target="#htmx-modal-container"
+                 hx-trigger="click"
+                 data-bs-toggle="modal"
+                 data-bs-target="#htmx-modal-container">{{ item.role_name }}</a>
             {% endif %}
           </td>
           <td>

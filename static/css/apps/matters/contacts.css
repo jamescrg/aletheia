@@ -101,6 +101,10 @@
   width: 100%;
 }
 
+.assign-results li a.focused {
+  background: var(--hl-blue);
+}
+
 .assign-role {
   margin: 1rem 0 0 1rem;
   max-width: 700px;

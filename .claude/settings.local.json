@@ -15,7 +15,10 @@
       "Bash(flake8:*)",
       "Bash(python:*)",
       "Bash(pytest:*)",
-      "Bash(xargs ls:*)"
+      "Bash(xargs ls:*)",
+      "Bash(djlint:*)",
+      "Bash(source venv/bin/activate)",
+      "Bash(pip show:*)"
     ],
     "deny": []
   }

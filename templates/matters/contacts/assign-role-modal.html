@@ -1,0 +1,50 @@
+<div class="modal-dialog modal-sm">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Edit Assignment</h1>
+      <div>
+        <a href="#" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg"></i>
+        </a>
+      </div>
+    </div>
+    <div class="modal-body">
+      <h2>{{ contact.name }}</h2>
+      <br />
+      <form hx-post="{% url 'matters:contacts-assign-update' id=relationship.id %}"
+            hx-target="#htmx-modal-container"
+            class="form-compact">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="group_id">Group</label>
+          <select name="group_id" id="group_id" required>
+            {% for group in groups %}
+              <option value="{{ group.id }}"
+                      {% if group.id == relationship.group_id %}selected{% endif %}>{{ group.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="role_id">Role</label>
+          <select name="role_id" id="role_id" required>
+            {% for role in roles %}
+              <option value="{{ role.id }}"
+                      {% if role.id == relationship.role_id %}selected{% endif %}>{{ role.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="flex-center-space">
+          <div>
+            <button type="submit" class="submit">Update</button>
+          </div>
+          <div>
+            <a href="#"
+               class="delete-link"
+               hx-post="{% url 'matters:contacts-assign-delete' id=relationship.id %}"
+               hx-confirm="Are you sure you want to remove this assignment?">Remove</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

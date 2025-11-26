@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, render
 
 from apps.contacts.functions.load_contacts import load_contacts
 from apps.contacts.models import Contact
@@ -161,12 +161,10 @@ def assign(request, id):
     matter = get_object_or_404(Matter, pk=id)
 
     context = {
-        "app": "matters",
-        "subapp": "contacts",
         "matter": matter,
     }
 
-    return render(request, "matters/contacts/assign.html", context)
+    return render(request, "matters/contacts/assign-modal.html", context)
 
 
 @login_required
@@ -191,7 +189,7 @@ def assign_results(request, id):
 def assign_role(request, matter_id, contact_id):
     matter = get_object_or_404(Matter, pk=matter_id)
     contact = get_object_or_404(Contact, pk=contact_id)
-    groups = Group.objects.filter(is_active=True)
+    groups = Group.objects.filter(is_active=True).order_by("order")
     roles = (
         Role.objects.filter(is_active=True)
         .exclude(name__in=["Client", "Client (Invoicing)"])
@@ -199,17 +197,13 @@ def assign_role(request, matter_id, contact_id):
     )
 
     context = {
-        "app": "matters",
-        "subapp": "contacts",
         "matter": matter,
         "contact": contact,
         "groups": groups,
         "roles": roles,
-        "edit": False,
-        "action": "/matters/assign/store",
     }
 
-    return render(request, "matters/contacts/assign-role.html", context)
+    return render(request, "matters/contacts/assign-role-select-modal.html", context)
 
 
 @login_required
@@ -221,16 +215,15 @@ def assign_store(request):
 
     Relationship.objects.create(matter=matter, contact=contact, group=group, role=role)
 
-    return redirect(f"/matters/{matter.id}/contacts")
+    return HttpResponse(status=204, headers={"HX-Trigger": "contactsReload"})
 
 
 @login_required
 def assign_edit(request, id):
     relationship = get_object_or_404(Relationship, pk=id)
-
     matter = get_object_or_404(Matter, pk=relationship.matter_id)
     contact = get_object_or_404(Contact, pk=relationship.contact_id)
-    groups = Group.objects.filter(is_active=True)
+    groups = Group.objects.filter(is_active=True).order_by("order")
     roles = (
         Role.objects.filter(is_active=True)
         .exclude(name__in=["Client", "Client (Invoicing)"])
@@ -238,18 +231,14 @@ def assign_edit(request, id):
     )
 
     context = {
-        "app": "matters",
-        "subapp": "contacts",
         "matter": matter,
         "contact": contact,
         "relationship": relationship,
         "groups": groups,
         "roles": roles,
-        "edit": True,
-        "action": f"/matters/assign/{relationship.id}/update",
     }
 
-    return render(request, "matters/contacts/assign-role.html", context)
+    return render(request, "matters/contacts/assign-role-modal.html", context)
 
 
 @login_required
@@ -258,13 +247,11 @@ def assign_update(request, id):
     relationship.group_id = request.POST.get("group_id")
     relationship.role_id = request.POST.get("role_id")
     relationship.save()
-    matter = get_object_or_404(Matter, pk=relationship.matter_id)
-    return redirect(f"/matters/{matter.id}/contacts")
+    return HttpResponse(status=204, headers={"HX-Trigger": "contactsReload"})
 
 
 @login_required
 def assign_delete(request, id):
     relationship = get_object_or_404(Relationship, pk=id)
-    matter = get_object_or_404(Matter, pk=relationship.matter_id)
     relationship.delete()
-    return redirect(f"/matters/{matter.id}/contacts")
+    return HttpResponse(status=204, headers={"HX-Trigger": "contactsReload"})

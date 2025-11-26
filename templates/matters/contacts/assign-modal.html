@@ -1,0 +1,27 @@
+<div class="modal-dialog modal-sm">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Assign Contact</h1>
+      <div>
+        <a href="#" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg"></i>
+        </a>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="assign-search-input">Search</label>
+        <input type="search"
+               id="assign-search-input"
+               hx-post="{% url 'matters:contacts-assign-results' id=matter.id %}"
+               name="search_text"
+               hx-trigger="keyup changed delay:500ms, search"
+               hx-target="#search-results"
+               autocomplete="off"
+               placeholder="Search contacts..."
+               autofocus />
+      </div>
+      <div id="search-results"></div>
+    </div>
+  </div>
+</div>
