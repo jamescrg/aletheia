@@ -8,27 +8,27 @@ List View
 }
 
 .intake-details .strong {
-  width: 170px;
+  width: 10.625rem;
 }
 
 .intake-date {
-  width: 120px;
+  width: 7.5rem;
 }
 
 .intake-phone {
-  width: 180px;
+  width: 11.25rem;
 }
 
 .intake-source {
-  width: 180px;
+  width: 11.25rem;
 }
 
 .intake-status {
-  width: 180px;
+  width: 11.25rem;
 }
 
 .intake-practice-area {
-  width: 180px;
+  width: 11.25rem;
 }
 
 .intake-list th a {
@@ -59,7 +59,7 @@ List View
   border: none;
   border-radius: 4px;
   color: var(--link);
-  padding: 4px 6px;
+  padding: 0.25rem 0.5rem;
 }
 
 .intake-note-title-right {
@@ -79,15 +79,15 @@ List View
 }
 
 .intake-note-date {
-  width: 120px;
+  width: 7.5rem;
 }
 
 .intake-note-username {
-  width: 120px;
+  width: 7.5rem;
 }
 
 .intake-note-type {
-  width: 120px;
+  width: 7.5rem;
 }
 
 /* ==========================================================================
@@ -190,7 +190,7 @@ Value Inline Edit
 .intake-value-input {
   border: 1px solid var(--stone-300);
   border-radius: 3px;
-  padding: 4px 8px;
+  padding: 0.25rem 0.5rem;
   margin-right: 0.5rem;
 }
 
@@ -200,7 +200,7 @@ Badge Icon (New Notes Indicator)
 
 .intake-badge-icon {
   color: var(--purple-800);
-  font-size: 0.9rem;
+  font-size: 1rem;
   margin-left: 0.5rem;
   vertical-align: middle;
 }

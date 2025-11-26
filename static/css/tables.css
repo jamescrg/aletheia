@@ -15,13 +15,13 @@ table {
 th {
   border: solid 1px var(--stone-200);
   font-weight: 600;
-  padding: 8px 15px !important;
+  padding: 0.5rem 1rem !important;
   vertical-align: top;
 }
 
 td {
   border: solid 1px var(--stone-200);
-  padding: 8px 15px !important;
+  padding: 0.5rem 1rem !important;
   vertical-align: top;
 }
 
@@ -59,11 +59,11 @@ th {
 
 .totals-table table {
   margin: 1.5rem 0 0 1.5rem;
-  min-width: 400px;
+  min-width: 25rem;
 }
 
 .totals-table .numeric {
-  width: 150px;
+  width: 9.375rem;
 }
 
 .flex-start-space > div:first-child {
@@ -84,7 +84,7 @@ th {
 }
 
 .td-date {
-  width: 120px;
+  width: 7.5rem;
 }
 
 

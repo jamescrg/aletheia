@@ -27,16 +27,16 @@ Matter List
 }
 
 .matter-list .id {
-  width: 80px;
+  width: 5rem;
   text-align: right;
 }
 
 .matter-list .name {
-  width: 300px;
+  width: 18.75rem;
 }
 
 .matter-list .unbilled {
-  width: 150px;
+  width: 9.375rem;
 }
 
 .ref-no {
@@ -93,5 +93,5 @@ Matter Details
 }
 
 .matter-data table {
-  margin-right: 20px;
+  margin-right: 1.25rem;
 }

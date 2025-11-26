@@ -13,7 +13,7 @@ Summary
 }
 
 .trust-summary .numeric {
-  width: 300px;
+  width: 18.75rem;
 }
 
 /* ==========================================================================
@@ -22,8 +22,8 @@ Summary and History
 
 .trust-contact {
   background: var(--stone-100);
-  margin-bottom: 20px;
-  padding: 20px 15px;
+  margin-bottom: 1.25rem;
+  padding: 1.25rem 1rem;
 }
 
 .trust-contact-heading {
@@ -31,7 +31,7 @@ Summary and History
 }
 
 .trust-contact-data {
-  margin: 20px 0 0 0;
+  margin: 1.25rem 0 0 0;
 }
 
 .trust-intervals,
@@ -50,21 +50,21 @@ Summary and History
 
 .trust-transactions td {
   border: solid 1px var(--stone-200);
-  padding: 6px;
+  padding: 0.5rem;
   vertical-align: top;
 }
 
 .trust-transactions .client-id,
 .trust-summary .client-id {
-  width: 100px;
+  width: 6.25rem;
 }
 
 .trust-transactions .date {
-  width: 120px;
+  width: 7.5rem;
 }
 
 .trust-transactions .client {
-  width: 200px;
+  width: 12.5rem;
 }
 
 .trust-transactions .description {
@@ -73,14 +73,14 @@ Summary and History
 
 .trust-transactions .amount {
   text-align: right;
-  width: 120px;
+  width: 7.5rem;
 }
 
 .trust-transactions .check {
   text-align: center;
-  width: 45px;
+  width: 2.75rem;
 }
 
 .table-container .id {
-  width: 100px;
+  width: 6.25rem;
 }

@@ -14,8 +14,8 @@ Header
 .header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
   border-bottom: 1px solid #ddd;
 }
 
@@ -25,7 +25,7 @@ Header
 }
 
 .header-left-left {
-  margin-right: 20px;
+  margin-right: 1.25rem;
 }
 
 .header-left-right p {
@@ -39,7 +39,7 @@ Header
 }
 
 .header-right h3 {
-  margin: 0 0 5px 0;
+  margin: 0 0 0.25rem 0;
   font-size: 16pt;
 }
 
@@ -58,11 +58,11 @@ Table
 ========================================================================== */
 
 .section {
-  margin-top: 20px;
+  margin-top: 1.25rem;
 }
 
 .section h2 {
-  margin: 15px 0 8px 0;
+  margin: 1rem 0 0.5rem 0;
   font-size: 14pt;
   color: #333;
 }
@@ -75,7 +75,7 @@ Table
 
 .intakes-table th,
 .intakes-table td {
-  padding: 6px 8px;
+  padding: 0.5rem;
   border: 1px solid #ddd;
   text-align: center;
 }
@@ -108,7 +108,7 @@ Table
 
 .totals-row td {
   font-weight: bold;
-  padding: 8px;
+  padding: 0.5rem;
 }
 
 .percentage {

@@ -8,8 +8,8 @@ Development Environment Styles
   color: white;
   letter-spacing: 3px;
   text-align: center;
-  padding: 2px 0;
-  font-size: 12px;
+  padding: 0.25rem 0;
+  font-size: 0.75rem;
   font-weight: 600;
   position: fixed;
   top: 0;
@@ -20,5 +20,5 @@ Development Environment Styles
 
 /* Push content down when banner is present */
 .env-dev {
-  padding-top: 24px;
+  padding-top: 1.5rem;
 }

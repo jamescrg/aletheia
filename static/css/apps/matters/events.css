@@ -16,18 +16,18 @@ display
 ------------------------------------------------*/
 
 .events-list {
-  margin: 10px 0 5px 0;
+  margin: 0.75rem 0 0.25rem 0;
   width: 100%;
 }
 
 .events-list .date {
-  width: 140px;
+  width: 8.75rem;
 }
 
 .events-list .party	{
-  width: 120px;
+  width: 7.5rem;
 }
 
 .events-list .status {
-  width: 140px;
+  width: 8.75rem;
 }

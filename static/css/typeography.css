@@ -39,8 +39,8 @@ strong,
 }
 
 .warn {
-  margin-bottom: 20px;
-  padding: 10px;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem;
 }
 
 code {
@@ -49,6 +49,6 @@ code {
   display: block;
   font-family: 'Courier Prime', monospace;
   font-size: 1.03em;
-  margin-left: 20px;
+  margin-left: 1.25rem;
   white-space: pre-wrap;
 }

@@ -23,20 +23,20 @@ Activity list table
 
 
 .activity .date {
-  width: 120px;
+  width: 7.5rem;
 }
 
 .activity .user {
-  width: 60px;
+  width: 3.75rem;
 }
 
 .activity .matter {
-  width: 240px;
+  width: 15rem;
 }
 
 .activity .hours {
   text-align: right;
-  width: 60px;
+  width: 3.75rem;
 }
 
 .activity .hours a {
@@ -45,12 +45,12 @@ Activity list table
 
 .activity .rate {
   text-align: right;
-  width: 80px;
+  width: 5rem;
 }
 
 .activity .fee {
   text-align: right;
-  width: 120px;
+  width: 7.5rem;
 }
 
 

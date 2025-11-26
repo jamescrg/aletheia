@@ -18,7 +18,7 @@
 }
 
 .dropdown-item {
-  padding: 0.4rem 1rem;
+  padding: 0.5rem 1rem;
 }
 
 .dropdown-item.active {
@@ -43,7 +43,7 @@
   background: inherit;
   border: solid 1px var(--stone-200);
   color: inherit;
-  padding: 0 5px;
+  padding: 0 0.25rem;
   width: 100%;
 }
 
@@ -69,17 +69,17 @@
 }
 
 .extra-small-btn {
-  width: 100px;
+  width: 6.25rem;
 }
 
 .small-btn {
-  width: 150px;;
+  width: 9.375rem;
 }
 
 .medium-btn {
-  width: 200px;
+  width: 12.5rem;
 }
 
 .large-btn {
-  width: 200px;;
+  width: 12.5rem;
 }

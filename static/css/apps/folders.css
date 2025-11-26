@@ -1,8 +1,8 @@
 
 #folders {
-  margin-bottom: 20px;
-  padding-left: 10px;
-  padding-right: 10px;
+  margin-bottom: 1.25rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
 }
 
 .folder-item {
@@ -19,7 +19,7 @@
 
 .edit-folder {
   justify-content: space-between;
-  margin-right: 10px;
+  margin-right: 0.75rem;
   width: 100%;
 }
 
@@ -38,5 +38,5 @@
 .list-group-item .bi-person,
 .list-group-item .bi-folder {
   color: var(--stone-400);
-  margin-right: 10px;
+  margin-right: 0.75rem;
 }
