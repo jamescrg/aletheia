@@ -154,7 +154,7 @@ def time_filter_quick(request, quick_filter):
             "matter": None,
             "keyword": "",
             "comp": None,
-            "entered": False,
+            "entered": 0,
             "invoice": 0,
             "order_by": "date",
             "filter_label": "unbilled",
