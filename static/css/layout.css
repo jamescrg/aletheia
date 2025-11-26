@@ -40,6 +40,13 @@ body {
   justify-content: space-between;
 }
 
+.flex-center-left {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+}
+
 .limited-width {
   width: 95%;
 }

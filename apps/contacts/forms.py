@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.core.exceptions import ValidationError
 
@@ -25,6 +27,7 @@ class ContactForm(forms.ModelForm):
             "phone3_label",
             "email",
             "email2",
+            "website",
             "notes",
         )
 
@@ -54,6 +57,7 @@ class ContactForm(forms.ModelForm):
             "company": forms.TextInput(attrs={"class": "span2"}),
             "email": forms.TextInput(attrs={"class": "span2"}),
             "email2": forms.TextInput(attrs={"class": "span2"}),
+            "website": forms.URLInput(attrs={"class": "span2"}),
             "address": forms.Textarea(
                 attrs={
                     "class": "span2",
@@ -133,6 +137,28 @@ class ContactForm(forms.ModelForm):
                 raise ValidationError("Enter a valid 10-digit US phone number.")
             return normalized
         return value
+
+    def clean_website(self):
+        website = self.cleaned_data.get("website")
+        if website:
+            # Ensure website has a scheme
+            if not website.startswith(("http://", "https://")):
+                website = "https://" + website
+            # Basic URL validation
+            url_pattern = re.compile(
+                r"^https?://"
+                r"(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|"
+                r"localhost|"
+                r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})"
+                r"(?::\d+)?"
+                r"(?:/?|[/?]\S+)$",
+                re.IGNORECASE,
+            )
+            if not url_pattern.match(website):
+                raise ValidationError("Enter a valid URL.")
+            if len(website) > 255:
+                raise ValidationError("Website URL must be fewer than 255 characters.")
+        return website
 
     def clean_notes(self):
         notes = self.cleaned_data["notes"]

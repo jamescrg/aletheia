@@ -12,7 +12,8 @@
 {{ selected_contact.email2 }}{% endif %}{% if selected_contact.phone1 %}
 {{ selected_contact.phone1|phone_number }}{% if selected_contact.phone1_label %} - {{ selected_contact.phone1_label }}{% endif %}{% endif %}{% if selected_contact.phone2 %}
 {{ selected_contact.phone2|phone_number }}{% if selected_contact.phone2_label %} - {{ selected_contact.phone2_label }}{% endif %}{% endif %}{% if selected_contact.phone3 %}
-{{ selected_contact.phone3|phone_number }}{% if selected_contact.phone3_label %} - {{ selected_contact.phone3_label }}{% endif %}{% endif %}</div>
+{{ selected_contact.phone3|phone_number }}{% if selected_contact.phone3_label %} - {{ selected_contact.phone3_label }}{% endif %}{% endif %}
+{{ selected_contact.website }}</div>
   {# djlint:on #}
   {# Address Block Card #}
   {% if selected_contact.address %}
@@ -47,36 +48,41 @@
     </div>
   {% endif %}
   {# Email Card #}
-  {% if selected_contact.email %}
+  {% if selected_contact.email or selected_contact.email2 %}
     <div class="contact-card">
-      <div class="contact-card-content-with-copy">
-        <div class="contact-card-text">
-          <i class="bi bi-envelope contact-card-icon"></i>
-          <a href="mailto:{{ selected_contact.email }}">{{ selected_contact.email }}</a>
-        </div>
-        <button type="button"
-                class="btn btn-sm copy-btn card-copy-btn-right"
-                data-copy="{{ selected_contact.email }}"
-                title="Copy email">
-          <i class="bi bi-clipboard"></i>
-        </button>
-      </div>
-    </div>
-  {% endif %}
-  {# Email 2 Card #}
-  {% if selected_contact.email2 %}
-    <div class="contact-card">
-      <div class="contact-card-content-with-copy">
-        <div class="contact-card-text">
-          <i class="bi bi-envelope contact-card-icon"></i>
-          <a href="mailto:{{ selected_contact.email2 }}">{{ selected_contact.email2 }}</a>
-        </div>
-        <button type="button"
-                class="btn btn-sm copy-btn card-copy-btn-right"
-                data-copy="{{ selected_contact.email2 }}"
-                title="Copy email">
-          <i class="bi bi-clipboard"></i>
-        </button>
+      <div class="contact-phone-list">
+        {% if selected_contact.email %}
+          <div class="contact-item contact-phone-item">
+            <div class="contact-phone-text">
+              <i class="bi bi-envelope"></i>
+              <a href="mailto:{{ selected_contact.email }}">{{ selected_contact.email }}</a>
+            </div>
+            <div class="contact-phone-buttons">
+              <button type="button"
+                      class="btn btn-sm copy-btn"
+                      data-copy="{{ selected_contact.email }}"
+                      title="Copy email">
+                <i class="bi bi-clipboard"></i>
+              </button>
+            </div>
+          </div>
+        {% endif %}
+        {% if selected_contact.email2 %}
+          <div class="contact-item contact-phone-item">
+            <div class="contact-phone-text">
+              <i class="bi bi-envelope"></i>
+              <a href="mailto:{{ selected_contact.email2 }}">{{ selected_contact.email2 }}</a>
+            </div>
+            <div class="contact-phone-buttons">
+              <button type="button"
+                      class="btn btn-sm copy-btn"
+                      data-copy="{{ selected_contact.email2 }}"
+                      title="Copy email">
+                <i class="bi bi-clipboard"></i>
+              </button>
+            </div>
+          </div>
+        {% endif %}
       </div>
     </div>
   {% endif %}
@@ -151,19 +157,38 @@
         </div>
       </div>
     {% endif %}
-    {% if selected_contact.website %}
-      <div class="contact-item">
-        <i class="bi bi-globe"></i>
-        <a href="{{ selected_contact.website }}" target="_blank">{{ selected_contact.website }}</a>
-      </div>
-    {% endif %}
-    {% if selected_contact.map %}
-      <div class="contact-item">
-        <i class="bi bi-geo-alt"></i>
-        <a href="{{ selected_contact.map }}" target="_blank">Map</a>
-      </div>
-    {% endif %}
   </div>
+  {# Website Card #}
+  {% if selected_contact.website %}
+    <div class="contact-card">
+      <div class="contact-card-content-with-copy">
+        <div class="contact-card-text">
+          <i class="bi bi-globe contact-card-icon"></i>
+          <a href="{{ selected_contact.website }}"
+             target="_blank"
+             rel="noopener noreferrer">{{ selected_contact.website }}</a>
+        </div>
+        <button type="button"
+                class="btn btn-sm copy-btn card-copy-btn-right"
+                data-copy="{{ selected_contact.website }}"
+                title="Copy website">
+          <i class="bi bi-clipboard"></i>
+        </button>
+      </div>
+    </div>
+  {% endif %}
+  {% if selected_contact.map %}
+    <div class="contact-card">
+      <div class="contact-card-content-with-copy">
+        <div class="contact-card-text">
+          <i class="bi bi-geo-alt contact-card-icon"></i>
+          <a href="{{ selected_contact.map }}"
+             target="_blank"
+             rel="noopener noreferrer">Map</a>
+        </div>
+      </div>
+    </div>
+  {% endif %}
   {# Notes #}
   {% if selected_contact.notes %}
     <div class="contact-notes-section">

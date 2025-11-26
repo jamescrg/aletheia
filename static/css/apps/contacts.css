@@ -315,3 +315,7 @@
   border: 1px dashed var(--stone-300);
   border-radius: 8px;
 }
+
+.btn-delete-contacts {
+  margin-right: 1rem;
+}

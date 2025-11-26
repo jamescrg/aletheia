@@ -3,7 +3,7 @@
     class="folder-item-container list-group-item{% if selected_folder and selected_folder.id == folder.id %} item-selected-highlight{% endif %}">
   <div>
     <i class="bi bi-folder"></i>
-    <a href="{% url 'folders:select' folder_id=folder.id %}">{{ folder.name }}</a>
+    <a href="{% url 'folders:select' folder_id=folder.id %}">{{ folder.name|truncatechars:28 }}</a>
   </div>
   <button class="btn-icon menu-icon"
           type="button"

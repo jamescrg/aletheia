@@ -35,8 +35,8 @@
 }
 
 
-.folder-item-container .bi-person,
-.folder-item-container .bi-folder {
+.list-group-item .bi-person,
+.list-group-item .bi-folder {
   color: var(--stone-400);
   margin-right: 10px;
 }

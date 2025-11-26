@@ -27,38 +27,40 @@
     <thead>
       <tr>
         <th>Name</th>
-        <th class="status-col">Status</th>
+        <th class="status-col center-data">Active</th>
       </tr>
     </thead>
     <tbody>
       {% for role in roles %}
         <tr>
           <td>
-            <button class="button-link"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false">{{ role.name }}</button>
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item"
-                   hx-get="{% url 'settings:edit-role' role.id %}"
-                   hx-target="#htmx-modal-container"
-                   hx-trigger="click"
-                   data-bs-toggle="modal"
-                   data-bs-target="#htmx-modal-container">Edit</a>
-              </li>
-              <li>
-                <a class="dropdown-item"
-                   hx-post="{% url 'settings:delete-role' role.id %}"
-                   hx-confirm="Are you sure? This will also delete any contact relationships using this role.">Delete</a>
-              </li>
-            </ul>
+            <div class="dropdown">
+              <button class="button-link"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false">{{ role.name }}</button>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item"
+                     hx-get="{% url 'settings:edit-role' role.id %}"
+                     hx-target="#htmx-modal-container"
+                     hx-trigger="click"
+                     data-bs-toggle="modal"
+                     data-bs-target="#htmx-modal-container">Edit</a>
+                </li>
+                <li>
+                  <a class="dropdown-item"
+                     hx-post="{% url 'settings:delete-role' role.id %}"
+                     hx-confirm="Are you sure? This will also delete any contact relationships using this role.">Delete</a>
+                </li>
+              </ul>
+            </div>
           </td>
-          <td class="status-col">
+          <td class="status-col center-data">
             {% if role.is_active %}
-              Active
+              <i class="bi bi-check-circle-fill true-bool"></i>
             {% else %}
-              Inactive
+              <i class="bi bi-x-circle-fill false-bool"></i>
             {% endif %}
           </td>
         </tr>

@@ -1,6 +1,10 @@
 
 .btn {
+  border: none;
+  box-shadow: none;
+  border-radius: 5px;
   font-size: 1rem;
+  padding: 4px 10px;
 }
 
 .btn-sm {
@@ -16,11 +20,20 @@
   color: var(--stone-300);
 }
 
+.btn-secondary,
+.btn-secondary:hover,
+.btn-secondary:focus {
+  background: var(--stone-300);
+  border: none;
+  box-shadow: none;
+  color: var(--stone-700);
+}
+
 .btn-outline-primary,
 .btn-outline-primary:hover,
 .btn-outline-primary:focus {
   background: transparent;
-  border-color: var(--stone-300);
+  border: solid 1px var(--stone-350);
   box-shadow: none;
   color: var(--stone-600);
 }
@@ -67,6 +80,7 @@
   background: none;
   border: none;
   color: var(--link);
+  cursor: pointer;
   margin: 0;
   padding: 0;
 }

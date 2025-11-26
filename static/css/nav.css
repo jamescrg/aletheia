@@ -29,7 +29,7 @@
 .navbar .settings-link {
   font-size: 1.2rem;
   position: relative;
-  top: -0.1rem;
+  top: -0.15rem;
 }
 
 /* ==========================================================================
@@ -101,10 +101,6 @@
   .navbar a {
     font-size: 0.9rem;
     white-space: nowrap;
-  }
-
-  .navbar .settings-link {
-    /* padding: 10px 15px 7px 15px !important; */
   }
 
   /* Subnav mobile overrides */
