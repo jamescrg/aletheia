@@ -1,28 +1,40 @@
 
-.width100 {
-  width: 100%;
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .table {
+  border-collapse: collapse;
   color: inherit;
   margin-bottom: 0;
+  table-layout: fixed !important;
+  width: 100%;
 }
 
-table {
-  border-collapse: collapse;
+.full-width-table {
+  min-width: 75rem;
+}
+
+.table-column-fluid {
+    /* No 'width' property */
+    min-width: 10rem; /* Ensures a minimum space */
 }
 
 th {
   border: solid 1px var(--stone-200);
-  font-weight: 600;
+  font-weight: 500;
   padding: 0.5rem 1rem !important;
   vertical-align: top;
 }
 
 td {
   border: solid 1px var(--stone-200);
+  overflow: hidden;
   padding: 0.5rem 1rem !important;
+  text-overflow: ellipsis; /* Puts "..." at the end */
   vertical-align: top;
+  white-space: nowrap;     /* Prevents wrapping to keep content on one line */
 }
 
 thead {
@@ -45,9 +57,6 @@ tbody {
   font-weight: 500;
 }
 
-th {
-  font-weight: 500;
-}
 
 .totals-table {
   align-items: start;
@@ -87,15 +96,6 @@ th {
   width: 7.5rem;
 }
 
-
-/* ==========================================================================
- Responsive Table Container
-========================================================================== */
-
-.table-container {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
 
 
 /* ==========================================================================

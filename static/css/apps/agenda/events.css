@@ -3,33 +3,40 @@
  Events
 ========================================================================== */
 
+/* table */
+
 .events {
   margin-bottom: 1.5rem;
 }
 
 .events-table {
-  width: 100%;
 }
 
 .events-table .date {
-  max-width: 7.5rem;
-}
-
-.events-table .party {
-  width: 7.5rem;
+  width: 12rem;
 }
 
 .events-table .matter {
-  width: 15.625rem;
+  width: 15rem;
+}
+
+.events-table .description {
+  min-width: 15rem;
 }
 
 .events-table .duration {
-  width: 6.25rem;
+  width: 8rem;
 }
 
 .events-table .location {
-  width: 7.5rem;
+  width: 8rem;
 }
+
+.events-table .party {
+  width: 8rem;
+}
+
+/* form */
 
 .events-form {
   margin-top: 1rem;
@@ -43,7 +50,6 @@
 .deadline-calculator-form {
   margin-top: 1rem;
 }
-
 
 .deadline-calculator-results {
   margin-bottom: 1.5rem;
