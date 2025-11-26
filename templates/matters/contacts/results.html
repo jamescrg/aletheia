@@ -3,8 +3,8 @@
     {% for contact in contacts %}
       <li>
         <a href="#"
-           hx-get="{% url 'matters:contacts-assign-role' matter_id=matter.id contact_id=contact.id %}"
-           hx-target="#htmx-modal-container">{{ contact.name }}</a>
+           data-contact-id="{{ contact.id }}"
+           data-contact-name="{{ contact.name }}">{{ contact.name }}</a>
       </li>
     {% endfor %}
   </ul>

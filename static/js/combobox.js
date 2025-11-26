@@ -14,6 +14,10 @@ const initCombobox = () => {
     const input = document.getElementById("assign-search-input");
     if (!input) return;
 
+    const contactIdInput = document.getElementById("contact_id");
+    const clearBtn = document.getElementById("combobox-clear");
+    const resultsContainer = document.getElementById("search-results");
+
     /**
      * Get all the clickable result links from the search results
      * This is a function (not a variable) because results change dynamically
@@ -46,6 +50,84 @@ const initCombobox = () => {
             }
         });
     };
+
+    /**
+     * Select a contact from the results
+     * Sets the hidden input value and displays the selected name
+     */
+    const selectContact = (contactId, contactName) => {
+        // Set the hidden input value
+        if (contactIdInput) {
+            contactIdInput.value = contactId;
+        }
+
+        // Display the selected name in the input
+        input.value = contactName;
+        input.classList.add("selected");
+        input.setAttribute("readonly", "readonly");
+
+        // Show the clear button
+        if (clearBtn) {
+            clearBtn.classList.remove("hidden");
+        }
+
+        // Clear the search results
+        if (resultsContainer) {
+            resultsContainer.innerHTML = "";
+        }
+
+        // Reset focus index
+        focusedIndex = -1;
+    };
+
+    /**
+     * Clear the selection and allow re-searching
+     */
+    const clearSelection = () => {
+        // Clear the hidden input
+        if (contactIdInput) {
+            contactIdInput.value = "";
+        }
+
+        // Clear and enable the search input
+        input.value = "";
+        input.classList.remove("selected");
+        input.removeAttribute("readonly");
+        input.focus();
+
+        // Hide the clear button
+        if (clearBtn) {
+            clearBtn.classList.add("hidden");
+        }
+
+        // Clear results
+        if (resultsContainer) {
+            resultsContainer.innerHTML = "";
+        }
+
+        focusedIndex = -1;
+    };
+
+    // Handle clear button click
+    if (clearBtn) {
+        clearBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            clearSelection();
+        });
+    }
+
+    // Handle clicking on a result
+    if (resultsContainer) {
+        resultsContainer.addEventListener("click", (e) => {
+            const link = e.target.closest("a[data-contact-id]");
+            if (link) {
+                e.preventDefault();
+                const contactId = link.dataset.contactId;
+                const contactName = link.dataset.contactName;
+                selectContact(contactId, contactName);
+            }
+        });
+    }
 
     /**
      * Listen for keyboard events on the search input
@@ -81,9 +163,11 @@ const initCombobox = () => {
         else if (e.key === "Enter" && focusedIndex >= 0) {
             // Only act on Enter if something is highlighted
             e.preventDefault();
-            // Simulate a click on the highlighted item
-            // This triggers the HTMX request to load the role selection modal
-            items[focusedIndex].click();
+            // Get the data attributes and select the contact
+            const selectedItem = items[focusedIndex];
+            const contactId = selectedItem.dataset.contactId;
+            const contactName = selectedItem.dataset.contactName;
+            selectContact(contactId, contactName);
         }
         else if (e.key === "Escape") {
             // Clear the highlighting and return to input

@@ -34,9 +34,8 @@
             {% if edit %}
               <a href="#"
                  class="delete-link"
-                 hx-confirm="Are you sure you want to delete this folder?"
-                 hx-delete="{% url 'folders:delete' folder.id %}"
-                 hx-target="#folders"
+                 hx-get="{% url 'folders:delete-confirm' folder.id %}"
+                 hx-target="#htmx-modal-container"
                  hx-swap="innerHTML">Delete Folder</a>
             {% endif %}
           </div>

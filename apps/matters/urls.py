@@ -67,11 +67,6 @@ urlpatterns = [
         contacts.assign_results,
         name="contacts-assign-results",
     ),
-    path(
-        "matters/<int:matter_id>/assign/<int:contact_id>",
-        contacts.assign_role,
-        name="contacts-assign-role",
-    ),
     path("matters/assign/store", contacts.assign_store, name="contacts-assign-store"),
     path("matters/assign/<id>/edit", contacts.assign_edit, name="contacts-assign-edit"),
     path(

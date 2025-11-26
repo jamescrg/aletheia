@@ -21,7 +21,8 @@
       "Bash(pip show:*)",
       "Bash(xargs -I {} bash -c 'echo \"\"\"\"=== {} ===\"\"\"\" && head -20 {}')",
       "Bash(cat:*)",
-      "Bash(awk:*)"
+      "Bash(awk:*)",
+      "Bash(source .venv/bin/activate)"
     ],
     "deny": []
   }

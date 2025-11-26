@@ -1,5 +1,4 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import get_object_or_404
 
 import apps.contacts.google as google
 from apps.contacts.models import Contact
@@ -16,7 +15,11 @@ def get_list_data(request):
     selected_folder_id = request.session.get("contacts_selected_folder_id")
 
     if selected_folder_id:
-        selected_folder = get_object_or_404(Folder, pk=selected_folder_id)
+        try:
+            selected_folder = Folder.objects.get(pk=selected_folder_id)
+        except Folder.DoesNotExist:
+            selected_folder = None
+            del request.session["contacts_selected_folder_id"]
     else:
         selected_folder = None
 
@@ -33,6 +36,10 @@ def get_list_data(request):
 
     contacts = contacts.order_by("name")
 
+    selected_contact = None
+    relationships = None
+    selected_contact_not_found = False
+
     if request.session.get("selected_contact_id"):
         selected_contact_id = request.session["selected_contact_id"]
 
@@ -40,42 +47,42 @@ def get_list_data(request):
             selected_contact = Contact.objects.get(pk=selected_contact_id)
         except ObjectDoesNotExist:
             selected_contact = None
+            selected_contact_not_found = True
+            del request.session["selected_contact_id"]
 
-        relationships = list(Relationship.objects.filter(contact=selected_contact))
+        if selected_contact:
+            relationships = list(Relationship.objects.filter(contact=selected_contact))
 
-        # For each matter this contact is related to, add a static relationship object
-        related_matters = Matter.objects.filter(client=selected_contact)
+            # For each matter this contact is related to, add a static relationship object
+            related_matters = Matter.objects.filter(client=selected_contact)
 
-        for matter in related_matters:
-            relationship = Relationship(contact=selected_contact, matter=matter)
-            relationships.append(relationship)
+            for matter in related_matters:
+                relationship = Relationship(contact=selected_contact, matter=matter)
+                relationships.append(relationship)
 
-        # Group and sort relationships by status
-        # Order: Pending, Open, Complete/Closed
-        # Within each group, sort by matter name descending
-        pending_relationships = sorted(
-            [r for r in relationships if r.matter.status == "Pending"],
-            key=lambda r: r.matter.name,
-            reverse=True,
-        )
-        open_relationships = sorted(
-            [r for r in relationships if r.matter.status == "Open"],
-            key=lambda r: r.matter.name,
-            reverse=True,
-        )
-        complete_relationships = sorted(
-            [r for r in relationships if r.matter.status in ["Complete", "Closed"]],
-            key=lambda r: r.matter.name,
-            reverse=True,
-        )
+            # Group and sort relationships by status
+            # Order: Pending, Open, Complete/Closed
+            # Within each group, sort by matter name descending
+            pending_relationships = sorted(
+                [r for r in relationships if r.matter.status == "Pending"],
+                key=lambda r: r.matter.name,
+                reverse=True,
+            )
+            open_relationships = sorted(
+                [r for r in relationships if r.matter.status == "Open"],
+                key=lambda r: r.matter.name,
+                reverse=True,
+            )
+            complete_relationships = sorted(
+                [r for r in relationships if r.matter.status in ["Complete", "Closed"]],
+                key=lambda r: r.matter.name,
+                reverse=True,
+            )
 
-        # Combine in the desired order
-        relationships = (
-            pending_relationships + open_relationships + complete_relationships
-        )
-    else:
-        selected_contact = None
-        relationships = None
+            # Combine in the desired order
+            relationships = (
+                pending_relationships + open_relationships + complete_relationships
+            )
 
     if google.check_credentials():
         google_logged_in = True
@@ -99,6 +106,7 @@ def get_list_data(request):
         "selected_folder": selected_folder,
         "contacts": contacts,
         "selected_contact": selected_contact,
+        "selected_contact_not_found": selected_contact_not_found,
         "google_logged_in": google_logged_in,
         "relationships": relationships,
         "trust": trust,

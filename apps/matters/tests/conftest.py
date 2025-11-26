@@ -4,7 +4,7 @@ from django.test import Client
 from apps.accounts.models import CustomUser
 from apps.contacts.models import Contact
 from apps.folders.models import Folder
-from apps.matters.models import Matter, Relationship, Role
+from apps.matters.models import Group, Matter, Relationship, Role
 from apps.matters.proceedings.models import Proceeding
 from apps.matters.settlement.models import SettlementEntry
 from apps.matters.timeline.models import Fact
@@ -107,11 +107,22 @@ def role():
 
 
 @pytest.fixture
-def relationship(matter, contact, role):
+def group():
+    group = Group.objects.create(
+        name="Counsel",
+        order=1,
+    )
+    group.save()
+    return group
+
+
+@pytest.fixture
+def relationship(matter, contact, role, group):
     rel = Relationship.objects.create(
         matter=matter,
         contact=contact,
         role=role,
+        group=group,
     )
     rel.save()
     return rel

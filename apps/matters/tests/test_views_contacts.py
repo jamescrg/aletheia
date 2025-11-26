@@ -9,7 +9,10 @@ pytestmark = pytest.mark.django_db
 def test_assign(client, matter):
     response = client.get(f"/matters/{matter.id}/contacts/assign")
     assert response.status_code == 200
-    assertTemplateUsed(response, "matters/contacts/assign.html")
+    assertTemplateUsed(response, "matters/contacts/assign-modal.html")
+    # Check that groups and roles are passed in context
+    assert "groups" in response.context
+    assert "roles" in response.context
 
 
 def test_assign_results(client, matter, contact):
@@ -20,20 +23,15 @@ def test_assign_results(client, matter, contact):
     assert response.context["contacts"]
 
 
-def test_assign_role(client, matter, contact):
-    response = client.get(f"/matters/{matter.id}/assign/{contact.id}")
-    assert response.status_code == 200
-    assertTemplateUsed(response, "matters/contacts/assign-role.html")
-
-
-def test_assign_store(client, matter, contact, role):
+def test_assign_store(client, matter, contact, role, group):
     data = {
         "matter_id": matter.id,
         "contact_id": contact.id,
         "role_id": role.id,
+        "group_id": group.id,
     }
     response = client.post("/matters/assign/store", data)
-    assert response.status_code == 302
+    assert response.status_code == 204
     found = Relationship.objects.filter(matter=matter).first()
     assert found
 
@@ -41,19 +39,19 @@ def test_assign_store(client, matter, contact, role):
 def test_assign_edit(client, relationship):
     response = client.get(f"/matters/assign/{relationship.id}/edit")
     assert response.status_code == 200
-    assertTemplateUsed(response, "matters/contacts/assign-role.html")
+    assertTemplateUsed(response, "matters/contacts/assign-role-modal.html")
 
 
-def test_assign_update(client, relationship, role):
-    data = {"role_id": role.id}
+def test_assign_update(client, relationship, role, group):
+    data = {"role_id": role.id, "group_id": group.id}
     response = client.post(f"/matters/assign/{relationship.id}/update", data)
-    assert response.status_code == 302
+    assert response.status_code == 204
     found = Relationship.objects.filter(role_id=role.id).first()
     assert found
 
 
 def test_delete(client, relationship):
-    response = client.get(f"/matters/assign/{relationship.id}/delete")
-    assert response.status_code == 302
+    response = client.post(f"/matters/assign/{relationship.id}/delete")
+    assert response.status_code == 204
     found = Relationship.objects.filter(pk=relationship.id).exists()
     assert not found

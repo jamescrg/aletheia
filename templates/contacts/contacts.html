@@ -27,5 +27,9 @@
 <div class="contact col-md-6">
   {% if selected_contact %}
     {% include "contacts/contact.html" %}
+  {% elif selected_contact_not_found %}
+    <div class="section">
+      <p>The selected contact could not be found. It may have been deleted.</p>
+    </div>
   {% endif %}
 </div>
