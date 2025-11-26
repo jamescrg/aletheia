@@ -159,9 +159,17 @@ def contact_sort(request, id, order):
 @login_required
 def assign(request, id):
     matter = get_object_or_404(Matter, pk=id)
+    groups = Group.objects.filter(is_active=True).order_by("order")
+    roles = (
+        Role.objects.filter(is_active=True)
+        .exclude(name__in=["Client", "Client (Invoicing)"])
+        .order_by("name")
+    )
 
     context = {
         "matter": matter,
+        "groups": groups,
+        "roles": roles,
     }
 
     return render(request, "matters/contacts/assign-modal.html", context)
@@ -183,27 +191,6 @@ def assign_results(request, id):
     }
 
     return render(request, "matters/contacts/results.html", context)
-
-
-@login_required
-def assign_role(request, matter_id, contact_id):
-    matter = get_object_or_404(Matter, pk=matter_id)
-    contact = get_object_or_404(Contact, pk=contact_id)
-    groups = Group.objects.filter(is_active=True).order_by("order")
-    roles = (
-        Role.objects.filter(is_active=True)
-        .exclude(name__in=["Client", "Client (Invoicing)"])
-        .order_by("name")
-    )
-
-    context = {
-        "matter": matter,
-        "contact": contact,
-        "groups": groups,
-        "roles": roles,
-    }
-
-    return render(request, "matters/contacts/assign-role-select-modal.html", context)
 
 
 @login_required

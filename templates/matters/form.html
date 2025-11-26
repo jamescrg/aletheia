@@ -15,8 +15,8 @@
       </div>
     </div>
     <div class="modal-body">
-      <form action="{{ action }}"
-            method="post"
+      <form hx-post="{{ action }}"
+            hx-target="#htmx-modal-container"
             role="form"
             class="form-compact col2 matter-form">
         {% csrf_token %}

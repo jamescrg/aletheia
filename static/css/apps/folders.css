@@ -33,3 +33,10 @@
   flex-direction: row;
   justify-content: space-between;
 }
+
+
+.folder-item-container .bi-person,
+.folder-item-container .bi-folder {
+  color: var(--stone-400);
+  margin-right: 10px;
+}

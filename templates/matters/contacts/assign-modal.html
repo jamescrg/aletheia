@@ -9,19 +9,50 @@
       </div>
     </div>
     <div class="modal-body">
-      <div class="form-group">
-        <label for="assign-search-input">Search</label>
-        <input type="search"
-               id="assign-search-input"
-               hx-post="{% url 'matters:contacts-assign-results' id=matter.id %}"
-               name="search_text"
-               hx-trigger="keyup changed delay:500ms, search"
-               hx-target="#search-results"
-               autocomplete="off"
-               placeholder="Search contacts..."
-               autofocus />
-      </div>
-      <div id="search-results"></div>
+      <form hx-post="{% url 'matters:contacts-assign-store' %}"
+            hx-target="#htmx-modal-container"
+            class="form-compact">
+        {% csrf_token %}
+        <input type="hidden" name="matter_id" value="{{ matter.id }}" />
+        <div class="form-group combobox-container">
+          <label for="assign-search-input">Contact</label>
+          <div class="combobox-input-wrapper">
+            <input type="search"
+                   id="assign-search-input"
+                   hx-post="{% url 'matters:contacts-assign-results' id=matter.id %}"
+                   name="search_text"
+                   hx-trigger="keyup changed delay:500ms, search"
+                   hx-target="#search-results"
+                   autocomplete="off"
+                   placeholder="Search contacts..."
+                   autofocus />
+            <button type="button" id="combobox-clear" class="combobox-clear hidden">
+              <i class="bi bi-x"></i>
+            </button>
+          </div>
+          <input type="hidden" name="contact_id" id="contact_id" />
+          <div id="search-results"></div>
+        </div>
+        <div class="form-group">
+          <label for="group_id">Group</label>
+          <select name="group_id" id="group_id" required>
+            <option value="">Select a group...</option>
+            {% for group in groups %}<option value="{{ group.id }}">{{ group.name }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="role_id">Role</label>
+          <select name="role_id" id="role_id" required>
+            <option value="">Select a role...</option>
+            {% for role in roles %}<option value="{{ role.id }}">{{ role.name }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="flex-center-space">
+          <div>
+            <button type="submit" class="submit">Assign</button>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 </div>

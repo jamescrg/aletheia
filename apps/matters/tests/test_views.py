@@ -31,8 +31,10 @@ def test_add_get(client, folder):
 
 
 def test_add_post(client, user, matter_data):
+    # Convert contact object to id for form submission
+    matter_data["client"] = matter_data["client"].id
     response = client.post("/matters/add", matter_data)
-    assert response.status_code == 200
+    assert response.status_code == 204
     found = Matter.objects.filter(name=matter_data["name"]).first()
     assert found
 
@@ -45,20 +47,17 @@ def test_edit_get(client, matter):
 
 def test_edit_post(client, user, matter):
     data = {
-        "user_id": user.id,
         "name": "Sample Test Matter",
+        "description": "Test description",
         "work_status": "New description",
         "status": "Open",
         "date_start": "2020-08-07",
-        "date_end": "2022-08-07",
-        "firm": "Test Firm",
-        "clio_matter_id": "123",
-        "client_reference_id": "125",
+        "firm": "Craig Legal",
         "practice_area": "General",
         "client": matter.client.id,
     }
     response = client.post(f"/matters/{matter.id}/edit", data)
-    assert response.status_code == 302
+    assert response.status_code == 204
 
     found = Matter.objects.filter(work_status="New description").exists()
     assert found

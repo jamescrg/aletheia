@@ -127,7 +127,7 @@ def add(request):
             matter.user_id = request.user.id
             matter.save()
 
-            return redirect("/matters")
+            return HttpResponse(status=204, headers={"HX-Trigger": "mattersChanged"})
 
     # if no post data has been submitted, show the matter form
     else:
@@ -157,15 +157,7 @@ def edit(request, id):
             matter = form.save(commit=False)
             matter.user_id = request.user.id
             matter.save()
-            if request.session.get("matters-view"):
-                if request.session["matters-view"] == "detail":
-                    return redirect(f"/matters/{matter.id}")
-                if request.session["matters-view"] == "list":
-                    return redirect("/matters")
-            else:
-                return redirect("/matters")
-        else:
-            print(form.errors)
+            return HttpResponse(status=204, headers={"HX-Trigger": "mattersChanged"})
 
     else:
         form = MatterForm(instance=matter)
