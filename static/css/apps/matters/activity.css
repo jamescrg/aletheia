@@ -1,12 +1,12 @@
 
 .matter-activity {
-margin: 10px 0 5px 0;
+margin: 0.75rem 0 0.25rem 0;
 width: 100%;
 }
 
 .matter-activity .date {
-  padding-right: 20px;
-  width: 150px;
+  padding-right: 1.25rem;
+  width: 9.375rem;
 }
 
 .matter-activity .hours {

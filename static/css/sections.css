@@ -27,7 +27,7 @@
   border-radius: 4px;
   color: var(--button-toolbar);
   outline: none;
-  padding: 3px 7px;
+  padding: 0.25rem 0.5rem;
 }
 
 /* .toolbar .btn-green { */
@@ -47,7 +47,7 @@
 
 .toolbar h1,
 .toolbar h2 {
-  margin-right: 1.3rem;
+  margin-right: 1.25rem;
 }
 
 .filter-tools {
@@ -60,7 +60,7 @@
   background-color: var(--stone-150);
   border: solid 1px var(--stone-200);
   color: var(--button-toolbar);
-  padding: 5px;
+  padding: 0.25rem;
 }
 
 .toolbar-right {
@@ -73,7 +73,7 @@
 .toolbar-right > a,
 .toolbar-right button {
   margin-left: 1rem;
-  margin-right: 0.3rem;
+  margin-right: 0.25rem;
 }
 
 .section-text {
@@ -133,7 +133,7 @@ Detail Views
   .filter-tools .select-btn.large-btn,
   .filter-tools .select-btn.small-btn {
     width: auto;
-    min-width: 120px;
+    min-width: 7.5rem;
     max-width: 100%;
   }
 

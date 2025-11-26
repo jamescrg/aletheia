@@ -43,43 +43,43 @@
 }
 
 .dashboard-table.events .date {
-  max-width: 160px;
+  max-width: 10rem;
 }
 
 .dashboard-table.events .matter {
-  width: 250px;
-  min-width: 250px;
+  width: 15.625rem;
+  min-width: 15.625rem;
 }
 
 .dashboard-table.events .description {
-  min-width: 300px;
+  min-width: 18.75rem;
 }
 
 .dashboard-table.events .location {
-  width: 120px;
+  width: 7.5rem;
 }
 
 .dashboard-table.events .party {
-  width: 120px;
+  width: 7.5rem;
 }
 
 /* Dashboard Tasks Table - match tasks-table column widths */
 .dashboard-table.tasks .matter {
-  width: 190px;
-  min-width: 190px;
+  width: 11.875rem;
+  min-width: 11.875rem;
 }
 
 .dashboard-table.tasks .description {
-  min-width: 300px;
+  min-width: 18.75rem;
 }
 
 .dashboard-table.tasks .user {
-  width: 100px;
+  width: 6.25rem;
 }
 
 .dashboard-table.tasks .date {
   white-space: nowrap;
-  width: 120px;
+  width: 7.5rem;
 }
 
 .unbilled-table th:nth-child(1),
@@ -99,7 +99,7 @@
 
 .show-more {
   font-weight: normal;
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 
 /* ==========================================================================
@@ -128,6 +128,6 @@
 
   .dashboard-table.events,
   .dashboard-table.tasks {
-    min-width: 600px;
+    min-width: 37.5rem;
   }
 }

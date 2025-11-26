@@ -4,7 +4,7 @@
 /* ------------------------------------------------------------------------- */
 
 .modal-dialog {
-  width: 1000px !important;
+  width: 62.5rem !important;
 }
 
 .search-text {
@@ -34,7 +34,7 @@
 }
 
 .search-icon {
-  margin: -3px 10px 0 10px;
+  margin: -0.25rem 0.75rem 0 0.75rem;
 }
 
 .search .input-group-text {
@@ -53,31 +53,31 @@
 }
 
 .search-results .matter-name {
-  width: 250px;
+  width: 15.625rem;
 }
 
 .search-results .matter-status {
-  width: 100px;
+  width: 6.25rem;
 }
 
 .search-results .proceeding-case-number {
-  width: 150px;
+  width: 9.375rem;
 }
 
 .search-results .proceeding-status {
-  width: 150px;
+  width: 9.375rem;
 }
 
 .search-results .contact-folder {
-  width: 150px;
+  width: 9.375rem;
 }
 
 .search-results .contact-phone1,
 .search-results .intake-phone {
-  width: 150px;
+  width: 9.375rem;
 }
 
 .search-results .contact-email,
 .search-results .intake-email {
-  width: 300px;
+  width: 18.75rem;
 }

@@ -26,12 +26,12 @@
 
 .bi-x-lg {
   color: var(--link);
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .bi-folder {
   color: var(--stone-400);
-  margin-right: 10px;
+  margin-right: 0.75rem;
 }
 
 .bi-trash {

@@ -1,6 +1,6 @@
 .setting-label {
   padding-bottom: 1rem;
-  width: 200px;
+  width: 12.5rem;
 }
 
 .setting-control {
@@ -33,7 +33,7 @@ Profile Form
 .profile-form #id_new_password,
 .profile-form #id_confirm_password,
 .profile-form #id_initials {
-  max-width: 300px;
+  max-width: 18.75rem;
   width: 100%;
 }
 
@@ -63,7 +63,7 @@ Settings Contacts - Two Column Layout
 
 .settings-contacts-column {
   flex: 1;
-  max-width: 400px;
+  max-width: 25rem;
 }
 
 @media (max-width: 768px) {
@@ -79,7 +79,7 @@ Settings Contacts - Two Column Layout
 
 /* Settings Table */
 .settings-table .status-col {
-  width: 70px;
+  width: 4.375rem;
 }
 
 /* Groups table - name cell with drag handle */

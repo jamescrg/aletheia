@@ -5,7 +5,7 @@ Display
 ------------------------------------------------*/
 
 .filter-form input {
-  margin-right: 1.2rem;
+  margin-right: 1.25rem;
 }
 
 .filter-form label {
@@ -14,16 +14,17 @@ Display
 }
 
 .timeline-list {
-  margin: 10px 0 5px 0;
+  margin: 0.75rem 0 0.25rem 0;
 }
 
 .timeline-list .date-time {
-  width: 200px;
+  width: 12.5rem;
 }
 
 
 .timeline-list .citations {
-  width: 350px}
+  width: 21.875rem;
+}
 
 
 .edit-fact-description-input {
@@ -47,24 +48,24 @@ Form
 
 .timeline-form #id_fact {
   border: none;
-  width: 700px;
+  width: 43.75rem;
 }
 
 .timeline-form #id_description {
-  width: 500px;
+  width: 31.25rem;
 }
 
 
 .timeline-form #id_citations {
-  width: 350px;
+  width: 21.875rem;
 }
 
 .timeline-form #id_emphasis {
-  width: 120px;
+  width: 7.5rem;
 }
 
 .timeline-form .print-link {
-  margin-top: 15px;
+  margin-top: 1rem;
   text-align: right;
 }
 
@@ -78,7 +79,7 @@ Filter form
 
 .filter-form {
   display: inline-flex;
-  gap: 0.7rem;
+  gap: 0.75rem;
   align-items: center;
 }
 
@@ -88,12 +89,12 @@ Filter form
 
 .filter-form input[type="date"].filter-input-date {
   background: var(--stone-25);
-  width: 150px;
+  width: 9.375rem;
 }
 
 .filter-form input[type="text"].filter-input-date {
   background: var(--stone-25);
-  width: 150px;
+  width: 9.375rem;
 }
 
 /*------------------------------------------------
@@ -129,16 +130,16 @@ Responsive
 
   .filter-form input[type="date"].filter-input-date,
   .filter-form input[type="text"].filter-input-date {
-    width: 120px;
+    width: 7.5rem;
   }
 
   .filter-form .filter-input {
-    min-width: 120px;
+    min-width: 7.5rem;
   }
 
   /* Keep description column width on smaller screens */
   .timeline-list .description {
-    min-width: 300px;
+    min-width: 18.75rem;
   }
 }
 
@@ -147,6 +148,6 @@ Responsive
   .filter-form input[type="text"].filter-input-date,
   .filter-form .filter-input {
     width: 100%;
-    min-width: 200px;
+    min-width: 12.5rem;
   }
 }

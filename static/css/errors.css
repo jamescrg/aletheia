@@ -15,24 +15,24 @@
   background: #f4f4f4;
   border-radius: 3px;
   font-size: 1.2em;
-  margin: 0 auto 20px;
-  padding: 20px;
-  width: 700px;
+  margin: 0 auto 1.25rem;
+  padding: 1.25rem;
+  width: 43.75rem;
 }
 
 .error-title {
   font-size: 1.4em;
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
   text-align: center;
 }
 
 .error-message {
   font-size: 1.3em;
-  margin-bottom: 15px;
+  margin-bottom: 1rem;
   text-align: center;
 }
 
 .contact-message {
-  margin-bottom: 15px;
+  margin-bottom: 1rem;
   text-align: center;
 }

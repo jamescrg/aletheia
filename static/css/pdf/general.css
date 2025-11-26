@@ -27,7 +27,7 @@ Header
 
 .cb-logo {
   height: auto;
-  width: 100px;
+  width: 6.25rem;
 }
 
 .llc {
@@ -122,11 +122,11 @@ h3 {
 }
 
 .total {
-  width: 100px;
+  width: 6.25rem;
 }
 
 .numeric {
-  width: 150px;
+  width: 9.375rem;
 }
 
 .strong {

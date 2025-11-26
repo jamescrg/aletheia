@@ -12,23 +12,23 @@
 }
 
 .events-table .date {
-  max-width: 120px;
+  max-width: 7.5rem;
 }
 
 .events-table .party {
-  width: 120px;
+  width: 7.5rem;
 }
 
 .events-table .matter {
-  width: 250px;
+  width: 15.625rem;
 }
 
 .events-table .duration {
-  width: 100px;
+  width: 6.25rem;
 }
 
 .events-table .location {
-  width: 120px;
+  width: 7.5rem;
 }
 
 .events-form {
@@ -36,7 +36,7 @@
 }
 
 .events-form #id_description {
-  max-width: 500px;
+  max-width: 31.25rem;
   width: 100%
 }
 

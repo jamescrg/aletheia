@@ -3,24 +3,24 @@ List View
 ========================================================================== */
 
 .invoices .invoice-id {
-  width: 80px;
+  width: 5rem;
 }
 .invoices .date {
-  width: 140px;
+  width: 8.75rem;
 }
 
 .invoices .amount {
   text-align: right;
-  width: 150px;
+  width: 9.375rem;
 }
 
 .invoices .status {
-  width: 150px;
+  width: 9.375rem;
 }
 
 .download {
   text-align: center;
-  width: 50px;
+  width: 3.125rem;
 }
 
 .invoices-delete,
@@ -30,7 +30,7 @@ List View
 
 .status-buttons {
   display: flex;
-  gap: 0.85rem;
+  gap: 0.75rem;
   margin-left: 1rem;
 }
 
@@ -88,24 +88,24 @@ Payments
 ========================================================================== */
 
 .payments .id {
-  width: 80px;
+  width: 5rem;
 }
 
 .payments .matter {
-  width: 300px;
+  width: 18.75rem;
 }
 
 .payments .method {
-  width: 150px;
+  width: 9.375rem;
 }
 
 .payments .date {
-  width: 120px;
+  width: 7.5rem;
 }
 
 .payments .amount {
   text-align: right;
-  width: 150px;
+  width: 9.375rem;
 }
 
 /* ==========================================================================
@@ -113,20 +113,20 @@ Credits
 ========================================================================== */
 
 .credits .id {
-  width: 80px;
+  width: 5rem;
 }
 
 .credits .matter {
-  width: 300px;
+  width: 18.75rem;
 }
 
 .credits .date {
-  width: 120px;
+  width: 7.5rem;
 }
 
 .credits .amount {
   text-align: right;
-  width: 150px;
+  width: 9.375rem;
 }
 
 /* ==========================================================================
@@ -156,8 +156,8 @@ Credits
 .create-invoice-icon {
   float: right;
   color: var(--stone-400);
-  font-size: 1.1rem;
-  margin-left: 8px;
+  font-size: 1rem;
+  margin-left: 0.5rem;
   opacity: 0;
   transition: opacity 0.2s;
 }
@@ -176,7 +176,7 @@ Credits
 ========================================================================== */
 
 .collection .numeric {
-  width: 150px;
+  width: 9.375rem;
 }
 
 /* ==========================================================================
@@ -208,7 +208,7 @@ Credits
 }
 
 .application-table input.form-control.application-input {
-  width: 140px;
+  width: 8.75rem;
 }
 
 .application-table .text-right input {

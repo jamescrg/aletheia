@@ -1,12 +1,12 @@
 .contacts {
-  padding-bottom: 20px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-bottom: 1.25rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
 }
 
 .contact {
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
 }
 
 .contact .section {
@@ -22,12 +22,12 @@
 }
 
 .contact-item {
-  margin-bottom: 10px;
+  margin-bottom: 0.75rem;
   position: relative;
 }
 
 .contact-item-left {
-  width: 200px;
+  width: 12.5rem;
 }
 
 .contact-copy-button {
@@ -35,7 +35,7 @@
 }
 
 .contact-address-block {
-  margin-bottom: 10px;
+  margin-bottom: 0.75rem;
   position: relative;
 }
 
@@ -44,7 +44,7 @@
 }
 
 #contact-matters {
-  margin: 20px 0 0 0;
+  margin: 1.25rem 0 0 0;
 }
 
 #contact-matters ul {
@@ -52,11 +52,11 @@
 }
 
 #contact-matters ul li {
-  padding: 2px 0;
+  padding: 0.25rem 0;
 }
 
 .contacts-assignment {
-  margin-top: 15px;
+  margin-top: 1rem;
 }
 
 /* ==========================================================================
@@ -70,7 +70,7 @@
 }
 
 .contacts-assignment-select {
-  width: 350px;
+  width: 21.875rem;
 }
 
 /* ==========================================================================
@@ -82,7 +82,7 @@
 /* Client Status Badge */
 .client-status-badge {
   display: inline-block;
-  padding: 4px 12px;
+  padding: 0.25rem 0.75rem;
   border-radius: 4px;
   background-color: var(--stone-150);
   color: var(--stone-600);
@@ -95,15 +95,15 @@
   background-color: var(--stone-50);
   border: 1px solid var(--stone-200);
   border-radius: 3px;
-  padding: 20px;
-  margin-bottom: 16px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
   line-height: 1.6;
 }
 
 .contact-card-content-with-copy {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 0.75rem;
   justify-content: space-between;
   flex-wrap: wrap;
 }
@@ -112,7 +112,7 @@
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .contact-card-text-vertical {
@@ -125,20 +125,20 @@
 .contact-phone-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .contact-phone-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .contact-phone-text {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   flex: 1;
 }
 
@@ -209,14 +209,14 @@
 
 /* Contact Info Section */
 .contact-info-section {
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;
 }
 
 .contact-info-section .contact-item {
   display: flex;
   align-items: center;
-  padding: 8px 0;
-  gap: 8px;
+  padding: 0;
+  gap: 0.5rem;
 }
 
 /* Notes Section */
@@ -227,14 +227,14 @@
 
 .contact-notes-section > p {
   margin-bottom: 0.5rem;
-  margin-left: 4px;
+  margin-left: 0.25rem;
 }
 
 .contact-notes {
   background-color: var(--stone-50);
   border: 1px solid var(--stone-200);
   border-radius: 6px;
-  padding: 16px;
+  padding: 1rem;
   line-height: 1.6;
 }
 
@@ -251,14 +251,14 @@
 }
 
 .contact-matters-list td.id {
-  width: 80px;
+  width: 5rem;
   text-align: right;
 }
 
 
 .action-buttons {
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   flex-wrap: wrap;
   margin-top: 1rem;
 }
@@ -308,7 +308,7 @@
 
 /* Empty State */
 .contact-empty-state {
-  padding: 40px 20px;
+  padding: 2.5rem 1.25rem;
   text-align: center;
   color: var(--stone-500);
   background-color: var(--stone-50);

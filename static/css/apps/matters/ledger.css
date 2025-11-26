@@ -6,17 +6,17 @@
 }
 
 .ledger .date {
-  width: 200px;
+  width: 12.5rem;
 }
 
 .ledger .type {
-  width: 200px;
+  width: 12.5rem;
 }
 
 .ledger .numeric {
-  width: 200px;
+  width: 12.5rem;
 }
 
 .totals-table .total {
-  width: 200px;
+  width: 12.5rem;
 }

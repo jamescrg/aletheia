@@ -27,28 +27,28 @@ body {
 .auth-card {
   background: var(--stone-100);
   border-radius: 3px;
-  padding: 20px;
-  width: 500px;
+  padding: 1.25rem;
+  width: 31.25rem;
 }
 
 .auth-title {
   color: var(--link-hover);
   font-size: 1.5em;
   font-weight: 500;
-  margin-bottom: 5px;
+  margin-bottom: 0.25rem;
   text-align: center;
 }
 
 .auth-subtitle {
   font-size: 1em;
-  margin-bottom: 30px;
+  margin-bottom: 2rem;
   text-align: center;
 }
 
 .auth-info {
   color: var(--stone-600);
   font-size: 0.9em;
-  margin-bottom: 10px;
+  margin-bottom: 0.75rem;
   text-align: center;
 }
 
@@ -58,21 +58,21 @@ body {
   border-radius: 5px;
   color: var(--red-700);
   font-size: 0.9em;
-  margin-bottom: 10px;
-  padding: 10px;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
   text-align: center;
 }
 
 .prompt {
-  margin-bottom: 30px;
+  margin-bottom: 2rem;
 }
 
 .reset-confirm p {
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 }
 
 .account-form p {
-  margin: 30px 0 0 0;
+  margin: 2rem 0 0 0;
   padding: 0;
 }
 
@@ -85,19 +85,19 @@ body {
   border: solid 1px var(--stone-350);
   border-radius: 5px;
   display: block;
-  margin-top: 5px;
-  padding: 7px;
+  margin-top: 0.25rem;
+  padding: 0.5rem;
   width: 100%;
 }
 
 .account-form ul {
-  padding-left: 2px;
+  padding-left: 0.25rem;
 }
 
 .account-form ul li {
   color: var(--orange-800);
-  font-size: 0.8rem;
-  margin-top: 5px;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
 }
 
 .account-form button {
@@ -106,8 +106,8 @@ body {
   border-radius: 5px;
   color: var(--stone-200);
   font-size: 1em;
-  margin-top: 40px;
-  padding: 7px 10px;
+  margin-top: 2.5rem;
+  padding: 0.5rem 0.75rem;
 }
 
 input {
@@ -128,12 +128,12 @@ input:focus {
 .login-bottom-right {
   display: flex;
   flex-direction: column;
-  font-size: 0.95rem;
-  margin-bottom: 2px;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
 }
 
 .reset-confirm {
-  margin-top: 30px;
+  margin-top: 2rem;
 }
 
 .reset-complete {

@@ -4,7 +4,7 @@
   box-shadow: none;
   border-radius: 5px;
   font-size: 1rem;
-  padding: 4px 10px;
+  padding: 0.25rem 0.75rem;
 }
 
 .btn-sm {
@@ -94,9 +94,9 @@
 }
 
 .copy-btn {
-  padding: 2px 6px;
+  padding: 0.25rem 0.5rem;
   background: var(--stone-150);
-  border-color: var(--stone-300);
+  border: solid 1px var(--stone-300);
 
   &:focus {
     outline: none;
@@ -111,7 +111,7 @@
 
 .copy-btn-right {
   position: absolute;
-  right: 5px;
+  right: 0.25rem;
   top: 50%;
   transform: translateY(-50%);
 }

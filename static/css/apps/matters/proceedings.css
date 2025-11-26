@@ -5,24 +5,24 @@ Display
 ------------------------------------------------*/
 
 .proceedings-list {
-  margin: 10px 0 5px 0;
+  margin: 0.75rem 0 0.25rem 0;
   width: 100%;
 }
 
 .proceedings-list .date-filed {
-  width: 120px;
+  width: 7.5rem;
 }
 
 .proceedings-list .case-no	{
-  width: 200px;
+  width: 12.5rem;
 }
 
 .proceedings-list .status {
-  width: 120px;
+  width: 7.5rem;
 }
 
 .proceedings-list .primary {
-  width: 100px;
+  width: 6.25rem;
 }
 
 
@@ -31,9 +31,9 @@ Form
 ------------------------------------------------*/
 
 .proceedings-form #id_case_number {
-  width: 250px;
+  width: 15.625rem;
 }
 
 .proceedings-form #id_status {
-  width: 140px;
+  width: 8.75rem;
 }

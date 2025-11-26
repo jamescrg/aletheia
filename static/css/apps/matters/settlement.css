@@ -5,19 +5,19 @@ Display
 ------------------------------------------------*/
 
 .settlement-list {
-  margin: 10px 0 5px 0;
+  margin: 0.75rem 0 0.25rem 0;
   width: 100%;
 }
 
 .settlement-list .date,
 .settlement-list .type,
 .settlement-list .medium {
-  width: 120px;
+  width: 7.5rem;
 }
 
 .settlement-list .amount {
   text-align: right;
-  width: 120px;
+  width: 7.5rem;
 }
 
 
@@ -28,9 +28,9 @@ Form
 .settlement-form #id_medium,
 .settlement-form #id_type,
 .settlement-form #id_amount {
-  width: 140px;
+  width: 8.75rem;
 }
 
 .settlement-form #id_notes {
-  width: 400px;
+  width: 25rem;
 }
