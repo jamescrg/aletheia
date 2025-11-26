@@ -10,6 +10,7 @@
 }
 
 .events-table {
+  min-width: 69rem;
 }
 
 .events-table .date {
@@ -21,7 +22,7 @@
 }
 
 .events-table .description {
-  min-width: 15rem;
+  min-width: 18rem;
 }
 
 .events-table .duration {
@@ -43,7 +44,7 @@
 }
 
 .events-form #id_description {
-  max-width: 31.25rem;
+  max-width: 31.5rem;
   width: 100%
 }
 

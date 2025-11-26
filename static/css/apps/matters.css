@@ -22,6 +22,10 @@ Matter Form
 Matter List
 ========================================================================== */
 
+.matter-list {
+  min-width: 43rem;
+}
+
 .matter-list td {
   vertical-align: top;
 }
@@ -32,11 +36,15 @@ Matter List
 }
 
 .matter-list .name {
-  width: 18.75rem;
+  width: 18rem;
+}
+
+.matter-list .work-status {
+  min-width: 20rem;
 }
 
 .matter-list .unbilled {
-  width: 9.375rem;
+  width: 9.5rem;
 }
 
 .ref-no {

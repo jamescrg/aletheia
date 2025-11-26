@@ -240,10 +240,17 @@
 
 /* Matters Tab */
 
+.contact-matters-list {
+  min-width: 31rem;
+}
+
 .contact-matters-list th.status,
 .contact-matters-list td.status {
-  width: 10ch;
-  max-width: 10ch;
+  width: 8rem;
+}
+
+.contact-matters-list .name {
+  min-width: 18rem;
 }
 
 .contact-matters-list th.id {

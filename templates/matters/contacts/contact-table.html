@@ -25,7 +25,7 @@
   <table class="table matter-contacts">
     <thead>
       <tr>
-        <th>
+        <th class="group">
           Group
           <button class="btn-sort {% if current_order == 'group' %}active{% endif %}"
                   hx-target="#contacts"
@@ -34,7 +34,7 @@
             <i class="bi bi-chevron-expand"></i>
           </button>
         </th>
-        <th>
+        <th class="role">
           Role
           <button class="btn-sort {% if current_order == 'role' %}active{% endif %}"
                   hx-target="#contacts"
@@ -43,7 +43,7 @@
             <i class="bi bi-chevron-expand"></i>
           </button>
         </th>
-        <th>
+        <th class="name">
           Name
           <button class="btn-sort {% if current_order == 'name' %}active{% endif %}"
                   hx-target="#contacts"
@@ -52,8 +52,8 @@
             <i class="bi bi-chevron-expand"></i>
           </button>
         </th>
-        <th>Email</th>
-        <th>Phone</th>
+        <th class="email">Email</th>
+        <th class="phone1">Phone</th>
       </tr>
     </thead>
     <tbody>

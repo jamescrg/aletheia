@@ -13,7 +13,7 @@ Summary
 }
 
 .trust-summary .numeric {
-  width: 18.75rem;
+  width: 19rem;
 }
 
 /* ==========================================================================
@@ -45,6 +45,7 @@ Summary and History
 }
 
 .trust-transactions {
+  min-width: 62rem;
   width: 100%;
 }
 
@@ -56,7 +57,7 @@ Summary and History
 
 .trust-transactions .client-id,
 .trust-summary .client-id {
-  width: 6.25rem;
+  width: 6.5rem;
 }
 
 .trust-transactions .date {
@@ -67,8 +68,9 @@ Summary and History
   width: 12.5rem;
 }
 
-.trust-transactions .description {
-  border: solid 1px var(--stone-200);
+.trust-transactions .description,
+.trust-transactions .note {
+  min-width: 18rem;
 }
 
 .trust-transactions .amount {
@@ -82,5 +84,5 @@ Summary and History
 }
 
 .table-container .id {
-  width: 6.25rem;
+  width: 6.5rem;
 }

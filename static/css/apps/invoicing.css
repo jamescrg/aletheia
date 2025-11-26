@@ -2,25 +2,34 @@
 List View
 ========================================================================== */
 
+.invoices {
+  min-width: 82rem;
+}
+
 .invoices .invoice-id {
   width: 5rem;
 }
+
 .invoices .date {
   width: 8.75rem;
 }
 
+.invoices .matter {
+  min-width: 18rem;
+}
+
 .invoices .amount {
   text-align: right;
-  width: 9.375rem;
+  width: 9.5rem;
 }
 
 .invoices .status {
-  width: 9.375rem;
+  width: 9.5rem;
 }
 
 .download {
   text-align: center;
-  width: 3.125rem;
+  width: 3.25rem;
 }
 
 .invoices-delete,
@@ -87,16 +96,24 @@ Cancel Form
 Payments
 ========================================================================== */
 
+.payments {
+  min-width: 77.5rem;
+}
+
 .payments .id {
   width: 5rem;
 }
 
 .payments .matter {
-  width: 18.75rem;
+  width: 19rem;
 }
 
 .payments .method {
-  width: 9.375rem;
+  width: 9.5rem;
+}
+
+.payments .detail {
+  min-width: 18rem;
 }
 
 .payments .date {
@@ -105,19 +122,27 @@ Payments
 
 .payments .amount {
   text-align: right;
-  width: 9.375rem;
+  width: 9.5rem;
 }
 
 /* ==========================================================================
 Credits
 ========================================================================== */
 
+.credits {
+  min-width: 68rem;
+}
+
 .credits .id {
   width: 5rem;
 }
 
 .credits .matter {
-  width: 18.75rem;
+  width: 19rem;
+}
+
+.credits .detail {
+  min-width: 18rem;
 }
 
 .credits .date {
@@ -126,7 +151,7 @@ Credits
 
 .credits .amount {
   text-align: right;
-  width: 9.375rem;
+  width: 9.5rem;
 }
 
 /* ==========================================================================
@@ -137,16 +162,20 @@ Credits
   color: var(--orange-800);
 }
 
+.unbilled-list {
+  min-width: 70rem;
+}
+
 .unbilled-list .unbilled-col {
-  width: 13%;
+  width: 9rem;
 }
 
 .unbilled-list .unbilled-matter {
-  width: auto;
+  min-width: 18rem;
 }
 
 .unbilled-list .unbilled-hours {
-  width: 10%;
+  width: 7rem;
 }
 
 .unbilled-totals td {
@@ -175,8 +204,16 @@ Credits
  Collection
 ========================================================================== */
 
+.collection {
+  min-width: 46rem;
+}
+
+.collection .matter {
+  min-width: 18rem;
+}
+
 .collection .numeric {
-  width: 9.375rem;
+  width: 9.5rem;
 }
 
 /* ==========================================================================
@@ -208,7 +245,7 @@ Credits
 }
 
 .application-table input.form-control.application-input {
-  width: 8.75rem;
+  width: 9rem;
 }
 
 .application-table .text-right input {

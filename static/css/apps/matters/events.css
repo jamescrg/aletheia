@@ -17,6 +17,7 @@ display
 
 .events-list {
   margin: 0.75rem 0 0.25rem 0;
+  min-width: 58rem;
   width: 100%;
 }
 
@@ -24,8 +25,20 @@ display
   width: 8.75rem;
 }
 
-.events-list .party	{
+.events-list .party {
   width: 7.5rem;
+}
+
+.events-list .description {
+  min-width: 18rem;
+}
+
+.events-list .duration {
+  width: 7rem;
+}
+
+.events-list .location {
+  width: 8rem;
 }
 
 .events-list .status {

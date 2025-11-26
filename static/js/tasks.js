@@ -2,6 +2,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     initializeTaskSortable();
+    initializeMatterTaskSortable();
 });
 
 // Re-initialize after HTMX swaps content
@@ -9,6 +10,10 @@ document.body.addEventListener('htmx:afterSwap', function(event) {
     // Check if the swapped content is the tasks list
     if (event.target.id === 'tasks' || event.target.closest('#tasks')) {
         initializeTaskSortable();
+    }
+    // Check if the swapped content is the matter tasks list
+    if (event.target.id === 'matterTasks' || event.target.closest('#matterTasks')) {
+        initializeMatterTaskSortable();
     }
 });
 
@@ -83,6 +88,65 @@ function initializeTaskSortable() {
                 showFeedback('Network error', 'error');
                 // Optionally reload the list to restore original order
                 htmx.trigger('#tasks', 'tasksListChanged');
+            });
+        }
+    });
+}
+
+function initializeMatterTaskSortable() {
+    const tasksTable = document.querySelector('#matterTasks .tasks-table');
+    const tasksTbody = document.getElementById('matter-tasks-sortable');
+
+    if (!tasksTable || !tasksTbody) {
+        return; // Table not found on this page
+    }
+
+    // Check if custom_order mode is active
+    const isCustomOrderActive = tasksTable.dataset.customOrderActive === 'true';
+
+    if (!isCustomOrderActive) {
+        return; // Don't initialize sorting if not in custom order mode
+    }
+
+    // Initialize SortableJS
+    Sortable.create(tasksTbody, {
+        handle: '.drag-handle', // Only allow dragging from the drag handle
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        dragClass: 'sortable-drag',
+
+        onEnd: function(evt) {
+            // Collect all task IDs in the new order
+            const taskRows = tasksTbody.querySelectorAll('tr[data-task-id]');
+            const taskIds = Array.from(taskRows).map(row => row.dataset.taskId);
+
+            // Send the new order to the server (reuse the same endpoint)
+            fetch('/agenda/tasks/update-order/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                body: JSON.stringify({
+                    task_ids: taskIds
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Task order updated successfully');
+                } else {
+                    console.error('Failed to update task order:', data.error);
+                    showFeedback('Failed to save order', 'error');
+                    // Reload the list to restore original order
+                    htmx.trigger('#matterTasks', 'tasksListChanged');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating task order:', error);
+                showFeedback('Network error', 'error');
+                // Reload the list to restore original order
+                htmx.trigger('#matterTasks', 'tasksListChanged');
             });
         }
     });

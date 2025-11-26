@@ -1,4 +1,5 @@
 from datetime import date
+from decimal import Decimal
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -408,4 +409,29 @@ def tasks_filter_sort(request, id, order):
 
     filter_data["order_by"] = new_order
     request.session["matter_tasks_filter"] = filter_data
+
+    # Auto-initialize custom_order values when switching to custom_order mode
+    if new_order == "custom_order":
+        matter = get_object_or_404(Matter, pk=id)
+        # Check if this matter's tasks have any null custom_order values
+        matter_tasks = Task.objects.filter(matter=matter, custom_order__isnull=True)
+        if matter_tasks.exists():
+            # Get all matter's tasks in current display order using date_due ordering
+            temp_filter_data = {**filter_data, "order_by": "date_due"}
+            temp_filter = TasksFilter(
+                temp_filter_data, queryset=Task.objects.filter(matter=matter)
+            )
+            all_tasks = list(temp_filter.qs)
+
+            # Assign sequential custom_order values
+            tasks_to_update = []
+            for index, task in enumerate(all_tasks):
+                if task.custom_order is None:
+                    task.custom_order = Decimal(str(index + 1))
+                    tasks_to_update.append(task)
+
+            # Bulk update
+            if tasks_to_update:
+                Task.objects.bulk_update(tasks_to_update, ["custom_order"])
+
     return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})

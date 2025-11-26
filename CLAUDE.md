@@ -127,3 +127,4 @@ djlint --profile django --reformat templates/
 - Migrations excluded from linting (see .pre-commit-config.yaml)
 
 - do not use inline styles in HTML
+- css values should snap to a 4px grid

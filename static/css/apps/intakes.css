@@ -8,11 +8,19 @@ List View
 }
 
 .intake-details .strong {
-  width: 10.625rem;
+  width: 10.5rem;
+}
+
+.intake-list {
+  min-width: 70.5rem;
 }
 
 .intake-date {
   width: 7.5rem;
+}
+
+.intake-name {
+  min-width: 18rem;
 }
 
 .intake-phone {

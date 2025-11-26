@@ -5,12 +5,20 @@
   width: 100%;
 }
 
+.ledger {
+  min-width: 68rem;
+}
+
 .ledger .date {
   width: 12.5rem;
 }
 
 .ledger .type {
   width: 12.5rem;
+}
+
+.ledger .description {
+  min-width: 18rem;
 }
 
 .ledger .numeric {

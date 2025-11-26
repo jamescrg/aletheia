@@ -6,6 +6,7 @@ Display
 
 .settlement-list {
   margin: 0.75rem 0 0.25rem 0;
+  min-width: 48rem;
   width: 100%;
 }
 
@@ -13,6 +14,10 @@ Display
 .settlement-list .type,
 .settlement-list .medium {
   width: 7.5rem;
+}
+
+.settlement-list .notes {
+  min-width: 18rem;
 }
 
 .settlement-list .amount {
@@ -28,7 +33,7 @@ Form
 .settlement-form #id_medium,
 .settlement-form #id_type,
 .settlement-form #id_amount {
-  width: 8.75rem;
+  width: 9rem;
 }
 
 .settlement-form #id_notes {

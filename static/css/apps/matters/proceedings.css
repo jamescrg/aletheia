@@ -6,6 +6,7 @@ Display
 
 .proceedings-list {
   margin: 0.75rem 0 0.25rem 0;
+  min-width: 52rem;
   width: 100%;
 }
 
@@ -13,8 +14,12 @@ Display
   width: 7.5rem;
 }
 
-.proceedings-list .case-no	{
+.proceedings-list .case-no {
   width: 12.5rem;
+}
+
+.proceedings-list .forum {
+  min-width: 18rem;
 }
 
 .proceedings-list .status {
@@ -22,7 +27,7 @@ Display
 }
 
 .proceedings-list .primary {
-  width: 6.25rem;
+  width: 6.5rem;
 }
 
 
@@ -31,7 +36,7 @@ Form
 ------------------------------------------------*/
 
 .proceedings-form #id_case_number {
-  width: 15.625rem;
+  width: 16rem;
 }
 
 .proceedings-form #id_status {

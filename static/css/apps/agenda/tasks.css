@@ -20,9 +20,7 @@
 }
 
 .tasks-table .matter {
-  width: 15.625rem;
-  min-width: 15.625rem;
-  max-width: 15.625rem;
+  width: 16rem;
 }
 
 .matter-cell-content {
@@ -54,21 +52,21 @@ th.matter .btn-drag-handle i {
 }
 
 .tasks-table .description {
-  min-width: 31.25rem;
+  min-width: 31.5rem;
 }
 
 .tasks-table .status {
-  width: 8.75rem;
+  width: 8rem;
 }
 
 .tasks-table .user {
-  width: 8.75rem;
+  width: 8rem;
 }
 
 .tasks-table .date {
   overflow: visible;
   white-space: nowrap;
-  width: 8.75rem;
+  width: 8rem;
 }
 
 .tasks-table .date .dropdown-menu {
@@ -88,6 +86,7 @@ th.matter .btn-drag-handle i {
 }
 
 .tasks-table {
+  min-width: 73rem;
   overflow: visible;
 }
 
@@ -108,7 +107,7 @@ th.matter .btn-drag-handle i {
   border: none;
   margin: 0;
   padding: 0;
-  width: 8.75rem;
+  width: 9rem;
 }
 
 .tasks-table .priority i {
@@ -118,7 +117,7 @@ th.matter .btn-drag-handle i {
 .tasks-table .menu {
   margin: 0;
   padding: 0;
-  width: 0.625rem;
+  width: 0.75rem;
 }
 
 .tasks-table .complete,

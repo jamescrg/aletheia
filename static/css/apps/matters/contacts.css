@@ -3,9 +3,18 @@
   margin: 1rem 0 0 0.25rem;
 }
 
-.matter-contacts	{
+.matter-contacts {
   margin: 0.75rem 0 0.75rem 0;
+  min-width: 79rem;
   width: 100%;
+}
+
+.matter-contacts .group {
+  width: 10rem;
+}
+
+.matter-contacts .role {
+  width: 10rem;
 }
 
 .matter-contacts tr.band-alt td {
@@ -13,21 +22,21 @@
 }
 
 .matter-contacts .phone1 {
-  width: 18.75rem;
-  min-width: 18.75rem;
+  width: 19rem;
+  min-width: 19rem;
 }
 
 .matter-contacts .relationship	{
-  width: 15.625rem;
+  width: 16rem;
 }
 
 .matter-contacts .name {
-  min-width: 12.5rem;
+  min-width: 18rem;
 }
 
 .matter-contacts .email	{
-  width: 21.875rem;
-  min-width: 21.875rem;
+  width: 22rem;
+  min-width: 22rem;
   position: relative;
 }
 
@@ -107,10 +116,10 @@
 
 .assign-role {
   margin: 1rem 0 0 1rem;
-  max-width: 43.75rem;
+  max-width: 44rem;
 }
 
 .role {
   margin-left: 0;
-  width: 21.875rem;
+  width: 22rem;
 }

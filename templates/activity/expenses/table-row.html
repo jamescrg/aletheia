@@ -19,7 +19,7 @@
     {{ expense.description }}</a>
   {% endif %}
 </td>
-<td class="hours {% if not expense.entered and not expense.invoice %}urgent{% endif %}">
+<td class="amount {% if not expense.entered and not expense.invoice %}urgent{% endif %}">
   {% if expense.invoice %}
     {% if expense.comp %}
       comp

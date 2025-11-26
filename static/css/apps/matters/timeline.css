@@ -15,15 +15,19 @@ Display
 
 .timeline-list {
   margin: 0.75rem 0 0.25rem 0;
+  min-width: 52.5rem;
 }
 
 .timeline-list .date-time {
   width: 12.5rem;
 }
 
+.timeline-list .description {
+  min-width: 18rem;
+}
 
 .timeline-list .citations {
-  width: 21.875rem;
+  width: 22rem;
 }
 
 
@@ -48,16 +52,16 @@ Form
 
 .timeline-form #id_fact {
   border: none;
-  width: 43.75rem;
+  width: 44rem;
 }
 
 .timeline-form #id_description {
-  width: 31.25rem;
+  width: 31.5rem;
 }
 
 
 .timeline-form #id_citations {
-  width: 21.875rem;
+  width: 22rem;
 }
 
 .timeline-form #id_emphasis {
@@ -89,12 +93,12 @@ Filter form
 
 .filter-form input[type="date"].filter-input-date {
   background: var(--stone-25);
-  width: 9.375rem;
+  width: 9.5rem;
 }
 
 .filter-form input[type="text"].filter-input-date {
   background: var(--stone-25);
-  width: 9.375rem;
+  width: 9.5rem;
 }
 
 /*------------------------------------------------

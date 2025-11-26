@@ -18,25 +18,38 @@ Activity list table
 ========================================================================== */
 
 .activity {
+  min-width: 60.5rem;
   width: 100%;
 }
 
+.activity.expenses-list {
+  min-width: 52rem;
+}
+
+.activity.expenses-list .amount {
+  text-align: right;
+  width: 7.5rem;
+}
 
 .activity .date {
   width: 7.5rem;
 }
 
 .activity .user {
-  width: 3.75rem;
+  width: 4rem;
 }
 
 .activity .matter {
   width: 15rem;
 }
 
+.activity .actions {
+  min-width: 18rem;
+}
+
 .activity .hours {
   text-align: right;
-  width: 3.75rem;
+  width: 3.5rem;
 }
 
 .activity .hours a {
