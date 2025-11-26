@@ -89,7 +89,7 @@
             </td>
             <td class="date">{{ credit.date|date:"Y-m-d" }}</td>
             <td class="matter">
-              <a href="{% url 'matters:ledger' id=credit.matter.id %}">{{ credit.matter.name|truncatechars:32 }}</a>
+              <a href="{% url 'matters:ledger' id=credit.matter.id %}">{{ credit.matter.name }}</a>
             </td>
             <td>{{ credit.detail|default:"" }}</td>
             <td class="amount">${{ credit.amount|floatformat:2|intcomma }}</td>

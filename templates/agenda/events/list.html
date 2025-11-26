@@ -47,7 +47,7 @@
             {% if event.start_time %}{{ event.start_time|time:"g:i A" }}{% endif %}
           </td>
           <td>
-            <a href={% url 'matters:events-index' id=event.matter.id %}>{{ event.matter.name|truncatechars:32 }}</a>
+            <a href={% url 'matters:events-index' id=event.matter.id %}>{{ event.matter.name }}</a>
           </td>
           <td class="{% if event.date < third_day and event.status == "Pending" %}urgent{% endif %}">
             <a href="#"

@@ -26,7 +26,7 @@
                     </td>
                     <td class="matter">
                       {% if event.matter %}
-                        <a href="{% url 'matters:events-index' id=event.matter.id %}">{{ event.matter.name|truncatechars:30 }}</a>
+                        <a href="{% url 'matters:events-index' id=event.matter.id %}">{{ event.matter.name }}</a>
                       {% endif %}
                     </td>
                     <td class="description">{{ event.description }}</td>
@@ -56,7 +56,7 @@
                     <td class="date">{{ task.date_due|date:'Y-m-d' }}</td>
                     <td class="matter">
                       {% if task.matter %}
-                        <a href="{% url 'matters:tasks-index' id=task.matter.id %}">{{ task.matter.name|truncatechars:20 }}</a>
+                        <a href="{% url 'matters:tasks-index' id=task.matter.id %}">{{ task.matter.name }}</a>
                       {% else %}
                         <a href="{% url 'agenda:tasks-select' %}">Admin</a>
                       {% endif %}
@@ -120,7 +120,7 @@
                 {% for matter in low_clearance_matters %}
                   <tr>
                     <td>
-                      <a href="{% url 'matters:ledger' id=matter.id %}">{{ matter.name|truncatechars:22 }}</a>
+                      <a href="{% url 'matters:ledger' id=matter.id %}">{{ matter.name }}</a>
                     </td>
                     <td class="numeric {% if matter.clearance < 0 %}urgent{% endif %}">${{ matter.clearance|floatformat:2|intcomma }}</td>
                   </tr>
@@ -146,7 +146,7 @@
                 {% for matter in balance_due_matters %}
                   <tr>
                     <td>
-                      <a href="{% url 'matters:ledger' id=matter.id %}">{{ matter.name|truncatechars:22 }}</a>
+                      <a href="{% url 'matters:ledger' id=matter.id %}">{{ matter.name }}</a>
                     </td>
                     <td class="numeric">${{ matter.balance_due|floatformat:2|intcomma }}</td>
                   </tr>

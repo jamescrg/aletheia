@@ -2,7 +2,7 @@
   {% for contact in contacts %}
     <li class="list-group-item{% if selected_contact and selected_contact.id == contact.id %} item-selected-highlight{% endif %}">
       <i class="bi bi-person"></i>
-      <a href="{% url 'contacts:select' contact_id=contact.id %}">{{ contact.name|truncatechars:28 }}</a>
+      <a href="{% url 'contacts:select' contact_id=contact.id %}">{{ contact.name }}</a>
     </li>
   {% empty %}
     <li class="list-group-item empty-message">No contacts found.</li>

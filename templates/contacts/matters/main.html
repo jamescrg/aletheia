@@ -16,7 +16,7 @@
               <tr id="matter-{{ relationship.matter.id }}">
                 <td class="status">{{ relationship.matter.status }}</td>
                 <td class="name">
-                  <a href="{% url 'matters:contacts' id=relationship.matter.id %}">{{ relationship.matter.name|truncatechars:32 }}</a>
+                  <a href="{% url 'matters:contacts' id=relationship.matter.id %}">{{ relationship.matter.name }}</a>
                 </td>
                 <td class="id">
                   {% if relationship.matter.client_reference_id %}
