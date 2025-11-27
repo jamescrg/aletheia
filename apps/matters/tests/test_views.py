@@ -128,3 +128,21 @@ def test_print(client, matter):
     response = client.get(f"/matters/{matter.id}/print")
     assert response.status_code == 200
     assertTemplateUsed("matters/print.html")
+
+
+# -----------------------------------------------------
+# edge case tests - nonexistent records
+# -----------------------------------------------------
+def test_detail_nonexistent(client):
+    response = client.get("/matters/99999/contacts")
+    assert response.status_code == 404
+
+
+def test_edit_nonexistent(client):
+    response = client.get("/matters/99999/edit")
+    assert response.status_code == 404
+
+
+def test_delete_nonexistent(client):
+    response = client.delete("/matters/99999/delete")
+    assert response.status_code == 404

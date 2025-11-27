@@ -1,7 +1,10 @@
+from decimal import Decimal
+
 import pytest
 from django.test import Client
 
 from apps.accounts.models import CustomUser
+from apps.activity.expenses.models import ExpenseEntry
 from apps.activity.time.models import TimeEntry
 from apps.invoicing.invoices.models import Invoice
 from apps.matters.models import Matter, PracticeArea
@@ -84,3 +87,96 @@ def invoice_data(invoice):
     invoice_data["matter"] = invoice.matter_id
 
     return invoice_data
+
+
+@pytest.fixture
+def invoice_empty(user, matter):
+    """Invoice with no time or expense entries."""
+    invoice = Invoice.objects.create(
+        created_by=user,
+        matter=matter,
+        date_limit="2020-01-01",
+        date_issued="2020-01-01",
+    )
+    return invoice
+
+
+@pytest.fixture
+def time_entry_for_invoice(user, matter, invoice):
+    """Time entry linked to the invoice fixture."""
+    entry = TimeEntry.objects.create(
+        user=user,
+        matter=matter,
+        date="2020-01-07",
+        actions="Billable work",
+        hours=Decimal("2.0"),
+        rate=300,
+        comp=False,
+        entered=False,
+        invoice=invoice,
+    )
+    return entry
+
+
+@pytest.fixture
+def time_entry_comped(user, matter, invoice):
+    """Comped time entry linked to invoice."""
+    entry = TimeEntry.objects.create(
+        user=user,
+        matter=matter,
+        date="2020-01-07",
+        actions="Pro bono work",
+        hours=Decimal("1.0"),
+        rate=300,
+        comp=True,
+        entered=False,
+        invoice=invoice,
+    )
+    return entry
+
+
+@pytest.fixture
+def expense_entry_for_invoice(user, matter, invoice):
+    """Expense entry linked to the invoice fixture."""
+    expense = ExpenseEntry.objects.create(
+        user=user,
+        matter=matter,
+        date="2020-01-07",
+        category="Filing Fee",
+        description="Court filing",
+        amount=Decimal("150.00"),
+        comp=False,
+        entered=False,
+        invoice=invoice,
+    )
+    return expense
+
+
+@pytest.fixture
+def expense_entry_comped(user, matter, invoice):
+    """Comped expense entry linked to invoice."""
+    expense = ExpenseEntry.objects.create(
+        user=user,
+        matter=matter,
+        date="2020-01-07",
+        category="Postage",
+        description="Certified mail",
+        amount=Decimal("25.00"),
+        comp=True,
+        entered=False,
+        invoice=invoice,
+    )
+    return expense
+
+
+@pytest.fixture
+def invoice_with_discount(user, matter, entry):
+    """Invoice with a discount applied."""
+    invoice = Invoice.objects.create(
+        created_by=user,
+        matter=matter,
+        date_limit="2024-12-31",
+        date_issued="2024-12-01",
+        discount=Decimal("50.00"),
+    )
+    return invoice

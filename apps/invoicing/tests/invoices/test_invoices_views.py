@@ -101,3 +101,16 @@ def test_invoices_filter_status(client):
         reverse("invoicing:invoices-filter-status", kwargs={"status": "PAID"})
     )
     assert response.status_code == 204
+
+
+# -----------------------------------------------------
+# edge case tests - nonexistent records
+# -----------------------------------------------------
+def test_detail_nonexistent(client):
+    response = client.get(reverse("invoicing:invoices-detail", kwargs={"pk": 99999}))
+    assert response.status_code == 404
+
+
+def test_pdf_nonexistent(client):
+    response = client.get(reverse("invoicing:invoices-pdf", kwargs={"pk": 99999}))
+    assert response.status_code == 404

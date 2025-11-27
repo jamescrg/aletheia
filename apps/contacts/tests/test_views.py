@@ -20,14 +20,15 @@ def test_index(client, folder, contact):
     assertTemplateUsed(response, "contacts/content.html")
     assert not response.context["contacts"]
 
-    # folder selected
+    # select redirects to details page
     response = client.get(reverse("contacts:select", args=[contact.id]))
-    assert response.status_code == 200
+    assert response.status_code == 302
 
 
 def test_select(client, folder, contact):
+    # select now redirects to details page
     response = client.get(f"/contacts/{contact.id}")
-    assert response.status_code == 200
+    assert response.status_code == 302
 
 
 def test_add_get(client, folder, contact):
@@ -36,10 +37,11 @@ def test_add_get(client, folder, contact):
     assert response.status_code == 200
     assertTemplateUsed(response, "contacts/form.html")
 
+    # select redirects to details page
     response = client.get(reverse("contacts:select", args=[contact.id]))
-    assert response.status_code == 200
+    assert response.status_code == 302
 
-    # set a selected folder
+    # add form still works
     response = client.get("/contacts/add")
     assert response.status_code == 200
 
@@ -74,7 +76,7 @@ def test_edit_post(client, folder, contact):
 
 def test_delete(client, contact):
     response = client.get(f"/contacts/{contact.id}/delete")
-    assert response.status_code == 302
+    assert response.status_code == 204
     found = Contact.objects.filter(pk=contact.id).exists()
     assert not found
 
@@ -115,3 +117,21 @@ def test_add_intake(client, intake, contact, folder):
     contact.save()
     response = client.get(f"/contacts/{intake.id}/add_intake")
     assert response.status_code == 200
+
+
+# -----------------------------------------------------
+# edge case tests - nonexistent records
+# -----------------------------------------------------
+def test_select_nonexistent(client):
+    response = client.get("/contacts/99999")
+    assert response.status_code == 404
+
+
+def test_edit_nonexistent(client):
+    response = client.get("/contacts/99999/edit")
+    assert response.status_code == 404
+
+
+def test_delete_nonexistent(client):
+    response = client.get("/contacts/99999/delete")
+    assert response.status_code == 404

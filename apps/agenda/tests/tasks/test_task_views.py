@@ -42,4 +42,4 @@ def test_edit_post(client, folder, task, user):
         "priority": 1,
     }
     response = client.post(reverse("agenda:tasks-edit", args=[task.id]), data)
-    assert response.status_code == 200
+    assert response.status_code == 204

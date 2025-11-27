@@ -64,10 +64,12 @@ def contact(user, folder):
 
 @pytest.fixture
 def contact_data(contact):
-    contact_data = contact.__dict__
-    keys = "_state id google_id map intake_id".split()
-    for key in keys:
-        del contact_data[key]
+    exclude_keys = {"_state", "id", "google_id", "map", "intake_id"}
+    contact_data = {
+        key: value for key, value in contact.__dict__.items() if key not in exclude_keys
+    }
+    # Replace None values with empty strings for form submission
+    contact_data = {k: v if v is not None else "" for k, v in contact_data.items()}
     return contact_data
 
 
