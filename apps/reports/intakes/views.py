@@ -98,7 +98,7 @@ def intakes_index(request):
                 count = intakes.filter(
                     date__year=month_data["month"].year,
                     date__month=month_data["month"].month,
-                    practice_area=practice_area,
+                    practice_area__name=practice_area,
                 ).count()
                 row["practice_areas"][practice_area] = count
                 row["total"] += count
@@ -245,7 +245,7 @@ def intakes_list(request):
                 count = intakes.filter(
                     date__year=month_data["month"].year,
                     date__month=month_data["month"].month,
-                    practice_area=practice_area,
+                    practice_area__name=practice_area,
                 ).count()
                 row["practice_areas"][practice_area] = count
                 row["total"] += count
