@@ -74,3 +74,73 @@ def test_notes(contact_data):
     form = ContactForm(contact_data)
     assert not form.is_valid()
     assert "must be fewer" in form.errors["notes"][0]
+
+
+# -----------------------------------------------------
+# website validation tests
+# -----------------------------------------------------
+def test_website_adds_https_scheme(contact_data):
+    data = contact_data.copy()
+    data["website"] = "example.com"
+    form = ContactForm(data)
+    assert form.is_valid()
+    assert form.cleaned_data["website"] == "https://example.com"
+
+
+def test_website_preserves_http_scheme(contact_data):
+    data = contact_data.copy()
+    data["website"] = "http://example.com"
+    form = ContactForm(data)
+    assert form.is_valid()
+    assert form.cleaned_data["website"] == "http://example.com"
+
+
+def test_website_preserves_https_scheme(contact_data):
+    data = contact_data.copy()
+    data["website"] = "https://example.com"
+    form = ContactForm(data)
+    assert form.is_valid()
+    assert form.cleaned_data["website"] == "https://example.com"
+
+
+def test_website_invalid_url(contact_data):
+    data = contact_data.copy()
+    data["website"] = "not a valid url!!!"
+    form = ContactForm(data)
+    assert not form.is_valid()
+    assert "website" in form.errors
+
+
+def test_website_too_long(contact_data):
+    data = contact_data.copy()
+    data["website"] = "https://" + "a" * 250 + ".com"
+    form = ContactForm(data)
+    assert not form.is_valid()
+    assert "255 characters" in form.errors["website"][0]
+
+
+# -----------------------------------------------------
+# email normalization tests
+# -----------------------------------------------------
+def test_email_normalizes_to_lowercase(contact_data):
+    data = contact_data.copy()
+    data["email"] = "John.Doe@Example.COM"
+    form = ContactForm(data)
+    assert form.is_valid()
+    assert form.cleaned_data["email"] == "john.doe@example.com"
+
+
+def test_email2_normalizes_to_lowercase(contact_data):
+    data = contact_data.copy()
+    data["email2"] = "Jane.Doe@Example.COM"
+    form = ContactForm(data)
+    assert form.is_valid()
+    assert form.cleaned_data["email2"] == "jane.doe@example.com"
+
+
+def test_email2_invalid(contact_data):
+    data = contact_data.copy()
+    data["email2"] = "not-an-email"
+    form = ContactForm(data)
+    assert not form.is_valid()
+    assert "email2" in form.errors

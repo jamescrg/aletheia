@@ -55,3 +55,16 @@ def test_delete(client, event):
     assert response.status_code == 204
     found = Event.objects.filter(pk=event.id).exists()
     assert not found
+
+
+# -----------------------------------------------------
+# edge case tests - nonexistent records
+# -----------------------------------------------------
+def test_edit_nonexistent(client):
+    response = client.get("/events/99999/edit/test")
+    assert response.status_code == 404
+
+
+def test_delete_nonexistent(client):
+    response = client.get("/events/99999/delete")
+    assert response.status_code == 404

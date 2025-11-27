@@ -68,3 +68,11 @@ def test_delete(client, transaction):
     assert response.status_code == 204
     found = Transaction.objects.filter(pk=transaction.id).exists()
     assert not found
+
+
+# -----------------------------------------------------
+# edge case tests - nonexistent records
+# -----------------------------------------------------
+def test_edit_nonexistent(client):
+    response = client.get("/trust/99999/edit")
+    assert response.status_code == 404

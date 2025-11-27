@@ -30,6 +30,11 @@
   left: 0.25rem;
 }
 
+.priority-text {
+  position: relative;
+  right: 1rem;
+}
+
 .tasks-table .priority i {
   /* margin: 0; */
 }

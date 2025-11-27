@@ -146,3 +146,27 @@ def test_intake_edit_practice_area(client, intake):
     assertTemplateUsed(response, "intakes/intake-practice-area.html")
     intake.refresh_from_db()
     assert intake.practice_area.name == "Title"
+
+
+# -----------------------------------------------------
+# edge case tests - nonexistent records
+# -----------------------------------------------------
+def test_intake_edit_nonexistent(client):
+    response = client.get("/intakes/99999/edit")
+    assert response.status_code == 404
+
+
+def test_intake_delete_nonexistent(client):
+    response = client.get("/intakes/99999/delete")
+    assert response.status_code == 404
+
+
+def test_note_edit_nonexistent(client):
+    response = client.get("/intakes/99999/edit-note")
+    assert response.status_code == 404
+
+
+def test_note_delete_nonexistent(client):
+    # Note delete uses .filter().delete() which succeeds silently for nonexistent
+    response = client.get("/intakes/99999/delete-note")
+    assert response.status_code == 204

@@ -111,3 +111,11 @@ def test_toggle_entered(client, entry):
 def test_export(client):
     response = client.get("/activity/time/export/clio")
     assert response.status_code == 200
+
+
+# -----------------------------------------------------
+# edge case tests - nonexistent records
+# -----------------------------------------------------
+def test_edit_nonexistent(client):
+    response = client.get("/activity/time/99999/edit")
+    assert response.status_code == 404

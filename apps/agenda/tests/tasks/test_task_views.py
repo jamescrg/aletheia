@@ -43,3 +43,11 @@ def test_edit_post(client, folder, task, user):
     }
     response = client.post(reverse("agenda:tasks-edit", args=[task.id]), data)
     assert response.status_code == 204
+
+
+# -----------------------------------------------------
+# edge case tests - nonexistent records
+# -----------------------------------------------------
+def test_edit_nonexistent(client):
+    response = client.get("/agenda/tasks/99999/edit")
+    assert response.status_code == 404
