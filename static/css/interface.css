@@ -68,12 +68,12 @@
   justify-content: space-between;
 }
 
-.extra-small-btn {
+.extra-filter-dropdown-button {
   width: 6.25rem;
 }
 
-.small-btn {
-  width: 9.375rem;
+.filter-dropdown-button {
+  width: 10.975rem;
 }
 
 .medium-btn {

@@ -19,14 +19,14 @@
       </button>
       <button type="button"
               id="tasks-priority-filter"
-              class="select-btn small-btn {% if priority_value %}toggle-active{% endif %}"
+              class="select-btn filter-dropdown-button {% if priority_value %}toggle-active{% endif %}"
               data-bs-toggle="dropdown"
               aria-expanded="false">
         {% if selected_priority %}
           <div class="priority-arrow">
             <i class="bi bi-arrow-up"></i>
           </div>
-          {{ selected_priority }}
+          <div class="priority-text">{{ selected_priority }}</div>
         {% else %}
           All Priorities
         {% endif %}
@@ -55,38 +55,8 @@
         {% endfor %}
       </ul>
       <button type="button"
-              id="tasks-matter-filter"
-              class="select-btn large-btn {% if selected_matter %}toggle-active{% endif %}"
-              data-bs-toggle="dropdown"
-              aria-expanded="false">
-        {{ selected_matter|truncatechars:22|default:"All Matters" }}
-        <small>
-          <i class="bi bi-chevron-down"></i>
-        </small>
-      </button>
-      <ul class="dropdown-menu"
-          hx-target="#tasks-matter-filter"
-          hx-swap="outerHTML">
-        <li>
-          <a class="dropdown-item"
-             href="#"
-             hx-post="{% url 'agenda:tasks-filter-matter' 0 %}"
-             hx-target="#tasks"
-             hx-swap="#outerHTML">All Matters</a>
-        </li>
-        {% for matter in matters %}
-          <li>
-            <a class="dropdown-item {% if matter.id == matter_id %}active{% endif %}"
-               href="#"
-               hx-post="{% url 'agenda:tasks-filter-matter' matter.id %}"
-               hx-target="#tasks"
-               hx-swap="#outerHTML">{{ matter.name|truncatechars:22 }}</a>
-          </li>
-        {% endfor %}
-      </ul>
-      <button type="button"
               id="tasks-user-filter"
-              class="select-btn small-btn {% if user_id %}toggle-active{% endif %}"
+              class="select-btn filter-dropdown-button {% if user_id %}toggle-active{% endif %}"
               data-bs-toggle="dropdown"
               aria-expanded="false">
         {{ selected_user|default:"All Users" }}

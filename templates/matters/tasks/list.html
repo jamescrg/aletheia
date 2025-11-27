@@ -19,7 +19,7 @@
       </button>
       <button type="button"
               id="tasks-priority-filter"
-              class="select-btn small-btn {% if priority_value %}toggle-active{% endif %}"
+              class="select-btn filter-dropdown-button {% if priority_value %}toggle-active{% endif %}"
               data-bs-toggle="dropdown"
               aria-expanded="false">
         {{ selected_priority|default:"All Priorities" }}
@@ -49,7 +49,7 @@
       </ul>
       <button type="button"
               id="tasks-user-filter"
-              class="select-btn small-btn {% if user_id %}toggle-active{% endif %}"
+              class="select-btn filter-dropdown-button {% if user_id %}toggle-active{% endif %}"
               data-bs-toggle="dropdown"
               aria-expanded="false">
         {{ selected_user|default:"All Users" }}

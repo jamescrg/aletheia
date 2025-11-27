@@ -131,7 +131,7 @@ Detail Views
   }
 
   .filter-tools .select-btn.large-btn,
-  .filter-tools .select-btn.small-btn {
+  .filter-tools .select-btn.filter-dropdown-button {
     width: auto;
     min-width: 7.5rem;
     max-width: 100%;
