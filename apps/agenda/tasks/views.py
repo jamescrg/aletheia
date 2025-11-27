@@ -1,11 +1,8 @@
-import json
 from datetime import date, datetime, timedelta
-from decimal import Decimal
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_http_methods
 
 from apps.accounts.models import CustomUser
 from apps.agenda.tasks.filter import TasksFilter
@@ -327,16 +324,15 @@ def tasks_filter_user(request, user_id):
     return redirect("agenda:tasks-list")
 
 
-# Removed: Priority filter no longer in use (priority column removed from table)
-# @login_required
-# def tasks_filter_priority(request, priority_value):
-#     filter_data = request.session.get("tasks_filter", {})
-#     # Set to empty string when 0 (All) is selected, otherwise use the value
-#     filter_data["priority"] = "" if priority_value == 0 else priority_value
-#
-#     request.session["tasks_filter"] = filter_data
-#
-#     return redirect("agenda:tasks-list")
+@login_required
+def tasks_filter_priority(request, priority_value):
+    filter_data = request.session.get("tasks_filter", {})
+    # Set to empty string when 0 (All) is selected, otherwise use the value
+    filter_data["priority"] = "" if priority_value == 0 else priority_value
+
+    request.session["tasks_filter"] = filter_data
+
+    return redirect("agenda:tasks-list")
 
 
 @login_required
@@ -348,7 +344,7 @@ def tasks_filter_default(request):
         "date_due_min": None,
         "matter": None,
         "user": request.user.id,
-        "order_by": "custom_order",
+        "order_by": "priority",
     }
     request.session["tasks_filter"] = filter_data
     request.session.modified = True
@@ -389,14 +385,12 @@ def tasks_change_user(request, task_id):
     return render(request, "agenda/tasks/change-user.html", context)
 
 
-# Removed: Inline priority editing no longer in use (priority column removed from table)
-# Priority can still be edited in the task edit modal/form
-# @login_required
-# def tasks_priority(request, task_id, priority):
-#     task = get_object_or_404(Task, pk=task_id)
-#     task.priority = priority
-#     task.save()
-#     return redirect("agenda:tasks-list")
+@login_required
+def tasks_priority(request, task_id, priority):
+    task = get_object_or_404(Task, pk=task_id)
+    task.priority = priority
+    task.save()
+    return redirect("agenda:tasks-list")
 
 
 @login_required
@@ -454,27 +448,6 @@ def tasks_filter_sort(request, order):
     filter_data["order_by"] = new_order
     request.session["tasks_filter"] = filter_data
 
-    # Auto-initialize custom_order values when switching to custom_order mode
-    if new_order == "custom_order":
-        # Check if user's tasks have any null custom_order values
-        user_tasks = Task.objects.filter(user=request.user, custom_order__isnull=True)
-        if user_tasks.exists():
-            # Get all user's tasks in current display order using date_due ordering
-            temp_filter_data = {**filter_data, "order_by": "date_due"}
-            temp_filter = TasksFilter(temp_filter_data)
-            all_tasks = list(temp_filter.qs)
-
-            # Assign sequential custom_order values
-            tasks_to_update = []
-            for index, task in enumerate(all_tasks):
-                if task.custom_order is None:
-                    task.custom_order = Decimal(str(index + 1))
-                    tasks_to_update.append(task)
-
-            # Bulk update
-            if tasks_to_update:
-                Task.objects.bulk_update(tasks_to_update, ["custom_order"])
-
     return redirect("agenda:tasks-list")
 
 
@@ -485,39 +458,3 @@ def clear_tasks(request):
     filter = TasksFilter(filter_data)
     filter.qs.filter(status="Complete").delete()
     return redirect("agenda:tasks-list")
-
-
-@login_required
-@require_http_methods(["POST"])
-def tasks_update_order(request):
-    """Update custom_order for tasks based on drag-and-drop reordering."""
-    try:
-        data = json.loads(request.body)
-        task_ids = data.get("task_ids", [])
-
-        if not task_ids:
-            return JsonResponse(
-                {"success": False, "error": "No task IDs provided"}, status=400
-            )
-
-        # Assign sequential custom_order values
-        # Start at 1.0 and increment by 1.0 for each task
-        tasks_to_update = []
-        for index, task_id in enumerate(task_ids):
-            try:
-                task = Task.objects.get(id=task_id, user=request.user)
-                task.custom_order = Decimal(str(index + 1))
-                tasks_to_update.append(task)
-            except Task.DoesNotExist:
-                continue
-
-        # Bulk update all tasks
-        if tasks_to_update:
-            Task.objects.bulk_update(tasks_to_update, ["custom_order"])
-
-        return JsonResponse({"success": True, "updated": len(tasks_to_update)})
-
-    except json.JSONDecodeError:
-        return JsonResponse({"success": False, "error": "Invalid JSON"}, status=400)
-    except Exception as e:
-        return JsonResponse({"success": False, "error": str(e)}, status=500)

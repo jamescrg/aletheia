@@ -18,6 +18,36 @@
         <i class="bi bi-filter"></i> &nbsp;Filter
       </button>
       <button type="button"
+              id="tasks-priority-filter"
+              class="select-btn small-btn {% if priority_value %}toggle-active{% endif %}"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+        {{ selected_priority|default:"All Priorities" }}
+        <small>
+          <i class="bi bi-chevron-down"></i>
+        </small>
+      </button>
+      <ul class="dropdown-menu"
+          hx-target="#tasks-priority-filter"
+          hx-swap="outerHTML">
+        <li>
+          <a class="dropdown-item"
+             href="#"
+             hx-post="{% url 'agenda:tasks-filter-priority' 0 %}"
+             hx-target="#tasks"
+             hx-swap="#outerHTML">All Priorities</a>
+        </li>
+        {% for priority in priorities %}
+          <li>
+            <a class="dropdown-item {% if priority == priority_value %}active{% endif %}"
+               href="#"
+               hx-post="{% url 'agenda:tasks-filter-priority' priority %}"
+               hx-target="#tasks"
+               hx-swap="#outerHTML">{{ priority }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+      <button type="button"
               id="tasks-matter-filter"
               class="select-btn large-btn {% if selected_matter %}toggle-active{% endif %}"
               data-bs-toggle="dropdown"
@@ -82,54 +112,21 @@
 </div>
 {% include "agenda/tasks/form-quick.html" %}
 <div class="table-container">
-  <table class="table tasks-table"
-         data-custom-order-active="{% if current_order == 'custom_order' %}true{% else %}false{% endif %}">
+  <table class="table tasks-table">
     <thead>
       <tr>
-        <th class="matter">
-          <div class="matter-cell-content">
-            <button class="btn-sort btn-drag-handle {% if current_order == 'custom_order' %}active{% endif %}"
-                    hx-target="#tasks"
-                    hx-swap="innerHTML"
-                    hx-post="{% url 'agenda:tasks-filter-sort' 'custom_order' %}">
-              <i class="bi bi-chevron-expand"></i>
-            </button>
-            <span>Matter</span>
-            <button class="btn-sort {% if current_order == 'matter__name' %}active{% endif %}"
-                    hx-target="#tasks"
-                    hx-swap="innerHTML"
-                    hx-post="{% url 'agenda:tasks-filter-sort' 'matter__name' %}">
-              <i class="bi bi-chevron-expand"></i>
-            </button>
-          </div>
-        </th>
-        <th class="description">
-          Description
-          <button class="btn-sort {% if current_order == 'description' %}active{% endif %}"
+        <th class="priority">
+          <button class="btn-sort {% if current_order == 'priority' %}active{% endif %}"
                   hx-target="#tasks"
                   hx-swap="innerHTML"
-                  hx-post="{% url 'agenda:tasks-filter-sort' 'description' %}">
+                  hx-post="{% url 'agenda:tasks-filter-sort' 'priority' %}">
             <i class="bi bi-chevron-expand"></i>
           </button>
         </th>
-        <th class="status">
-          Status
-          <button class="btn-sort {% if current_order == 'status' %}active{% endif %}"
-                  hx-target="#tasks"
-                  hx-swap="innerHTML"
-                  hx-post="{% url 'agenda:tasks-filter-sort' 'status' %}">
-            <i class="bi bi-chevron-expand"></i>
-          </button>
-        </th>
-        <th class="user">
-          User
-          <button class="btn-sort {% if current_order == 'user__username' %}active{% endif %}"
-                  hx-target="#tasks"
-                  hx-swap="innerHTML"
-                  hx-post="{% url 'agenda:tasks-filter-sort' 'user__username' %}">
-            <i class="bi bi-chevron-expand"></i>
-          </button>
-        </th>
+        <th class="matter">Matter</th>
+        <th class="description">Description</th>
+        <th class="status">Status</th>
+        <th class="user">User</th>
         <th class="date">
           Due
           <button class="btn-sort {% if current_order == 'date_due' %}active{% endif %}"
@@ -141,17 +138,15 @@
         </th>
       </tr>
     </thead>
-    <tbody id="tasks-sortable">
+    <tbody>
       {% for task in objects %}
-        <tr data-task-id="{{ task.id }}">
-          <td class="matter {% if task.status == 'Complete' %}complete{% endif %} {% if task.date_due < today %}urgent{% endif %}">
-            <div class="matter-cell-content">
-              <i class="bi bi-grip-vertical drag-handle"></i>
-              {% include "agenda/tasks/matter.html" %}
-            </div>
-          </td>
-          <td id="task-description"
-              class="description {% if task.date_due < today %}urgent{% endif %} {% if task.status == 'Complete' %}complete{% endif %}">
+        <tr>
+          <td class="priority dropdown-cell {% if task.status == 'Complete' %}complete{% endif %} {% if task.date_due < today %}urgent{% endif %}"
+              data-label="Priority">{% include "agenda/tasks/priority.html" %}</td>
+          <td class="matter {% if task.status == 'Complete' %}complete{% endif %} {% if task.date_due < today %}urgent{% endif %}"
+              data-label="Matter">{% include "agenda/tasks/matter.html" %}</td>
+          <td class="description {% if task.date_due < today %}urgent{% endif %} {% if task.status == 'Complete' %}complete{% endif %}"
+              data-label="Description">
             <a href="#"
                hx-get="/agenda/tasks/{{ task.id }}/edit"
                hx-target="#htmx-modal-container"
@@ -160,17 +155,15 @@
                data-bs-target="#htmx-modal-container"
                hx-swap="innerHTML">{{ task.description }}</a>
           </td>
-          <td class="status dropdown-cell">{% include "agenda/tasks/status.html" %}</td>
-          <td class="user dropdown-cell {% if task.date_due < today %}urgent{% endif %} {% if task.status == 'Complete' %}complete{% endif %}">
-            {% include "agenda/tasks/user.html" %}
-          </td>
-          <td class="date {% if task.date_due < today %}urgent{% endif %} {% if task.status == 'Complete' %}complete{% endif %}">
-            {% include "agenda/tasks/date-display.html" %}
-          </td>
+          <td class="status dropdown-cell" data-label="Status">{% include "agenda/tasks/status.html" %}</td>
+          <td class="user dropdown-cell {% if task.date_due < today %}urgent{% endif %} {% if task.status == 'Complete' %}complete{% endif %}"
+              data-label="User">{% include "agenda/tasks/user.html" %}</td>
+          <td class="date {% if task.date_due < today %}urgent{% endif %} {% if task.status == 'Complete' %}complete{% endif %}"
+              data-label="Due">{% include "agenda/tasks/date-display.html" %}</td>
         </tr>
       {% empty %}
         <tr>
-          <td colspan="5" class="empty-message">No tasks found.</td>
+          <td colspan="6" class="empty-message">No tasks found.</td>
         </tr>
       {% endfor %}
     </tbody>
