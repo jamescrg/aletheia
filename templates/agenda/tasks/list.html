@@ -176,23 +176,12 @@
                 <li>
                   <a class="dropdown-item"
                      href="#"
-                     hx-get="{% url 'agenda:tasks-add-note' id=task.id %}"
+                     hx-get="{% url 'agenda:tasks-notes' id=task.id %}"
                      hx-target="#htmx-modal-container"
                      hx-trigger="click"
                      data-bs-toggle="modal"
-                     data-bs-target="#htmx-modal-container">Add Note</a>
+                     data-bs-target="#htmx-modal-container">Notes</a>
                 </li>
-                {% if task.notes.exists %}
-                  <li>
-                    <a class="dropdown-item"
-                       href="#"
-                       hx-get="{% url 'agenda:tasks-notes' id=task.id %}"
-                       hx-target="#htmx-modal-container"
-                       hx-trigger="click"
-                       data-bs-toggle="modal"
-                       data-bs-target="#htmx-modal-container">View Notes</a>
-                  </li>
-                {% endif %}
               </ul>
             </div>
           </td>

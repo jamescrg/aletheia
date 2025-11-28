@@ -92,8 +92,10 @@
 }
 
 .task-notes .empty-message {
-  padding: 1rem;
   color: var(--stone-500);
+  font-style: italic;
+  padding: 1rem;
+  text-align: center;
 }
 
 .task-note-form .char-counter {
