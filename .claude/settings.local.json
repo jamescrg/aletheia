@@ -25,7 +25,8 @@
       "Bash(source .venv/bin/activate)",
       "Bash(__NEW_LINE__ cd /home/james/law grep -roh '\\.[a-zA-Z_-][a-zA-Z0-9_-]*' static/css/)",
       "Bash(__NEW_LINE__ cd /home/james/law grep -roh '#[a-zA-Z_-][a-zA-Z0-9_-]*' static/css/)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(sort:*)"
     ],
     "deny": []
   }

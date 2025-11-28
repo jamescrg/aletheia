@@ -10,6 +10,8 @@ class DailyDashCheckMiddleware:
 
     On the first request of each day, redirects authenticated users to the
     agenda dash page. The dash view marks the check-in as complete.
+
+    The check-in is stored on the user model, so it persists across devices.
     """
 
     # URLs that should be exempt from the redirect
@@ -19,8 +21,6 @@ class DailyDashCheckMiddleware:
         "/media/",  # Media files
         "/__debug__/",  # Debug toolbar
     ]
-
-    SESSION_KEY = "daily_dash_check_date"
 
     def __init__(self, get_response):
         self.get_response = get_response
@@ -41,20 +41,18 @@ class DailyDashCheckMiddleware:
         ):
             return self.get_response(request)
 
-        # Check if user has already viewed dash today
-        today = date.today().isoformat()
-        last_check_date = request.session.get(self.SESSION_KEY)
-
-        # Get the dash URL
+        today = date.today()
         dash_url = reverse("agenda:dash-index")
 
         # If already on dash page, mark as checked and continue
         if request.path == dash_url:
-            request.session[self.SESSION_KEY] = today
+            if request.user.last_dash_check != today:
+                request.user.last_dash_check = today
+                request.user.save(update_fields=["last_dash_check"])
             return self.get_response(request)
 
         # If not checked in today, redirect to dash
-        if last_check_date != today:
+        if request.user.last_dash_check != today:
             return redirect(dash_url)
 
         return self.get_response(request)
