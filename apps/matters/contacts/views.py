@@ -73,10 +73,34 @@ def get_contact_list(request, matter):
                 band = 1 - band
             item["band"] = band
 
+    # Get current filter values for dropdown display
+    group_id = filter_data.get("group", "")
+    if isinstance(group_id, list):
+        group_id = group_id[0] if group_id else ""
+    role_id = filter_data.get("role", "")
+    if isinstance(role_id, list):
+        role_id = role_id[0] if role_id else ""
+
+    # Get selected names for display
+    selected_group = None
+    selected_role = None
+    if group_id:
+        group_obj = Group.objects.filter(id=group_id).first()
+        selected_group = group_obj.name if group_obj else None
+    if role_id:
+        role_obj = Role.objects.filter(id=role_id).first()
+        selected_role = role_obj.name if role_obj else None
+
     return {
         "contacts": contact_list,
         "current_order": order_field,
         "session_key": session_key,
+        "groups": Group.objects.filter(is_active=True).order_by("order"),
+        "roles": Role.objects.filter(is_active=True).order_by("name"),
+        "group_id": int(group_id) if group_id else None,
+        "role_id": int(role_id) if role_id else None,
+        "selected_group": selected_group,
+        "selected_role": selected_role,
     }
 
 
@@ -241,4 +265,24 @@ def assign_update(request, id):
 def assign_delete(request, id):
     relationship = get_object_or_404(Relationship, pk=id)
     relationship.delete()
+    return HttpResponse(status=204, headers={"HX-Trigger": "contactsReload"})
+
+
+@login_required
+def filter_group(request, id, group_id):
+    """Quick filter by group from dropdown."""
+    session_key = f"matter_contacts_filter_{id}"
+    filter_data = dict(request.session.get(session_key, {}))
+    filter_data["group"] = "" if group_id == 0 else group_id
+    request.session[session_key] = filter_data
+    return HttpResponse(status=204, headers={"HX-Trigger": "contactsReload"})
+
+
+@login_required
+def filter_role(request, id, role_id):
+    """Quick filter by role from dropdown."""
+    session_key = f"matter_contacts_filter_{id}"
+    filter_data = dict(request.session.get(session_key, {}))
+    filter_data["role"] = "" if role_id == 0 else role_id
+    request.session[session_key] = filter_data
     return HttpResponse(status=204, headers={"HX-Trigger": "contactsReload"})

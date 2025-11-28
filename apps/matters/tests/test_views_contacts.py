@@ -55,3 +55,43 @@ def test_delete(client, relationship):
     assert response.status_code == 204
     found = Relationship.objects.filter(pk=relationship.id).exists()
     assert not found
+
+
+def test_filter_group(client, matter, group):
+    """Test that filter_group sets session filter and returns 204."""
+    response = client.post(f"/matters/{matter.id}/contacts/filter/group/{group.id}/")
+    assert response.status_code == 204
+    assert response.headers.get("HX-Trigger") == "contactsReload"
+    # Verify session was set
+    session = client.session
+    session_key = f"matter_contacts_filter_{matter.id}"
+    assert session.get(session_key, {}).get("group") == group.id
+
+
+def test_filter_group_clear(client, matter):
+    """Test that filter_group with 0 clears the filter."""
+    response = client.post(f"/matters/{matter.id}/contacts/filter/group/0/")
+    assert response.status_code == 204
+    session = client.session
+    session_key = f"matter_contacts_filter_{matter.id}"
+    assert session.get(session_key, {}).get("group") == ""
+
+
+def test_filter_role(client, matter, role):
+    """Test that filter_role sets session filter and returns 204."""
+    response = client.post(f"/matters/{matter.id}/contacts/filter/role/{role.id}/")
+    assert response.status_code == 204
+    assert response.headers.get("HX-Trigger") == "contactsReload"
+    # Verify session was set
+    session = client.session
+    session_key = f"matter_contacts_filter_{matter.id}"
+    assert session.get(session_key, {}).get("role") == role.id
+
+
+def test_filter_role_clear(client, matter):
+    """Test that filter_role with 0 clears the filter."""
+    response = client.post(f"/matters/{matter.id}/contacts/filter/role/0/")
+    assert response.status_code == 204
+    session = client.session
+    session_key = f"matter_contacts_filter_{matter.id}"
+    assert session.get(session_key, {}).get("role") == ""
