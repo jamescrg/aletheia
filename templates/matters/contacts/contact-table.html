@@ -19,6 +19,62 @@
               data-bs-target="#htmx-modal-container">
         <i class="bi bi-filter"></i> Filter
       </button>
+      <div class="dropdown">
+        <button type="button"
+                id="contacts-group-filter"
+                class="select-btn filter-dropdown-button {% if group_id %}toggle-active{% endif %}"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+          {{ selected_group|default:"All Groups" }}
+          <small><i class="bi bi-chevron-down"></i></small>
+        </button>
+        <ul class="dropdown-menu">
+          <li>
+            <a class="dropdown-item"
+               href="#"
+               hx-post="{% url 'matters:contacts-filter-group' matter.id 0 %}"
+               hx-target="#contacts"
+               hx-swap="innerHTML">All Groups</a>
+          </li>
+          {% for group in groups %}
+            <li>
+              <a class="dropdown-item {% if group.id == group_id %}active{% endif %}"
+                 href="#"
+                 hx-post="{% url 'matters:contacts-filter-group' matter.id group.id %}"
+                 hx-target="#contacts"
+                 hx-swap="innerHTML">{{ group.name }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="dropdown">
+        <button type="button"
+                id="contacts-role-filter"
+                class="select-btn filter-dropdown-button {% if role_id %}toggle-active{% endif %}"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+          {{ selected_role|default:"All Roles" }}
+          <small><i class="bi bi-chevron-down"></i></small>
+        </button>
+        <ul class="dropdown-menu">
+          <li>
+            <a class="dropdown-item"
+               href="#"
+               hx-post="{% url 'matters:contacts-filter-role' matter.id 0 %}"
+               hx-target="#contacts"
+               hx-swap="innerHTML">All Roles</a>
+          </li>
+          {% for role in roles %}
+            <li>
+              <a class="dropdown-item {% if role.id == role_id %}active{% endif %}"
+                 href="#"
+                 hx-post="{% url 'matters:contacts-filter-role' matter.id role.id %}"
+                 hx-target="#contacts"
+                 hx-swap="innerHTML">{{ role.name }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
     </div>
   </div>
 </div>

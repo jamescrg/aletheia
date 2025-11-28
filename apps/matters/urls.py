@@ -79,6 +79,16 @@ urlpatterns = [
         contacts.assign_delete,
         name="contacts-assign-delete",
     ),
+    path(
+        "matters/<int:id>/contacts/filter/group/<int:group_id>/",
+        contacts.filter_group,
+        name="contacts-filter-group",
+    ),
+    path(
+        "matters/<int:id>/contacts/filter/role/<int:role_id>/",
+        contacts.filter_role,
+        name="contacts-filter-role",
+    ),
     # Rates
     path("matters/<int:id>/rates", matters_rates.rate_index, name="rate-index"),
     path("matters/<int:id>/rates/list/", matters_rates.rate_list, name="rates"),
