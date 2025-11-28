@@ -16,30 +16,11 @@ from apps.matters.models import Matter
 
 @login_required
 def tasks_index(request):
-    # check whether dash has been hidden
-    show_dash = request.session.get("show_dash", True)
-    if show_dash:
-        return redirect("/dash/")
-
-    # if dash is hidden, check the date it was hidden
-    # if that date is less than today, show it
-    else:
-        today = date.today()
-        timestamp = int(request.session.get("hide_expire"))
-        old_date = date.fromtimestamp(timestamp)
-        if today > old_date:
-            show_dash = True
-            request.session["show_dash"] = True
-            return redirect("/dash/")
-
     context = get_list_data(request)
-
     context = context | {
         "app": "agenda",
         "subapp": "tasks",
-        "show_dash": show_dash,
     }
-
     return render(request, "agenda/tasks/tasks.html", context)
 
 
@@ -51,8 +32,6 @@ def tasks_list(request):
 
 @login_required
 def tasks_select(request):
-    request.session["show_dash"] = False
-    request.session["hide_expire"] = date.today().strftime("%s")
     return redirect("agenda:tasks-index")
 
 
