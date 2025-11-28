@@ -18,7 +18,7 @@
             </thead>
             <tbody>
               {% if upcoming_events %}
-                {% for event in upcoming_events|slice:":3" %}
+                {% for event in upcoming_events %}
                   <tr {% if event.date == today %}class="due-today"{% elif event.date == tomorrow %}class="due-tomorrow"{% endif %}>
                     <td class="date">
                       {{ event.date|date:"Y-m-d" }}
@@ -39,6 +39,15 @@
                 </tr>
               {% endif %}
             </tbody>
+            {% if events_next_7_days_count > 4 %}
+              <tfoot>
+                <tr>
+                  <td colspan="4" class="summary-row">
+                    Showing {{ upcoming_events_count }} of {{ events_next_7_days_count }} events in the next 7 days
+                  </td>
+                </tr>
+              </tfoot>
+            {% endif %}
           </table>
         </div>
         {# Upcoming Tasks #}
@@ -52,8 +61,7 @@
             <tbody>
               {% if urgent_tasks %}
                 {% for task in urgent_tasks %}
-                  <tr {% if task.date_due == today %}class="due-today"{% elif task.date_due == tomorrow %}class="due-tomorrow"{% endif %}>
-                    <td class="date">{{ task.date_due|date:'Y-m-d' }}</td>
+                  <tr class="{% if task.priority == 1 %}priority-high{% elif task.date_due == today %}due-today{% elif task.date_due == tomorrow %}due-tomorrow{% endif %}">
                     <td class="matter">
                       {% if task.matter %}
                         <a href="{% url 'matters:tasks-index' id=task.matter.id %}">{{ task.matter.name }}</a>
@@ -63,6 +71,7 @@
                     </td>
                     <td class="description">{{ task.description }}</td>
                     <td class="user">{{ task.user.username|title }}</td>
+                    <td class="date">{{ task.date_due|date:'Y-m-d' }}</td>
                   </tr>
                 {% endfor %}
               {% else %}
@@ -71,6 +80,15 @@
                 </tr>
               {% endif %}
             </tbody>
+            {% if tasks_next_7_days_count > 10 %}
+              <tfoot>
+                <tr>
+                  <td colspan="4" class="summary-row">
+                    Showing {{ urgent_tasks_count }} of {{ tasks_next_7_days_count }} tasks due in the next 7 days
+                  </td>
+                </tr>
+              </tfoot>
+            {% endif %}
           </table>
         </div>
       </div>

@@ -19,17 +19,28 @@ def dash_index(request):
     today = date.today()
     tomorrow = today + timedelta(days=1)
 
-    # Upcoming events (next 7 days)
-    end_date = today + timedelta(days=7)
-    upcoming_events = Event.objects.filter(
-        date__gte=today, date__lte=end_date
-    ).order_by("date", "party")[:10]
+    # Upcoming events (no date restriction, limit to 4)
+    upcoming_events = Event.objects.filter(date__gte=today).order_by("date", "party")[
+        :4
+    ]
 
-    # Urgent tasks (next 3 days)
-    urgent_end_date = today + timedelta(days=2)
-    urgent_tasks = Task.objects.filter(
-        date_due__gte=today, date_due__lte=urgent_end_date, status="Pending"
-    ).order_by("date_due", "priority")[:10]
+    # Count of events in the next 7 days for the summary
+    end_date = today + timedelta(days=7)
+    events_next_7_days_count = Event.objects.filter(
+        date__gte=today, date__lte=end_date
+    ).count()
+
+    # Upcoming tasks for all users, ordered by due date then priority, limit to 10
+    urgent_tasks = Task.objects.filter(status="Pending").order_by(
+        "date_due", "priority"
+    )[:10]
+
+    # Count of tasks due in the next 7 days for the summary
+    tasks_next_7_days_count = Task.objects.filter(
+        status="Pending",
+        date_due__gte=today,
+        date_due__lte=end_date,
+    ).count()
 
     # Unbilled hours and fees by user
     unbilled_by_user = (
@@ -148,7 +159,11 @@ def dash_index(request):
         "app": "agenda",
         "subapp": "dash",
         "upcoming_events": upcoming_events,
+        "upcoming_events_count": len(upcoming_events),
+        "events_next_7_days_count": events_next_7_days_count,
         "urgent_tasks": urgent_tasks,
+        "urgent_tasks_count": len(urgent_tasks),
+        "tasks_next_7_days_count": tasks_next_7_days_count,
         "unbilled_by_user": unbilled_by_user,
         "unbilled_total_hours": unbilled_total_hours,
         "unbilled_total_fees": unbilled_total_fees,

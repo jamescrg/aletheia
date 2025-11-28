@@ -27,6 +27,10 @@
   background: var(--hl-yellow);
 }
 
+.dashboard-table .priority-high {
+  background: var(--hl-yellow);
+}
+
 .dashboard-table .empty-message {
   color: var(--stone-500);
   font-style: italic;
@@ -100,6 +104,13 @@
 .show-more {
   font-weight: normal;
   font-size: 1rem;
+}
+
+.dashboard-table .summary-row {
+  color: var(--stone-500);
+  font-size: 0.875rem;
+  text-align: center;
+  padding: 8px;
 }
 
 /* ==========================================================================
