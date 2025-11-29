@@ -129,10 +129,55 @@
   width: 100%
 }
 
-.task-notes-header h2 {
+.task-detail-modal .modal-title {
+  font-size: 1.1rem;
+}
+
+.task-detail {
+  padding-bottom: 1rem;
+}
+
+.task-detail-matter {
+  font-size: 1.1rem;
+}
+
+.task-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 0.5rem;
 }
 
-.task-notes-description {
-  margin-bottom: 1rem;
+.task-detail-description {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.task-detail-meta {
+  display: flex;
+  gap: 1rem;
+  color: var(--stone-500);
+}
+
+.task-detail-meta span {
+  display: inline-flex;
+  align-items: center;
+}
+
+.task-detail .btn-icon {
+  background: var(--stone-150);
+  border: solid 1px var(--stone-200);
+  border-radius: 4px;
+  color: var(--stone-500);
+  padding: 0.25rem 0.5rem;
+}
+
+.task-detail-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.task-detail .btn-add-note {
+  color: var(--link);
+  font-size: 1rem;
 }

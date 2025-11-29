@@ -152,7 +152,7 @@ def tasks_edit(request, id):
         if form.is_valid():
             task = form.save(commit=False)
             task.save()
-            return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
+            return redirect("agenda:tasks-detail", id=task.id)
 
     else:
         form = TaskForm(instance=task)
@@ -451,7 +451,7 @@ def tasks_add_note(request, id):
             note.task = task
             note.user = request.user
             note.save()
-            return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
+            return redirect("agenda:tasks-detail", id=task.id)
     else:
         form = TaskNoteForm(
             initial={
@@ -471,7 +471,7 @@ def tasks_add_note(request, id):
 
 
 @login_required
-def tasks_notes(request, id):
+def tasks_detail(request, id):
     task = get_object_or_404(Task, pk=id)
     notes = task.notes.all()
 
@@ -491,7 +491,7 @@ def tasks_notes(request, id):
         "task": task,
         "notes": notes,
     }
-    return render(request, "agenda/tasks/notes.html", context)
+    return render(request, "agenda/tasks/detail.html", context)
 
 
 @login_required
@@ -502,7 +502,7 @@ def tasks_edit_note(request, id):
         form = TaskNoteForm(request.POST, instance=note, use_required_attribute=False)
         if form.is_valid():
             form.save()
-            return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
+            return redirect("agenda:tasks-detail", id=note.task.id)
     else:
         form = TaskNoteForm(instance=note, use_required_attribute=False)
 
@@ -519,5 +519,6 @@ def tasks_edit_note(request, id):
 @login_required
 def tasks_delete_note(request, id):
     note = get_object_or_404(TaskNote, pk=id)
+    task_id = note.task.id
     note.delete()
-    return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
+    return redirect("agenda:tasks-detail", id=task_id)

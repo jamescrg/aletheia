@@ -1,0 +1,63 @@
+<div class="modal-dialog modal-md"
+     hx-trigger="load"
+     hx-get="{% url 'agenda:tasks-list' %}"
+     hx-target="#tasks"
+     hx-swap="innerHTML">
+  <div class="modal-content task-detail-modal">
+    <div class="modal-header">
+      <h1 class="modal-title">{{ task.description }}</h1>
+      <div>
+        <a href="#" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg"></i>
+        </a>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="task-detail">
+        <div class="task-detail-row">
+          <span class="task-detail-matter">{{ task.matter.name|default:"Admin" }}</span>
+          <a class="btn-icon"
+             href="#"
+             hx-get="{% url 'agenda:tasks-edit' id=task.id %}"
+             hx-target="#htmx-modal-container"
+             hx-trigger="click">
+            <i class="bi bi-pencil"></i>
+          </a>
+        </div>
+        <div class="task-detail-row">
+          <div class="task-detail-meta">
+            <span class="task-detail-priority">Priority: {{ task.priority }}</span>
+            <span class="task-detail-user">{{ task.user.username|title }}</span>
+            <span class="task-detail-status">{{ task.status }}</span>
+            <span class="task-detail-date">{{ task.date_due|date:"M j, Y"|default:"" }}</span>
+          </div>
+          <a class="btn-icon btn-add-note"
+             href="#"
+             hx-get="{% url 'agenda:tasks-add-note' id=task.id %}"
+             hx-target="#htmx-modal-container"
+             hx-trigger="click">+ Note</a>
+        </div>
+      </div>
+      <div class="task-notes">
+        {% for note in notes %}
+          <div class="task-note">
+            <div class="task-note-title">
+              <div class="task-note-title-left">
+                <a href="#"
+                   hx-get="{% url 'agenda:tasks-edit-note' id=note.id %}"
+                   hx-target="#htmx-modal-container"
+                   hx-trigger="click">
+                  <span class="task-note-date-time">{{ note.date|date:"M j, Y" }} {{ note.time|time:"g:i A" }}</span>
+                </a>
+                <span class="task-note-username">{{ note.user.username|title }}</span>
+              </div>
+            </div>
+            <div class="task-note-details">{{ note.details|safe }}</div>
+          </div>
+        {% empty %}
+          <p class="empty-message">No notes yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>

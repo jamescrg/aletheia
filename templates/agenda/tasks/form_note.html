@@ -11,7 +11,7 @@
       <div>
         <a class="btn-icon"
            href="#"
-           hx-get="{% url 'agenda:tasks-notes' id=task.id %}"
+           hx-get="{% url 'agenda:tasks-detail' id=task.id %}"
            hx-target="#htmx-modal-container"
            hx-trigger="click">
           <i class="bi bi-arrow-left"></i>
