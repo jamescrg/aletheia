@@ -193,8 +193,8 @@
         font-size: 0.875rem;
       }
 
-      .highlight-item.unselected {
-        opacity: 0.6;
+      .highlight-item.active {
+        background: #fefce8;
       }
 
       /* Highlight colors */
@@ -330,7 +330,7 @@
                 <button class="btn btn-sm btn-link delete-highlight"
                         data-highlight-id="{{ highlight.id }}"
                         title="Delete">
-                  <i class="bi bi-trash"></i>
+                  <i class="bi bi-trash3"></i>
                 </button>
               </div>
             </div>
@@ -458,7 +458,33 @@
             selectHighlight(data.highlightId);
           }
           break;
+
+        case 'pdfBackgroundClicked':
+          // Deselect when clicking outside highlight
+          if (selectedHighlightId !== null) {
+            selectHighlight(null);
+          }
+          break;
       }
+    });
+
+    // Deselect highlight when clicking on PDF container (detected via iframe blur)
+    window.addEventListener('blur', () => {
+      // Check if focus went to the iframe
+      setTimeout(() => {
+        if (document.activeElement === iframe && selectedHighlightId !== null) {
+          // User clicked in iframe - deselect unless they clicked a highlight
+          // We'll get a highlightClicked message if they clicked a highlight,
+          // which will re-select. Use a small delay to let that message arrive first.
+          const currentSelected = selectedHighlightId;
+          setTimeout(() => {
+            // If selection hasn't changed (no highlightClicked received), deselect
+            if (selectedHighlightId === currentSelected) {
+              selectHighlight(null);
+            }
+          }, 100);
+        }
+      }, 0);
     });
 
     function sendHighlightsToViewer() {
@@ -546,7 +572,7 @@
         <div class="highlight-text">${escapeHtml(highlight.text.substring(0, 100))}${highlight.text.length > 100 ? '...' : ''}</div>
         <div class="highlight-actions">
           <button class="btn btn-sm btn-link delete-highlight" data-highlight-id="${highlight.id}" title="Delete">
-            <i class="bi bi-trash"></i>
+            <i class="bi bi-trash3"></i>
           </button>
         </div>
       `;
