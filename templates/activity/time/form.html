@@ -20,17 +20,38 @@
             class="form-compact col2 time-form"
             id="time-entry-form">
         {% csrf_token %}
-        {{ form.matter }}
-        {{ form.date }}
-        {{ form.actions }}
+        <div class="form-group">
+          <label for="{{ form.matter.id_for_label }}">{{ form.matter.label }}</label>
+          <div>{{ form.matter }}{{ form.matter.errors }}</div>
+        </div>
+        <div class="form-group">
+          <label for="{{ form.date.id_for_label }}">{{ form.date.label }}</label>
+          <div>{{ form.date }}{{ form.date.errors }}</div>
+        </div>
+        <div class="form-group span2">
+          <label for="{{ form.actions.id_for_label }}">{{ form.actions.label }}</label>
+          <div>{{ form.actions }}{{ form.actions.errors }}</div>
+        </div>
         <div id="actions-preview" class="actions-preview span2">
           <small class="text-muted">Preview:</small>
           <div id="actions-preview-text"></div>
         </div>
-        {{ form.hours }}
-        {{ form.rate }}
-        {{ form.comp }}
-        {{ form.entered }}
+        <div class="form-group">
+          <label for="{{ form.hours.id_for_label }}">{{ form.hours.label }}</label>
+          <div>{{ form.hours }}{{ form.hours.errors }}</div>
+        </div>
+        <div class="form-group">
+          <label for="{{ form.rate.id_for_label }}">{{ form.rate.label }}</label>
+          <div>{{ form.rate }}{{ form.rate.errors }}</div>
+        </div>
+        <div class="form-group">
+          <label for="{{ form.comp.id_for_label }}">{{ form.comp.label }}</label>
+          <div>{{ form.comp }}{{ form.comp.errors }}</div>
+        </div>
+        <div class="form-group">
+          <label for="{{ form.entered.id_for_label }}">{{ form.entered.label }}</label>
+          <div>{{ form.entered }}{{ form.entered.errors }}</div>
+        </div>
         <br />
         <div class="flex-center-space span2">
           <div>
