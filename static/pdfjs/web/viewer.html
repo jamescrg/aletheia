@@ -93,16 +93,20 @@
       }
 
       /* Highlight overlay styles */
+      .highlight-container {
+        position: absolute;
+        pointer-events: none;
+        mix-blend-mode: multiply;
+      }
+
+      .highlight-container:hover {
+        filter: brightness(0.85);
+      }
+
       .highlight-overlay {
         position: absolute;
         pointer-events: auto;
         cursor: pointer;
-        mix-blend-mode: multiply;
-        z-index: 1;
-      }
-
-      .highlight-overlay:hover {
-        filter: brightness(0.85);
       }
     </style>
   </head>
@@ -265,6 +269,41 @@
       }
     }
 
+    // Merge overlapping/adjacent rectangles into single line rectangles
+    function mergeRects(rects) {
+      if (rects.length === 0) return [];
+
+      // Group rects by approximate vertical position (same line)
+      const lineGroups = [];
+      const tolerance = 2; // pixels
+
+      rects.forEach(rect => {
+        // Find existing line group with similar top position
+        const group = lineGroups.find(g =>
+          Math.abs(g[0].top - rect.top) < tolerance
+        );
+        if (group) {
+          group.push(rect);
+        } else {
+          lineGroups.push([rect]);
+        }
+      });
+
+      // Merge each line group into a single rect
+      return lineGroups.map(group => {
+        const left = Math.min(...group.map(r => r.left));
+        const top = Math.min(...group.map(r => r.top));
+        const right = Math.max(...group.map(r => r.left + r.width));
+        const bottom = Math.max(...group.map(r => r.top + r.height));
+        return {
+          left,
+          top,
+          width: right - left,
+          height: bottom - top
+        };
+      });
+    }
+
     // Text selection handling
     document.addEventListener('mouseup', () => {
       const selection = window.getSelection();
@@ -301,11 +340,14 @@
           });
         }
 
-        if (selectionRects.length > 0) {
+        // Merge overlapping rects into one rect per line
+        const mergedRects = mergeRects(selectionRects);
+
+        if (mergedRects.length > 0) {
           currentSelection = {
             text,
             page: pageNumber,
-            rects: selectionRects,
+            rects: mergedRects,
           };
           // Notify parent of selection change
           window.parent.postMessage({ type: 'selectionChanged', selection: currentSelection }, '*');
@@ -353,7 +395,7 @@
     // Render highlights on pages
     function renderHighlights(highlights) {
       // Remove existing highlights
-      document.querySelectorAll('.highlight-overlay').forEach(el => el.remove());
+      document.querySelectorAll('.highlight-container').forEach(el => el.remove());
 
       // Group highlights by page
       highlightsByPage = {};
@@ -390,7 +432,7 @@
       if (!textLayer) return;
 
       // Remove existing highlights on this page first
-      textLayer.querySelectorAll('.highlight-overlay').forEach(el => el.remove());
+      textLayer.querySelectorAll('.highlight-container').forEach(el => el.remove());
 
       const scale = pdfViewer.currentScale;
 
@@ -398,32 +440,44 @@
         const coords = highlight.coordinates;
         if (!coords || !coords.rects) return;
 
-        coords.rects.forEach((rect) => {
+        // Normalize rects to {left, top, width, height} format
+        const normalizedRects = coords.rects.map(rect => ({
+          left: rect.left !== undefined ? rect.left : rect.x1,
+          top: rect.top !== undefined ? rect.top : rect.y1,
+          width: rect.width !== undefined ? rect.width : (rect.x2 - rect.x1),
+          height: rect.height !== undefined ? rect.height : (rect.y2 - rect.y1)
+        }));
+
+        // Merge overlapping rects (fixes existing highlights with overlapping data)
+        const mergedRects = mergeRects(normalizedRects);
+
+        // Create container for this highlight (blend mode applies to container)
+        const container = document.createElement('div');
+        container.className = 'highlight-container';
+        container.dataset.highlightId = highlight.id;
+        container.title = highlight.title || '';
+
+        mergedRects.forEach((rect) => {
           const div = document.createElement('div');
           div.className = 'highlight-overlay';
-          div.dataset.highlightId = highlight.id;
-
-          // Handle both coordinate formats: {x1,y1,x2,y2} and {left,top,width,height}
-          const left = rect.left !== undefined ? rect.left : rect.x1;
-          const top = rect.top !== undefined ? rect.top : rect.y1;
-          const width = rect.width !== undefined ? rect.width : (rect.x2 - rect.x1);
-          const height = rect.height !== undefined ? rect.height : (rect.y2 - rect.y1);
 
           // Apply scale to normalized coordinates
-          div.style.left = `${left * scale}px`;
-          div.style.top = `${top * scale}px`;
-          div.style.width = `${width * scale}px`;
-          div.style.height = `${height * scale}px`;
+          div.style.left = `${rect.left * scale}px`;
+          div.style.top = `${rect.top * scale}px`;
+          div.style.width = `${rect.width * scale}px`;
+          div.style.height = `${rect.height * scale}px`;
           div.style.backgroundColor = highlight.color;
-          div.title = highlight.title;
 
-          div.addEventListener('click', () => {
-            window.parent.postMessage({ type: 'highlightClicked', highlightId: highlight.id }, '*');
-          });
-
-          // Insert at beginning of textLayer so highlights are behind text
-          textLayer.insertBefore(div, textLayer.firstChild);
+          container.appendChild(div);
         });
+
+        // Add click handler to container
+        container.addEventListener('click', () => {
+          window.parent.postMessage({ type: 'highlightClicked', highlightId: highlight.id }, '*');
+        });
+
+        // Insert at beginning of textLayer so highlights are behind text
+        textLayer.insertBefore(container, textLayer.firstChild);
       });
     }
 
