@@ -193,6 +193,10 @@
         font-size: 0.875rem;
       }
 
+      .highlight-item.unselected {
+        opacity: 0.6;
+      }
+
       /* Highlight colors */
       .highlight-item.hl-yellow {
         border-left: 4px solid #facc15;
@@ -315,7 +319,7 @@
         <h4>Highlights</h4>
         <div id="highlights-list">
           {% for highlight in highlights %}
-            <div class="highlight-item hl-{{ highlight.color }}"
+            <div class="highlight-item hl-{{ highlight.color }} unselected"
                  data-highlight-id="{{ highlight.id }}"
                  data-page="{{ highlight.page_number }}"
                  data-color="{{ highlight.color }}">
@@ -403,6 +407,7 @@
 
     const iframe = document.getElementById('pdf-iframe');
     let currentSelection = null;
+    let selectedHighlightId = null;
 
     // Wait for iframe to be ready
     window.addEventListener('message', function(evt) {
@@ -411,19 +416,20 @@
       switch (data.type) {
         case 'viewerReady':
           console.log('PDF viewer ready, pages:', data.numPages);
-          // Send existing highlights to viewer
-          sendHighlightsToViewer();
-          // Scroll to initial highlight if specified
+          // Auto-select initial highlight if specified (e.g., deep-link)
           if (config.initialHighlight) {
             const highlight = config.existingHighlights.find(h => h.id === config.initialHighlight);
             if (highlight) {
+              selectHighlight(highlight.id);
               iframe.contentWindow.postMessage({
                 type: 'scrollToHighlight',
                 highlightId: highlight.id,
                 page: highlight.page_number
               }, '*');
-              highlightSidebarItem(highlight.id);
             }
+          } else {
+            // No initial highlight - send empty highlights to viewer
+            sendHighlightsToViewer();
           }
           break;
 
@@ -445,14 +451,23 @@
           break;
 
         case 'highlightClicked':
-          highlightSidebarItem(data.highlightId);
+          // Toggle selection when clicking highlight in PDF
+          if (selectedHighlightId === data.highlightId) {
+            selectHighlight(null);
+          } else {
+            selectHighlight(data.highlightId);
+          }
           break;
       }
     });
 
     function sendHighlightsToViewer() {
+      // Only send the selected highlight (if any)
+      const selectedOnly = selectedHighlightId
+        ? config.existingHighlights.filter(h => h.id === selectedHighlightId)
+        : [];
       // Convert color names to hex for the PDF viewer
-      const highlightsWithHex = config.existingHighlights.map(h => ({
+      const highlightsWithHex = selectedOnly.map(h => ({
         ...h,
         color: colorMap[h.color] || h.color
       }));
@@ -503,8 +518,8 @@
           // Update sidebar
           addHighlightToSidebar(highlight);
 
-          // Send updated highlights to viewer
-          sendHighlightsToViewer();
+          // Auto-select the new highlight
+          selectHighlight(highlight.id);
         } else {
           const error = await response.json();
           alert('Error saving highlight: ' + (error.error || 'Unknown error'));
@@ -521,7 +536,7 @@
       if (noHighlights) noHighlights.remove();
 
       const item = document.createElement('div');
-      item.className = `highlight-item hl-${highlight.color}`;
+      item.className = `highlight-item hl-${highlight.color} unselected`;
       item.dataset.highlightId = highlight.id;
       item.dataset.page = highlight.page_number;
       item.dataset.color = highlight.color;
@@ -538,13 +553,24 @@
       list.appendChild(item);
     }
 
-    function highlightSidebarItem(highlightId) {
-      document.querySelectorAll('.highlight-item').forEach(el => el.classList.remove('active'));
-      const item = document.querySelector(`.highlight-item[data-highlight-id="${highlightId}"]`);
-      if (item) {
-        item.classList.add('active');
-        item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    function selectHighlight(highlightId) {
+      // Update visual state of all items
+      document.querySelectorAll('.highlight-item').forEach(el => {
+        el.classList.remove('active');
+        el.classList.add('unselected');
+      });
+
+      if (highlightId !== null) {
+        const item = document.querySelector(`.highlight-item[data-highlight-id="${highlightId}"]`);
+        if (item) {
+          item.classList.add('active');
+          item.classList.remove('unselected');
+          item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
       }
+
+      selectedHighlightId = highlightId;
+      sendHighlightsToViewer();
     }
 
     // Sidebar click handlers
@@ -554,13 +580,20 @@
         const highlightId = parseInt(item.dataset.highlightId);
         const page = parseInt(item.dataset.page);
 
-        iframe.contentWindow.postMessage({
-          type: 'scrollToHighlight',
-          highlightId: highlightId,
-          page: page
-        }, '*');
-
-        highlightSidebarItem(highlightId);
+        // Toggle selection
+        if (selectedHighlightId === highlightId) {
+          // Deselect if clicking the selected highlight
+          selectHighlight(null);
+        } else {
+          // Select this highlight
+          selectHighlight(highlightId);
+          // Scroll to it in the PDF
+          iframe.contentWindow.postMessage({
+            type: 'scrollToHighlight',
+            highlightId: highlightId,
+            page: page
+          }, '*');
+        }
       }
 
       // Delete button
@@ -583,6 +616,11 @@
         });
 
         if (response.ok) {
+          // Clear selection if the deleted highlight was selected
+          if (selectedHighlightId === highlightId) {
+            selectedHighlightId = null;
+          }
+
           // Remove from array
           config.existingHighlights = config.existingHighlights.filter(h => h.id !== highlightId);
 
