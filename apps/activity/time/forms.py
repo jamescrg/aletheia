@@ -20,13 +20,13 @@ class TimeEntryForm(forms.ModelForm):
         )
 
         COMP_CHOICES = (
-            (0, "No"),
-            (1, "Yes"),
+            (False, "No"),
+            (True, "Yes"),
         )
 
         ENTERED_CHOICES = (
-            (0, "No"),
-            (1, "Yes"),
+            (False, "No"),
+            (True, "Yes"),
         )
 
         widgets = {
