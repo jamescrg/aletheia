@@ -22,7 +22,7 @@
         position: absolute;
         overflow: auto;
         width: 100%;
-        top: 40px;
+        top: 44px;
         bottom: 0;
         left: 0;
         right: 0;
@@ -37,11 +37,12 @@
         top: 0;
         left: 0;
         right: 0;
-        height: 40px;
+        height: 44px;
         background: #d6d3d1;
+        border-bottom: 1px solid #a8a29e;
         display: flex;
         align-items: center;
-        padding: 0 10px;
+        padding: 2px 10px;
         gap: 10px;
         z-index: 100;
       }
@@ -121,13 +122,12 @@
       <select id="zoomSelect">
         <option value="0.5">50%</option>
         <option value="0.75">75%</option>
-        <option value="1" selected>100%</option>
-        <option value="1.25">125%</option>
+        <option value="1">100%</option>
+        <option value="1.25" selected>125%</option>
         <option value="1.5">150%</option>
         <option value="2">200%</option>
       </select>
       <button id="zoomIn" title="Zoom In">+</button>
-      <div class="toolbarSeparator"></div>
       <button id="createHighlightBtn" title="Create highlight from selected text">+ Highlight</button>
     </div>
     <div id="viewerContainer">
@@ -202,6 +202,9 @@
 
       pdfViewer.setDocument(pdf);
       pdfLinkService.setDocument(pdf);
+
+      // Set default zoom to 125%
+      pdfViewer.currentScale = 1.25;
 
       // Notify parent that viewer is ready
       window.parent.postMessage({ type: 'viewerReady', numPages: pdf.numPages }, '*');
