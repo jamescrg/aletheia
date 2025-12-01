@@ -13,6 +13,7 @@ execution of core functionality.
   - [Environment Variables](#environment-variables)
   - [Running Migrations](#running-migrations)
   - [Running the Application](#running-the-application)
+  - [Running Background Tasks](#running-background-tasks)
   - [Creating the first Superuser](#creating-the-first-superuser)
 - [Troubleshooting](#troubleshooting)
   - [Troubleshoot Dependency Installation](#troubleshoot-dependency-installation)
@@ -157,6 +158,48 @@ python manage.py runserver
 
 After running the command, the application should be accessible at
 [http://localhost:8000](http://localhost:8000).
+
+### Running Background Tasks
+
+The application uses Django-Q for background task processing (OCR, etc.).
+To process background tasks, run the following command in a separate terminal:
+
+**NOTE:** Make sure the virtual environment is activated.
+
+```bash
+python manage.py qcluster
+```
+
+#### Production Setup (systemd)
+
+For production deployments, create a systemd service to run the task worker.
+
+Create `/etc/systemd/system/qcluster.service`:
+
+```ini
+[Unit]
+Description=Django-Q Cluster
+After=network.target
+
+[Service]
+User=<your_user>
+Group=<your_group>
+WorkingDirectory=/path/to/law
+ExecStart=/path/to/law/venv/bin/python manage.py qcluster
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Then enable and start the service:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable qcluster
+sudo systemctl start qcluster
+```
 
 ### Creating the first Superuser
 
