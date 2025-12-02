@@ -7,6 +7,8 @@
         <div class="toolbar-left">
           <h1>{{ matter.name }}</h1>
           <div class="filter-tools">
+            <a href="{% url 'documents:select-matter' matter.id %}"
+               class="icon-green">Documents <i class="bi bi-arrow-up-right-circle ms-2"></i></a>
             <button class="icon-green"
                     hx-get="/activity/time/add/{{ matter.id }}/matters"
                     hx-target="#htmx-modal-container"
@@ -17,8 +19,6 @@
                     hx-target="#htmx-modal-container"
                     data-bs-toggle="modal"
                     data-bs-target="#htmx-modal-container">+ Expense</button>
-            <a href="{% url 'documents:select-matter' matter.id %}"
-               class="icon-green">Documents <i class="bi bi-arrow-up-right-circle ms-2"></i></a>
             <a href={% url 'matters:print' id=matter.id %}>
               <i class="bi bi-printer"></i>
             </a>
