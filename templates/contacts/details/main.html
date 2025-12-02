@@ -87,77 +87,75 @@
     </div>
   {% endif %}
   {# Contact Information #}
-  <div class="contact-info-section">
-    {% if selected_contact.phone1 or selected_contact.phone2 or selected_contact.phone3 %}
-      <div class="contact-card">
-        <div class="contact-phone-list">
-          {% if selected_contact.phone1 %}
-            <div class="contact-item contact-phone-item">
-              <div class="contact-phone-text">
-                <i class="bi bi-telephone"></i>
-                {{ selected_contact.phone1|phone_number }} - {{ selected_contact.phone1_label|lower }}
-              </div>
-              <div class="contact-phone-buttons">
-                <button type="button"
-                        class="btn btn-sm copy-btn"
-                        data-copy="{{ selected_contact.phone1|phone_number }}"
-                        title="Copy phone number">
-                  <i class="bi bi-clipboard"></i>
-                </button>
-                <a href="tel:{{ selected_contact.phone1|phone_tel }}"
-                   class="btn btn-sm copy-btn contact-call-btn"
-                   title="Call">
-                  <i class="bi bi-telephone-outbound"></i>
-                </a>
-              </div>
+  {% if selected_contact.phone1 or selected_contact.phone2 or selected_contact.phone3 %}
+    <div class="contact-card">
+      <div class="contact-phone-list">
+        {% if selected_contact.phone1 %}
+          <div class="contact-item contact-phone-item">
+            <div class="contact-phone-text">
+              <i class="bi bi-telephone"></i>
+              {{ selected_contact.phone1|phone_number }} - {{ selected_contact.phone1_label|lower }}
             </div>
-          {% endif %}
-          {% if selected_contact.phone2 %}
-            <div class="contact-item contact-phone-item">
-              <div class="contact-phone-text">
-                <i class="bi bi-telephone"></i>
-                {{ selected_contact.phone2|phone_number }} - {{ selected_contact.phone2_label|lower }}
-              </div>
-              <div class="contact-phone-buttons">
-                <button type="button"
-                        class="btn btn-sm copy-btn"
-                        data-copy="{{ selected_contact.phone2|phone_number }}"
-                        title="Copy phone number">
-                  <i class="bi bi-clipboard"></i>
-                </button>
-                <a href="tel:{{ selected_contact.phone2|phone_tel }}"
-                   class="btn btn-sm copy-btn contact-call-btn"
-                   title="Call">
-                  <i class="bi bi-telephone-outbound"></i>
-                </a>
-              </div>
+            <div class="contact-phone-buttons">
+              <button type="button"
+                      class="btn btn-sm copy-btn"
+                      data-copy="{{ selected_contact.phone1|phone_number }}"
+                      title="Copy phone number">
+                <i class="bi bi-clipboard"></i>
+              </button>
+              <a href="tel:{{ selected_contact.phone1|phone_tel }}"
+                 class="btn btn-sm copy-btn contact-call-btn"
+                 title="Call">
+                <i class="bi bi-telephone-outbound"></i>
+              </a>
             </div>
-          {% endif %}
-          {% if selected_contact.phone3 %}
-            <div class="contact-item contact-phone-item">
-              <div class="contact-phone-text">
-                <i class="bi bi-telephone"></i>
-                {{ selected_contact.phone3|phone_number }} - {{ selected_contact.phone3_label|lower }}
-              </div>
-              <div class="contact-phone-buttons">
-                <button type="button"
-                        class="btn btn-sm copy-btn"
-                        data-copy="{{ selected_contact.phone3|phone_number }}"
-                        title="Copy phone number">
-                  <i class="bi bi-clipboard"></i>
-                </button>
-                <a href="tel:{{ selected_contact.phone3|phone_tel }}"
-                   class="btn btn-sm copy-btn contact-call-btn"
-                   title="Call">
-                  <i class="bi bi-telephone-outbound"></i>
-                </a>
-              </div>
+          </div>
+        {% endif %}
+        {% if selected_contact.phone2 %}
+          <div class="contact-item contact-phone-item">
+            <div class="contact-phone-text">
+              <i class="bi bi-telephone"></i>
+              {{ selected_contact.phone2|phone_number }} - {{ selected_contact.phone2_label|lower }}
             </div>
-          {% endif %}
-        </div>
+            <div class="contact-phone-buttons">
+              <button type="button"
+                      class="btn btn-sm copy-btn"
+                      data-copy="{{ selected_contact.phone2|phone_number }}"
+                      title="Copy phone number">
+                <i class="bi bi-clipboard"></i>
+              </button>
+              <a href="tel:{{ selected_contact.phone2|phone_tel }}"
+                 class="btn btn-sm copy-btn contact-call-btn"
+                 title="Call">
+                <i class="bi bi-telephone-outbound"></i>
+              </a>
+            </div>
+          </div>
+        {% endif %}
+        {% if selected_contact.phone3 %}
+          <div class="contact-item contact-phone-item">
+            <div class="contact-phone-text">
+              <i class="bi bi-telephone"></i>
+              {{ selected_contact.phone3|phone_number }} - {{ selected_contact.phone3_label|lower }}
+            </div>
+            <div class="contact-phone-buttons">
+              <button type="button"
+                      class="btn btn-sm copy-btn"
+                      data-copy="{{ selected_contact.phone3|phone_number }}"
+                      title="Copy phone number">
+                <i class="bi bi-clipboard"></i>
+              </button>
+              <a href="tel:{{ selected_contact.phone3|phone_tel }}"
+                 class="btn btn-sm copy-btn contact-call-btn"
+                 title="Call">
+                <i class="bi bi-telephone-outbound"></i>
+              </a>
+            </div>
+          </div>
+        {% endif %}
       </div>
-    {% endif %}
-  </div>
+    </div>
+  {% endif %}
   {# Website Card #}
   {% if selected_contact.website %}
     <div class="contact-card">
