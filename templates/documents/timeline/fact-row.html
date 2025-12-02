@@ -75,18 +75,20 @@
        title="Add source">
       <i class="bi bi-plus-circle"></i>
     </a>
-    {% for label in fact.labels.all %}
-      {% include "documents/labels/badge.html" with object_type="fact" object=fact %}
-    {% endfor %}
-    <a href="#"
-       class="add-label-btn"
-       hx-get="{% url 'documents:labels-apply-modal' 'fact' fact.id %}"
-       hx-target="#htmx-modal-container"
-       data-bs-toggle="modal"
-       data-bs-target="#htmx-modal-container"
-       title="Add label">
-      <i class="bi bi-tag"></i>
-    </a>
+    <div class="fact-labels">
+      {% for label in fact.labels.all %}
+        {% include "documents/labels/badge.html" with object_type="fact" object=fact %}
+      {% endfor %}
+      <a href="#"
+         class="add-label-btn"
+         hx-get="{% url 'documents:labels-apply-modal' 'fact' fact.id %}"
+         hx-target="#htmx-modal-container"
+         data-bs-toggle="modal"
+         data-bs-target="#htmx-modal-container"
+         title="Add label">
+        <i class="bi bi-tag"></i>
+      </a>
+    </div>
   </td>
   <td class="importance{% if fact.color %} hl-{{ fact.color|lower }}{% endif %}">
     {% include "documents/timeline/importance-display.html" %}

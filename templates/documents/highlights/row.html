@@ -31,6 +31,15 @@
               data-url="{% url 'documents:highlight-link' highlight.id %}">
         <i class="bi bi-link-45deg"></i>
       </button>
+      <a href="#"
+         class="highlight-link-btn"
+         hx-get="{% url 'documents:labels-apply-modal' 'highlight' highlight.id %}"
+         hx-target="#htmx-modal-container"
+         data-bs-toggle="modal"
+         data-bs-target="#htmx-modal-container"
+         title="Add label">
+        <i class="bi bi-tag"></i>
+      </a>
     </h3>
     <div class="highlight-card-text">{{ highlight.text }}</div>
     <cite class="highlight-card-citation">
@@ -40,15 +49,6 @@
       {% for label in highlight.labels.all %}
         {% include "documents/labels/badge.html" with object_type="highlight" object=highlight %}
       {% endfor %}
-      <a href="#"
-         class="add-label-btn"
-         hx-get="{% url 'documents:labels-apply-modal' 'highlight' highlight.id %}"
-         hx-target="#htmx-modal-container"
-         data-bs-toggle="modal"
-         data-bs-target="#htmx-modal-container"
-         title="Add label">
-        <i class="bi bi-tag"></i>
-      </a>
     </div>
   </div>
 </article>

@@ -10,6 +10,14 @@
   overflow-y: visible;
 }
 
+#files-list {
+  overflow: visible;
+}
+
+#files-list tbody {
+  overflow: visible;
+}
+
 /* Column widths */
 #files-list .col-select {
   width: 3rem;
@@ -96,46 +104,62 @@
   overflow-wrap: break-word;
 }
 
-#files-list .file-name {
-  /* Allow wrapping for file name */
+/* File name row with three-dot menu */
+#files-list .file-name-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+#files-list .file-name-content {
+  flex: 1;
+  min-width: 0;
+}
+
+#files-list .file-name-link {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Three-dot menu */
+#files-list .file-menu {
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+#files-list .file-menu .menu-icon {
+  color: var(--stone-400);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+#files-list tr:hover .file-menu .menu-icon {
+  opacity: 1;
+}
+
+#files-list .file-menu .menu-icon:hover {
+  color: var(--stone-600);
+}
+
+#files-list .file-menu {
+  position: static;
+}
+
+#files-list .file-menu .dropdown-menu {
+  position: absolute;
+}
+
+/* Inline name edit input */
+#files-list .edit-file-name-input {
+  background: inherit;
+  border: none;
+  padding: 0;
+  width: 100%;
 }
 
 #files-list .file-description {
   font-size: 0.875rem;
   color: var(--text-muted);
-}
-
-/* Ghost action buttons - inline after name */
-#files-list .file-actions {
-  margin-left: 1rem;
-  white-space: nowrap;
-}
-
-#files-list .file-actions .action-btn + .action-btn {
-  margin-left: 0.75rem;
-}
-
-#files-list .file-actions .action-btn {
-  color: var(--stone-400);
-  /* padding: 0.25rem; */
-  text-decoration: none;
-  opacity: 0;
-  transition: opacity 0.15s, color 0.15s;
-}
-
-#files-list tr:hover .file-actions .action-btn {
-  opacity: 1;
-}
-
-#files-list .file-actions .action-btn:hover {
-  color: var(--stone-600);
-}
-
-#files-list .file-actions button.action-btn {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
 }
 
 /* Inline date input */
@@ -212,66 +236,14 @@
 }
 
 /*------------------------------------------------
-Label badges
+File labels container
 ------------------------------------------------*/
 
 #files-list .file-labels {
   margin-top: 0.25rem;
 }
 
-#files-list .label-badge {
-  display: inline-block;
-  margin-right: 0.25rem;
-  font-size: 0.8125rem;
+/* Fix label dropdown overflow */
+#files-list .col-document {
+  overflow: visible;
 }
-
-#files-list .label-badge .badge-link {
-  display: inline-block;
-  padding: 0.125rem 0.5rem;
-  border-radius: 0.25rem;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-#files-list .label-badge .badge-link:hover {
-  opacity: 0.8;
-}
-
-/* Add label ghost button */
-#files-list .add-label-btn {
-  display: inline-block;
-  color: var(--stone-400);
-  opacity: 0;
-  transition: opacity 0.15s, color 0.15s;
-}
-
-#files-list tr:hover .add-label-btn {
-  opacity: 1;
-}
-
-#files-list .add-label-btn:hover {
-  color: var(--stone-600);
-}
-
-/*------------------------------------------------
-Label color classes
-------------------------------------------------*/
-
-.label-blue,
-.label-gray,
-.label-green,
-.label-orange,
-.label-purple,
-.label-red,
-.label-yellow {
-  border: 1px solid var(--stone-300);
-  color: var(--stone-600);
-}
-
-.label-blue { background-color: var(--blue-100); }
-.label-gray { background-color: var(--stone-125); }
-.label-green { background-color: var(--green-100); }
-.label-orange { background-color: var(--orange-100); }
-.label-purple { background-color: var(--purple-100); }
-.label-red { background-color: var(--red-100); }
-.label-yellow { background-color: var(--yellow-100); }
