@@ -11,18 +11,10 @@
     <div class="modal-body">
       <form class="form-compact"
             hx-post="{% url 'documents:edit-highlight' highlight.id %}"
-            hx-target="#highlight-row-{{ highlight.id }}"
+            hx-target="#highlight-card-{{ highlight.id }}"
             hx-swap="outerHTML">
         {% csrf_token %}
-        <div class="highlight-meta-row">
-          <div class="form-group">
-            <label>Document</label>
-            <div class="highlight-info-card highlight-document">{{ highlight.document.name }}</div>
-          </div>
-          <div class="form-group">
-            <label>Page</label>
-            <div class="highlight-info-card">{{ highlight.page_number }}</div>
-          </div>
+        <div class="highlight-edit-grid">
           <div class="form-group">
             <label for="highlight-color">Color</label>
             <select class="form-control" id="highlight-color" name="color">
@@ -37,19 +29,15 @@
                       {% if highlight.color == "purple" %}selected{% endif %}>Purple</option>
             </select>
           </div>
-        </div>
-        <div class="form-group">
-          <label for="highlight-slug">Slug</label>
-          <input type="text"
-                 class="form-control"
-                 id="highlight-slug"
-                 name="slug"
-                 value="{{ highlight.slug }}"
-                 required>
-        </div>
-        <div class="form-group">
-          <label>Text</label>
-          <div class="highlight-info-card highlight-text-preview">{{ highlight.text }}</div>
+          <div class="form-group highlight-slug-group">
+            <label for="highlight-slug">Slug</label>
+            <input type="text"
+                   class="form-control"
+                   id="highlight-slug"
+                   name="slug"
+                   value="{{ highlight.slug }}"
+                   required>
+          </div>
         </div>
         <div class="flex-center-space">
           <div>
@@ -60,7 +48,7 @@
                href="#"
                hx-confirm="Are you sure you want to delete this highlight?"
                hx-post="{% url 'documents:delete-highlight' highlight.id %}"
-               hx-target="#highlight-row-{{ highlight.id }}"
+               hx-target="#highlight-card-{{ highlight.id }}"
                hx-swap="outerHTML"
                data-bs-dismiss="modal">Delete</a>
           </div>
@@ -69,29 +57,3 @@
     </div>
   </div>
 </div>
-<style>
-  .highlight-info-card {
-    padding: 0.5rem 0.75rem;
-    background: var(--stone-50);
-    border: 1px solid var(--stone-200);
-    border-radius: 0.25rem;
-    font-size: 0.95rem;
-  }
-
-  .highlight-text-preview {
-    max-height: 200px;
-    overflow-y: auto;
-    white-space: normal;
-  }
-
-  .highlight-meta-row {
-    display: grid;
-    grid-template-columns: 3fr 2fr 1fr;
-    gap: 1rem;
-  }
-
-  .highlight-document {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-  }
-</style>

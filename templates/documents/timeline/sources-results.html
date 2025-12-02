@@ -10,7 +10,7 @@
              hx-swap="outerHTML"
              data-bs-dismiss="modal">
             <i class="bi bi-file-earmark-text"></i>
-            {{ document.name|truncatechars:40 }}
+            {{ document.name|truncatechars:80 }}
           </a>
         </li>
       {% endfor %}
@@ -22,9 +22,11 @@
              hx-target="#fact-{{ fact.id }}"
              hx-swap="outerHTML"
              data-bs-dismiss="modal">
-            <i class="bi bi-exclamation-circle me-1"></i>
-            {{ highlight.slug|truncatechars:30 }}
-            <small class="text-muted">- {{ highlight.document.name|truncatechars:20 }}</small>
+            <i class="bi bi-highlighter"></i>
+            {{ highlight.slug|truncatechars:80 }}
+            <div class="assign-results-document">
+              <small class="text-muted">{{ highlight.document.name|truncatechars:20 }}</small>
+            </div>
           </a>
         </li>
       {% endfor %}

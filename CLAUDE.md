@@ -128,9 +128,10 @@ Please run pre-commit hooks and fix any linting errors on all significant change
 - Pre-commit hooks enforce code quality
 - Migrations excluded from linting (see .pre-commit-config.yaml)
 
-- do not use inline styles in HTML
-- css values should be in rems and snap to a 0.25rem grid
-- tests run slowly on this server, when testing, please run targeted unit tests to cover recent changes
+- Do not use inline styles in HTML
+- Do not use style tags. Place all styles in a stylesheet.
+- Css values should be in rems and snap to a 0.25rem grid
+- Tests run slowly on this server, when testing, please run targeted unit tests to cover recent changes
 
 
 ## Template: Django & HTMX Project (IMPORTANT)

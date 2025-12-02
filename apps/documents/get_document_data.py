@@ -1,3 +1,5 @@
+from django.db.models import Count
+
 from apps.documents.filters import DocumentsFilter
 from apps.documents.models import Document, Label
 from apps.management.pagination import CustomPaginator
@@ -45,6 +47,7 @@ def get_document_data(request):
         Document.objects.filter(matter=matter)
         .select_related("matter", "uploaded_by", "proceeding")
         .prefetch_related("labels")
+        .annotate(highlight_count=Count("highlights"))
         .order_by("-uploaded_at")
     )
 

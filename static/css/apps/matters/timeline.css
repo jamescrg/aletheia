@@ -101,6 +101,14 @@ Filter form
   width: 9.5rem;
 }
 
+.assign-results a {
+  color: var(--color-primary);
+}
+
+.assign-results-document {
+  margin-left: 1.5rem;
+}
+
 /*------------------------------------------------
 Responsive
 ------------------------------------------------*/

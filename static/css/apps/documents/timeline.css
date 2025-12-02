@@ -1,7 +1,13 @@
-/* Timeline source badges */
+/* Fix dropdown overflow issues */
+.table-container:has(.timeline-list) {
+  overflow: visible;
+}
+
 .timeline-list td {
   overflow: visible;
 }
+
+/* Timeline source badges */
 
 .timeline-list .source-badge {
   display: inline-block;
@@ -43,4 +49,9 @@
 
 .timeline-list .add-source-btn:hover {
   color: var(--stone-600);
+}
+
+/* Sources modal search results */
+#sources-results .assign-results li {
+  max-width: 100%;
 }

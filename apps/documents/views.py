@@ -990,6 +990,16 @@ def highlights_filter_document(request, document_id=None):
 
 
 @login_required
+def highlights_for_document(request, document_id):
+    """Set document filter and redirect to highlights page."""
+    filter_data = request.session.get("highlights_filter", {})
+    filter_data["document"] = document_id
+    request.session["highlights_filter"] = filter_data
+
+    return redirect("documents:highlights-index")
+
+
+@login_required
 def highlights_filter_keyword(request):
     """Filter highlights by keyword (inline search)."""
     filter_data = request.session.get("highlights_filter", {})

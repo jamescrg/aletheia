@@ -109,3 +109,10 @@
   color: var(--color-primary);
   padding: 0.75rem;
 }
+
+/* Edit Modal */
+.highlight-edit-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1rem;
+}

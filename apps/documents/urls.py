@@ -35,6 +35,7 @@ from apps.documents.views import (
     highlights_filter_document,
     highlights_filter_keyword,
     highlights_filter_sort,
+    highlights_for_document,
     highlights_index,
     highlights_list,
     index,
@@ -164,6 +165,11 @@ urlpatterns = [
     ),
     # Highlights subapp
     path("documents/highlights/", highlights_index, name="highlights-index"),
+    path(
+        "documents/highlights/for/<int:document_id>/",
+        highlights_for_document,
+        name="highlights-for-document",
+    ),
     path("documents/highlights/list/", highlights_list, name="highlights-list"),
     path("documents/highlights/filter/", highlights_filter, name="highlights-filter"),
     path(

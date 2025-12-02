@@ -39,6 +39,13 @@
                 data-url="{% url 'documents:viewer' document.id %}">
           <i class="bi bi-link-45deg"></i>
         </button>
+        {% if document.highlight_count %}
+          <a href="{% url 'documents:highlights-for-document' document.id %}"
+             class="action-btn"
+             title="View highlights">
+            <i class="bi bi-highlighter"></i>
+          </a>
+        {% endif %}
       </span>
     </div>
     {% if document.description %}<div class="doc-description">{{ document.description }}</div>{% endif %}
