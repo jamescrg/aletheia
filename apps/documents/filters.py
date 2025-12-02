@@ -5,6 +5,7 @@ from django.db.models import Q
 from apps.documents.models import Document, Fact, Highlight, Label
 from apps.matters.models import Matter
 from apps.matters.proceedings.models import Proceeding
+from config.helpers import MultipleOrderingFilter
 
 
 class ProceedingChoiceFilter(django_filters.ModelChoiceFilter):
@@ -16,8 +17,10 @@ class ProceedingChoiceFilter(django_filters.ModelChoiceFilter):
 
 
 class DocumentsFilter(django_filters.FilterSet):
-    # Keyword filter (used by inline search, not shown in filter form)
-    keyword = django_filters.CharFilter(method="filter_keyword")
+    keyword = django_filters.CharFilter(
+        method="filter_keyword",
+        label="Keyword",
+    )
     date_from = django_filters.DateFilter(
         field_name="date",
         lookup_expr="gte",
@@ -50,12 +53,15 @@ class DocumentsFilter(django_filters.FilterSet):
             ("name", "name"),
             ("uploaded_at", "uploaded_at"),
             ("date", "date"),
-        ]
+            ("importance", "importance"),
+        ],
+        label="Order By",
     )
 
     class Meta:
         model = Document
         fields = [
+            "keyword",
             "date_from",
             "date_to",
             "category",
@@ -146,10 +152,16 @@ class LabelsFilter(django_filters.FilterSet):
 
 class TimelineFilter(django_filters.FilterSet):
     date_start = django_filters.DateFilter(
-        field_name="date", lookup_expr="gte", label="Start Date"
+        field_name="date",
+        lookup_expr="gte",
+        label="Start Date",
+        widget=forms.DateInput(attrs={"type": "date"}),
     )
     date_end = django_filters.DateFilter(
-        field_name="date", lookup_expr="lte", label="End Date"
+        field_name="date",
+        lookup_expr="lte",
+        label="End Date",
+        widget=forms.DateInput(attrs={"type": "date"}),
     )
     keyword = django_filters.CharFilter(method="filter_keyword", label="Keyword")
     importance = django_filters.NumberFilter(
@@ -157,10 +169,23 @@ class TimelineFilter(django_filters.FilterSet):
         lookup_expr="lte",
         label="Importance (≤)",
     )
+    order_by = MultipleOrderingFilter(
+        fields=[
+            (("date", "time"), "date"),
+            ("description", "description"),
+            ("importance", "importance"),
+        ],
+        field_labels={
+            "date": "Date and Time",
+            "description": "Description",
+            "importance": "Importance",
+        },
+        label="Order By",
+    )
 
     class Meta:
         model = Fact
-        fields = ["date_start", "date_end", "keyword", "importance"]
+        fields = ["date_start", "date_end", "keyword", "importance", "order_by"]
 
     def filter_keyword(self, queryset, name, value):
         if value:

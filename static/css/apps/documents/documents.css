@@ -4,6 +4,12 @@
   min-width: 60rem;
 }
 
+/* Fix dropdown overflow issues */
+#documents .table-container {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
 /* Column widths */
 #documents-list .col-select {
   width: 3rem;
@@ -33,6 +39,20 @@
 
 #documents-list .col-proceeding {
   width: 16.5rem;
+}
+
+#documents-list .col-importance {
+  width: 3rem;
+  text-align: center;
+  overflow: visible;
+}
+
+#documents-list .col-importance .btn-sort {
+  margin: 0;
+}
+
+#documents-list .col-importance .dropdown-menu {
+  min-width: 2rem;
 }
 
 /* Checkbox styling */

@@ -133,7 +133,9 @@ def documents_filter_keyword(request):
 
     request.session["documents_filter"] = filter_data
 
-    return redirect("documents:list")
+    # Render just the table partial (for search input updates)
+    documents_data = get_document_data(request)
+    return render(request, "documents/documents/table.html", documents_data)
 
 
 @login_required
@@ -213,6 +215,15 @@ def document_proceeding(request, document_id, proceeding_id):
         proceeding = get_object_or_404(Proceeding, id=proceeding_id)
         document.proceeding = proceeding
 
+    document.save()
+    return redirect("documents:list")
+
+
+@login_required
+def document_importance(request, document_id, importance):
+    """Set document importance."""
+    document = get_object_or_404(Document, id=document_id)
+    document.importance = importance
     document.save()
     return redirect("documents:list")
 
@@ -1097,22 +1108,43 @@ def highlights_filter_default(request):
 # =============================================================================
 
 
+def get_timeline_data(request, matter):
+    """Get timeline data with filters applied from session."""
+    filter_data = request.session.get("timeline_filter", {})
+
+    facts = []
+    if matter:
+        queryset = Fact.objects.filter(matter=matter).order_by("date", "time")
+
+        # Apply filters if present
+        if filter_data:
+            timeline_filter = TimelineFilter(filter_data, queryset=queryset)
+            facts = timeline_filter.qs
+        else:
+            facts = queryset
+
+    # Get current sort order
+    current_order = filter_data.get("order_by", "date")
+    if isinstance(current_order, list):
+        current_order = current_order[0] if current_order else "date"
+
+    return {
+        "facts": facts,
+        "current_order": current_order,
+    }
+
+
 @login_required
 def timeline_index(request):
     """Main timeline view."""
     matter, matters = get_selected_matter(request)
-
-    facts = []
-    if matter:
-        facts = Fact.objects.filter(matter=matter).order_by("date", "time")
 
     context = {
         "app": "documents",
         "subapp": "timeline",
         "matter": matter,
         "matters": matters,
-        "facts": facts,
-    }
+    } | get_timeline_data(request, matter)
 
     return render(request, "documents/timeline/main.html", context)
 
@@ -1122,20 +1154,12 @@ def timeline_list(request):
     """HTMX partial for timeline list."""
     matter, matters = get_selected_matter(request)
 
-    facts = []
-    if matter:
-        facts = Fact.objects.filter(matter=matter).order_by("date", "time")
-        # Apply filters
-        timeline_filter = TimelineFilter(request.GET, queryset=facts)
-        facts = timeline_filter.qs
-
     context = {
         "app": "documents",
         "subapp": "timeline",
         "matter": matter,
         "matters": matters,
-        "facts": facts,
-    }
+    } | get_timeline_data(request, matter)
 
     return render(request, "documents/timeline/list.html", context)
 
@@ -1365,3 +1389,56 @@ def fact_remove_source(request, fact_id):
         "fact": fact,
     }
     return render(request, "documents/timeline/fact-row.html", context)
+
+
+@login_required
+def fact_importance(request, fact_id, importance):
+    """Set fact importance."""
+    fact = get_object_or_404(Fact, pk=fact_id)
+    fact.importance = importance
+    fact.save()
+    return redirect("documents:timeline-list")
+
+
+@login_required
+def timeline_filter(request):
+    """Filter modal for timeline - GET shows modal, POST saves to session."""
+    matter, matters = get_selected_matter(request)
+
+    if request.method == "POST":
+        filter_data = {
+            key: value
+            for key, value in request.POST.items()
+            if key != "csrfmiddlewaretoken"
+        }
+        request.session["timeline_filter"] = filter_data
+        request.session.modified = True
+        return HttpResponse(status=204, headers={"HX-Trigger": "timelineChanged"})
+
+    # GET - show filter modal
+    filter_data = request.session.get("timeline_filter", {})
+
+    queryset = Fact.objects.filter(matter=matter) if matter else Fact.objects.none()
+
+    filter_obj = TimelineFilter(filter_data, queryset=queryset)
+
+    return render(request, "documents/timeline/filter.html", {"filter": filter_obj})
+
+
+@login_required
+def timeline_sort(request, order):
+    """Sort timeline by field, toggling asc/desc."""
+    filter_data = request.session.get("timeline_filter", {})
+
+    current_order = filter_data.get("order_by", "")
+
+    if current_order == order:
+        new_order = f"-{order}" if not current_order.startswith("-") else order
+    else:
+        new_order = order
+
+    filter_data["order_by"] = new_order
+    request.session["timeline_filter"] = filter_data
+    request.session.modified = True
+
+    return redirect("documents:timeline-list")

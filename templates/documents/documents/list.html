@@ -69,7 +69,7 @@
                value="{{ selected_keyword|default:'' }}"
                class="filter-input"
                hx-get="{% url 'documents:filter-keyword' %}"
-               hx-target="#documents"
+               hx-target="#documents-table"
                hx-trigger="keyup changed delay:500ms"
                hx-include="this">
         {% if selected_documents %}
@@ -91,46 +91,5 @@
       </div>
     </div>
   </div>
-  <div class="table-container">
-    <table id="documents-list" class="table table-fixed">
-      <colgroup>
-        <col class="col-select">
-        <col class="col-category">
-        <col class="col-date">
-        <col class="col-document">
-        <col class="col-proceeding">
-      </colgroup>
-      <tr>
-        <th class="col-select">
-          <i class="bi bi-check2-square"></i>
-        </th>
-        <th class="col-category">Category</th>
-        <th class="col-date">
-          Date
-          <button class="btn-sort {% if 'date' in current_order %}active{% endif %}"
-                  hx-get="{% url 'documents:sort' 'date' %}"
-                  hx-target="#documents">
-            <i class="bi bi-chevron-expand"></i>
-          </button>
-        </th>
-        <th class="col-document">
-          Document
-          <button class="btn-sort {% if 'name' in current_order %}active{% endif %}"
-                  hx-get="{% url 'documents:sort' 'name' %}"
-                  hx-target="#documents">
-            <i class="bi bi-chevron-expand"></i>
-          </button>
-        </th>
-        <th class="col-proceeding">Proceeding</th>
-      </tr>
-      {% if objects %}
-        {% for document in objects %}
-          {% include "documents/documents/row.html" %}
-        {% endfor %}
-      {% endif %}
-    </table>
-  </div>
-  <div class="flex-start-space">
-    <div>{% include "pagination.html" %}</div>
-  </div>
+  <div id="documents-table">{% include "documents/documents/table.html" %}</div>
 </div>

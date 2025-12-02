@@ -76,4 +76,7 @@
       <i class="bi bi-plus-circle"></i>
     </a>
   </td>
+  <td class="importance{% if fact.color %} hl-{{ fact.color|lower }}{% endif %}">
+    {% include "documents/timeline/importance-display.html" %}
+  </td>
 </tr>

@@ -1,0 +1,22 @@
+<div class="dropdown">
+  <button class="button-link"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false">{{ fact.importance }}</button>
+  <ul class="dropdown-menu">
+    {% for i in '123456789'|make_list %}
+      <li>
+        <a class="dropdown-item"
+           href="#"
+           hx-get="{% url 'documents:fact-importance' fact.id forloop.counter %}"
+           hx-target="#timeline">{{ forloop.counter }}</a>
+      </li>
+    {% endfor %}
+    <li>
+      <a class="dropdown-item"
+         href="#"
+         hx-get="{% url 'documents:fact-importance' fact.id 10 %}"
+         hx-target="#timeline">10</a>
+    </li>
+  </ul>
+</div>

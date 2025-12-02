@@ -9,6 +9,7 @@ from apps.documents.views import (
     delete_label,
     document_category,
     document_date,
+    document_importance,
     document_proceeding,
     document_row,
     document_viewer,
@@ -25,6 +26,7 @@ from apps.documents.views import (
     edit_highlight,
     edit_label,
     fact_add_source,
+    fact_importance,
     fact_remove_source,
     fact_sources_modal,
     fact_sources_search,
@@ -52,10 +54,12 @@ from apps.documents.views import (
     timeline_delete,
     timeline_edit,
     timeline_edit_description,
+    timeline_filter,
     timeline_index,
     timeline_list,
     timeline_pdf,
     timeline_print,
+    timeline_sort,
     timeline_update_description,
     toggle_document_select,
 )
@@ -111,6 +115,11 @@ urlpatterns = [
         "documents/<int:document_id>/proceeding/<int:proceeding_id>/",
         document_proceeding,
         name="document-proceeding",
+    ),
+    path(
+        "documents/<int:document_id>/importance/<int:importance>/",
+        document_importance,
+        name="document-importance",
     ),
     path(
         "documents/get-proceedings-and-labels/",
@@ -200,6 +209,8 @@ urlpatterns = [
     # Timeline subapp
     path("documents/timeline/", timeline_index, name="timeline-index"),
     path("documents/timeline/list/", timeline_list, name="timeline-list"),
+    path("documents/timeline/filter/", timeline_filter, name="timeline-filter"),
+    path("documents/timeline/sort/<str:order>/", timeline_sort, name="timeline-sort"),
     path("documents/timeline/add/", timeline_add, name="timeline-add"),
     path("documents/timeline/<int:fact_id>/edit/", timeline_edit, name="timeline-edit"),
     path(
@@ -238,5 +249,10 @@ urlpatterns = [
         "documents/timeline/<int:fact_id>/sources/remove/",
         fact_remove_source,
         name="fact-remove-source",
+    ),
+    path(
+        "documents/timeline/<int:fact_id>/importance/<int:importance>/",
+        fact_importance,
+        name="fact-importance",
     ),
 ]

@@ -1,0 +1,51 @@
+<div class="table-container">
+  <table id="documents-list" class="table table-fixed">
+    <colgroup>
+      <col class="col-select">
+      <col class="col-category">
+      <col class="col-date">
+      <col class="col-document">
+      <col class="col-proceeding">
+      <col class="col-importance">
+    </colgroup>
+    <tr>
+      <th class="col-select">
+        <i class="bi bi-check2-square"></i>
+      </th>
+      <th class="col-category">Category</th>
+      <th class="col-date">
+        Date
+        <button class="btn-sort {% if 'date' in current_order %}active{% endif %}"
+                hx-get="{% url 'documents:sort' 'date' %}"
+                hx-target="#documents">
+          <i class="bi bi-chevron-expand"></i>
+        </button>
+      </th>
+      <th class="col-document">
+        Document
+        <button class="btn-sort {% if 'name' in current_order %}active{% endif %}"
+                hx-get="{% url 'documents:sort' 'name' %}"
+                hx-target="#documents">
+          <i class="bi bi-chevron-expand"></i>
+        </button>
+      </th>
+      <th class="col-proceeding">Proceeding</th>
+      <th class="col-importance">
+        <button class="btn-sort {% if 'importance' in current_order %}active{% endif %}"
+                hx-get="{% url 'documents:sort' 'importance' %}"
+                hx-target="#documents"
+                title="Sort by importance">
+          <i class="bi bi-flag"></i>
+        </button>
+      </th>
+    </tr>
+    {% if objects %}
+      {% for document in objects %}
+        {% include "documents/documents/row.html" %}
+      {% endfor %}
+    {% endif %}
+  </table>
+</div>
+<div class="flex-start-space">
+  <div>{% include "pagination.html" %}</div>
+</div>
