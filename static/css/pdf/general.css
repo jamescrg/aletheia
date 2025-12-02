@@ -169,8 +169,8 @@ Fact Color Classes
   background-color: var(--orange-50) !important;
 }
 
-.hl-purple td {
-  background-color: var(--purple-50) !important;
+.hl-violet td {
+  background-color: var(--violet-50) !important;
 }
 
 .hl-red td {

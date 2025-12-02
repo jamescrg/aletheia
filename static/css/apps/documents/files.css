@@ -221,18 +221,10 @@
 
 .ocr-badge {
   margin-left: 0.5rem;
-  vertical-align: middle;
-  background-color: var(--stone-200);
-  color: var(--stone-600);
-  font-size: 0.85rem;
-  padding: 0.125rem 0.5rem;
-  border-radius: 0.25rem;
-  white-space: nowrap;
 }
 
 .ocr-badge.ocr-failed {
   background-color: var(--red-100);
-  color: var(--red-700);
 }
 
 /*------------------------------------------------

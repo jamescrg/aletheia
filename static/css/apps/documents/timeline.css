@@ -154,26 +154,6 @@ Source badges
 .timeline-list .source-badge {
   display: inline-block;
   margin-left: 0.5rem;
-  font-size: 0.8125rem;
-}
-
-.timeline-list .source-badge .badge-link {
-  display: inline-block;
-  padding: 0.125rem 0.5rem;
-  background-color: var(--stone-200);
-  color: var(--stone-600);
-  border-radius: 0.25rem;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.timeline-list .source-badge .badge-link:hover {
-  background-color: var(--stone-300);
-  color: var(--stone-700);
-}
-
-.timeline-list .source-badge .badge-link i {
-  margin-right: 0.25rem;
 }
 
 /* Add source ghost button */
@@ -199,24 +179,6 @@ Label badges
 
 .timeline-list .fact-labels {
   margin-top: 0.25rem;
-}
-
-.timeline-list .label-badge {
-  display: inline-block;
-  margin-right: 0.25rem;
-  font-size: 0.8125rem;
-}
-
-.timeline-list .label-badge .badge-link {
-  display: inline-block;
-  padding: 0.125rem 0.5rem;
-  border-radius: 0.25rem;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.timeline-list .label-badge .badge-link:hover {
-  opacity: 0.8;
 }
 
 /* Add label ghost button */
