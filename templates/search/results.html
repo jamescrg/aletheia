@@ -129,13 +129,13 @@
         {% for highlight in highlights %}
           <tr>
             <td>
-              <a href="{% url 'documents:highlight-link' highlight.id %}">{{ highlight.title }}</a>
+              <a href="{% url 'documents:highlight-link' highlight.id %}">{{ highlight.slug }}</a>
               <br>
               <small class="text-muted">{{ highlight.text|truncatewords:15 }}</small>
             </td>
             <td>{{ highlight.document.name }}</td>
             <td>
-              <a href="{% url 'matters:detail' id=highlight.matter.id %}">{{ highlight.matter.name }}</a>
+              <a href="{% url 'matters:detail' id=highlight.document.matter.id %}">{{ highlight.document.matter.name }}</a>
             </td>
             <td>{{ highlight.page_number }}</td>
           </tr>

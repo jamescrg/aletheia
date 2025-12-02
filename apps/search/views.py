@@ -73,11 +73,11 @@ def results(request):
         highlights = (
             Highlight.objects.filter(
                 Q(search_vector=search_query)
-                | Q(title__icontains=text)
+                | Q(slug__icontains=text)
                 | Q(text__icontains=text)
             )
             .annotate(rank=SearchRank("search_vector", search_query))
-            .select_related("document", "matter")
+            .select_related("document", "document__matter")
             .order_by("-rank")[:20]
         )
 
