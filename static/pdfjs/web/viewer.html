@@ -120,10 +120,11 @@
       <div class="toolbarSeparator"></div>
       <button id="zoomOut" title="Zoom Out">−</button>
       <select id="zoomSelect">
+        <option value="page-width" selected>Fit Width</option>
         <option value="0.5">50%</option>
         <option value="0.75">75%</option>
         <option value="1">100%</option>
-        <option value="1.25" selected>125%</option>
+        <option value="1.25">125%</option>
         <option value="1.5">150%</option>
         <option value="2">200%</option>
       </select>
@@ -202,20 +203,23 @@
 
       pdfViewer.setDocument(pdf);
       pdfLinkService.setDocument(pdf);
+    }).catch(err => {
+      console.error('Error loading PDF:', err);
+      document.getElementById('viewer').innerHTML = '<p style="padding: 20px; color: red;">Error loading PDF: ' + err.message + '</p>';
+    });
 
-      // Set default zoom to 125%
-      pdfViewer.currentScale = 1.25;
-
-      // Notify parent that viewer is ready
-      window.parent.postMessage({ type: 'viewerReady', numPages: pdf.numPages }, '*');
+    // Set zoom and navigate after pages are loaded
+    eventBus.on('pagesloaded', () => {
+      // Set default zoom to fit width
+      pdfViewer.currentScaleValue = 'page-width';
 
       // Navigate to initial page
       if (initialPage > 1) {
         pdfViewer.currentPageNumber = initialPage;
       }
-    }).catch(err => {
-      console.error('Error loading PDF:', err);
-      document.getElementById('viewer').innerHTML = '<p style="padding: 20px; color: red;">Error loading PDF: ' + err.message + '</p>';
+
+      // Notify parent that viewer is ready
+      window.parent.postMessage({ type: 'viewerReady', numPages: pdfViewer.pagesCount }, '*');
     });
 
     // Page change events
@@ -257,7 +261,12 @@
     });
 
     document.getElementById('zoomSelect').addEventListener('change', evt => {
-      pdfViewer.currentScale = parseFloat(evt.target.value);
+      const value = evt.target.value;
+      if (value === 'page-width') {
+        pdfViewer.currentScaleValue = 'page-width';
+      } else {
+        pdfViewer.currentScale = parseFloat(value);
+      }
     });
 
     function updateZoomSelect() {
