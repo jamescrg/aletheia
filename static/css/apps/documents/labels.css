@@ -1,0 +1,153 @@
+/*------------------------------------------------
+Label color classes
+------------------------------------------------*/
+
+.label-blue,
+.label-gray,
+.label-green,
+.label-orange,
+.label-purple,
+.label-red,
+.label-yellow {
+  border: 1px solid var(--stone-300);
+  color: var(--stone-600);
+}
+
+.label-blue { background-color: var(--blue-100); }
+.label-gray { background-color: var(--stone-125); }
+.label-green { background-color: var(--green-100); }
+.label-orange { background-color: var(--orange-100); }
+.label-purple { background-color: var(--purple-100); }
+.label-red { background-color: var(--red-100); }
+.label-yellow { background-color: var(--yellow-100); }
+
+/*------------------------------------------------
+Label badges (used in files, highlights, timeline)
+------------------------------------------------*/
+
+.label-badge {
+  display: inline-block;
+  margin-right: 0.25rem;
+  font-size: 0.8125rem;
+}
+
+.label-badge .badge-link {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.label-badge .badge-link:hover {
+  opacity: 0.8;
+}
+
+/*------------------------------------------------
+Add label ghost button
+------------------------------------------------*/
+
+.add-label-btn {
+  display: inline-block;
+  color: var(--stone-400);
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+}
+
+tr:hover .add-label-btn {
+  opacity: 1;
+}
+
+.add-label-btn:hover {
+  color: var(--stone-600);
+}
+
+/*------------------------------------------------
+Label assignment modal
+------------------------------------------------*/
+
+.assign-results {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.assign-results li {
+  padding: 0.25rem 0;
+}
+
+.assign-results a {
+  text-decoration: none;
+}
+
+.assign-results a:hover .badge {
+  opacity: 0.8;
+}
+
+/*------------------------------------------------
+Labels cards layout (Labels tab)
+------------------------------------------------*/
+
+.labels-cards {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.labels-cards .card {
+  flex: 1;
+  min-width: 20rem;
+  background: var(--stone-50);
+}
+
+.labels-cards .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.25rem;
+}
+
+.labels-cards .card-header button {
+  background: var(--stone-150);
+  border: solid 1px var(--stone-200);
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+}
+
+.labels-flow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.labels-flow a {
+  text-decoration: none;
+}
+
+.labels-flow a:hover .badge {
+  opacity: 0.8;
+}
+
+/*------------------------------------------------
+Color swatch dropdown widget
+------------------------------------------------*/
+
+.color-swatch-select {
+  display: inline-block;
+}
+
+.color-swatch-btn {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--stone-300);
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.color-swatch-menu {
+  min-width: 8rem;
+}
+
+.color-swatch-item {
+  margin: 0.25rem;
+  border-radius: 0.25rem;
+}

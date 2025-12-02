@@ -844,6 +844,38 @@ def file_row(request, document_id):
 
 
 @login_required
+def files_edit_name(request, document_id):
+    """Edit file name inline."""
+    document = get_object_or_404(Document, id=document_id)
+
+    if request.method == "POST":
+        document.name = request.POST.get("name", document.name)
+        document.save()
+
+        selected_documents = request.session.get("selected_documents", [])
+        proceedings = document.matter.proceeding_set.all().order_by(
+            "forum", "case_number"
+        )
+
+        return render(
+            request,
+            "documents/files/row.html",
+            {
+                "document": document,
+                "selected_documents": selected_documents,
+                "proceedings": proceedings,
+            },
+        )
+
+    # GET - return the input field
+    return render(
+        request,
+        "documents/files/edit-name.html",
+        {"document": document},
+    )
+
+
+@login_required
 def ocr_badge(request, document_id):
     """Return OCR status badge (for HTMX polling)."""
     document = get_object_or_404(Document, id=document_id)

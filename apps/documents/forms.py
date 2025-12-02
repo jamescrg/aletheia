@@ -133,11 +133,11 @@ class HighlightForm(forms.ModelForm):
 class LabelsForm(forms.ModelForm):
     class Meta:
         model = Label
-        fields = ["name", "matter", "color"]
+        fields = ["matter", "color", "name"]
         widgets = {
-            "name": forms.TextInput(attrs={"class": "span2"}),
             "matter": forms.Select(attrs={"class": "span1"}),
             "color": forms.Select(attrs={"class": "span1"}),
+            "name": forms.TextInput(attrs={"class": "span2"}),
         }
 
     def __init__(self, *args, **kwargs):

@@ -197,9 +197,13 @@ Source badges
 Label badges
 ------------------------------------------------*/
 
+.timeline-list .fact-labels {
+  margin-top: 0.25rem;
+}
+
 .timeline-list .label-badge {
   display: inline-block;
-  margin-left: 0.5rem;
+  margin-right: 0.25rem;
   font-size: 0.8125rem;
 }
 

@@ -25,6 +25,7 @@ from apps.documents.views import (
     files_add,
     files_delete,
     files_edit,
+    files_edit_name,
     files_filter,
     files_filter_category,
     files_filter_keyword,
@@ -80,6 +81,7 @@ urlpatterns = [
     path("files/add/", files_add, name="files-add"),
     path("files/add/<int:matter_id>/", files_add, name="files-add-with-matter"),
     path("files/edit/<int:document_id>/", files_edit, name="files-edit"),
+    path("files/edit-name/<int:document_id>/", files_edit_name, name="files-edit-name"),
     path("files/delete/<int:document_id>/", files_delete, name="files-delete"),
     path("files/filter/", files_filter, name="files-filter"),
     path(

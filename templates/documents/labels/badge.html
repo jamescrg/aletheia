@@ -5,7 +5,7 @@
      aria-expanded="false">{{ label.name }}</a>
   <ul class="dropdown-menu">
     <li>
-      <a class="dropdown-item text-danger"
+      <a class="dropdown-item urgent"
          href="#"
          hx-post="{% url 'documents:remove-label-from' object_type object.id %}"
          hx-vals='{"label_id": "{{ label.id }}"}'

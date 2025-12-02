@@ -12,56 +12,69 @@
   <td class="col-category dropdown-cell">{% include "documents/files/category-display.html" %}</td>
   <td class="col-date">{% include "documents/files/date-display.html" %}</td>
   <td class="col-document">
-    <div class="file-name">
-      <a href="#"
-         hx-get="{% url 'documents:files-edit' document.id %}"
-         hx-target="#htmx-modal-container"
-         data-bs-toggle="modal"
-         data-bs-target="#htmx-modal-container">{{ document.name }}</a>
-      {% include "documents/files/ocr-badge.html" %}
-      <span class="file-actions">
-        {% if document.file.name|slice:"-4:"|lower == ".pdf" %}
-          <a href="{% url 'documents:viewer' document.id %}"
-             target="_blank"
-             class="action-btn"
-             title="View">
-            <i class="bi bi-box-arrow-up-right"></i>
-          </a>
-        {% endif %}
-        <a href="{% url 'documents:files-download' document.id %}"
-           class="action-btn"
-           title="Download">
-          <i class="bi bi-download"></i>
-        </a>
-        <button type="button"
-                class="action-btn document-link-btn"
-                title="Copy link to document"
-                data-url="{% url 'documents:viewer' document.id %}">
-          <i class="bi bi-link-45deg"></i>
+    <div class="file-name-row">
+      <div class="file-name-content">
+        <a href="#"
+           class="file-name-link"
+           hx-get="{% url 'documents:files-edit-name' document.id %}"
+           hx-target="this"
+           hx-swap="outerHTML">{{ document.name }}</a>
+        {% include "documents/files/ocr-badge.html" %}
+      </div>
+      <div class="file-menu dropdown">
+        <button class="btn-icon menu-icon"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+          <i class="bi bi-three-dots-vertical"></i>
         </button>
-        {% if document.highlight_count %}
-          <a href="{% url 'documents:highlights-for-document' document.id %}"
-             class="action-btn"
-             title="View highlights">
-            <i class="bi bi-highlighter"></i>
-          </a>
-        {% endif %}
-      </span>
+        <ul class="dropdown-menu">
+          <li>
+            <a class="dropdown-item"
+               href="#"
+               hx-get="{% url 'documents:files-edit' document.id %}"
+               hx-target="#htmx-modal-container"
+               data-bs-toggle="modal"
+               data-bs-target="#htmx-modal-container">Edit File Details</a>
+          </li>
+          {% if document.file.name|slice:"-4:"|lower == ".pdf" %}
+            <li>
+              <a class="dropdown-item"
+                 href="{% url 'documents:viewer' document.id %}"
+                 target="_blank">View</a>
+            </li>
+          {% endif %}
+          <li>
+            <a class="dropdown-item"
+               href="{% url 'documents:files-download' document.id %}">Download</a>
+          </li>
+          <li>
+            <a class="dropdown-item document-link-btn"
+               href="#"
+               data-url="{% url 'documents:viewer' document.id %}">Copy Link to File</a>
+          </li>
+          <li>
+            <a class="dropdown-item"
+               href="#"
+               hx-get="{% url 'documents:labels-apply-modal' 'document' document.id %}"
+               hx-target="#htmx-modal-container"
+               data-bs-toggle="modal"
+               data-bs-target="#htmx-modal-container">Add Label</a>
+          </li>
+          {% if document.highlight_count %}
+            <li>
+              <a class="dropdown-item"
+                 href="{% url 'documents:highlights-for-document' document.id %}">View Highlights</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
     </div>
     {% if document.description %}<div class="file-description">{{ document.description }}</div>{% endif %}
     <div class="file-labels">
       {% for label in document.labels.all %}
         {% include "documents/labels/badge.html" with object_type="document" object=document %}
       {% endfor %}
-      <a href="#"
-         class="add-label-btn"
-         hx-get="{% url 'documents:labels-apply-modal' 'document' document.id %}"
-         hx-target="#htmx-modal-container"
-         data-bs-toggle="modal"
-         data-bs-target="#htmx-modal-container"
-         title="Add label">
-        <i class="bi bi-tag"></i>
-      </a>
     </div>
   </td>
   <td class="col-proceeding dropdown-cell">{% include "documents/files/proceeding-display.html" %}</td>
