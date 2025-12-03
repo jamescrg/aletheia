@@ -104,49 +104,19 @@
   overflow-wrap: break-word;
 }
 
-/* File name row with three-dot menu */
+/* File name row */
 #files-list .file-name-row {
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
 }
 
 #files-list .file-name-content {
-  flex: 1;
   min-width: 0;
 }
 
 #files-list .file-name-link {
   word-wrap: break-word;
   overflow-wrap: break-word;
-}
-
-/* Three-dot menu */
-#files-list .file-menu {
-  flex-shrink: 0;
-  margin-left: 0.5rem;
-}
-
-#files-list .file-menu .menu-icon {
-  color: var(--stone-400);
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-
-#files-list tr:hover .file-menu .menu-icon {
-  opacity: 1;
-}
-
-#files-list .file-menu .menu-icon:hover {
-  color: var(--stone-600);
-}
-
-#files-list .file-menu {
-  position: static;
-}
-
-#files-list .file-menu .dropdown-menu {
-  position: absolute;
 }
 
 /* Inline name edit input */
