@@ -1766,6 +1766,13 @@ def get_search_data(request, matter):
     # Create filter object for rendering the form
     filter_obj = SearchFilter(filter_data, matter=matter)
 
+    # Get counts for empty state
+    doc_count = Document.objects.filter(matter=matter).count() if matter else 0
+    highlight_count = (
+        Highlight.objects.filter(document__matter=matter).count() if matter else 0
+    )
+    fact_count = Fact.objects.filter(matter=matter).count() if matter else 0
+
     return {
         "results": results,
         "query": query,
@@ -1773,6 +1780,9 @@ def get_search_data(request, matter):
         "documents": documents,
         "filter_data": filter_data,
         "filter": filter_obj,
+        "doc_count": doc_count,
+        "highlight_count": highlight_count,
+        "fact_count": fact_count,
     }
 
 
