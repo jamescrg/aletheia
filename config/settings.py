@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     "django_filters",
     "django_cleanup.apps.CleanupConfig",
     "django_q",
+    "watson",
 ]
 
 # Django-Q2 Configuration

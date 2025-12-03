@@ -39,7 +39,8 @@
       "WebFetch(domain:ocrmypdf.readthedocs.io)",
       "Bash(source ~/.venvs/law/bin/activate)",
       "Bash(git checkout:*)",
-      "Bash(pre-commit run:*)"
+      "Bash(pre-commit run:*)",
+      "Bash(isort:*)"
     ],
     "deny": []
   }

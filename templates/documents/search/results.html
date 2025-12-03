@@ -1,0 +1,11 @@
+<div class="search-results-list">
+  {% if query %}
+    {% for result in results %}
+      {% include "documents/search/result-row.html" %}
+    {% empty %}
+      <p class="empty-message">No results found for "{{ query }}".</p>
+    {% endfor %}
+  {% else %}
+    <p class="empty-message">Enter a search term to find documents, highlights, and facts.</p>
+  {% endif %}
+</div>
