@@ -64,7 +64,7 @@
       </div>
     </div>
     {% if document.description %}<div class="file-description">{{ document.description }}</div>{% endif %}
-    {% if document.labels.exists %}
+    {% if document.labels.count %}
       <div class="file-labels">
         {% for label in document.labels.all %}
           {% include "documents/labels/badge.html" with object_type="document" object=document %}
