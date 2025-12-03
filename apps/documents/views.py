@@ -1835,6 +1835,7 @@ def search_query(request):
     request.session["search_filter"] = filter_data
 
     context = get_search_data(request, matter)
+    context["is_htmx"] = True
     return render(request, "documents/search/results.html", context)
 
 

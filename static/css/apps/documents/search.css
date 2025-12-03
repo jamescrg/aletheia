@@ -4,7 +4,7 @@ Search Layout - Two-column with persistent sidebar
 
 .search-layout {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .search-content {
@@ -25,7 +25,7 @@ Search Layout - Two-column with persistent sidebar
   top: 1rem;
   font-size: 0.95rem;
   background: transparent;
-  border: 1px solid var(--stone-300);
+  border: 1px solid var(--stone-200);
   border-radius: 0.25rem;
 }
 
@@ -130,6 +130,12 @@ Filter Panel
   border-color: var(--stone-400);
 }
 
+.filter-panel-form .filter-group.has-value select,
+.filter-panel-form .filter-group.has-value input[type="date"] {
+  background: var(--selected-background);
+  border-color: var(--selected-border);
+}
+
 /*------------------------------------------------
 Search Results List
 ------------------------------------------------*/
@@ -150,9 +156,6 @@ Result Row
   border-top: 1px solid var(--stone-200);
 }
 
-.search-result-row:last-child {
-  border-bottom: 1px solid var(--stone-300);
-}
 
 .result-type-badge {
   flex-shrink: 0;

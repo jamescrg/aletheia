@@ -17,8 +17,17 @@
     </div>
   {% endif %}
 </div>
-<div id="search-result-count"
-     class="search-result-count"
-     hx-swap-oob="true">
-  {% if query %}{{ results|length }} result{{ results|length|pluralize }}{% endif %}
-</div>
+{% if is_htmx %}
+  <div id="search-result-count"
+       class="search-result-count"
+       hx-swap-oob="true">
+    {% if query %}
+      <span class="app-badge app-badge-lg badge-purple">{{ results|length }} result{{ results|length|pluralize }}</span>
+    {% endif %}
+  </div>
+  <aside id="search-filter-panel"
+         class="search-filter-panel"
+         hx-swap-oob="true">
+    {% include "documents/search/filter-panel.html" %}
+  </aside>
+{% endif %}
