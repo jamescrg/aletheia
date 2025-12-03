@@ -1,0 +1,29 @@
+<div class="search-layout">
+  <div class="search-content">
+    <div class="search-input-wrapper">
+      <div class="search-input-group">
+        <input type="search"
+               id="search-query-input"
+               name="query"
+               placeholder="Search documents, highlights, facts..."
+               value="{{ query }}"
+               class="search-input"
+               hx-post="{% url 'documents:search-query' %}"
+               hx-target="#search-results"
+               hx-trigger="keyup changed delay:500ms"
+               hx-include="this"
+               autofocus>
+        <span class="search-input-icon"><i class="bi bi-search"></i></span>
+      </div>
+      <div id="search-result-count" class="search-result-count">
+        {% if query %}
+          <span class="app-badge app-badge-lg badge-purple">{{ results|length }} result{{ results|length|pluralize }}</span>
+        {% endif %}
+      </div>
+    </div>
+    <div id="search-results">{% include "documents/search/results.html" %}</div>
+  </div>
+  <aside id="search-filter-panel" class="search-filter-panel">
+    {% include "documents/search/filter-panel.html" %}
+  </aside>
+</div>

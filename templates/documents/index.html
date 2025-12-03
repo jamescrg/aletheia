@@ -47,6 +47,9 @@
         <li {% if subapp == "labels" %}class="active"{% endif %}>
           <a href="{% url 'documents:labels-index' %}">Labels</a>
         </li>
+        <li {% if subapp == "search" %}class="active"{% endif %}>
+          <a href="{% url 'documents:search-index' %}">Search</a>
+        </li>
       </ul>
     </nav>
     <div class="section subsection">

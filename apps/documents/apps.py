@@ -6,4 +6,5 @@ class DocumentsConfig(AppConfig):
     name = "apps.documents"
 
     def ready(self):
+        import apps.documents.search_config  # noqa: F401
         import apps.documents.signals  # noqa: F401

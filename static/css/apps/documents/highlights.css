@@ -20,6 +20,8 @@
 .highlights-cards {
   display: flex;
   flex-direction: column;
+  border-left: solid 1px var(--stone-200);
+  border-right: solid 1px var(--stone-200);
 }
 
 /* Individual Card */
@@ -40,6 +42,7 @@
   width: 10rem;
   padding-left: 0.5rem;
   color: var(--color-primary);
+  border-right: solid 1px var(--stone-200);
 }
 
 /* Right Panel - Content */
