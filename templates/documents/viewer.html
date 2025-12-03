@@ -537,8 +537,9 @@
           // Close modal
           bootstrap.Modal.getInstance(document.getElementById('highlight-modal')).hide();
 
-          // Clear selection
+          // Clear selection in parent and iframe
           currentSelection = null;
+          iframe.contentWindow.postMessage({ type: 'clearSelection' }, '*');
 
           // Update sidebar
           addHighlightToSidebar(highlight);

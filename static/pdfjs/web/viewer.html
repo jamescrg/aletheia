@@ -424,6 +424,11 @@
           pdfViewer.currentScale = data.scale;
           updateZoomSelect();
           break;
+
+        case 'clearSelection':
+          window.getSelection().removeAllRanges();
+          currentSelection = null;
+          break;
       }
     });
 
