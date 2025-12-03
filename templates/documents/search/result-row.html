@@ -1,11 +1,11 @@
 <article class="search-result-row result-{{ result.type }}">
-  <div class="result-icon">
+  <div class="result-type-badge">
     {% if result.type == "document" %}
-      <i class="bi bi-file-earmark-text"></i>
+      <span class="app-badge app-badge-lg badge-blue"><i class="bi bi-file-earmark-text"></i></span>
     {% elif result.type == "highlight" %}
-      <i class="bi bi-highlighter"></i>
+      <span class="app-badge app-badge-lg badge-yellow"><i class="bi bi-highlighter"></i></span>
     {% elif result.type == "fact" %}
-      <i class="bi bi-calendar-event"></i>
+      <span class="app-badge app-badge-lg badge-green"><i class="bi bi-calendar-event"></i></span>
     {% endif %}
   </div>
   <div class="result-content">
@@ -14,7 +14,7 @@
          class="result-title"
          target="_blank">{{ result.object.name }}</a>
       <div class="result-meta">
-        <span class="result-category badge-{{ result.object.category|lower }}">{{ result.object.category }}</span>
+        <span class="app-badge badge-{{ result.object.category|lower }}">{{ result.object.category }}</span>
         {% if result.object.date %}<span class="result-date">{{ result.object.date|date:"M j, Y" }}</span>{% endif %}
       </div>
       {% if result.object.description %}
@@ -46,7 +46,7 @@
     {% if result.object.labels.exists %}
       <div class="result-labels">
         {% for label in result.object.labels.all %}
-          <span class="label-badge badge-{{ label.color }}">{{ label.name }}</span>
+          <span class="app-badge badge-{{ label.color }}">{{ label.name }}</span>
         {% endfor %}
       </div>
     {% endif %}

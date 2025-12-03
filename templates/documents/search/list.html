@@ -14,48 +14,6 @@
                  hx-trigger="keyup changed delay:500ms"
                  hx-include="this"
                  autofocus>
-          <button type="button"
-                  id="search-type-filter"
-                  class="select-btn filter-dropdown-button {% if filter_data.result_type %}toggle-active{% endif %}"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false">
-            {% if filter_data.result_type == "document" %}
-              Documents
-            {% elif filter_data.result_type == "highlight" %}
-              Highlights
-            {% elif filter_data.result_type == "fact" %}
-              Facts
-            {% else %}
-              All Types
-            {% endif %}
-            <small><i class="bi bi-chevron-down"></i></small>
-          </button>
-          <ul class="dropdown-menu">
-            <li>
-              <a class="dropdown-item {% if not filter_data.result_type %}active{% endif %}"
-                 href="#"
-                 hx-post="{% url 'documents:search-filter-type-clear' %}"
-                 hx-target="#search">All Types</a>
-            </li>
-            <li>
-              <a class="dropdown-item {% if filter_data.result_type == 'document' %}active{% endif %}"
-                 href="#"
-                 hx-post="{% url 'documents:search-filter-type' 'document' %}"
-                 hx-target="#search">Documents</a>
-            </li>
-            <li>
-              <a class="dropdown-item {% if filter_data.result_type == 'highlight' %}active{% endif %}"
-                 href="#"
-                 hx-post="{% url 'documents:search-filter-type' 'highlight' %}"
-                 hx-target="#search">Highlights</a>
-            </li>
-            <li>
-              <a class="dropdown-item {% if filter_data.result_type == 'fact' %}active{% endif %}"
-                 href="#"
-                 hx-post="{% url 'documents:search-filter-type' 'fact' %}"
-                 hx-target="#search">Facts</a>
-            </li>
-          </ul>
           {% if query %}
             <span class="search-result-count">{{ results|length }} result{{ results|length|pluralize }}</span>
           {% endif %}

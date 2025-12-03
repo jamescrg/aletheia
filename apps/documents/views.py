@@ -1763,12 +1763,16 @@ def get_search_data(request, matter):
         Document.objects.filter(matter=matter).order_by("name") if matter else []
     )
 
+    # Create filter object for rendering the form
+    filter_obj = SearchFilter(filter_data, matter=matter)
+
     return {
         "results": results,
         "query": query,
         "labels": labels,
         "documents": documents,
         "filter_data": filter_data,
+        "filter": filter_obj,
     }
 
 

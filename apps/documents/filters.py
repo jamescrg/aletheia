@@ -321,16 +321,32 @@ class SearchFilter(django_filters.FilterSet):
             "importance",
         ]
 
-    def __init__(self, *args, matter=None, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, data=None, *args, matter=None, **kwargs):
+        super().__init__(data, *args, **kwargs)
         self.matter = matter
         if matter:
             self.filters["label"].queryset = Label.objects.filter(
                 Q(matter=matter) | Q(matter__isnull=True)
             ).order_by("name")
-            self.filters["document"].queryset = Document.objects.filter(
-                matter=matter
-            ).order_by("name")
+
+            # Build document queryset filtered by category and label if set
+            doc_qs = Document.objects.filter(matter=matter)
+
+            if data:
+                # Filter by category if selected
+                category = data.get("category", "")
+                if category:
+                    doc_qs = doc_qs.filter(category=category)
+
+                # Filter by label if selected
+                label_id = data.get("label", "")
+                if label_id:
+                    try:
+                        doc_qs = doc_qs.filter(labels__id=int(label_id))
+                    except (ValueError, TypeError):
+                        pass
+
+            self.filters["document"].queryset = doc_qs.order_by("name")
 
     def filter_noop(self, queryset, name, value):
         """No-op filter - actual filtering done in view on search results."""

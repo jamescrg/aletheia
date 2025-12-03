@@ -9,6 +9,10 @@
       hx-trigger="change delay:300ms">
   {% csrf_token %}
   <div class="filter-group">
+    <label for="id_result_type">Type</label>
+    {{ filter.form.result_type }}
+  </div>
+  <div class="filter-group">
     <label for="id_category">Category</label>
     {{ filter.form.category }}
   </div>
