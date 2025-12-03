@@ -198,6 +198,32 @@ Empty State
   color: var(--stone-500);
 }
 
+.search-empty-state {
+  padding: 3rem 2rem;
+  text-align: center;
+  color: var(--stone-500);
+  background: var(--stone-50);
+  border: 1px dashed var(--stone-300);
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+}
+
+.search-empty-state i {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.search-empty-state p {
+  margin: 0;
+}
+
+.search-empty-state .search-stats {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--stone-400);
+}
+
 /*------------------------------------------------
 Responsive
 ------------------------------------------------*/

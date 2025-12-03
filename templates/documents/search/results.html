@@ -6,6 +6,14 @@
       <p class="empty-message">No results found for "{{ query }}".</p>
     {% endfor %}
   {% else %}
-    <p class="empty-message">Enter a search term to find documents, highlights, and facts.</p>
+    <div class="search-empty-state">
+      <i class="bi bi-search"></i>
+      <p>Search across your matter</p>
+      <p class="search-stats">
+        {{ doc_count }} document{{ doc_count|pluralize }},
+        {{ highlight_count }} highlight{{ highlight_count|pluralize }},
+        {{ fact_count }} fact{{ fact_count|pluralize }}
+      </p>
+    </div>
   {% endif %}
 </div>
