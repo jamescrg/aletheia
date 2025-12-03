@@ -17,3 +17,8 @@
     </div>
   {% endif %}
 </div>
+<div id="search-result-count"
+     class="search-result-count"
+     hx-swap-oob="true">
+  {% if query %}{{ results|length }} result{{ results|length|pluralize }}{% endif %}
+</div>
