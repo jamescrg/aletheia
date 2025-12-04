@@ -28,7 +28,7 @@
           </div>
           <div class="priority-text">{{ selected_priority }}</div>
         {% else %}
-          All Priorities
+          All Levels
         {% endif %}
         <small>
           <i class="bi bi-chevron-down"></i>
@@ -42,7 +42,7 @@
              href="#"
              hx-post="{% url 'agenda:tasks-filter-priority' 0 %}"
              hx-target="#tasks"
-             hx-swap="#outerHTML">All Priorities</a>
+             hx-swap="#outerHTML">All Levels</a>
         </li>
         {% for priority in priorities %}
           <li>

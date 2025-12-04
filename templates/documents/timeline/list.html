@@ -20,6 +20,43 @@
               data-bs-target="#htmx-modal-container">
         <i class="bi bi-filter"></i>Filter
       </button>
+      <button type="button"
+              id="timeline-importance-filter"
+              class="select-btn filter-dropdown-button {% if importance_value %}toggle-active{% endif %}"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+        {% if selected_importance %}
+          <div class="importance-arrow">
+            <i class="bi bi-arrow-bar-up"></i>
+          </div>
+          <div class="importance-text">{{ selected_importance }}</div>
+        {% else %}
+          All Levels
+        {% endif %}
+        <small>
+          <i class="bi bi-chevron-down"></i>
+        </small>
+      </button>
+      <ul class="dropdown-menu"
+          hx-target="#timeline-importance-filter"
+          hx-swap="outerHTML">
+        <li>
+          <a class="dropdown-item"
+             href="#"
+             hx-post="{% url 'documents:timeline-filter-importance' 0 %}"
+             hx-target="#timeline"
+             hx-swap="#outerHTML">All Levels</a>
+        </li>
+        {% for importance in importances %}
+          <li>
+            <a class="dropdown-item {% if importance == importance_value %}active{% endif %}"
+               href="#"
+               hx-post="{% url 'documents:timeline-filter-importance' importance %}"
+               hx-target="#timeline"
+               hx-swap="#outerHTML">Importance {{ importance }}</a>
+          </li>
+        {% endfor %}
+      </ul>
       <input type="text"
              id="timeline-keyword-input"
              name="keyword"

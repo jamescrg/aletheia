@@ -1296,10 +1296,21 @@ def get_timeline_data(request, matter):
     if isinstance(keyword, list):
         keyword = keyword[0] if keyword else ""
 
+    # Get importance filter value
+    importance_value = filter_data.get("importance")
+    importance_value = (
+        int(importance_value) if importance_value not in (None, "", 0) else None
+    )
+
     return {
         "facts": facts,
         "current_order": current_order,
         "keyword": keyword,
+        "importances": list(range(1, 11)),
+        "importance_value": importance_value,
+        "selected_importance": (
+            f"Importance {importance_value}" if importance_value else ""
+        ),
     }
 
 
@@ -1630,6 +1641,18 @@ def timeline_filter_keyword(request):
     # Render just the table partial (for search input updates)
     context = get_timeline_data(request, matter)
     return render(request, "documents/timeline/table.html", context)
+
+
+@login_required
+def timeline_filter_importance(request, importance_value):
+    """Filter timeline by importance level."""
+    filter_data = request.session.get("timeline_filter", {})
+    # Set to empty string when 0 (All) is selected, otherwise use the value
+    filter_data["importance"] = "" if importance_value == 0 else importance_value
+
+    request.session["timeline_filter"] = filter_data
+
+    return redirect("documents:timeline-list")
 
 
 # =============================================================================
