@@ -54,8 +54,8 @@ class EventForm(forms.ModelForm):
         description = self.cleaned_data["description"]
         if len(description) < 4:
             raise ValidationError("Description must be 4 or more characters.")
-        if len(description) > 20:
-            raise ValidationError("Description is limited to 20 character.")
+        if len(description) > 200:
+            raise ValidationError("Description is limited to 200 character.")
         return description
 
     def clean(self):
