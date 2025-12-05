@@ -1,89 +1,104 @@
 {% load phone_numbers %}
-<div class="row row-center">
-  {% if matters %}
-    <div class="search-results-title">Matters</div>
-    <div class="table-container">
-      <table class="table">
-        <tr>
-          <th>Matter</th>
-          <th>Work Status</th>
-          <th>Status</th>
-        </tr>
-        {% for matter in matters %}
-          <tr>
-            <td class="matter-name">
-              <a href={% url 'matters:detail' id=matter.id %}>{{ matter.name }}</a>
-            </td>
-            <td>{{ matter.work_status|slice:":30" }}</td>
-            <td class="matter-status">{{ matter.status }}</td>
-          </tr>
-        {% endfor %}
-      </table>
+{% if matters %}
+  <div class="search-section">
+    <div class="search-section-header">
+      <span class="search-section-title">Matters</span>
+      <span class="app-badge badge-gray">{{ matters|length }}</span>
     </div>
-  {% endif %}
-  {% if proceedings %}
-    <div class="search-results-title">Proceedings</div>
-    <div class="table-container">
-      <table class="table">
-        <tr>
-          <th>Matter</th>
-          <th>Forum</th>
-          <th>Case No.</th>
-          <th>Status</th>
-        </tr>
-        {% for proceeding in proceedings %}
-          <tr>
-            <td class="matter-name">
-              <a href={% url 'matters:proceedings-index' id=proceeding.matter.id %}>{{ proceeding.matter.name }}</a>
-            </td>
-            <td>{{ proceeding.forum }}</td>
-            <td class="proceeding-case-number">{{ proceeding.case_number }}</td>
-            <td class="proceeding-status">{{ proceeding.status }}</td>
-          </tr>
-        {% endfor %}
-      </table>
+    <div class="search-cards">
+      {% for matter in matters %}
+        <a href="{% url 'matters:detail' id=matter.id %}" class="search-card">
+          <div class="search-card-icon">
+            <i class="bi bi-briefcase"></i>
+          </div>
+          <div class="search-card-content">
+            <div class="search-card-title">{{ matter.name }}</div>
+            {% if matter.work_status %}<div class="search-card-meta">{{ matter.work_status|truncatewords:8 }}</div>{% endif %}
+          </div>
+          <span class="app-badge {% if matter.status == 'Open' %}badge-green{% else %}badge-gray{% endif %}">{{ matter.status }}</span>
+        </a>
+      {% endfor %}
     </div>
-  {% endif %}
-  {% if contacts %}
-    <div class="search-results-title">Contacts</div>
-    <div class="table-container">
-      <table class="table">
-        <tr>
-          <th>Name</th>
-          <th>Phone1</th>
-          <th>Email</th>
-        </tr>
-        {% for contact in contacts %}
-          <tr>
-            <td class="contact-name">
-              <a href={% url 'contacts:select' contact_id=contact.id %}>{{ contact.name }}</a>
-            </td>
-            <td class="contact-phone1">{{ contact.phone1|phone_number }}</td>
-            <td class="contact-email">{{ contact.email }}</td>
-          </tr>
-        {% endfor %}
-      </table>
+  </div>
+{% endif %}
+{% if proceedings %}
+  <div class="search-section">
+    <div class="search-section-header">
+      <span class="search-section-title">Proceedings</span>
+      <span class="app-badge badge-gray">{{ proceedings|length }}</span>
     </div>
-  {% endif %}
-  {% if intakes %}
-    <div class="search-results-title">Intakes</div>
-    <div class="table-container">
-      <table class="table">
-        <tr>
-          <th>Name</th>
-          <th>Phone1</th>
-          <th>Email</th>
-        </tr>
-        {% for intake in intakes %}
-          <tr>
-            <td class="intake-name">
-              <a href={% url 'intakes:detail-index' id=intake.id %}>{{ intake.name }}</a>
-            </td>
-            <td class="intake-phone">{{ intake.phone|phone_number }}</td>
-            <td class="intake-email">{{ intake.email }}</td>
-          </tr>
-        {% endfor %}
-      </table>
+    <div class="search-cards">
+      {% for proceeding in proceedings %}
+        <a href="{% url 'matters:proceedings-index' id=proceeding.matter.id %}"
+           class="search-card">
+          <div class="search-card-icon">
+            <i class="bi bi-building"></i>
+          </div>
+          <div class="search-card-content">
+            <div class="search-card-title">{{ proceeding.matter.name }}</div>
+            <div class="search-card-meta">{{ proceeding.forum }} &bull; {{ proceeding.case_number }}</div>
+          </div>
+          <span class="app-badge {% if proceeding.status == 'Active' %}badge-green{% elif proceeding.status == 'Pending' %}badge-yellow{% else %}badge-gray{% endif %}">{{ proceeding.status }}</span>
+        </a>
+      {% endfor %}
     </div>
-  {% endif %}
-</div>
+  </div>
+{% endif %}
+{% if contacts %}
+  <div class="search-section">
+    <div class="search-section-header">
+      <span class="search-section-title">Contacts</span>
+      <span class="app-badge badge-gray">{{ contacts|length }}</span>
+    </div>
+    <div class="search-cards">
+      {% for contact in contacts %}
+        <a href="{% url 'contacts:select' contact_id=contact.id %}"
+           class="search-card">
+          <div class="search-card-icon">
+            <i class="bi bi-person"></i>
+          </div>
+          <div class="search-card-content">
+            <div class="search-card-title">{{ contact.name }}</div>
+            <div class="search-card-meta">
+              {% if contact.phone1 %}{{ contact.phone1|phone_number }}{% endif %}
+              {% if contact.phone1 and contact.email %}&bull;{% endif %}
+              {% if contact.email %}{{ contact.email }}{% endif %}
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+{% if intakes %}
+  <div class="search-section">
+    <div class="search-section-header">
+      <span class="search-section-title">Intakes</span>
+      <span class="app-badge badge-gray">{{ intakes|length }}</span>
+    </div>
+    <div class="search-cards">
+      {% for intake in intakes %}
+        <a href="{% url 'intakes:detail-index' id=intake.id %}"
+           class="search-card">
+          <div class="search-card-icon">
+            <i class="bi bi-inbox"></i>
+          </div>
+          <div class="search-card-content">
+            <div class="search-card-title">{{ intake.name }}</div>
+            <div class="search-card-meta">
+              {% if intake.phone %}{{ intake.phone|phone_number }}{% endif %}
+              {% if intake.phone and intake.email %}&bull;{% endif %}
+              {% if intake.email %}{{ intake.email }}{% endif %}
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+{% if not matters and not proceedings and not contacts and not intakes %}
+  <div class="search-empty">
+    <i class="bi bi-search"></i>
+    <p>No results found</p>
+  </div>
+{% endif %}

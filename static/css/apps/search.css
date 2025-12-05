@@ -1,78 +1,185 @@
+/* ------------------------------------------------------------------------- */
+/* Search Modal                                                              */
+/* ------------------------------------------------------------------------- */
+
+.search.modal-dialog {
+  width: 100%;
+}
+
+.search .modal-body {
+  padding: 1.5rem;
+}
 
 /* ------------------------------------------------------------------------- */
-/* search form */
+/* Search Form                                                               */
 /* ------------------------------------------------------------------------- */
 
-.modal-dialog {
-  width: 62.5rem !important;
+.search-form .input-group {
+  display: flex;
+  margin: 0 auto;
 }
 
 .search-text {
+  flex: 1;
   background: var(--input-background);
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-md) 0 0 var(--radius-md) !important;
-  margin: 0;
-  padding: 0.5rem;
-  width: 70%;
+  padding: 0.625rem 1rem;
 }
 
-.search-results-placeholder {
-  margin-top: 0.5rem;
-}
-
-.search-form .input-group {
-  margin: 0 auto;
-  text-align: center;
-  display: flex;
-  justify-content: center;
+.search-text:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: var(--border-medium);
 }
 
 .search .input-group-text {
   background: var(--background-control);
   border: 1px solid var(--border-medium);
+  border-left: none;
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
-}
-
-.search-icon {
-  margin: -0.25rem 0.75rem 0 0.75rem;
+  padding: 0.625rem 1rem;
+  color: var(--color-muted);
 }
 
 /* ------------------------------------------------------------------------- */
-/* search results */
+/* Search Results Container                                                  */
 /* ------------------------------------------------------------------------- */
 
-.search-results-title {
-	font-size: 1.2em;
-	padding-top: 2rem;
+.search-results {
+  margin-top: 1.5rem;
+  min-height: 12rem;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.search-results-placeholder {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+.search-results-placeholder i {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  display: block;
+  color: var(--icon-muted);
+}
+
+.search-results-placeholder p {
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Search Sections                                                           */
+/* ------------------------------------------------------------------------- */
+
+.search-section {
+  margin-bottom: 1.5rem;
+}
+
+.search-section:last-child {
+  margin-bottom: 0;
+}
+
+.search-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
   padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-light);
 }
 
-.search-results .matter-name {
-  width: 15.625rem;
+.search-section-title {
+  font-weight: 600;
+  color: var(--color-primary);
 }
 
-.search-results .matter-status {
-  width: 6.25rem;
+/* ------------------------------------------------------------------------- */
+/* Search Cards                                                              */
+/* ------------------------------------------------------------------------- */
+
+.search-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.search-results .proceeding-case-number {
-  width: 9.375rem;
+.search-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--background-lighter);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.15s, border-color 0.15s;
 }
 
-.search-results .proceeding-status {
-  width: 9.375rem;
+.search-card:hover {
+  background: var(--background-panel);
+  border-color: var(--border-medium);
+  text-decoration: none;
+  color: inherit;
 }
 
-.search-results .contact-folder {
-  width: 9.375rem;
+.search-card-icon {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-control);
+  border-radius: var(--radius-md);
+  color: var(--icon-default);
 }
 
-.search-results .contact-phone1,
-.search-results .intake-phone {
-  width: 9.375rem;
+.search-card-content {
+  flex: 1;
+  min-width: 0;
 }
 
-.search-results .contact-email,
-.search-results .intake-email {
-  width: 18.75rem;
+.search-card-title {
+  font-weight: 500;
+  color: var(--color-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-card-meta {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-card .app-badge {
+  flex-shrink: 0;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Empty State                                                               */
+/* ------------------------------------------------------------------------- */
+
+.search-empty {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+.search-empty i {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  display: block;
+  color: var(--icon-muted);
+}
+
+.search-empty p {
+  margin: 0;
 }
