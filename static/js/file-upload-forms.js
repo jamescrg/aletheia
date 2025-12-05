@@ -85,7 +85,7 @@ const initializeDocumentDropzone = () => {
             preview.classList.add("dz-success", "clickable-preview");
 
             const documentId = form.action.split("/").slice(-2, -1)[0]; // Extract ID from URL
-            const downloadUrl = `/files/download/${documentId}/`;
+            const downloadUrl = `/documents/download/${documentId}/`;
 
             preview.style.cursor = "pointer";
             preview.title = "Click to download and view current file";
@@ -164,7 +164,7 @@ const initializeDocumentDropzone = () => {
                 }
 
                 document.body.dispatchEvent(
-                  new CustomEvent("filesChanged"),
+                  new CustomEvent("documentsChanged"),
                 );
               } else {
                 // Form validation errors - update content

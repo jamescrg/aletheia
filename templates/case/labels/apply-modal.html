@@ -1,0 +1,28 @@
+<div class="modal-dialog modal-md">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Apply Label</h1>
+      <div>
+        <a href="#" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg"></i>
+        </a>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="combobox-container">
+        <div class="combobox-input-wrapper">
+          <input type="search"
+                 id="labels-search-input"
+                 name="q"
+                 hx-get="{% url 'case:labels-search' object_type object.id %}{% if view %}?view={{ view }}{% endif %}"
+                 hx-target="#labels-results"
+                 hx-trigger="keyup changed delay:300ms, search, load"
+                 autocomplete="off"
+                 placeholder="Search labels..."
+                 autofocus>
+        </div>
+        <div id="labels-results"></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+<tr>
+  <td>
+    <a href="#"
+       hx-get="{% url 'case:edit-label' label.id %}"
+       hx-target="#htmx-modal-container"
+       hx-trigger="click"
+       data-bs-toggle="modal"
+       data-bs-target="#htmx-modal-container">
+      <span class="badge label-{{ label.color }}">{{ label.name }}</span>
+    </a>
+  </td>
+  <td class="matter">
+    {% if label.is_global %}
+      Global
+    {% else %}
+      <a href="{% url 'matters:tasks-index' id=label.matter.id %}">{{ label.matter.name|slice:":35" }}</a>
+    {% endif %}
+  </td>
+</tr>

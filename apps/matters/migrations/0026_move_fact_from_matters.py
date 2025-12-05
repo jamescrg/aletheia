@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
 
     # We need documents migration to run first to create the model there
     run_before = [
-        ("documents", "0011_move_fact_from_matters"),
+        ("case", "0011_move_fact_from_matters"),
     ]
 
     operations = [

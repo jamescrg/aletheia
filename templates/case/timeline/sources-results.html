@@ -1,0 +1,34 @@
+{% if query %}
+  <ul class="assign-results">
+    {% for document in documents %}
+      <li>
+        <a href="#"
+           hx-post="{% url 'case:fact-add-source' fact.id %}"
+           hx-vals='{"type": "document", "id": "{{ document.id }}"}'
+           hx-target="#fact-{{ fact.id }}"
+           hx-swap="outerHTML"
+           data-bs-dismiss="modal">
+          <i class="bi bi-filetype-pdf urgent"></i>
+          {{ document.name|truncatechars:80 }}
+        </a>
+      </li>
+    {% endfor %}
+    {% for highlight in highlights %}
+      <li>
+        <a href="#"
+           hx-post="{% url 'case:fact-add-source' fact.id %}"
+           hx-vals='{"type": "highlight", "id": "{{ highlight.id }}"}'
+           hx-target="#fact-{{ fact.id }}"
+           hx-swap="outerHTML"
+           data-bs-dismiss="modal">
+          <i class="bi bi-highlighter"></i>
+          <span class="hl-{{ highlight.color }}">{{ highlight.slug|truncatechars:80 }}</span>
+          <div class="assign-results-document">
+            <small class="text-muted">{{ highlight.document.name|truncatechars:20 }}</small>
+          </div>
+        </a>
+      </li>
+    {% endfor %}
+    {% if not documents and not highlights %}<li class="empty-message">No matching sources found.</li>{% endif %}
+  </ul>
+{% endif %}

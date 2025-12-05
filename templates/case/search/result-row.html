@@ -1,0 +1,52 @@
+<article class="search-result-row result-{{ result.type }}">
+  {% if result.type == "document" %}
+    <span class="app-badge app-badge-lg badge-gray"><i class="bi bi-filetype-pdf urgent"></i></span>
+  {% elif result.type == "highlight" %}
+    <span class="app-badge app-badge-lg badge-yellow"><i class="bi bi-highlighter"></i></span>
+  {% elif result.type == "fact" %}
+    <span class="app-badge app-badge-lg badge-green"><i class="bi bi-calendar-event"></i></span>
+  {% endif %}
+  <div class="result-content">
+    {% if result.type == "document" %}
+      <a href="{% url 'case:viewer' result.object.id %}"
+         class="result-title"
+         target="_blank">{{ result.object.name }}</a>
+      <div class="result-meta">
+        <span class="app-badge badge-{{ result.object.category|lower }}">{{ result.object.category }}</span>
+        {% if result.object.date %}<span class="result-date">{{ result.object.date|date:"M j, Y" }}</span>{% endif %}
+      </div>
+      {% if result.object.description %}
+        <div class="result-description">{{ result.object.description|truncatewords:30 }}</div>
+      {% endif %}
+    {% elif result.type == "highlight" %}
+      <a href="{% url 'case:highlight-link' result.object.id %}"
+         class="result-title"
+         target="_blank">
+        <span class="hl-{{ result.object.color }}">{{ result.object.slug }}</span>
+      </a>
+      <div class="result-meta">
+        <span class="result-document">{{ result.object.document.name|truncatewords:8 }}</span>
+        <span class="result-page">p. {{ result.object.page_number }}</span>
+      </div>
+      <div class="result-text">{{ result.object.text|truncatewords:25 }}</div>
+    {% elif result.type == "fact" %}
+      <a href="#"
+         class="result-title"
+         hx-get="{% url 'case:timeline-edit' result.object.id %}"
+         hx-target="#htmx-modal-container"
+         data-bs-toggle="modal"
+         data-bs-target="#htmx-modal-container">{{ result.object.description }}</a>
+      <div class="result-meta">
+        {% if result.object.date %}<span class="result-date">{{ result.object.date|date:"M j, Y" }}</span>{% endif %}
+        {% if result.object.time %}<span class="result-time">{{ result.object.time|time:"g:i A" }}</span>{% endif %}
+      </div>
+    {% endif %}
+    {% if result.object.labels.exists %}
+      <div class="result-labels">
+        {% for label in result.object.labels.all %}
+          <span class="app-badge badge-{{ label.color }}">{{ label.name }}</span>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</article>

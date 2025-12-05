@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     "apps.activity",
     "apps.agenda",
     "apps.contacts",
-    "apps.documents",
+    "apps.case",
     "apps.folders",
     "apps.intakes",
     "apps.lab",

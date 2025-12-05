@@ -1,0 +1,32 @@
+<div class="dropdown">
+  <button class="button-link"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false">{{ document.get_category_display|default:"-" }}</button>
+  <ul class="dropdown-menu">
+    <li>
+      <a class="dropdown-item {% if document.category == 'Correspondence' %}active{% endif %}"
+         href="#"
+         hx-get="{% url 'case:document-category' document.id 'Correspondence' %}"
+         hx-target="#files">Correspondence</a>
+    </li>
+    <li>
+      <a class="dropdown-item {% if document.category == 'Discovery' %}active{% endif %}"
+         href="#"
+         hx-get="{% url 'case:document-category' document.id 'Discovery' %}"
+         hx-target="#files">Discovery</a>
+    </li>
+    <li>
+      <a class="dropdown-item {% if document.category == 'Evidence' %}active{% endif %}"
+         href="#"
+         hx-get="{% url 'case:document-category' document.id 'Evidence' %}"
+         hx-target="#files">Evidence</a>
+    </li>
+    <li>
+      <a class="dropdown-item {% if document.category == 'Record' %}active{% endif %}"
+         href="#"
+         hx-get="{% url 'case:document-category' document.id 'Record' %}"
+         hx-target="#files">Record</a>
+    </li>
+  </ul>
+</div>
