@@ -12,7 +12,7 @@
 
 .navbar li {
   display: inline-block;
-  padding: 0.625rem 1.5rem 0.625rem 1.5rem;
+  padding: 0.5rem 1.5rem 0.5rem 1.5rem;
 }
 
 .navbar a {
@@ -26,6 +26,29 @@
 .navbar .active {
   background: var(--background-nav-tab-active);
   border-radius: var(--radius-md) var(--radius-md) 0 0;
+  position: relative;
+}
+
+.navbar .active::before,
+.navbar .active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: var(--radius-md);
+  height: var(--radius-md);
+  background: var(--background-nav);
+}
+
+.navbar .active::before {
+  left: calc(-1 * var(--radius-md));
+  border-bottom-right-radius: var(--radius-md);
+  box-shadow: calc(var(--radius-md) / 2) 0 0 0 var(--background-nav-tab-active);
+}
+
+.navbar .active::after {
+  right: calc(-1 * var(--radius-md));
+  border-bottom-left-radius: var(--radius-md);
+  box-shadow: calc(-1 * var(--radius-md) / 2) 0 0 0 var(--background-nav-tab-active);
 }
 
 .navbar .settings-link {
@@ -48,7 +71,7 @@
 }
 
 .navbar-sub li {
-  padding: 0.625rem 1rem 0.625rem 1rem;
+  padding: 0.5rem 1rem 0.5rem 1rem;
 }
 
 .navbar-sub a {
@@ -58,6 +81,30 @@
 
 .navbar-sub .active {
   background-color: var(--background-subnav-tab-active);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  position: relative;
+}
+
+.navbar-sub .active::before,
+.navbar-sub .active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: var(--radius-md);
+  height: var(--radius-md);
+  background: var(--background-subnav);
+}
+
+.navbar-sub .active::before {
+  left: calc(-1 * var(--radius-md));
+  border-bottom-right-radius: var(--radius-md);
+  box-shadow: calc(var(--radius-md) / 2) 0 0 0 var(--background-subnav-tab-active);
+}
+
+.navbar-sub .active::after {
+  right: calc(-1 * var(--radius-md));
+  border-bottom-left-radius: var(--radius-md);
+  box-shadow: calc(-1 * var(--radius-md) / 2) 0 0 0 var(--background-subnav-tab-active);
 }
 
 
