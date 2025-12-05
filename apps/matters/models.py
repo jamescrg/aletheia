@@ -78,7 +78,7 @@ class Matter(models.Model):
 
             # Matter name has changed - update document file paths
             if old_matter.name != self.name:
-                from apps.documents.utils import sanitize_filename
+                from apps.case.utils import sanitize_filename
 
                 matter_documents = self.documents.all()
 

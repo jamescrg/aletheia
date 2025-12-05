@@ -1,0 +1,8 @@
+{% extends "case/index.html" %}
+{% block subcontent %}
+  {% load humanize %}
+  <div id="timeline"
+       hx-trigger="timelineChanged from:body"
+       hx-get="{% url 'case:timeline-list' %}"
+       hx-target="this">{% include "case/timeline/list.html" %}</div>
+{% endblock subcontent %}

@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("documents", "0009_rename_highlight_title_to_slug"),
+        ("case", "0009_rename_highlight_title_to_slug"),
         ("matters", "0023_practicearea_and_data_migration"),
     ]
 
@@ -17,16 +17,16 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="fact",
-            name="documents",
+            name="case",
             field=models.ManyToManyField(
-                blank=True, related_name="facts", to="documents.document"
+                blank=True, related_name="facts", to="case.document"
             ),
         ),
         migrations.AddField(
             model_name="fact",
             name="highlights",
             field=models.ManyToManyField(
-                blank=True, related_name="facts", to="documents.highlight"
+                blank=True, related_name="facts", to="case.highlight"
             ),
         ),
     ]

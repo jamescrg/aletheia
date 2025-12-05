@@ -5,10 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
-from apps.documents.filters import TimelineFilter
-from apps.documents.forms import FactForm
-from apps.documents.generate_pdf import generate_timeline_pdf
-from apps.documents.models import Fact
+from apps.case.filters import TimelineFilter
+from apps.case.forms import FactForm
+from apps.case.generate_pdf import generate_timeline_pdf
+from apps.case.models import Fact
 from apps.matters.models import Matter
 
 

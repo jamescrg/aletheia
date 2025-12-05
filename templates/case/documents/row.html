@@ -1,0 +1,78 @@
+<tr id="document-{{ document.id }}" data-document-id="{{ document.id }}">
+  <td class="col-select">
+    <input type="checkbox"
+           name="document_select"
+           value="{{ document.id }}"
+           {% if document.id in selected_documents %}checked{% endif %}
+           hx-post="{% url 'case:documents-toggle-select' document.id %}"
+           hx-trigger="change"
+           hx-target="closest tr"
+           hx-swap="outerHTML">
+  </td>
+  <td class="col-category dropdown-cell">{% include "case/documents/category-display.html" %}</td>
+  <td class="col-date">{% include "case/documents/date-display.html" %}</td>
+  <td class="col-document dropdown-cell">
+    <div class="document-name-row">
+      <div class="document-name-content">
+        <div class="dropdown">
+          <a href="#"
+             class="document-name-link"
+             data-bs-toggle="dropdown"
+             aria-expanded="false">{{ document.name }}</a>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item"
+                 href="#"
+                 hx-get="{% url 'case:documents-edit' document.id %}"
+                 hx-target="#htmx-modal-container"
+                 data-bs-toggle="modal"
+                 data-bs-target="#htmx-modal-container"><i class="bi bi-pencil"></i> Edit Document</a>
+            </li>
+            {% if document.file.name|slice:"-4:"|lower == ".pdf" %}
+              <li>
+                <a class="dropdown-item"
+                   href="{% url 'case:viewer' document.id %}"
+                   target="_blank"><i class="bi bi-eye"></i> View Document</a>
+              </li>
+            {% endif %}
+            <li>
+              <a class="dropdown-item"
+                 href="{% url 'case:documents-download' document.id %}"><i class="bi bi-download"></i> Download</a>
+            </li>
+            <li>
+              <a class="dropdown-item document-link-btn"
+                 href="#"
+                 data-url="{% url 'case:viewer' document.id %}"><i class="bi bi-link-45deg"></i> Copy Link to File</a>
+            </li>
+            <li>
+              <a class="dropdown-item"
+                 href="#"
+                 hx-get="{% url 'case:labels-apply-modal' 'document' document.id %}"
+                 hx-target="#htmx-modal-container"
+                 data-bs-toggle="modal"
+                 data-bs-target="#htmx-modal-container"><i class="bi bi-tag"></i> Add Label</a>
+            </li>
+            {% if document.highlight_count %}
+              <li>
+                <a class="dropdown-item"
+                   href="{% url 'case:highlights-for-document' document.id %}"><i class="bi bi-highlighter"></i> Review Highlights</a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+        <span class="text-muted">{{ document.citation }}</span>
+        {% include "case/documents/ocr-badge.html" %}
+      </div>
+    </div>
+    {% if document.description %}<div class="document-description">{{ document.description }}</div>{% endif %}
+    {% if document.labels.count %}
+      <div class="document-labels">
+        {% for label in document.labels.all %}
+          {% include "case/labels/badge.html" with object_type="document" object=document %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </td>
+  <td class="col-proceeding dropdown-cell">{% include "case/documents/proceeding-display.html" %}</td>
+  <td class="col-importance dropdown-cell">{% include "case/documents/importance-display.html" %}</td>
+</tr>

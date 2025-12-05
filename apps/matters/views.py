@@ -5,9 +5,9 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.agenda.events.models import Event
+from apps.case.models import Fact
 from apps.contacts.functions.load_contacts import load_contacts
 from apps.contacts.models import Contact
-from apps.documents.models import Fact
 from apps.matters.filter import MatterFilter
 from apps.matters.forms import MatterForm
 from apps.matters.get_matter_list import get_matter_list

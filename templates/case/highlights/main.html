@@ -1,0 +1,7 @@
+{% extends "case/index.html" %}
+{% block subcontent %}
+  <div id="highlights"
+       hx-trigger="highlightsChanged from:body"
+       hx-get="{% url 'case:highlights-list' %}"
+       hx-target="this">{% include "case/highlights/list.html" %}</div>
+{% endblock subcontent %}
