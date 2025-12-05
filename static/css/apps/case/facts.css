@@ -10,49 +10,49 @@ Display
   font-weight: 500;
 }
 
-.timeline-list {
+.facts-list {
   min-width: 52.5rem;
 }
 
-.timeline-list .date-time {
+.facts-list .date-time {
   width: 12.5rem;
   position: relative;
   padding-right: 2rem;
 }
 
-.timeline-list .date-time span {
+.facts-list .date-time span {
   display: inline;
 }
 
 /* Edit fact button positioning */
-.timeline-list .edit-fact-btn {
+.facts-list .edit-fact-btn {
   position: absolute;
   right: 0.5rem;
   top: 50%;
   transform: translateY(-50%);
 }
 
-.timeline-list .description {
+.facts-list .description {
   min-width: 18rem;
   white-space: normal;
   word-wrap: break-word;
 }
 
 
-.timeline-list .importance {
+.facts-list .importance {
   width: 3rem;
   text-align: center;
 }
 
-.timeline-list th.importance .btn-sort {
+.facts-list th.importance .btn-sort {
   margin: 0;
 }
 
-.timeline-list .importance .dropdown-menu {
+.facts-list .importance .dropdown-menu {
   min-width: 2rem;
 }
 
-.timeline-list .citations {
+.facts-list .citations {
   width: 22rem;
 }
 
@@ -74,24 +74,24 @@ Display
 Form
 ------------------------------------------------*/
 
-.timeline-form #id_fact {
+.facts-form #id_fact {
   border: none;
   width: 44rem;
 }
 
-.timeline-form #id_description {
+.facts-form #id_description {
   width: 31.5rem;
 }
 
-.timeline-form #id_citations {
+.facts-form #id_citations {
   width: 22rem;
 }
 
-.timeline-form #id_emphasis {
+.facts-form #id_emphasis {
   width: 7.5rem;
 }
 
-.timeline-form .print-link {
+.facts-form .print-link {
   margin-top: 1rem;
   text-align: right;
 }
@@ -129,11 +129,11 @@ Overflow fixes
 ------------------------------------------------*/
 
 /* Fix dropdown overflow issues */
-.table-container:has(.timeline-list) {
+.table-container:has(.facts-list) {
   overflow: visible;
 }
 
-.timeline-list td {
+.facts-list td {
   overflow: visible;
 }
 
@@ -141,23 +141,23 @@ Overflow fixes
 Fact row layout
 ------------------------------------------------*/
 
-.timeline-list .fact-actions {
+.facts-list .fact-actions {
   position: absolute;
   top: 0.625rem;
   right: 0.5rem;
 }
 
-.timeline-list .fact-actions button {
+.facts-list .fact-actions button {
   color: var(--icon-muted);
   opacity: 0;
   transition: opacity 0.15s, color 0.15s;
 }
 
-.timeline-list .fact-actions button:hover {
+.facts-list .fact-actions button:hover {
   color: var(--color-primary);
 }
 
-.timeline-list tr:hover .fact-actions button {
+.facts-list tr:hover .fact-actions button {
   opacity: 1;
 }
 
@@ -165,20 +165,20 @@ Fact row layout
 Source citations
 ------------------------------------------------*/
 
-.timeline-list .fact-sources {
+.facts-list .fact-sources {
   margin-left: 0.25rem;
   font-size: 1rem;
 }
 
-.timeline-list .source-citation {
+.facts-list .source-citation {
   display: inline;
 }
 
-.timeline-list .source-citation a {
+.facts-list .source-citation a {
   text-decoration: none;
 }
 
-.timeline-list .source-citation a:hover {
+.facts-list .source-citation a:hover {
   text-decoration: underline;
 }
 
@@ -186,7 +186,7 @@ Source citations
 Label badges
 ------------------------------------------------*/
 
-.timeline-list .fact-labels {
+.facts-list .fact-labels {
   margin-top: 0.25rem;
   min-height: 1.5rem;
 }
@@ -208,25 +208,25 @@ Responsive
 ------------------------------------------------*/
 
 @media (max-width: 1000px) {
-  /* Timeline toolbar: h2 and add button on first line, inputs wrap below */
-  .timeline-toolbar .toolbar-left {
+  /* Facts toolbar: h2 and add button on first line, inputs wrap below */
+  .facts-toolbar .toolbar-left {
     align-items: flex-start;
     flex-wrap: wrap;
   }
 
-  .timeline-toolbar .toolbar-left h2 {
+  .facts-toolbar .toolbar-left h2 {
     margin-bottom: 1rem;
   }
 
-  .timeline-toolbar .toolbar-left .filter-tools > button {
+  .facts-toolbar .toolbar-left .filter-tools > button {
     margin-bottom: 1rem;
   }
 
-  .timeline-toolbar .filter-form {
+  .facts-toolbar .filter-form {
     flex: 1 1 100%;
   }
 
-  .timeline-toolbar .toolbar-right {
+  .facts-toolbar .toolbar-right {
     display: none;
   }
 
@@ -244,7 +244,7 @@ Responsive
   }
 
   /* Keep description column width on smaller screens */
-  .timeline-list .description {
+  .facts-list .description {
     min-width: 18.75rem;
   }
 }

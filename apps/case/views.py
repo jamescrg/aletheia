@@ -10,11 +10,11 @@ from django.views.decorators.http import require_POST
 from watson import search as watson
 
 from apps.case.filters import (
+    FactsFilter,
     FilesFilter,
     HighlightsFilter,
     LabelsFilter,
     SearchFilter,
-    TimelineFilter,
 )
 from apps.case.forms import (
     BulkFilesForm,
@@ -23,7 +23,7 @@ from apps.case.forms import (
     HighlightForm,
     LabelsForm,
 )
-from apps.case.generate_pdf import generate_timeline_pdf
+from apps.case.generate_pdf import generate_facts_pdf
 from apps.case.get_document_data import get_document_data, get_selected_matter
 from apps.case.get_label_data import get_label_data
 from apps.case.models import Document, Fact, Highlight, Label
@@ -718,7 +718,7 @@ def _get_object_for_labels(object_type, object_id, view=None):
     elif object_type == "fact":
         obj = get_object_or_404(Fact, id=object_id)
         matter = obj.matter
-        row_template = "case/timeline/fact-row.html"
+        row_template = "case/facts/fact-row.html"
         context_key = "fact"
     else:
         return None, None, None, None
@@ -1365,13 +1365,13 @@ def highlights_filter_default(request):
 
 
 # =============================================================================
-# Timeline Subapp (Facts)
+# Facts Subapp
 # =============================================================================
 
 
-def get_timeline_data(request, matter):
-    """Get timeline data with filters applied from session."""
-    filter_data = request.session.get("timeline_filter", {})
+def get_facts_data(request, matter):
+    """Get facts data with filters applied from session."""
+    filter_data = request.session.get("facts_filter", {})
 
     facts = []
     if matter:
@@ -1379,8 +1379,8 @@ def get_timeline_data(request, matter):
 
         # Apply filters if present
         if filter_data:
-            timeline_filter = TimelineFilter(filter_data, queryset=queryset)
-            facts = timeline_filter.qs
+            facts_filter = FactsFilter(filter_data, queryset=queryset)
+            facts = facts_filter.qs
         else:
             facts = queryset
 
@@ -1413,38 +1413,38 @@ def get_timeline_data(request, matter):
 
 
 @login_required
-def timeline_index(request):
-    """Main timeline view."""
+def facts_index(request):
+    """Main facts view."""
     matter, matters = get_selected_matter(request)
 
     context = {
         "app": "documents",
-        "subapp": "timeline",
+        "subapp": "facts",
         "matter": matter,
         "matters": matters,
-    } | get_timeline_data(request, matter)
+    } | get_facts_data(request, matter)
 
-    return render(request, "case/timeline/main.html", context)
+    return render(request, "case/facts/main.html", context)
 
 
 @login_required
-def timeline_list(request):
-    """HTMX partial for timeline list."""
+def facts_list(request):
+    """HTMX partial for facts list."""
     matter, matters = get_selected_matter(request)
 
     context = {
         "app": "documents",
-        "subapp": "timeline",
+        "subapp": "facts",
         "matter": matter,
         "matters": matters,
-    } | get_timeline_data(request, matter)
+    } | get_facts_data(request, matter)
 
-    return render(request, "case/timeline/list.html", context)
+    return render(request, "case/facts/list.html", context)
 
 
 @login_required
-def timeline_add(request):
-    """Add a new timeline fact."""
+def facts_add(request):
+    """Add a new fact."""
     matter, matters = get_selected_matter(request)
 
     if not matter:
@@ -1458,24 +1458,24 @@ def timeline_add(request):
             fact.matter = matter
             fact.save()
 
-            return HttpResponse(status=204, headers={"HX-Trigger": "timelineChanged"})
+            return HttpResponse(status=204, headers={"HX-Trigger": "factsChanged"})
     else:
         form = FactForm(use_required_attribute=False)
 
     context = {
         "app": "documents",
-        "subapp": "timeline",
+        "subapp": "facts",
         "matter": matter,
         "form": form,
         "action": "Add",
     }
 
-    return render(request, "case/timeline/form.html", context)
+    return render(request, "case/facts/form.html", context)
 
 
 @login_required
-def timeline_edit(request, fact_id):
-    """Edit a timeline fact."""
+def facts_edit(request, fact_id):
+    """Edit a fact."""
     matter, matters = get_selected_matter(request)
     fact = get_object_or_404(Fact, pk=fact_id)
 
@@ -1486,35 +1486,35 @@ def timeline_edit(request, fact_id):
             fact.user = request.user
             fact.save()
 
-            return HttpResponse(status=204, headers={"HX-Trigger": "timelineChanged"})
+            return HttpResponse(status=204, headers={"HX-Trigger": "factsChanged"})
     else:
         form = FactForm(instance=fact, use_required_attribute=False)
 
     context = {
         "app": "documents",
-        "subapp": "timeline",
+        "subapp": "facts",
         "matter": matter,
         "fact": fact,
         "form": form,
         "action": "Edit",
     }
 
-    return render(request, "case/timeline/form.html", context)
+    return render(request, "case/facts/form.html", context)
 
 
 @login_required
 @require_POST
-def timeline_delete(request, fact_id):
-    """Delete a timeline fact."""
+def facts_delete(request, fact_id):
+    """Delete a fact."""
     fact = get_object_or_404(Fact, pk=fact_id)
     fact.delete()
 
-    return HttpResponse(status=204, headers={"HX-Trigger": "timelineChanged"})
+    return HttpResponse(status=204, headers={"HX-Trigger": "factsChanged"})
 
 
 @login_required
-def timeline_print(request):
-    """Print view for timeline."""
+def facts_print(request):
+    """Print view for facts."""
     matter, matters = get_selected_matter(request)
 
     facts = []
@@ -1525,12 +1525,12 @@ def timeline_print(request):
         "matter": matter,
         "facts": facts,
     }
-    return render(request, "case/timeline/print.html", context)
+    return render(request, "case/facts/print.html", context)
 
 
 @login_required
-def timeline_pdf(request):
-    """Generate PDF for timeline."""
+def facts_pdf(request):
+    """Generate PDF for facts."""
     import os
     from datetime import datetime
 
@@ -1539,13 +1539,13 @@ def timeline_pdf(request):
     if not matter:
         return HttpResponse("No matter selected", status=400)
 
-    file = generate_timeline_pdf(matter.id, request)
+    file = generate_facts_pdf(matter.id, request)
 
     current_date = datetime.now().strftime("%Y-%m-%d")
 
     with open(file.name, "rb") as pdf:
         response = HttpResponse(pdf.read(), content_type="application/pdf")
-        filename = f'filename="Timeline - {matter.name} - {current_date}.pdf"'
+        filename = f'filename="Facts - {matter.name} - {current_date}.pdf"'
         response["Content-Disposition"] = f"attachment; {filename}"
 
     os.unlink(file.name)
@@ -1554,16 +1554,16 @@ def timeline_pdf(request):
 
 
 @login_required
-def timeline_edit_description(request, fact_id):
+def facts_edit_description(request, fact_id):
     """Inline edit fact description."""
     matter, matters = get_selected_matter(request)
     fact = get_object_or_404(Fact, pk=fact_id)
     context = {"fact": fact, "matter": matter}
-    return render(request, "case/timeline/edit-description.html", context)
+    return render(request, "case/facts/edit-description.html", context)
 
 
 @login_required
-def timeline_update_description(request, fact_id):
+def facts_update_description(request, fact_id):
     """Update fact description inline."""
     matter, matters = get_selected_matter(request)
     fact = get_object_or_404(Fact, pk=fact_id)
@@ -1574,7 +1574,7 @@ def timeline_update_description(request, fact_id):
         "matter": matter,
         "fact": fact,
     }
-    return render(request, "case/timeline/fact-row.html", context)
+    return render(request, "case/facts/fact-row.html", context)
 
 
 @login_required
@@ -1586,7 +1586,7 @@ def fact_sources_modal(request, fact_id):
         "fact": fact,
         "matter": matter,
     }
-    return render(request, "case/timeline/sources-modal.html", context)
+    return render(request, "case/facts/sources-modal.html", context)
 
 
 @login_required
@@ -1618,7 +1618,7 @@ def fact_sources_search(request, fact_id):
         "highlights": highlights,
         "query": query,
     }
-    return render(request, "case/timeline/sources-results.html", context)
+    return render(request, "case/facts/sources-results.html", context)
 
 
 @login_required
@@ -1642,7 +1642,7 @@ def fact_add_source(request, fact_id):
         "matter": matter,
         "fact": fact,
     }
-    return render(request, "case/timeline/fact-row.html", context)
+    return render(request, "case/facts/fact-row.html", context)
 
 
 @login_required
@@ -1666,7 +1666,7 @@ def fact_remove_source(request, fact_id):
         "matter": matter,
         "fact": fact,
     }
-    return render(request, "case/timeline/fact-row.html", context)
+    return render(request, "case/facts/fact-row.html", context)
 
 
 @login_required
@@ -1675,12 +1675,12 @@ def fact_importance(request, fact_id, importance):
     fact = get_object_or_404(Fact, pk=fact_id)
     fact.importance = importance
     fact.save()
-    return redirect("case:timeline-list")
+    return redirect("case:facts-list")
 
 
 @login_required
-def timeline_filter(request):
-    """Filter modal for timeline - GET shows modal, POST saves to session."""
+def facts_filter(request):
+    """Filter modal for facts - GET shows modal, POST saves to session."""
     matter, matters = get_selected_matter(request)
 
     if request.method == "POST":
@@ -1689,24 +1689,24 @@ def timeline_filter(request):
             for key, value in request.POST.items()
             if key != "csrfmiddlewaretoken"
         }
-        request.session["timeline_filter"] = filter_data
+        request.session["facts_filter"] = filter_data
         request.session.modified = True
-        return HttpResponse(status=204, headers={"HX-Trigger": "timelineChanged"})
+        return HttpResponse(status=204, headers={"HX-Trigger": "factsChanged"})
 
     # GET - show filter modal
-    filter_data = request.session.get("timeline_filter", {})
+    filter_data = request.session.get("facts_filter", {})
 
     queryset = Fact.objects.filter(matter=matter) if matter else Fact.objects.none()
 
-    filter_obj = TimelineFilter(filter_data, queryset=queryset)
+    filter_obj = FactsFilter(filter_data, queryset=queryset)
 
-    return render(request, "case/timeline/filter.html", {"filter": filter_obj})
+    return render(request, "case/facts/filter.html", {"filter": filter_obj})
 
 
 @login_required
-def timeline_sort(request, order):
-    """Sort timeline by field, toggling asc/desc."""
-    filter_data = request.session.get("timeline_filter", {})
+def facts_sort(request, order):
+    """Sort facts by field, toggling asc/desc."""
+    filter_data = request.session.get("facts_filter", {})
 
     current_order = filter_data.get("order_by", "")
 
@@ -1716,17 +1716,17 @@ def timeline_sort(request, order):
         new_order = order
 
     filter_data["order_by"] = new_order
-    request.session["timeline_filter"] = filter_data
+    request.session["facts_filter"] = filter_data
     request.session.modified = True
 
-    return redirect("case:timeline-list")
+    return redirect("case:facts-list")
 
 
 @login_required
-def timeline_filter_keyword(request):
-    """Filter timeline by keyword (inline search)."""
+def facts_filter_keyword(request):
+    """Filter facts by keyword (inline search)."""
     matter, _ = get_selected_matter(request)
-    filter_data = request.session.get("timeline_filter", {})
+    filter_data = request.session.get("facts_filter", {})
     keyword = request.GET.get("keyword", "").strip()
 
     if keyword:
@@ -1734,23 +1734,23 @@ def timeline_filter_keyword(request):
     else:
         filter_data.pop("keyword", None)
 
-    request.session["timeline_filter"] = filter_data
+    request.session["facts_filter"] = filter_data
 
     # Render just the table partial (for search input updates)
-    context = get_timeline_data(request, matter)
-    return render(request, "case/timeline/table.html", context)
+    context = get_facts_data(request, matter)
+    return render(request, "case/facts/table.html", context)
 
 
 @login_required
-def timeline_filter_importance(request, importance_value):
-    """Filter timeline by importance level."""
-    filter_data = request.session.get("timeline_filter", {})
+def facts_filter_importance(request, importance_value):
+    """Filter facts by importance level."""
+    filter_data = request.session.get("facts_filter", {})
     # Set to empty string when 0 (All) is selected, otherwise use the value
     filter_data["importance"] = "" if importance_value == 0 else importance_value
 
-    request.session["timeline_filter"] = filter_data
+    request.session["facts_filter"] = filter_data
 
-    return redirect("case:timeline-list")
+    return redirect("case:facts-list")
 
 
 # =============================================================================

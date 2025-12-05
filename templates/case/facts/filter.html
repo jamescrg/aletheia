@@ -1,7 +1,7 @@
 <div class="modal-dialog modal-md">
   <div class="modal-content">
     <div class="modal-header">
-      <h1 class="modal-title">Filter Timeline</h1>
+      <h1 class="modal-title">Filter Facts</h1>
       <div>
         <a href="#" data-bs-dismiss="modal">
           <i class="bi bi-x-lg"></i>
@@ -11,7 +11,7 @@
     <div class="modal-body">
       <form class="form-responsive form-spacious filter"
             hx-target="#htmx-modal-container"
-            hx-post="{% url 'case:timeline-filter' %}">
+            hx-post="{% url 'case:facts-filter' %}">
         {% csrf_token %}
         {{ filter.form }}
         <br />
@@ -19,7 +19,7 @@
           <button type="submit" class="submit">Apply</button>
           <a class="btn-icon"
              href="#"
-             hx-post="{% url 'management:clear-filters' session_key='timeline_filter' trigger='timelineChanged' %}">Restore Defaults</a>
+             hx-post="{% url 'management:clear-filters' session_key='facts_filter' trigger='factsChanged' %}">Restore Defaults</a>
         </div>
       </form>
     </div>

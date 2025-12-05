@@ -187,7 +187,7 @@ class LabelsFilter(django_filters.FilterSet):
         fields = ["name", "matter", "order_by"]
 
 
-class TimelineFilter(django_filters.FilterSet):
+class FactsFilter(django_filters.FilterSet):
     date_start = django_filters.DateFilter(
         field_name="date",
         lookup_expr="gte",

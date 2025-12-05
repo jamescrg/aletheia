@@ -15,7 +15,7 @@
         <li>
           <a class="dropdown-item"
              href="#"
-             hx-get="{% url 'case:timeline-edit' fact.id %}"
+             hx-get="{% url 'case:facts-edit' fact.id %}"
              hx-target="#htmx-modal-container"
              data-bs-toggle="modal"
              data-bs-target="#htmx-modal-container"><i class="bi bi-pencil"></i> Edit Fact</a>
@@ -108,6 +108,6 @@
     </div>
   </td>
   <td class="importance{% if fact.color %} hl-{{ fact.color|lower }}{% endif %}">
-    {% include "case/timeline/importance-display.html" %}
+    {% include "case/facts/importance-display.html" %}
   </td>
 </tr>

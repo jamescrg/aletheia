@@ -9,9 +9,9 @@ from apps.matters.models import Matter
 from apps.matters.proceedings.models import Proceeding
 
 
-def generate_timeline_pdf(matter_id, request):
+def generate_facts_pdf(matter_id, request):
     """
-    Generate a timeline PDF for the given matter
+    Generate a facts PDF for the given matter
     """
     try:
         matter = Matter.objects.get(pk=matter_id)
@@ -27,7 +27,7 @@ def generate_timeline_pdf(matter_id, request):
         "facts": facts,
     }
 
-    html_string = render_to_string("matters/timeline/pdf.html", context)
+    html_string = render_to_string("case/facts/pdf.html", context)
     html = HTML(string=html_string, base_url=request.build_absolute_uri())
 
     with NamedTemporaryFile(suffix=".pdf", delete=False) as pdf_file:

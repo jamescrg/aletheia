@@ -7,7 +7,7 @@
     <meta charset="UTF-8" content="" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
-    <title>{{ matter.name }} - Timeline</title>
+    <title>{{ matter.name }} - Facts</title>
     <link rel="shortcut icon" href={% static 'images/briefcase-fill.svg' %} />
     <link rel="stylesheet" href={% static_v 'css/palette.css' %} />
     <link rel="stylesheet" href={% static_v 'css/colors.css' %} />
@@ -20,9 +20,9 @@
   <body>
     <div class="template">
       <div class="section">
-        <h3>{{ matter.name }} - Timeline</h3>
+        <h3>{{ matter.name }} - Facts</h3>
         <div class="table-container">
-          <table class="table timeline-list">
+          <table class="table facts-list">
             {% if facts %}
               <tr>
                 <th>Date</th>

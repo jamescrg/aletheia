@@ -32,7 +32,7 @@
     {% elif result.type == "fact" %}
       <a href="#"
          class="result-title"
-         hx-get="{% url 'case:timeline-edit' result.object.id %}"
+         hx-get="{% url 'case:facts-edit' result.object.id %}"
          hx-target="#htmx-modal-container"
          data-bs-toggle="modal"
          data-bs-target="#htmx-modal-container">{{ result.object.description }}</a>

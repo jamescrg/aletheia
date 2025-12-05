@@ -1,12 +1,12 @@
 <div>
   <input autofocus
-         class="edit-fact-citations-input"
+         class="edit-fact-description-input"
          type="text"
-         name="citations"
-         hx-post="{% url 'case:timeline-update-citations' fact.id %}"
+         name="description"
+         hx-post="{% url 'case:facts-update-description' fact.id %}"
          hx-target="#fact-{{ fact.id }}"
          hx-trigger="change, blur, keyup[key=='Enter']"
          onfocus="moveFocusToEnd(this)"
          hx-swap="outerHTML"
-         value="{{ fact.citations|default_if_none:'' }}" />
+         value="{{ fact.description }}" />
 </div>

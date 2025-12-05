@@ -1,10 +1,10 @@
 {% load humanize %}
-<div class="toolbar timeline-toolbar">
+<div class="toolbar facts-toolbar">
   <div class="toolbar-left">
     <div class="filter-tools">
       <button type="button"
               class="btn-icon"
-              hx-get="{% url 'case:timeline-add' %}"
+              hx-get="{% url 'case:facts-add' %}"
               hx-target="#htmx-modal-container"
               hx-trigger="click"
               data-bs-toggle="modal"
@@ -13,7 +13,7 @@
       </button>
       <button type="button"
               class="btn-icon"
-              hx-get="{% url 'case:timeline-filter' %}"
+              hx-get="{% url 'case:facts-filter' %}"
               hx-target="#htmx-modal-container"
               hx-trigger="click"
               data-bs-toggle="modal"
@@ -21,7 +21,7 @@
         <i class="bi bi-filter"></i>Filter
       </button>
       <button type="button"
-              id="timeline-importance-filter"
+              id="facts-importance-filter"
               class="select-btn filter-dropdown-button {% if importance_value %}toggle-active{% endif %}"
               data-bs-toggle="dropdown"
               aria-expanded="false">
@@ -46,8 +46,8 @@
         <li>
         <a class="dropdown-item {% if importance == importance_value %}active{% endif %}"
            href="#"
-           hx-get="{% url 'case:timeline-filter-importance' importance %}"
-           hx-target="#timeline"><i class="bi bi-flag"></i>
+           hx-get="{% url 'case:facts-filter-importance' importance %}"
+           hx-target="#facts"><i class="bi bi-flag"></i>
         {% if importance == 1 %}
           1 only
         {% else %}
@@ -60,29 +60,29 @@
 <li>
   <a class="dropdown-item {% if not importance_value %}active{% endif %}"
      href="#"
-     hx-get="{% url 'case:timeline-filter-importance' 0 %}"
-     hx-target="#timeline"><i class="bi bi-flag"></i> All Levels</a>
+     hx-get="{% url 'case:facts-filter-importance' 0 %}"
+     hx-target="#facts"><i class="bi bi-flag"></i> All Levels</a>
 </li>
 </ul>
 <input type="text"
-       id="timeline-keyword-input"
+       id="facts-keyword-input"
        name="keyword"
        placeholder="Keyword Search"
        value="{{ keyword }}"
        class="filter-input keyword-input"
-       hx-get="{% url 'case:timeline-filter-keyword' %}"
-       hx-target="#timeline-table"
+       hx-get="{% url 'case:facts-filter-keyword' %}"
+       hx-target="#facts-table"
        hx-trigger="keyup changed delay:500ms"
        hx-include="this">
 </div>
 </div>
 <div class="toolbar-right">
   {% if facts %}
-    <a href="{% url 'case:timeline-pdf' %}"
+    <a href="{% url 'case:facts-pdf' %}"
        target="_blank"
        type="button"
        class="btn-icon">Download PDF</a>
   {% endif %}
 </div>
 </div>
-<div id="timeline-table">{% include "case/timeline/table.html" %}</div>
+<div id="facts-table">{% include "case/facts/table.html" %}</div>
