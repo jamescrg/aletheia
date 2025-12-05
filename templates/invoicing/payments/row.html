@@ -13,7 +13,7 @@
            hx-target="#htmx-modal-container"
            hx-trigger="click"
            data-bs-toggle="modal"
-           data-bs-target="#htmx-modal-container">Edit</a>
+           data-bs-target="#htmx-modal-container"><i class="bi bi-pencil"></i> Edit</a>
       </li>
       <li>
         <a class="dropdown-item"
@@ -22,7 +22,7 @@
            hx-target="#htmx-modal-container"
            hx-trigger="click"
            data-bs-toggle="modal"
-           data-bs-target="#htmx-modal-container">Apply</a>
+           data-bs-target="#htmx-modal-container"><i class="bi bi-receipt"></i> Apply</a>
       </li>
       <li>
         <a class="dropdown-item"
@@ -30,7 +30,7 @@
            href="#!"
            hx-delete="{% url 'invoicing:payments-delete' payment.id %}"
            hx-swap="outerHTML"
-           hx-target="#payment-{{ payment.id }}">Delete</a>
+           hx-target="#payment-{{ payment.id }}"><i class="bi bi-trash"></i> Delete</a>
       </li>
     </ul>
   </td>

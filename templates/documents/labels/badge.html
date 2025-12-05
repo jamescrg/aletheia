@@ -10,7 +10,7 @@
          hx-post="{% url 'documents:remove-label-from' object_type object.id %}"
          hx-vals='{"label_id": "{{ label.id }}"}'
          hx-target="#{{ object_type }}-{{ object.id }}"
-         hx-swap="outerHTML">Remove</a>
+         hx-swap="outerHTML"><i class="bi bi-x-lg"></i> Remove</a>
     </li>
   </ul>
 </span>

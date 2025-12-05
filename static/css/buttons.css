@@ -98,6 +98,15 @@
   background-color: var(--background-nav);
 }
 
+.dropdown-item i {
+  color: var(--stone-400);
+  margin-right: 0.5rem;
+}
+
+i.with-text {
+  margin-right: 0.75rem;
+}
+
 .copy-btn {
   padding: 0.25rem 0.5rem;
   background: var(--background-control);

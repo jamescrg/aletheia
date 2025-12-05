@@ -32,6 +32,12 @@
   display: flex !important;
   flex-direction: row;
   justify-content: space-between;
+  overflow: visible;
+}
+
+/* Fix dropdown overflow issues */
+#folders .list-group {
+  overflow: visible;
 }
 
 

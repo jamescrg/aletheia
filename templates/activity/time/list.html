@@ -14,18 +14,22 @@
                 class="{% if filter_label == "custom" %}toggle-active{% endif %}"
                 data-bs-toggle="modal"
                 data-bs-target="#htmx-modal-container">
-          <i class="bi bi-filter"></i>Filter
+          <i class="bi bi-filter with-text"></i>Filter
         </button>
         <button class="{% if filter_label == "unbilled" %}toggle-active{% endif %}"
-                hx-post="{% url 'activity:time-filter-quick' 'unbilled' %}">Unbilled</button>
+                hx-post="{% url 'activity:time-filter-quick' 'unbilled' %}">
+          <i class="bi bi-file-break with-text"></i>Unbilled
+        </button>
         <button class="{% if filter_label == "today" %}toggle-active{% endif %}"
-                hx-post="{% url 'activity:time-filter-quick' 'today' %}">Today</button>
+                hx-post="{% url 'activity:time-filter-quick' 'today' %}">
+          <i class="bi bi-calendar-event with-text"></i>Today
+        </button>
         <button type="button"
                 id="time-user-filter"
                 class="select-btn filter-dropdown-button {% if selected_user %}toggle-active{% endif %}"
                 data-bs-toggle="dropdown"
                 aria-expanded="false">
-          {{ selected_user|default:"All Users" }}
+          <span><i class="bi bi-{% if selected_user %}person{% else %}people{% endif %} with-text"></i>{{ selected_user|default:"All Users" }}</span>
           <small>
             <i class="bi bi-chevron-down"></i>
           </small>
@@ -38,7 +42,7 @@
                href="#"
                hx-post="{% url 'activity:time-filter-user' 0 %}"
                hx-target="#time-table"
-               hx-swap="outerHTML">All Users</a>
+               hx-swap="outerHTML"><i class="bi bi-people"></i> All Users</a>
           </li>
           {% for user in users %}
             <li>
@@ -46,7 +50,7 @@
                  href="#"
                  hx-post="{% url 'activity:time-filter-user' user.id %}"
                  hx-target="#time-table"
-                 hx-swap="outerHTML">{{ user.username|title }}</a>
+                 hx-swap="outerHTML"><i class="bi bi-person"></i> {{ user.username|title }}</a>
             </li>
           {% endfor %}
         </ul>
@@ -73,12 +77,12 @@
           <li>
             <a class="dropdown-item"
                href="{% url 'activity:time-export' 'standard' %}"
-               onclick="javascript: return confirm('Are you sure you want to download records?')">Standard</a>
+               onclick="javascript: return confirm('Are you sure you want to download records?')"><i class="bi bi-file-earmark-spreadsheet"></i> Standard</a>
           </li>
           <li>
             <a class="dropdown-item"
                href="{% url 'activity:time-export' 'clio' %}"
-               onclick="javascript: return confirm('Are you sure you want to download records?')">Clio</a>
+               onclick="javascript: return confirm('Are you sure you want to download records?')"><i class="bi bi-cloud-upload"></i> Clio</a>
           </li>
         </ul>
       </div>

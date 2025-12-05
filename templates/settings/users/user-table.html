@@ -106,11 +106,11 @@
                    hx-target="#htmx-modal-container"
                    hx-trigger="click"
                    data-bs-toggle="modal"
-                   data-bs-target="#htmx-modal-container">Edit</a>
+                   data-bs-target="#htmx-modal-container"><i class="bi bi-pencil"></i> Edit</a>
               </li>
               <li>
                 <a class="dropdown-item"
-                   hx-post="{% url 'settings:switch-status' user.id %}">Switch to {{ user.is_active|yesno:"Inactive,Active" }}</a>
+                   hx-post="{% url 'settings:switch-status' user.id %}"><i class="bi bi-toggle-on"></i> Switch to {{ user.is_active|yesno:"Inactive,Active" }}</a>
               </li>
             </ul>
           </div>

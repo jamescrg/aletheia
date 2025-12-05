@@ -26,23 +26,23 @@
                  hx-get="{% url 'documents:files-edit' document.id %}"
                  hx-target="#htmx-modal-container"
                  data-bs-toggle="modal"
-                 data-bs-target="#htmx-modal-container">Edit File Details</a>
+                 data-bs-target="#htmx-modal-container"><i class="bi bi-pencil"></i> Edit File Details</a>
             </li>
             {% if document.file.name|slice:"-4:"|lower == ".pdf" %}
               <li>
                 <a class="dropdown-item"
                    href="{% url 'documents:viewer' document.id %}"
-                   target="_blank">View Document</a>
+                   target="_blank"><i class="bi bi-eye"></i> View Document</a>
               </li>
             {% endif %}
             <li>
               <a class="dropdown-item"
-                 href="{% url 'documents:files-download' document.id %}">Download</a>
+                 href="{% url 'documents:files-download' document.id %}"><i class="bi bi-download"></i> Download</a>
             </li>
             <li>
               <a class="dropdown-item document-link-btn"
                  href="#"
-                 data-url="{% url 'documents:viewer' document.id %}">Copy Link to File</a>
+                 data-url="{% url 'documents:viewer' document.id %}"><i class="bi bi-link-45deg"></i> Copy Link to File</a>
             </li>
             <li>
               <a class="dropdown-item"
@@ -50,12 +50,12 @@
                  hx-get="{% url 'documents:labels-apply-modal' 'document' document.id %}"
                  hx-target="#htmx-modal-container"
                  data-bs-toggle="modal"
-                 data-bs-target="#htmx-modal-container">Add Label</a>
+                 data-bs-target="#htmx-modal-container"><i class="bi bi-tag"></i> Add Label</a>
             </li>
             {% if document.highlight_count %}
               <li>
                 <a class="dropdown-item"
-                   href="{% url 'documents:highlights-for-document' document.id %}">Review Highlights</a>
+                   href="{% url 'documents:highlights-for-document' document.id %}"><i class="bi bi-highlighter"></i> Review Highlights</a>
               </li>
             {% endif %}
           </ul>
