@@ -72,6 +72,7 @@ class Document(models.Model):
     )
     date = models.DateField(blank=True, null=True)
     name = models.CharField(max_length=255)
+    abbreviated_name = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     category = models.CharField(
         max_length=20,
