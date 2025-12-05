@@ -2,12 +2,12 @@
 {% if intake.value %}
   <a href="#"
      hx-get="{% url 'intakes:value-edit' intake.id %}"
-     hx-target="closest td">${{ intake.value|intcomma }}</a>
+     hx-target="#intake-value-display">${{ intake.value|intcomma }}</a>
 {% else %}
   <a href="#"
      class="empty-value-icon"
      hx-get="{% url 'intakes:value-edit' intake.id %}"
-     hx-target="closest td">
+     hx-target="#intake-value-display">
     <i class="bi bi-pencil"></i>
   </a>
 {% endif %}

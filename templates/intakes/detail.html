@@ -53,7 +53,7 @@
                     <div class="intake-address-buttons">
                       <a href="https://www.google.com/maps/search/?api=1&query={{ intake.address|urlencode }}"
                          target="_blank"
-                         class="btn btn-sm copy-btn"
+                         class="btn btn-sm action-btn"
                          title="Open in Google Maps">
                         <i class="bi bi-geo-alt"></i>
                       </a>
@@ -75,7 +75,7 @@
                     <div class="intake-address-buttons">
                       <a href="https://www.google.com/maps/search/?api=1&query={{ intake.disputed_property|urlencode }}"
                          target="_blank"
-                         class="btn btn-sm copy-btn"
+                         class="btn btn-sm action-btn"
                          title="Open in Google Maps">
                         <i class="bi bi-geo-alt"></i>
                       </a>
@@ -88,11 +88,11 @@
               <th>Value</th>
               <td class="intake-value">
                 <div class="intake-value-container">
-                  <div>{% include "intakes/value-display.html" %}</div>
-                  {% if intake.disputed_property %}
-                    <a href="https://www.zillow.com/homes/{{ intake.disputed_property|zillow_address }}_rb/"
+                  <div id="intake-value-display">{% include "intakes/value-display.html" %}</div>
+                  {% if intake.disputed_property or intake.address %}
+                    <a href="https://www.zillow.com/homes/{{ intake.disputed_property|default:intake.address|zillow_address }}_rb/"
                        target="_blank"
-                       class="btn btn-sm copy-btn"
+                       class="btn btn-sm action-btn"
                        title="Search on Zillow">
                       <i class="bi bi-house"></i>
                     </a>
@@ -101,17 +101,17 @@
               </td>
             </tr>
           </table>
-          <table class="width100">
+          <table>
             <tr>
               <th>Status</th>
               <td class="intake-status dropdown-cell">{% include "intakes/intake-status.html" %}</td>
             </tr>
             <tr>
-              <th>Date Opened</th>
+              <th>Date</th>
               <td>{{ intake.date|date:'Y-m-d' }}</td>
             </tr>
             <tr>
-              <th>Practice Area</th>
+              <th>Area</th>
               <td class="intake-practice-area dropdown-cell">{% include "intakes/intake-practice-area.html" %}</td>
             </tr>
             <tr>

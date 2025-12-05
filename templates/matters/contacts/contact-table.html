@@ -137,7 +137,7 @@
               <div class="cell-flex">
                 <a href="mailto:{{ item.contact.email }}">{{ item.contact.email }}</a>
                 <button type="button"
-                        class="btn btn-sm copy-btn"
+                        class="btn btn-sm action-btn copy-btn"
                         data-copy="{{ item.contact.email }}"
                         title="Copy email">
                   <i class="bi bi-clipboard"></i>
@@ -151,13 +151,13 @@
                 <span>
                   {{ item.contact.phone1|phone_number }}
                   <a href="tel:{{ item.contact.phone1|phone_tel }}"
-                     class="btn btn-sm copy-btn contact-call-btn"
+                     class="btn btn-sm action-btn copy-btn contact-call-btn"
                      title="Call">
                     <i class="bi bi-telephone-outbound"></i>
                   </a>
                 </span>
                 <button type="button"
-                        class="btn btn-sm copy-btn"
+                        class="btn btn-sm action-btn copy-btn"
                         data-copy="{{ item.contact.phone1|phone_number }}"
                         title="Copy phone number">
                   <i class="bi bi-clipboard"></i>

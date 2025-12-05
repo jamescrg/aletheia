@@ -26,20 +26,20 @@
         </div>
         <div class="contact-card-buttons">
           <button type="button"
-                  class="btn btn-sm copy-btn card-copy-btn-right"
+                  class="btn btn-sm action-btn copy-btn card-copy-btn-right"
                   data-copy="{{ selected_contact.name }}&#10;{% if selected_contact.company %}{{ selected_contact.company }}&#10;{% endif %}{{ selected_contact.address }}"
                   title="Copy address">
             <i class="bi bi-clipboard"></i>
           </button>
           <a href="https://www.google.com/maps/search/?api=1&query={{ selected_contact.address|urlencode }}"
              target="_blank"
-             class="btn btn-sm copy-btn card-copy-btn-right"
+             class="btn btn-sm action-btn card-copy-btn-right"
              title="Open in Google Maps">
             <i class="bi bi-geo-alt"></i>
           </a>
           <a href="https://www.zillow.com/homes/{{ selected_contact.address|zillow_address }}_rb/"
              target="_blank"
-             class="btn btn-sm copy-btn card-copy-btn-right"
+             class="btn btn-sm action-btn card-copy-btn-right"
              title="Search on Zillow">
             <i class="bi bi-house"></i>
           </a>
@@ -59,7 +59,7 @@
             </div>
             <div class="contact-phone-buttons">
               <button type="button"
-                      class="btn btn-sm copy-btn"
+                      class="btn btn-sm action-btn copy-btn"
                       data-copy="{{ selected_contact.email }}"
                       title="Copy email">
                 <i class="bi bi-clipboard"></i>
@@ -75,7 +75,7 @@
             </div>
             <div class="contact-phone-buttons">
               <button type="button"
-                      class="btn btn-sm copy-btn"
+                      class="btn btn-sm action-btn copy-btn"
                       data-copy="{{ selected_contact.email2 }}"
                       title="Copy email">
                 <i class="bi bi-clipboard"></i>
@@ -98,13 +98,13 @@
             </div>
             <div class="contact-phone-buttons">
               <button type="button"
-                      class="btn btn-sm copy-btn"
+                      class="btn btn-sm action-btn copy-btn"
                       data-copy="{{ selected_contact.phone1|phone_number }}"
                       title="Copy phone number">
                 <i class="bi bi-clipboard"></i>
               </button>
               <a href="tel:{{ selected_contact.phone1|phone_tel }}"
-                 class="btn btn-sm copy-btn contact-call-btn"
+                 class="btn btn-sm action-btn copy-btn contact-call-btn"
                  title="Call">
                 <i class="bi bi-telephone-outbound"></i>
               </a>
@@ -119,13 +119,13 @@
             </div>
             <div class="contact-phone-buttons">
               <button type="button"
-                      class="btn btn-sm copy-btn"
+                      class="btn btn-sm action-btn copy-btn"
                       data-copy="{{ selected_contact.phone2|phone_number }}"
                       title="Copy phone number">
                 <i class="bi bi-clipboard"></i>
               </button>
               <a href="tel:{{ selected_contact.phone2|phone_tel }}"
-                 class="btn btn-sm copy-btn contact-call-btn"
+                 class="btn btn-sm action-btn copy-btn contact-call-btn"
                  title="Call">
                 <i class="bi bi-telephone-outbound"></i>
               </a>
@@ -140,13 +140,13 @@
             </div>
             <div class="contact-phone-buttons">
               <button type="button"
-                      class="btn btn-sm copy-btn"
+                      class="btn btn-sm action-btn copy-btn"
                       data-copy="{{ selected_contact.phone3|phone_number }}"
                       title="Copy phone number">
                 <i class="bi bi-clipboard"></i>
               </button>
               <a href="tel:{{ selected_contact.phone3|phone_tel }}"
-                 class="btn btn-sm copy-btn contact-call-btn"
+                 class="btn btn-sm action-btn copy-btn contact-call-btn"
                  title="Call">
                 <i class="bi bi-telephone-outbound"></i>
               </a>
@@ -167,7 +167,7 @@
              rel="noopener noreferrer">{{ selected_contact.website }}</a>
         </div>
         <button type="button"
-                class="btn btn-sm copy-btn card-copy-btn-right"
+                class="btn btn-sm action-btn copy-btn card-copy-btn-right"
                 data-copy="{{ selected_contact.website }}"
                 title="Copy website">
           <i class="bi bi-clipboard"></i>

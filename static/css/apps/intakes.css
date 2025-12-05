@@ -46,6 +46,10 @@ Detail View - Left Panel
   border-right: none;
 }
 
+.intake-section.details table th {
+  width: 6rem;
+}
+
 .intake-details td {
   white-space: normal;
 }
@@ -76,15 +80,15 @@ Detail View - Left Panel
   width: 11.25rem;
 }
 
-.intake-source {
+.intake-list .intake-source {
   width: 11.25rem;
 }
 
-.intake-status {
+.intake-list .intake-status {
   width: 11.25rem;
 }
 
-.intake-practice-area {
+.intake-list .intake-practice-area {
   width: 11.25rem;
 }
 
