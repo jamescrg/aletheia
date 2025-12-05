@@ -87,7 +87,7 @@
 .contact-card {
   position: relative;
   background-color: var(--background-lighter);
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--border-medium);
   border-radius: var(--radius-md);
   padding: 1.25rem;
   margin-bottom: 1rem;
@@ -210,7 +210,7 @@
 
 /* Notes Section */
 .contact-notes-section {
-  border-top: 1px solid var(--border-light);
+  border-top: 1px solid var(--border-medium);
   padding-top: 1rem;
 }
 
@@ -221,7 +221,7 @@
 
 .contact-notes {
   background-color: var(--background-lighter);
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--border-medium);
   border-radius: var(--radius-md);
   padding: 1rem;
   line-height: 1.6;

@@ -37,7 +37,11 @@ Matter List
 .matter-list .case-no-content {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+}
+
+.matter-list .case-no-content .dropdown {
+  margin-right: -0.25rem;
 }
 
 .matter-list .name {

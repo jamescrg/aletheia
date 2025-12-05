@@ -4,7 +4,7 @@
 
 .dropdown-menu {
   padding: 0 !important;
-  border: solid 1px var(--border-light) !important;
+  border: solid 1px var(--border-medium) !important;
   border-radius: var(--radius-md) !important;
   overflow: hidden;
 }
@@ -12,7 +12,7 @@
 .dropdown-menu li {
   background: var(--background-lighter);
   border-radius: 0;
-  border-top: solid 1px var(--border-light);
+  border-top: solid 1px var(--border-medium);
 }
 
 .dropdown-menu li:hover {
@@ -72,7 +72,7 @@
 
 .table-select {
   background: inherit;
-  border: solid 1px var(--border-light);
+  border: solid 1px var(--border-medium);
   color: inherit;
   padding: 0 0.25rem;
   width: 100%;

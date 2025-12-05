@@ -183,7 +183,7 @@ textarea {
 }
 
 .add-event {
-  border-top: solid 1px var(--border-light);
+  border-top: solid 1px var(--border-medium);
   margin-top: 1rem;
   padding-top: 1rem;
 }

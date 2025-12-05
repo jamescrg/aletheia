@@ -18,7 +18,7 @@
 .dashboard-table {
   border-collapse: separate;
   border-spacing: 0;
-  border: solid 1px var(--border-light);
+  border: solid 1px var(--border-medium);
   border-radius: var(--radius-md);
   width: 100%;
 }

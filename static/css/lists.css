@@ -11,6 +11,8 @@ li {
 
 .list-group-item {
   background: none;
+  border-top: 1px solid var(--border-medium);
+  border-bottom: 1px solid var(--border-medium);
   border-left: none;
   border-right: none;
   color: inherit;

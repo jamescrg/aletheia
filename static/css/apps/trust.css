@@ -5,15 +5,15 @@ Summary
 .trust-summary {
   border-collapse: separate;
   border-spacing: 0;
-  border: solid 1px var(--border-light);
+  border: solid 1px var(--border-medium);
   border-radius: var(--radius-md);
   clear: both;
   width: 100%;
 }
 
 .trust-summary td {
-  border-bottom: solid 1px var(--border-light);
-  border-right: solid 1px var(--border-light);
+  border-bottom: solid 1px var(--border-medium);
+  border-right: solid 1px var(--border-medium);
   vertical-align: top;
 }
 
@@ -76,7 +76,7 @@ Summary and History
 .trust-transactions {
   border-collapse: separate;
   border-spacing: 0;
-  border: solid 1px var(--border-light);
+  border: solid 1px var(--border-medium);
   border-radius: var(--radius-md);
   min-width: 79rem;
   width: 100%;
@@ -84,8 +84,8 @@ Summary and History
 
 .trust-transactions th,
 .trust-transactions td {
-  border-bottom: solid 1px var(--border-light);
-  border-right: solid 1px var(--border-light);
+  border-bottom: solid 1px var(--border-medium);
+  border-right: solid 1px var(--border-medium);
   padding: 0.625rem 1rem;
   vertical-align: top;
 }

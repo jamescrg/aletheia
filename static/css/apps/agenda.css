@@ -20,12 +20,12 @@
 }
 
 .task-note {
-  border-bottom: solid 1px var(--border-light);
+  border-bottom: solid 1px var(--border-medium);
   padding: 1rem 0 1rem 0.5rem;
 }
 
 .task-note:first-child {
-  border-top: solid 1px var(--border-light);
+  border-top: solid 1px var(--border-medium);
 }
 
 .task-note-title {

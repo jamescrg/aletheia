@@ -10,16 +10,29 @@
        hx-swap="innerHTML"
        hx-get="{% url 'matters:edit-work-status' matter_id=matter.id %}">{{ matter.work_status }}</a>
   </td>
-  <td class="case-no">
+  <td class="case-no dropdown-cell">
     {% if matter.primary_proceeding.case_number %}
       <div class="case-no-content">
-        <a href="{% url 'matters:proceedings-index' id=matter.id %}">{{ matter.primary_proceeding.case_number }}</a>
-        <button type="button"
-                class="btn btn-sm copy-btn"
-                data-copy="{{ matter.primary_proceeding.case_number }}"
-                title="Copy case number">
-          <i class="bi bi-clipboard"></i>
-        </button>
+        <span>{{ matter.primary_proceeding.case_number }}</span>
+        <div class="dropdown">
+          <button class="btn-icon menu-icon"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false">
+            <i class="bi bi-three-dots-vertical"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <a class="dropdown-item copy-btn"
+                 href="#"
+                 data-copy="{{ matter.primary_proceeding.case_number }}"><i class="bi bi-clipboard"></i> Copy Case Number</a>
+            </li>
+            <li>
+              <a class="dropdown-item"
+                 href="{% url 'matters:proceedings-index' id=matter.id %}"><i class="bi bi-eye"></i> View Proceedings</a>
+            </li>
+          </ul>
+        </div>
       </div>
     {% endif %}
   </td>

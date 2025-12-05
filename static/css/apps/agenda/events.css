@@ -54,7 +54,7 @@
 
 .deadline-calculator-link a {
   background: var(--background-control);
-  border: solid 1px var(--border-light);
+  border: solid 1px var(--border-medium);
   border-radius: var(--radius-md);
   color: var(--button-toolbar);
   outline: none;

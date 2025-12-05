@@ -20,8 +20,8 @@
 .highlights-cards {
   display: flex;
   flex-direction: column;
-  border-left: solid 1px var(--border-light);
-  border-right: solid 1px var(--border-light);
+  border-left: solid 1px var(--border-medium);
+  border-right: solid 1px var(--border-medium);
 }
 
 /* Individual Card */
@@ -29,11 +29,11 @@
   display: flex;
   gap: 1.5rem;
   padding: 1.25rem 0;
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-medium);
 }
 
 .highlight-card:first-child {
-  border-top: 1px solid var(--border-light);
+  border-top: 1px solid var(--border-medium);
 }
 
 /* Right Panel - Date */
@@ -42,7 +42,7 @@
   width: 15rem;
   padding: 0 1rem;
   color: var(--color-primary);
-  border-left: solid 1px var(--border-light);
+  border-left: solid 1px var(--border-medium);
 }
 
 /* Left Panel - Content */

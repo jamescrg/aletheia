@@ -2,9 +2,48 @@
 List View
 ========================================================================== */
 
-.intake-details {
-  margin-bottom: 2rem;
+/* ==========================================================================
+Detail View - Left Panel
+========================================================================== */
+
+.intake-section.details table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
   width: 100%;
+}
+
+.intake-section.details table:last-child {
+  margin-bottom: 0;
+}
+
+/* Corner rounding */
+.intake-section.details tr:first-child th {
+  border-top-left-radius: calc(var(--radius-md) - 1px);
+}
+
+.intake-section.details tr:first-child td {
+  border-top-right-radius: calc(var(--radius-md) - 1px);
+}
+
+.intake-section.details tr:last-child th {
+  border-bottom-left-radius: calc(var(--radius-md) - 1px);
+}
+
+.intake-section.details tr:last-child td {
+  border-bottom-right-radius: calc(var(--radius-md) - 1px);
+}
+
+.intake-section.details tr:last-child th,
+.intake-section.details tr:last-child td {
+  border-bottom: none;
+}
+
+.intake-section.details th:last-child,
+.intake-section.details td:last-child {
+  border-right: none;
 }
 
 .intake-details td {
@@ -58,11 +97,11 @@ List View
 ========================================================================== */
 
 .intake-notes .toolbar {
-  border-bottom: solid 1px var(--border-light);
+  border-bottom: solid 1px var(--border-medium);
 }
 
 .intake-note {
-  border-bottom: solid 1px var(--border-light);
+  border-bottom: solid 1px var(--border-medium);
   padding: 1rem 0 1rem 0.5rem;
 }
 

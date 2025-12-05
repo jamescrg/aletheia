@@ -12,7 +12,7 @@ Search Layout - Two-column with persistent sidebar
   min-width: 0;
   min-height: 24rem;
   background: transparent;
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--border-medium);
   border-radius: var(--radius-md);
 }
 
@@ -25,7 +25,7 @@ Search Layout - Two-column with persistent sidebar
   top: 1rem;
   font-size: 0.95rem;
   background: transparent;
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--border-medium);
   border-radius: var(--radius-md);
 }
 
@@ -101,7 +101,7 @@ Filter Panel
   align-items: center;
   margin-bottom: 1rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-medium);
 }
 
 .filter-panel-header h2 {
@@ -167,7 +167,7 @@ Result Row
   align-items: flex-start;
   gap: 1rem;
   padding: 1rem 1.5rem;
-  border-top: 1px solid var(--border-light);
+  border-top: 1px solid var(--border-medium);
 }
 
 

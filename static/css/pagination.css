@@ -13,7 +13,7 @@
 
 .pagination-row a {
   background: var(--background-control);
-  border: solid 1px var(--border-light);
+  border: solid 1px var(--border-medium);
   border-radius: var(--radius-md);
   color: var(--link);
   padding: 0.25rem 0.75rem;
