@@ -24,9 +24,8 @@ def user():
 @pytest.fixture
 def client(user):
     client = Client()
-
     client.login(username="Ollie", password="clawboy")
-
+    client.get("/dash/")  # Set daily dash session to avoid redirect
     return client
 
 
@@ -155,10 +154,12 @@ def proceeding(user, matter):
 
 @pytest.fixture
 def proceeding_data(proceeding):
-    proceeding_data = proceeding.__dict__
-    keys = "_state id".split()
-    for key in keys:
-        del proceeding_data[key]
+    exclude_keys = {"_state", "id", "user_id", "matter_id"}
+    proceeding_data = {
+        key: value
+        for key, value in proceeding.__dict__.items()
+        if key not in exclude_keys and value is not None
+    }
     return proceeding_data
 
 

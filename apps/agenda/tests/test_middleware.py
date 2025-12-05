@@ -44,15 +44,14 @@ class TestDailyDashCheckMiddleware:
         assert response.status_code == 302
         assert response.url == "/dash/"
 
-    def test_dash_page_sets_session(self, authenticated_client):
-        """Visiting dash page should set the session key."""
+    def test_dash_page_sets_user_check(self, authenticated_client, user):
+        """Visiting dash page should set the user's last_dash_check field."""
         response = authenticated_client.get("/dash/")
 
         assert response.status_code == 200
-        assert (
-            authenticated_client.session.get("daily_dash_check_date")
-            == date.today().isoformat()
-        )
+        # Refresh user from database to get updated value
+        user.refresh_from_db()
+        assert user.last_dash_check == date.today()
 
     def test_after_dash_other_pages_accessible(self, authenticated_client):
         """After viewing dash, other pages should be accessible."""

@@ -5,9 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
-from apps.case.filters import TimelineFilter
+from apps.case.filters import FactsFilter
 from apps.case.forms import FactForm
-from apps.case.generate_pdf import generate_timeline_pdf
+from apps.case.generate_pdf import generate_facts_pdf
 from apps.case.models import Fact
 from apps.matters.models import Matter
 
@@ -35,7 +35,7 @@ def timeline_list(request, id):
     facts = Fact.objects.filter(matter=matter.id).order_by("date", "time")
 
     # Apply filters if present
-    filterset = TimelineFilter(request.GET, queryset=facts)
+    filterset = FactsFilter(request.GET, queryset=facts)
     facts = filterset.qs
 
     context = {
@@ -143,7 +143,7 @@ def print(request, id):
 @login_required
 def timeline_pdf(request, pk):
     matter = get_object_or_404(Matter, pk=pk)
-    file = generate_timeline_pdf(matter.id, request)
+    file = generate_facts_pdf(matter.id, request)
 
     current_date = datetime.now().strftime("%Y-%m-%d")
 
