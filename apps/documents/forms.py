@@ -116,13 +116,13 @@ class BulkFilesForm(forms.ModelForm):
 class HighlightForm(forms.ModelForm):
     class Meta:
         model = Highlight
-        fields = ["color", "importance", "slug", "paragraph_number", "text"]
+        fields = ["color", "paragraph_number", "importance", "slug", "text"]
         widgets = {
             "color": forms.Select(),
             "importance": forms.Select(choices=IMPORTANCE),
+            "paragraph_number": forms.TextInput(),
             "slug": forms.TextInput(attrs={"class": "span3", "required": True}),
-            "paragraph_number": forms.TextInput(attrs={"class": "span1"}),
-            "text": forms.Textarea(attrs={"class": "span3", "rows": 4}),
+            "text": forms.Textarea(attrs={"class": "span3", "rows": 8}),
         }
 
     def __init__(self, *args, **kwargs):

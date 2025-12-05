@@ -156,11 +156,13 @@ textarea {
 }
 
 
-.form-control {
+.form-control,
+.form-select {
   border-radius: var(--radius-md);
 }
 
-.form-control:focus {
+.form-control:focus,
+.form-select:focus {
   border: solid 1px var(--border-medium);
   box-shadow: none;
   outline: none;
