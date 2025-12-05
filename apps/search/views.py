@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import render
+from watson import search as watson
 
 from apps.contacts.models import Contact
 from apps.intakes.models import Intake
@@ -20,43 +21,49 @@ def index(request):
 
 @login_required
 def results(request):
-    text = request.POST.get("search_text")
+    text = request.POST.get("search_text", "").strip()
 
-    if text:
-        matters = Matter.objects.filter(
-            Q(name__icontains=text)
-            | Q(work_status__icontains=text)
-            | Q(client_reference_id=text)
-            | Q(practice_area__name__icontains=text)
-        ).order_by("name")
-
-        contacts = Contact.objects.filter(
-            Q(name__icontains=text)
-            | Q(company__icontains=text)
-            | Q(address__icontains=text)
-            | Q(phone1__icontains=text)
-            | Q(phone2__icontains=text)
-            | Q(phone3__icontains=text)
-            | Q(email__icontains=text)
-            | Q(website__icontains=text)
-            | Q(notes__icontains=text)
-        ).order_by("name")
-
-        proceedings = Proceeding.objects.filter(Q(case_number__contains=text)).order_by(
-            "-status"
+    if not text:
+        return render(
+            request,
+            "search/results.html",
+            {"matters": None, "contacts": None, "proceedings": None, "intakes": None},
         )
 
-        intakes = Intake.objects.filter(
-            Q(name__icontains=text)
-            | Q(phone__icontains=text)
-            | Q(email__icontains=text)
+    # Digits only - use exact matching for IDs and phone numbers
+    if text.isdigit():
+        matters = Matter.objects.filter(client_reference_id=text).order_by("name")
+        contacts = Contact.objects.filter(
+            Q(phone1__contains=text)
+            | Q(phone2__contains=text)
+            | Q(phone3__contains=text)
         ).order_by("name")
-
+        proceedings = Proceeding.objects.filter(case_number__contains=text).order_by(
+            "-status"
+        )
+        intakes = Intake.objects.filter(phone__contains=text).order_by("name")
     else:
-        matters = None
-        contacts = None
-        proceedings = None
-        intakes = None
+        # Use watson for fuzzy search, limited to global search models
+        search_results = watson.search(
+            text,
+            models=(Matter, Contact, Proceeding, Intake),
+        )
+
+        matters = []
+        contacts = []
+        proceedings = []
+        intakes = []
+
+        for result in search_results:
+            obj = result.object
+            if isinstance(obj, Matter):
+                matters.append(obj)
+            elif isinstance(obj, Contact):
+                contacts.append(obj)
+            elif isinstance(obj, Proceeding):
+                proceedings.append(obj)
+            elif isinstance(obj, Intake):
+                intakes.append(obj)
 
     context = {
         "app": "search",

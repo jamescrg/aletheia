@@ -1,13 +1,11 @@
 <article class="search-result-row result-{{ result.type }}">
-  <div class="result-type-badge">
-    {% if result.type == "document" %}
-      <span class="app-badge app-badge-lg badge-blue"><i class="bi bi-file-earmark-text"></i></span>
-    {% elif result.type == "highlight" %}
-      <span class="app-badge app-badge-lg badge-yellow"><i class="bi bi-highlighter"></i></span>
-    {% elif result.type == "fact" %}
-      <span class="app-badge app-badge-lg badge-green"><i class="bi bi-calendar-event"></i></span>
-    {% endif %}
-  </div>
+  {% if result.type == "document" %}
+    <span class="app-badge app-badge-lg badge-gray"><i class="bi bi-filetype-pdf urgent"></i></span>
+  {% elif result.type == "highlight" %}
+    <span class="app-badge app-badge-lg badge-yellow"><i class="bi bi-highlighter"></i></span>
+  {% elif result.type == "fact" %}
+    <span class="app-badge app-badge-lg badge-green"><i class="bi bi-calendar-event"></i></span>
+  {% endif %}
   <div class="result-content">
     {% if result.type == "document" %}
       <a href="{% url 'documents:viewer' result.object.id %}"
@@ -49,14 +47,6 @@
           <span class="app-badge badge-{{ label.color }}">{{ label.name }}</span>
         {% endfor %}
       </div>
-    {% endif %}
-  </div>
-  <div class="result-importance">
-    {% if result.object.importance <= 3 %}
-      <span class="importance-high"
-            title="Importance: {{ result.object.importance }}">
-        <i class="bi bi-flag-fill"></i>
-      </span>
     {% endif %}
   </div>
 </article>

@@ -8,9 +8,7 @@
     <div class="search-cards">
       {% for matter in matters %}
         <a href="{% url 'matters:detail' id=matter.id %}" class="search-card">
-          <div class="search-card-icon">
-            <i class="bi bi-briefcase"></i>
-          </div>
+          <span class="app-badge app-badge-lg badge-gray"><i class="bi bi-briefcase"></i></span>
           <div class="search-card-content">
             <div class="search-card-title">{{ matter.name }}</div>
             {% if matter.work_status %}<div class="search-card-meta">{{ matter.work_status|truncatewords:8 }}</div>{% endif %}
@@ -31,9 +29,7 @@
       {% for proceeding in proceedings %}
         <a href="{% url 'matters:proceedings-index' id=proceeding.matter.id %}"
            class="search-card">
-          <div class="search-card-icon">
-            <i class="bi bi-building"></i>
-          </div>
+          <span class="app-badge app-badge-lg badge-gray"><i class="bi bi-building"></i></span>
           <div class="search-card-content">
             <div class="search-card-title">{{ proceeding.matter.name }}</div>
             <div class="search-card-meta">{{ proceeding.forum }} &bull; {{ proceeding.case_number }}</div>
@@ -54,9 +50,7 @@
       {% for contact in contacts %}
         <a href="{% url 'contacts:select' contact_id=contact.id %}"
            class="search-card">
-          <div class="search-card-icon">
-            <i class="bi bi-person"></i>
-          </div>
+          <span class="app-badge app-badge-lg badge-gray"><i class="bi bi-person"></i></span>
           <div class="search-card-content">
             <div class="search-card-title">{{ contact.name }}</div>
             <div class="search-card-meta">
@@ -80,9 +74,7 @@
       {% for intake in intakes %}
         <a href="{% url 'intakes:detail-index' id=intake.id %}"
            class="search-card">
-          <div class="search-card-icon">
-            <i class="bi bi-inbox"></i>
-          </div>
+          <span class="app-badge app-badge-lg badge-gray"><i class="bi bi-inbox"></i></span>
           <div class="search-card-content">
             <div class="search-card-title">{{ intake.name }}</div>
             <div class="search-card-meta">

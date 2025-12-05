@@ -43,6 +43,10 @@ strong,
   color: var(--urgent);
 }
 
+.icon-yellow {
+  color: var(--yellow-300);
+}
+
 .warn {
   margin-bottom: 1.25rem;
   padding: 0.75rem;

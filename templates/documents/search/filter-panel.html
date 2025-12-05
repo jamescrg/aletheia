@@ -16,6 +16,10 @@
     <label for="id_category">Category</label>
     {{ filter.form.category }}
   </div>
+  <div class="filter-group {% if filter_data.importance %}has-value{% endif %}">
+    <label for="id_importance">Importance</label>
+    {{ filter.form.importance }}
+  </div>
   <div class="filter-group {% if filter_data.label %}has-value{% endif %}">
     <label for="id_label">Label</label>
     {{ filter.form.label }}
@@ -31,9 +35,5 @@
   <div class="filter-group {% if filter_data.date_to %}has-value{% endif %}">
     <label for="id_date_to">Date To</label>
     {{ filter.form.date_to }}
-  </div>
-  <div class="filter-group {% if filter_data.importance %}has-value{% endif %}">
-    <label for="id_importance">Importance</label>
-    {{ filter.form.importance }}
   </div>
 </form>

@@ -80,14 +80,16 @@
       }
 
       .highlight-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
         padding: 12px;
         background: var(--stone-50);
         border: 1px solid var(--stone-300);
-        border-radius: 4px;
+        border-radius: var(--radius-md);
         margin-bottom: 8px;
         cursor: pointer;
         transition: background-color 0.15s;
-        position: relative;
       }
 
       .highlight-item:hover {
@@ -98,23 +100,37 @@
         background: var(--stone-100);
       }
 
+      .highlight-content {
+        flex: 1;
+        min-width: 0;
+      }
+
       .highlight-slug {
         font-size: 0.9rem;
+        word-wrap: break-word;
       }
 
-      .highlight-actions {
-        display: flex;
-        gap: 1.25rem;
-        margin-top: 0.75rem;
+      .highlight-citation {
+        font-size: 0.8rem;
+        color: var(--color-muted);
+        margin-top: 0.25rem;
       }
 
-      .highlight-actions .btn {
-        padding: 0;
+      .highlight-menu {
+        flex-shrink: 0;
+      }
+
+      .highlight-menu .btn-icon {
+        position: relative;
+        right: -0.25rem;
+        padding: 0 0 0.25rem 0.25rem;
         color: var(--stone-400);
-        font-size: 1rem;
+        background: none;
+        border: none;
+        cursor: pointer;
       }
 
-      .highlight-actions .btn:hover {
+      .highlight-menu .btn-icon:hover {
         color: var(--stone-700);
       }
 
@@ -244,18 +260,29 @@
                  data-highlight-id="{{ highlight.id }}"
                  data-page="{{ highlight.page_number }}"
                  data-color="{{ highlight.color }}">
-              <div class="highlight-slug">{{ highlight.slug }}</div>
-              <div class="highlight-actions">
-                <button class="btn btn-link edit-highlight"
-                        data-highlight-id="{{ highlight.id }}"
-                        title="Edit">
-                  <i class="bi bi-pencil"></i>
+              <div class="highlight-content">
+                <div class="highlight-slug">{{ highlight.slug }}</div>
+                <div class="highlight-citation">{{ highlight.citation }}</div>
+              </div>
+              <div class="highlight-menu dropdown">
+                <button class="btn-icon"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                  <i class="bi bi-three-dots-vertical"></i>
                 </button>
-                <button class="btn btn-link delete-highlight"
-                        data-highlight-id="{{ highlight.id }}"
-                        title="Delete">
-                  <i class="bi bi-trash3"></i>
-                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item edit-highlight"
+                       href="#"
+                       data-highlight-id="{{ highlight.id }}">Edit</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item delete-highlight"
+                       href="#"
+                       data-highlight-id="{{ highlight.id }}">Delete</a>
+                  </li>
+                </ul>
               </div>
             </div>
           {% empty %}
@@ -506,14 +533,22 @@
       item.dataset.page = highlight.page_number;
       item.dataset.color = highlight.color;
       item.innerHTML = `
-        <div class="highlight-slug">${escapeHtml(highlight.slug)}</div>
-        <div class="highlight-actions">
-          <button class="btn btn-link edit-highlight" data-highlight-id="${highlight.id}" title="Edit">
-            <i class="bi bi-pencil"></i>
+        <div class="highlight-content">
+          <div class="highlight-slug">${escapeHtml(highlight.slug)}</div>
+          <div class="highlight-citation">${escapeHtml(highlight.citation || '')}</div>
+        </div>
+        <div class="highlight-menu dropdown">
+          <button class="btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-three-dots-vertical"></i>
           </button>
-          <button class="btn btn-link delete-highlight" data-highlight-id="${highlight.id}" title="Delete">
-            <i class="bi bi-trash3"></i>
-          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item edit-highlight" href="#" data-highlight-id="${highlight.id}">Edit</a>
+            </li>
+            <li>
+              <a class="dropdown-item delete-highlight" href="#" data-highlight-id="${highlight.id}">Delete</a>
+            </li>
+          </ul>
         </div>
       `;
       list.appendChild(item);

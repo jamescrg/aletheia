@@ -77,6 +77,20 @@ Search Input
   font-size: 0.875rem;
 }
 
+.search-clear-btn {
+  cursor: pointer;
+  border: none;
+}
+
+.search-clear-btn:hover {
+  opacity: 0.8;
+}
+
+.search-clear-btn i {
+  margin-left: 0.25rem;
+  margin-right: 0;
+}
+
 /*------------------------------------------------
 Filter Panel
 ------------------------------------------------*/
@@ -150,23 +164,12 @@ Result Row
 
 .search-result-row {
   display: flex;
+  align-items: flex-start;
   gap: 1rem;
   padding: 1rem 1.5rem;
   border-top: 1px solid var(--border-light);
 }
 
-
-.result-type-badge {
-  flex-shrink: 0;
-}
-
-.result-type-badge .app-badge {
-  padding: 0.25rem;
-}
-
-.result-type-badge .app-badge i {
-  margin-right: 0;
-}
 
 .result-content {
   flex: 1;

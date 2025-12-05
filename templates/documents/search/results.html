@@ -21,8 +21,13 @@
   <div id="search-result-count"
        class="search-result-count"
        hx-swap-oob="true">
-    {% if query %}
-      <span class="app-badge app-badge-lg badge-purple">{{ results|length }} result{{ results|length|pluralize }}</span>
+    {% if query or filter_data %}
+      <button class="app-badge app-badge-lg badge-purple search-clear-btn"
+              hx-post="{% url 'documents:search-clear' %}"
+              hx-swap="none"
+              title="Clear search and filters">
+        {{ results|length }} result{{ results|length|pluralize }}<strong><i class="bi bi-x"></i></strong>
+      </button>
     {% endif %}
   </div>
   <aside id="search-filter-panel"

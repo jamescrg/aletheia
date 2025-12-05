@@ -1,5 +1,6 @@
 /* ------------------------------------------------------------------------- */
-/* Search Modal                                                              */
+/* Site Search Modal                                                         */
+/* All rules scoped to .search (modal) to avoid conflicts with doc search    */
 /* ------------------------------------------------------------------------- */
 
 .search.modal-dialog {
@@ -10,16 +11,14 @@
   padding: 1.5rem;
 }
 
-/* ------------------------------------------------------------------------- */
-/* Search Form                                                               */
-/* ------------------------------------------------------------------------- */
+/* Search Form */
 
-.search-form .input-group {
+.search .search-form .input-group {
   display: flex;
   margin: 0 auto;
 }
 
-.search-text {
+.search .search-text {
   flex: 1;
   background: var(--input-background);
   border: 1px solid var(--border-medium);
@@ -27,7 +26,7 @@
   padding: 0.625rem 1rem;
 }
 
-.search-text:focus {
+.search .search-text:focus {
   outline: none;
   box-shadow: none;
   border-color: var(--border-medium);
@@ -42,47 +41,43 @@
   color: var(--color-muted);
 }
 
-/* ------------------------------------------------------------------------- */
-/* Search Results Container                                                  */
-/* ------------------------------------------------------------------------- */
+/* Search Results Container */
 
-.search-results {
+.search .search-results {
   margin-top: 1.5rem;
   min-height: 12rem;
   max-height: 60vh;
   overflow-y: auto;
 }
 
-.search-results-placeholder {
+.search .search-results-placeholder {
   padding: 3rem 1.5rem;
   text-align: center;
   color: var(--color-muted);
 }
 
-.search-results-placeholder i {
+.search .search-results-placeholder i {
   font-size: 2rem;
   margin-bottom: 0.75rem;
   display: block;
   color: var(--icon-muted);
 }
 
-.search-results-placeholder p {
+.search .search-results-placeholder p {
   margin: 0;
 }
 
-/* ------------------------------------------------------------------------- */
-/* Search Sections                                                           */
-/* ------------------------------------------------------------------------- */
+/* Search Sections */
 
-.search-section {
+.search .search-section {
   margin-bottom: 1.5rem;
 }
 
-.search-section:last-child {
+.search .search-section:last-child {
   margin-bottom: 0;
 }
 
-.search-section-header {
+.search .search-section-header {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -91,22 +86,20 @@
   border-bottom: 1px solid var(--border-light);
 }
 
-.search-section-title {
+.search .search-section-title {
   font-weight: 600;
   color: var(--color-primary);
 }
 
-/* ------------------------------------------------------------------------- */
-/* Search Cards                                                              */
-/* ------------------------------------------------------------------------- */
+/* Search Cards */
 
-.search-cards {
+.search .search-cards {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.search-card {
+.search .search-card {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -119,31 +112,23 @@
   transition: background-color 0.15s, border-color 0.15s;
 }
 
-.search-card:hover {
+.search .search-card:hover {
   background: var(--background-panel);
   border-color: var(--border-medium);
   text-decoration: none;
   color: inherit;
 }
 
-.search-card-icon {
-  flex-shrink: 0;
-  width: 2rem;
-  height: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--background-control);
-  border-radius: var(--radius-md);
-  color: var(--icon-default);
+.search .search-card > .app-badge i {
+  margin-right: 0;
 }
 
-.search-card-content {
+.search .search-card-content {
   flex: 1;
   min-width: 0;
 }
 
-.search-card-title {
+.search .search-card-title {
   font-weight: 500;
   color: var(--color-primary);
   white-space: nowrap;
@@ -151,7 +136,7 @@
   text-overflow: ellipsis;
 }
 
-.search-card-meta {
+.search .search-card-meta {
   font-size: 0.875rem;
   color: var(--color-muted);
   white-space: nowrap;
@@ -159,27 +144,25 @@
   text-overflow: ellipsis;
 }
 
-.search-card .app-badge {
+.search .search-card .app-badge {
   flex-shrink: 0;
 }
 
-/* ------------------------------------------------------------------------- */
-/* Empty State                                                               */
-/* ------------------------------------------------------------------------- */
+/* Empty State */
 
-.search-empty {
+.search .search-empty {
   padding: 3rem 1.5rem;
   text-align: center;
   color: var(--color-muted);
 }
 
-.search-empty i {
+.search .search-empty i {
   font-size: 2rem;
   margin-bottom: 0.75rem;
   display: block;
   color: var(--icon-muted);
 }
 
-.search-empty p {
+.search .search-empty p {
   margin: 0;
 }

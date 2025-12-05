@@ -979,11 +979,14 @@ def add_highlight(request, document_id):
     try:
         coordinates = json.loads(request.POST.get("coordinates", "{}"))
 
+        paragraph_number = request.POST.get("paragraph_number", "").strip() or None
+
         highlight = Highlight.objects.create(
             document=document,
             slug=slug,
             text=request.POST.get("text"),
             page_number=int(request.POST.get("page_number")),
+            paragraph_number=paragraph_number,
             coordinates=coordinates,
             color=request.POST.get("color", "yellow"),
             importance=5,
@@ -996,6 +999,8 @@ def add_highlight(request, document_id):
                 "slug": highlight.slug,
                 "text": highlight.text,
                 "page_number": highlight.page_number,
+                "paragraph_number": highlight.paragraph_number,
+                "citation": highlight.citation,
                 "coordinates": highlight.coordinates,
                 "color": highlight.color,
                 "importance": highlight.importance,
@@ -1973,9 +1978,6 @@ def search_filter_type(request, result_type=None):
 
 @login_required
 def search_clear(request):
-    """Clear all search filters."""
-    # Preserve query but clear filters
-    filter_data = request.session.get("search_filter", {})
-    query = filter_data.get("query", "")
-    request.session["search_filter"] = {"query": query} if query else {}
+    """Clear search query and all filters."""
+    request.session["search_filter"] = {}
     return HttpResponse(status=204, headers={"HX-Trigger": "searchChanged"})
