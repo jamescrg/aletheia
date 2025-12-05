@@ -9,7 +9,7 @@
         <a class="dropdown-item"
            href="#"
            hx-get="{% url 'documents:file-importance' document.id forloop.counter %}"
-           hx-target="#files">Importance {{ forloop.counter }}</a>
+           hx-target="#files"><i class="bi bi-flag"></i>Importance {{ forloop.counter }}</a>
       </li>
     {% endfor %}
   </ul>

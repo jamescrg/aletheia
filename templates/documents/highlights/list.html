@@ -16,7 +16,7 @@
               class="select-btn filter-dropdown-button {% if selected_document %}toggle-active{% endif %}"
               data-bs-toggle="dropdown"
               aria-expanded="false">
-        <span class="doc-name">{{ selected_document.name|default:"All Documents" }}</span>
+        <span><i class="bi bi-file-earmark with-text"></i>{{ selected_document.name|default:"All Documents"|truncatechars:30 }}</span>
         <small>
           <i class="bi bi-chevron-down"></i>
         </small>
@@ -29,7 +29,7 @@
              href="#"
              hx-post="{% url 'documents:highlights-filter-document' %}"
              hx-target="#highlights"
-             hx-swap="outerHTML">All Documents</a>
+             hx-swap="outerHTML"><i class="bi bi-files"></i> All Documents</a>
         </li>
         {% for doc in documents %}
           <li>
@@ -37,7 +37,7 @@
                href="#"
                hx-post="{% url 'documents:highlights-filter-document' doc.id %}"
                hx-target="#highlights"
-               hx-swap="outerHTML">{{ doc.name|truncatechars:30 }}</a>
+               hx-swap="outerHTML"><i class="bi bi-file-earmark"></i> {{ doc.name|truncatechars:30 }}</a>
           </li>
         {% endfor %}
       </ul>
@@ -46,45 +46,56 @@
               class="select-btn filter-dropdown-button {% if importance_value %}toggle-active{% endif %}"
               data-bs-toggle="dropdown"
               aria-expanded="false">
-        {% if selected_importance %}
-          <div class="importance-arrow">
-            <i class="bi bi-arrow-bar-up"></i>
-          </div>
-          <div class="importance-text">{{ selected_importance }}</div>
+      <span><i class="bi bi-flag with-text"></i>
+      {% if importance_value %}
+        {% if importance_value == 1 %}
+          1 only
         {% else %}
-          Importance
+          {{ importance_value }} and up
         {% endif %}
-        <small>
-          <i class="bi bi-chevron-down"></i>
-        </small>
-      </button>
-      <ul class="dropdown-menu">
+      {% else %}
+        Importance
+      {% endif %}
+    </span>
+    <small>
+      <i class="bi bi-chevron-down"></i>
+    </small>
+  </button>
+  <ul class="dropdown-menu">
+    {% for importance in importances %}
+      {% if importance != 10 %}
         <li>
-          <a class="dropdown-item"
-             href="#"
-             hx-get="{% url 'documents:highlights-filter-importance' 0 %}"
-             hx-target="#highlights">All Levels</a>
-        </li>
-        {% for importance in importances %}
-          <li>
-            <a class="dropdown-item {% if importance == importance_value %}active{% endif %}"
-               href="#"
-               hx-get="{% url 'documents:highlights-filter-importance' importance %}"
-               hx-target="#highlights">Importance {{ importance }}</a>
-          </li>
-        {% endfor %}
-      </ul>
-      <input type="text"
-             id="highlights-keyword-input"
-             name="keyword"
-             placeholder="Keyword Search"
-             value="{{ keyword }}"
-             class="filter-input keyword-input"
-             hx-post="{% url 'documents:highlights-filter-keyword' %}"
-             hx-target="#highlights-cards"
-             hx-trigger="keyup changed delay:500ms"
-             hx-include="this">
-    </div>
-  </div>
+        <a class="dropdown-item {% if importance == importance_value %}active{% endif %}"
+           href="#"
+           hx-get="{% url 'documents:highlights-filter-importance' importance %}"
+           hx-target="#highlights"><i class="bi bi-flag"></i>
+        {% if importance == 1 %}
+          1 only
+        {% else %}
+          {{ importance }} and up
+        {% endif %}
+      </a>
+    </li>
+  {% endif %}
+{% endfor %}
+<li>
+  <a class="dropdown-item {% if not importance_value %}active{% endif %}"
+     href="#"
+     hx-get="{% url 'documents:highlights-filter-importance' 0 %}"
+     hx-target="#highlights"><i class="bi bi-flag"></i> All Levels</a>
+</li>
+</ul>
+<input type="text"
+       id="highlights-keyword-input"
+       name="keyword"
+       placeholder="Keyword Search"
+       value="{{ keyword }}"
+       class="filter-input keyword-input"
+       hx-post="{% url 'documents:highlights-filter-keyword' %}"
+       hx-target="#highlights-cards"
+       hx-trigger="keyup changed delay:500ms"
+       hx-include="this">
+</div>
+</div>
 </div>
 <div id="highlights-cards">{% include "documents/highlights/cards.html" %}</div>
