@@ -13,11 +13,10 @@
 
 .pagination-row a {
   background: var(--background-control);
-  border: none;
-  border-radius: var(--radius-sm);
+  border: solid 1px var(--border-light);
+  border-radius: var(--radius-md);
   color: var(--link);
-  padding: 0 0.5rem;
-
+  padding: 0.25rem 0.75rem;
 }
 
 .pagination a:hover {

@@ -1,0 +1,76 @@
+<tr id="highlight-{{ highlight.id }}">
+  <td class="date">
+    <span>{{ highlight.document.date|date:'Y-m-d'|default:"No date" }}</span>
+    <div class="highlight-actions dropdown">
+      <button class="btn-icon menu-icon"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+        <i class="bi bi-three-dots-vertical"></i>
+      </button>
+      <ul class="dropdown-menu">
+        <li>
+          <a class="dropdown-item"
+             href="#"
+             hx-get="{% url 'documents:edit-highlight' highlight.id %}"
+             hx-target="#htmx-modal-container"
+             data-bs-toggle="modal"
+             data-bs-target="#htmx-modal-container">Edit Highlight</a>
+        </li>
+        <li>
+          <a class="dropdown-item"
+             href="{% url 'documents:highlight-link' highlight.id %}"
+             target="_blank">View in Document</a>
+        </li>
+        <li>
+          <a class="dropdown-item highlight-copy-btn"
+             href="#"
+             data-copy="{{ highlight.text }} {{ highlight.citation }}">Copy Text & Citation</a>
+        </li>
+        <li>
+          <a class="dropdown-item highlight-link-btn"
+             href="#"
+             data-url="{% url 'documents:highlight-link' highlight.id %}">Copy Link</a>
+        </li>
+        <li>
+          <a class="dropdown-item"
+             href="#"
+             hx-get="{% url 'documents:labels-apply-modal' 'highlight' highlight.id %}"
+             hx-target="#htmx-modal-container"
+             data-bs-toggle="modal"
+             data-bs-target="#htmx-modal-container">Add Label</a>
+        </li>
+      </ul>
+    </div>
+  </td>
+  <td class="highlight">
+    <h3 class="highlight-slug">
+      <span class="hl-{{ highlight.color }}">{{ highlight.slug|default:"Untitled" }}</span>
+    </h3>
+    <div class="highlight-text">{{ highlight.text }}</div>
+    <cite class="highlight-citation">{{ highlight.citation }}</cite>
+    <div class="highlight-labels">
+      {% for label in highlight.labels.all %}
+        {% include "documents/labels/badge.html" with object_type="highlight" object=highlight %}
+      {% endfor %}
+    </div>
+  </td>
+  <td class="importance">
+    <div class="dropdown">
+      <button class="button-link"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">{{ highlight.importance }}</button>
+      <ul class="dropdown-menu">
+        {% for i in "1234567890"|make_list %}
+          <li>
+            <a class="dropdown-item"
+               href="#"
+               hx-get="{% url 'documents:highlight-importance' highlight.id forloop.counter %}"
+               hx-target="#highlights">Importance {{ forloop.counter }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </td>
+</tr>

@@ -1,3 +1,4 @@
+{% load phone_numbers %}
 <div class="row row-center">
   {% if matters %}
     <div class="search-results-title">Matters</div>
@@ -57,7 +58,7 @@
             <td class="contact-name">
               <a href={% url 'contacts:select' contact_id=contact.id %}>{{ contact.name }}</a>
             </td>
-            <td class="contact-phone1">{{ contact.phone1 }}</td>
+            <td class="contact-phone1">{{ contact.phone1|phone_number }}</td>
             <td class="contact-email">{{ contact.email }}</td>
           </tr>
         {% endfor %}
@@ -78,7 +79,7 @@
             <td class="intake-name">
               <a href={% url 'intakes:detail-index' id=intake.id %}>{{ intake.name }}</a>
             </td>
-            <td class="intake-phone">{{ intake.phone }}</td>
+            <td class="intake-phone">{{ intake.phone|phone_number }}</td>
             <td class="intake-email">{{ intake.email }}</td>
           </tr>
         {% endfor %}

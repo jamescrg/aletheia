@@ -296,6 +296,13 @@
                        required>
               </div>
               <div class="mb-3">
+                <label for="highlight-paragraph" class="form-label">Paragraph Number</label>
+                <input type="text"
+                       class="form-control"
+                       id="highlight-paragraph"
+                       name="paragraph_number">
+              </div>
+              <div class="mb-3">
                 <label for="highlight-text" class="form-label">Text</label>
                 <textarea class="form-control" id="highlight-text" name="text" rows="6"></textarea>
               </div>
@@ -441,6 +448,7 @@
       document.getElementById('highlight-page').value = currentSelection.page;
       document.getElementById('highlight-coords').value = JSON.stringify({ rects: currentSelection.rects });
       document.getElementById('highlight-slug').value = '';
+      document.getElementById('highlight-paragraph').value = '';
       document.getElementById('highlight-text').value = currentSelection.text;
 
       const modal = new bootstrap.Modal(document.getElementById('highlight-modal'));

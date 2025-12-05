@@ -149,6 +149,7 @@ class Highlight(models.Model):
     slug = models.CharField(max_length=255)
     text = models.TextField()  # Captured highlight text for search
     page_number = models.PositiveIntegerField()
+    paragraph_number = models.CharField(max_length=20, blank=True, null=True)
     # {"rects": [{"x1": float, "y1": float, "x2": float, "y2": float}, ...]}
     coordinates = models.JSONField()
     COLOR_CHOICES = [
@@ -185,12 +186,14 @@ class Highlight(models.Model):
 
     @property
     def citation(self):
-        """Return citation with document abbreviation and page number."""
+        """Return citation with document abbreviation and page/paragraph number."""
         doc_citation = self.document.citation
-        # Remove closing .) to insert page number
-        # Current format: (Abbrev.)
-        # Target format: (Abbrev. at 5.)
+        # Remove closing .) to insert location
+        # Format with paragraph: (Abbrev. ¶ 5.)
+        # Format with page: (Abbrev. at 5.)
         base = doc_citation.rstrip(")").rstrip(".")
+        if self.paragraph_number:
+            return f"{base} ¶ {self.paragraph_number}.)"
         return f"{base} at {self.page_number}.)"
 
 

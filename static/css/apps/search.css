@@ -8,10 +8,9 @@
 }
 
 .search-text {
-  background: var(--background-lighter);
-  border: 1px solid var(--border-dark);
-  border-bottom-left-radius: 5px !important;
-  border-top-left-radius: 5px !important;
+  background: var(--input-background);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md) 0 0 var(--radius-md) !important;
   margin: 0;
   padding: 0.5rem;
   width: 70%;
@@ -29,8 +28,9 @@
 }
 
 .search .input-group-text {
-  background: var(--background-muted);
-  border: 1px solid var(--border-dark);
+  background: var(--background-control);
+  border: 1px solid var(--border-medium);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
 }
 
 .search-icon {

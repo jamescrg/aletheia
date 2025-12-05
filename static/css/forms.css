@@ -24,6 +24,7 @@ form .errorlist {
 input,
 select,
 textarea {
+  background: var(--input-background);
   border: solid 1px var(--border-medium);
   border-radius: var(--radius-md);
   outline: none;
@@ -38,7 +39,7 @@ textarea {
 .dropzone {
   border: solid 1px var(--border-medium) !important;
   border-radius: var(--radius-md) !important;
-  background: white !important;
+  background: var(--input-background) !important;
   padding: 1rem !important;
   cursor: pointer;
   text-align: center;
@@ -154,9 +155,6 @@ textarea {
   text-decoration: underline;
 }
 
-select {
-  background: white;
-}
 
 .form-control {
   border-radius: var(--radius-md);
@@ -283,7 +281,6 @@ select {
 
 .form-compact input[type="color"] {
   height: 2.25rem;
-  background-color: white;
   border: solid 1px var(--border-medium);
 }
 

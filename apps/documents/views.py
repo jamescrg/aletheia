@@ -27,6 +27,7 @@ from apps.documents.generate_pdf import generate_timeline_pdf
 from apps.documents.get_document_data import get_document_data, get_selected_matter
 from apps.documents.get_label_data import get_label_data
 from apps.documents.models import Document, Fact, Highlight, Label
+from apps.management.pagination import CustomPaginator
 from apps.matters.models import Matter
 
 
@@ -243,15 +244,11 @@ def document_importance(request, document_id, importance):
 
 @login_required
 def highlight_importance(request, highlight_id, importance):
-    """Set highlight importance and return updated badge partial."""
+    """Set highlight importance."""
     highlight = get_object_or_404(Highlight, id=highlight_id)
     highlight.importance = importance
     highlight.save()
-    return render(
-        request,
-        "documents/highlights/importance-badge.html",
-        {"highlight": highlight, "importance_choices": range(1, 11)},
-    )
+    return redirect("documents:highlights-list")
 
 
 @login_required
@@ -1136,20 +1133,24 @@ def get_highlights_data(request, matter):
             selected_document = documents.filter(id=document_id).first()
 
         # Handle custom ordering with secondary sorts
-        if order_by == "document":
-            highlights = highlights.order_by("document__name", "slug", "page_number")
-        elif order_by == "-document":
-            highlights = highlights.order_by("-document__name", "slug", "page_number")
+        if order_by == "date":
+            highlights = highlights.order_by("document__date", "slug", "page_number")
+        elif order_by == "-date":
+            highlights = highlights.order_by("-document__date", "slug", "page_number")
         elif order_by == "slug":
-            highlights = highlights.order_by("slug", "document__name", "page_number")
+            highlights = highlights.order_by("slug", "document__date", "page_number")
         elif order_by == "-slug":
-            highlights = highlights.order_by("-slug", "document__name", "page_number")
+            highlights = highlights.order_by("-slug", "document__date", "page_number")
+        elif order_by == "importance":
+            highlights = highlights.order_by("importance", "document__date", "slug")
+        elif order_by == "-importance":
+            highlights = highlights.order_by("-importance", "document__date", "slug")
         elif not order_by:
-            # Default: order by document, then slug
-            highlights = highlights.order_by("document__name", "slug", "page_number")
+            # Default: order by date, then slug
+            highlights = highlights.order_by("document__date", "slug", "page_number")
 
     # Determine current_order for template (strip leading '-' for base field)
-    current_order = order_by if order_by else "document"
+    current_order = order_by if order_by else "date"
 
     # Get importance filter value
     importance_value = get_filter_value("importance")
@@ -1157,8 +1158,17 @@ def get_highlights_data(request, matter):
         int(importance_value) if importance_value not in (None, "", 0) else None
     )
 
+    # Paginate highlights
+    pagination = CustomPaginator(
+        highlights, per_page=10, request=request, session_key="highlights_pagination"
+    )
+    highlights = pagination.get_object_list()
+
     return {
         "highlights": highlights,
+        "pagination": pagination,
+        "session_key": "highlights_pagination",
+        "trigger_key": "highlightsChanged",
         "documents": documents,
         "selected_document": selected_document,
         "keyword": keyword,
@@ -1214,6 +1224,7 @@ def highlights_filter_document(request, document_id=None):
         filter_data["document"] = ""  # Empty string for "All"
 
     request.session["highlights_filter"] = filter_data
+    request.session["highlights_pagination"] = 1  # Reset to page 1
 
     return HttpResponse(status=204, headers={"HX-Trigger": "highlightsChanged"})
 
@@ -1238,6 +1249,7 @@ def highlights_filter_keyword(request):
     filter_data["keyword"] = keyword  # Store as simple string
 
     request.session["highlights_filter"] = filter_data
+    request.session["highlights_pagination"] = 1  # Reset to page 1
 
     # Render just the cards partial (for search input updates)
     context = get_highlights_data(request, matter)
@@ -1252,6 +1264,7 @@ def highlights_filter_importance(request, importance_value):
     filter_data["importance"] = "" if importance_value == 0 else importance_value
 
     request.session["highlights_filter"] = filter_data
+    request.session["highlights_pagination"] = 1  # Reset to page 1
 
     return redirect("documents:highlights-list")
 
@@ -1269,6 +1282,7 @@ def highlights_filter(request):
             if key != "csrfmiddlewaretoken"
         }
         request.session["highlights_filter"] = filter_data
+        request.session["highlights_pagination"] = 1  # Reset to page 1
         return HttpResponse(status=204, headers={"HX-Trigger": "highlightsChanged"})
 
     # GET - show filter modal
@@ -1304,6 +1318,7 @@ def highlights_filter_sort(request, order):
         filter_data["order_by"] = order
 
     request.session["highlights_filter"] = filter_data
+    request.session["highlights_pagination"] = 1  # Reset to page 1
 
     return HttpResponse(status=204, headers={"HX-Trigger": "highlightsChanged"})
 

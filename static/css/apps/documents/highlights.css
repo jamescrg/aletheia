@@ -36,16 +36,16 @@
   border-top: 1px solid var(--border-light);
 }
 
-/* Left Panel - Date */
+/* Right Panel - Date */
 .highlight-card-date {
   flex-shrink: 0;
   width: 15rem;
   padding: 0 1rem;
   color: var(--color-primary);
-  border-right: solid 1px var(--border-light);
+  border-left: solid 1px var(--border-light);
 }
 
-/* Right Panel - Content */
+/* Left Panel - Content */
 .highlight-card-content {
   position: relative;
   flex: 1;
@@ -131,4 +131,110 @@ Label badges
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
+}
+
+/*------------------------------------------------
+Table Layout
+------------------------------------------------*/
+
+.highlights-list {
+  min-width: 52.5rem;
+}
+
+.highlights-list .date {
+  width: 10rem;
+  position: relative;
+  padding-right: 2rem;
+}
+
+.highlights-list .date span {
+  display: inline;
+}
+
+.highlights-list .highlight {
+  min-width: 18rem;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.highlights-list .importance {
+  width: 3rem;
+  text-align: center;
+}
+
+.highlights-list th.importance .btn-sort {
+  margin: 0;
+}
+
+.highlights-list .importance .dropdown-menu {
+  min-width: 2rem;
+}
+
+/* Fix dropdown overflow issues */
+.table-container:has(.highlights-list) {
+  overflow: visible;
+}
+
+.highlights-list td {
+  overflow: visible;
+  padding-top: 1rem !important;
+}
+
+/*------------------------------------------------
+Highlight row layout
+------------------------------------------------*/
+
+.highlights-list .highlight-actions {
+  position: absolute;
+  top: 0.625rem;
+  right: 0.5rem;
+}
+
+.highlights-list .highlight-actions button {
+  color: var(--icon-muted);
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+}
+
+.highlights-list .highlight-actions button:hover {
+  color: var(--color-primary);
+}
+
+.highlights-list tr:hover .highlight-actions button {
+  opacity: 1;
+}
+
+/*------------------------------------------------
+Highlight content (td)
+------------------------------------------------*/
+
+.highlights-list .highlight-slug {
+  font-weight: 500;
+  margin-left: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.highlights-list .highlight-slug span {
+  padding: 0.25rem 0.5rem;
+}
+
+.highlights-list .highlight-text {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  background: var(--background-text);
+  color: var(--color-primary);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.highlights-list .highlight-citation {
+  display: block;
+  font-style: normal;
+  color: var(--color-muted);
+  margin-left: 0.5rem;
+}
+
+.highlights-list .highlight-labels {
+  margin-top: 0.5rem;
+  min-height: 1.5rem;
 }

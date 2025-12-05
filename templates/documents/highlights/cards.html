@@ -1,7 +1,1 @@
-<div class="highlights-cards">
-  {% for highlight in highlights %}
-    {% include "documents/highlights/row.html" %}
-  {% empty %}
-    <div class="empty-card">No highlights found.</div>
-  {% endfor %}
-</div>
+{% include "documents/highlights/table.html" %}
