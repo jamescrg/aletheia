@@ -40,13 +40,11 @@ class FilesForm(forms.ModelForm):
             "date",
             "name",
             "description",
-            "importance",
         ]
         widgets = {
             "date": forms.DateInput(attrs={"type": "date"}),
             "description": forms.Textarea(attrs={"rows": 3, "class": "span2"}),
             "name": forms.TextInput(attrs={"class": "span2", "autofocus": True}),
-            "importance": forms.Select(choices=IMPORTANCE),
         }
 
     def __init__(self, *args, matter=None, **kwargs):
