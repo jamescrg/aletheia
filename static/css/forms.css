@@ -31,7 +31,7 @@ textarea {
 }
 
 .toolbar input {
-  padding: 0.5rem 0.5rem;
+  padding: 0.35rem 0.625rem;
 }
 
 /* Dropzone styling to match form field styles */
@@ -156,6 +156,10 @@ textarea {
 
 select {
   background: white;
+}
+
+.form-control {
+  border-radius: var(--radius-md);
 }
 
 .form-control:focus {

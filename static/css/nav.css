@@ -107,6 +107,14 @@
   box-shadow: calc(-1 * var(--radius-md) / 2) 0 0 0 var(--background-subnav-tab-active);
 }
 
+.navbar-sub li:first-child.active {
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.navbar-sub li:first-child.active::before {
+  display: none;
+}
+
 
 /* ==========================================================================
  Horizontal Scroll Container
