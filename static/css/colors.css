@@ -120,6 +120,7 @@
 
   /* Custom muted colors */
   --slate-muted: oklch(0.968 0.004 247.9);
+  --lime-muted: oklch(0.85 0.015 131);
   --violet-muted: oklch(0.85 0.015 293.5);
 }
 
