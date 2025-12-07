@@ -462,6 +462,10 @@
 
     switch (event.key) {
       case 'Enter':
+        if (event.shiftKey) {
+          // Allow Shift+Enter to insert newline
+          return;
+        }
         // Create new item (let HTMX handle save first)
         event.preventDefault();
         setTimeout(() => createItemAfter(itemId), 100);
@@ -552,18 +556,52 @@
     }
   };
 
+  // Auto-resize textarea to fit content using a hidden measuring div
+  window.autoResizeTextarea = function(textarea) {
+    if (!textarea) return;
+
+    // Create or get the measuring div
+    let measurer = document.getElementById('textarea-measurer');
+    if (!measurer) {
+      measurer = document.createElement('div');
+      measurer.id = 'textarea-measurer';
+      measurer.style.cssText = 'position:absolute;visibility:hidden;white-space:pre-wrap;word-wrap:break-word;';
+      document.body.appendChild(measurer);
+    }
+
+    // Copy styles that affect text measurement
+    const style = window.getComputedStyle(textarea);
+    measurer.style.width = style.width;
+    measurer.style.fontSize = style.fontSize;
+    measurer.style.fontFamily = style.fontFamily;
+    measurer.style.lineHeight = style.lineHeight;
+    measurer.style.padding = style.padding;
+    measurer.style.boxSizing = style.boxSizing;
+
+    // Set content (add extra character for cursor line)
+    measurer.textContent = textarea.value + '\n';
+
+    // Set textarea height to match measured height
+    textarea.style.height = measurer.offsetHeight + 'px';
+  }
+
   // Auto-focus input when edit mode is triggered
   document.body.addEventListener('htmx:afterSwap', function(event) {
     const input = event.target.querySelector('.item-input');
     if (input) {
-      input.focus();
-      // Place cursor at end
-      input.setSelectionRange(input.value.length, input.value.length);
-      // Ensure the item is marked as focused
-      const itemEl = input.closest('.outline-item');
-      if (itemEl) {
-        setFocusedItem(itemEl);
-      }
+      // Wait for browser to lay out the element before measuring
+      requestAnimationFrame(() => {
+        input.focus();
+        // Place cursor at end
+        input.setSelectionRange(input.value.length, input.value.length);
+        // Auto-resize textarea to fit content
+        autoResizeTextarea(input);
+        // Ensure the item is marked as focused
+        const itemEl = input.closest('.outline-item');
+        if (itemEl) {
+          setFocusedItem(itemEl);
+        }
+      });
     }
   });
 

@@ -231,7 +231,7 @@
 .item-row {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.5rem;
   padding-top: 0.25rem;
   min-height: 2rem;
@@ -290,7 +290,7 @@
   word-wrap: break-word;
 }
 
-/* Item Edit Input */
+/* Item Edit Input (textarea) */
 .item-input {
   width: 100%;
   padding: 0;
@@ -300,6 +300,9 @@
   line-height: 1.5;
   outline: none;
   background: transparent;
+  resize: none;
+  overflow: hidden;
+  min-height: 1.5em;
 }
 
 .item-input:focus {
