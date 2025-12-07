@@ -16,21 +16,12 @@
     </div>
     <div class="modal-body">
       <form method="post"
-            class="form-compact"
+            class="form-compact col2 outline-form"
             hx-post="{% if outline %}{% url 'outlines:edit' outline.id %}{% else %}{% url 'outlines:add' %}{% endif %}"
             hx-target="#htmx-modal-container">
         {% csrf_token %}
-        <div class="form-group">
-          {{ form.title.label_tag }}
-          {{ form.title }}
-          {% if form.title.errors %}<div class="text-danger">{{ form.title.errors }}</div>{% endif %}
-        </div>
-        <div class="form-group">
-          {{ form.date.label_tag }}
-          {{ form.date }}
-          {% if form.date.errors %}<div class="text-danger">{{ form.date.errors }}</div>{% endif %}
-        </div>
-        <div class="flex-center-space">
+        {{ form }}
+        <div class="flex-center-space span2">
           <div>
             <button type="submit" class="submit">Submit</button>
           </div>

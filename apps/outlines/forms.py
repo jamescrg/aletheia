@@ -1,15 +1,19 @@
 from django import forms
 
+from config.settings import CustomFormRendererCompact
+
 from .models import Outline
 
 
 class OutlineForm(forms.ModelForm):
     """Form for creating/editing outlines."""
 
+    default_renderer = CustomFormRendererCompact
+
     class Meta:
         model = Outline
-        fields = ["title", "date"]
+        fields = ["date", "title"]
         widgets = {
-            "title": forms.TextInput(attrs={"autofocus": True, "class": "span2"}),
-            "date": forms.DateInput(attrs={"type": "date", "class": "span2"}),
+            "title": forms.TextInput(attrs={"autofocus": True}),
+            "date": forms.DateInput(attrs={"type": "date"}),
         }
