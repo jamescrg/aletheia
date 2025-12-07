@@ -176,19 +176,7 @@ Source citations
 
 .facts-list .fact-sources {
   margin-left: 0.25rem;
-  font-size: 1rem;
-}
-
-.facts-list .source-citation {
-  display: inline;
-}
-
-.facts-list .source-citation a {
-  text-decoration: none;
-}
-
-.facts-list .source-citation a:hover {
-  text-decoration: underline;
+  font-size: 0.875rem;
 }
 
 /*------------------------------------------------

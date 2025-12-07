@@ -1,4 +1,5 @@
 <div class="outline-item{% if item.collapsed %} collapsed{% endif %}{% if item.heading %} heading{% endif %}{% if item.highlight %} hl-yellow{% endif %}"
+     id="outline-item-{{ item.id }}"
      data-item-id="{{ item.id }}"
      data-parent-id="{{ item.parent_id|default:'' }}"
      data-order="{{ item.order }}">
@@ -22,7 +23,7 @@
             {% if item.heading %}
               Remove Heading
             {% else %}
-              Make Heading
+              Set as Heading
             {% endif %}
           </a>
         </li>
@@ -69,7 +70,7 @@
     <div class="item-content-wrapper"
          hx-get="{% url 'outlines:item-edit' item.id %}"
          hx-target="this"
-         hx-trigger="click[!event.target.classList.contains('item-input')]"
+         hx-trigger="click[!event.target.classList.contains('item-input') && !event.target.closest('.item-sources')]"
          hx-swap="innerHTML">{% include "outlines/item-content.html" %}</div>
   </div>
   <!-- Children (if not collapsed) -->

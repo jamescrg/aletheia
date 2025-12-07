@@ -299,6 +299,10 @@
   color: var(--color-primary);
 }
 
+.item-menu-btn i {
+  margin-left: -1px;
+}
+
 .item-menu .dropdown-menu {
   min-width: 10rem;
 }
@@ -342,7 +346,7 @@
 }
 
 .item-content {
-  display: block;
+  display: inline;
   color: var(--color-primary);
   line-height: 1.5;
   word-wrap: break-word;
@@ -400,18 +404,6 @@
 .item-sources {
   margin-left: 0.5rem;
   font-size: 0.875rem;
-}
-
-.item-sources .source-citation {
-  display: inline;
-}
-
-.item-sources .source-citation a {
-  text-decoration: none;
-}
-
-.item-sources .source-citation a:hover {
-  text-decoration: underline;
 }
 
 /* =============================================================================

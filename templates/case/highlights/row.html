@@ -41,7 +41,7 @@
       </a>
     </h3>
     <div class="highlight-card-text">{{ highlight.text }}</div>
-    <cite class="highlight-card-citation">{{ highlight.citation }}</cite>
+    <span class="highlight-card-citation source-citation">{{ highlight.citation }}</span>
     <div class="highlight-labels">
       {% for label in highlight.labels.all %}
         {% include "case/labels/badge.html" with object_type="highlight" object=highlight %}

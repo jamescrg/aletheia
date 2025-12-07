@@ -3,7 +3,7 @@
   <span class="item-sources">
     {% for highlight in item.highlights.all %}
       <span class="source-citation dropdown">
-        <a href="#" class="text-muted" data-bs-toggle="dropdown">{{ highlight.citation }}</a>
+        <a href="#" data-bs-toggle="dropdown">{{ highlight.citation }}</a>
         <ul class="dropdown-menu">
           <li>
             <a class="dropdown-item"
@@ -28,7 +28,7 @@
     {% endfor %}
     {% for document in item.documents.all %}
       <span class="source-citation dropdown">
-        <a href="#" class="text-muted" data-bs-toggle="dropdown">{{ document.citation }}</a>
+        <a href="#" data-bs-toggle="dropdown">{{ document.citation }}</a>
         <ul class="dropdown-menu">
           {% if document.file.name|slice:"-4:"|lower == ".pdf" %}
             <li>

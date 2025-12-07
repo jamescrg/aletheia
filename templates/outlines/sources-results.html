@@ -5,7 +5,7 @@
         <a href="#"
            hx-post="{% url 'outlines:item-add-source' item.id %}"
            hx-vals='{"type": "document", "id": "{{ document.id }}"}'
-           hx-target="closest .outline-item"
+           hx-target="#outline-item-{{ item.id }}"
            hx-swap="outerHTML"
            data-bs-dismiss="modal">
           <i class="bi bi-filetype-pdf urgent"></i>
@@ -18,7 +18,7 @@
         <a href="#"
            hx-post="{% url 'outlines:item-add-source' item.id %}"
            hx-vals='{"type": "highlight", "id": "{{ highlight.id }}"}'
-           hx-target="closest .outline-item"
+           hx-target="#outline-item-{{ item.id }}"
            hx-swap="outerHTML"
            data-bs-dismiss="modal">
           <i class="bi bi-highlighter"></i>

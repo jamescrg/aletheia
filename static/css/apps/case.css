@@ -232,3 +232,25 @@
 .timeline-list .add-source-btn:hover {
   color: var(--color-primary);
 }
+
+/* =============================================================================
+   Source Citations (shared across facts, documents, highlights, outlines)
+   ============================================================================= */
+
+.source-citation {
+  display: inline;
+  font-size: 0.875rem;
+  color: var(--color-primary);
+  background: var(--hl-gray);
+  padding: 0.125rem 0.25rem;
+  border-radius: var(--radius-sm);
+}
+
+.source-citation a {
+  text-decoration: none;
+  color: var(--color-primary);
+}
+
+.source-citation a:hover {
+  text-decoration: underline;
+}

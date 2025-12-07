@@ -75,10 +75,7 @@
 
 /* Citation */
 .highlight-card-citation {
-  display: block;
-  font-style: normal;
-  color: var(--color-primary);
-  padding: 0 0.5rem;
+  margin-left: 0.5rem;
 }
 
 /* Importance Badge */
@@ -237,9 +234,6 @@ Highlight content (td)
 }
 
 .highlights-list .highlight-citation {
-  display: block;
-  font-style: normal;
-  color: var(--color-muted);
   margin-left: 0.5rem;
 }
 
