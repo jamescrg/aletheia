@@ -466,9 +466,14 @@
           // Allow Shift+Enter to insert newline
           return;
         }
-        // Create new item (let HTMX handle save first)
         event.preventDefault();
-        setTimeout(() => createItemAfter(itemId), 100);
+        if (input.value === '') {
+          // Delete empty item and exit
+          deleteItem(itemId);
+        } else {
+          // Create new item (let HTMX handle save first)
+          setTimeout(() => createItemAfter(itemId), 100);
+        }
         break;
 
       case 'Backspace':

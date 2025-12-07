@@ -1,9 +1,9 @@
-<div class="outline-item{% if item.collapsed %} collapsed{% endif %}{% if item.heading %} heading{% endif %}{% if item.highlight %} hl-yellow{% endif %}"
+<div class="outline-item{% if item.collapsed %} collapsed{% endif %}{% if item.heading %} heading{% endif %}"
      id="outline-item-{{ item.id }}"
      data-item-id="{{ item.id }}"
      data-parent-id="{{ item.parent_id|default:'' }}"
      data-order="{{ item.order }}">
-  <div class="item-row">
+  <div class="item-row{% if item.highlight %} hl-yellow{% endif %}">
     <!-- Item menu -->
     <div class="item-menu dropdown">
       <button class="item-menu-btn"
