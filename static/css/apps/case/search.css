@@ -135,6 +135,7 @@ Filter Panel
   width: 100%;
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-md);
+  color: var(--stone-600);
 }
 
 .filter-panel-form select:focus,
