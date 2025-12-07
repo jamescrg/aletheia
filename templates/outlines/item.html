@@ -1,4 +1,4 @@
-<div class="outline-item{% if item.collapsed %} collapsed{% endif %}{% if item.heading %} heading{% endif %}"
+<div class="outline-item{% if item.collapsed %} collapsed{% endif %}{% if item.heading %} heading{% endif %}{% if item.highlight %} hl-yellow{% endif %}"
      data-item-id="{{ item.id }}"
      data-parent-id="{{ item.parent_id|default:'' }}"
      data-order="{{ item.order }}">
@@ -24,6 +24,31 @@
             {% else %}
               Make Heading
             {% endif %}
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item"
+             href="#"
+             hx-post="{% url 'outlines:item-toggle-highlight' item.id %}"
+             hx-target="closest .outline-item"
+             hx-swap="outerHTML">
+            <i class="bi bi-highlighter"></i>
+            {% if item.highlight %}
+              Remove Highlight
+            {% else %}
+              Highlight
+            {% endif %}
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item"
+             href="#"
+             hx-get="{% url 'outlines:item-sources' item.id %}"
+             hx-target="#htmx-modal-container"
+             data-bs-toggle="modal"
+             data-bs-target="#htmx-modal-container">
+            <i class="bi bi-journal-plus"></i>
+            Add Source
           </a>
         </li>
       </ul>

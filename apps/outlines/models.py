@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 
 from apps.accounts.models import CustomUser
+from apps.case.models import Document, Highlight
 from apps.matters.models import Matter
 
 
@@ -50,7 +51,16 @@ class OutlineItem(models.Model):
     order = models.PositiveIntegerField(default=0)
     collapsed = models.BooleanField(default=False)
     heading = models.BooleanField(default=False)
+    highlight = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    # Source references
+    documents = models.ManyToManyField(
+        Document, blank=True, related_name="outline_items"
+    )
+    highlights = models.ManyToManyField(
+        Highlight, blank=True, related_name="outline_items"
+    )
 
     class Meta:
         ordering = ["order"]

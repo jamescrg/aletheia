@@ -111,7 +111,7 @@
 }
 
 .outline-canvas {
-  background: var(--background-panel);
+  background: var(--background-subtle);
   border-radius: var(--radius-md);
   padding: 2rem;
   min-height: 32rem;
@@ -267,7 +267,7 @@
 /* Item menu (three-dot dropdown) - positioned absolutely to not affect layout */
 .item-menu {
   position: absolute;
-  left: -1.5rem;
+  left: -1.75rem;
   top: 0.5rem;
   width: 1.5rem;
   height: 1.5rem;
@@ -286,7 +286,7 @@
   width: 1.5rem;
   height: 1.5rem;
   padding: 0;
-  background: none;
+  background: var(--background-control);
   border: none;
   border-radius: var(--radius-sm);
   color: var(--color-muted);
@@ -394,6 +394,24 @@
   font-weight: 600;
   font-size: 1.25rem;
   line-height: 1.2;
+}
+
+/* Item sources (citations) */
+.item-sources {
+  margin-left: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.item-sources .source-citation {
+  display: inline;
+}
+
+.item-sources .source-citation a {
+  text-decoration: none;
+}
+
+.item-sources .source-citation a:hover {
+  text-decoration: underline;
 }
 
 /* =============================================================================

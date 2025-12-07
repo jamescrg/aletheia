@@ -15,9 +15,10 @@ def parse_markdown_list(text):
 
     Supports:
     - Bullet markers: - and *
+    - Markdown headings: # ## ### etc. (converted to items with heading=True)
     - Indentation: spaces or tabs (2 spaces = 1 level)
 
-    Returns list of dicts with 'content' and 'children' keys.
+    Returns list of dicts with 'content', 'children', and 'heading' keys.
     """
     if not text or not text.strip():
         return []
@@ -40,6 +41,23 @@ def parse_markdown_list(text):
         indent = len(line) - len(stripped)
         depth = indent // 2  # 2 spaces per level
 
+        # Check for markdown heading (# ## ### etc.)
+        heading_match = re.match(r"^(#{1,6})\s+(.*)$", stripped)
+        if heading_match:
+            content = heading_match.group(2).strip()
+            if not content:
+                continue
+            item = {"content": content, "children": [], "heading": True}
+
+            # Headings are always at root level (depth 0)
+            while stack and stack[-1][1] >= 0:
+                stack.pop()
+
+            parent_list = stack[-1][0]
+            parent_list.append(item)
+            stack.append((item["children"], 0))
+            continue
+
         # Extract content (remove bullet marker)
         match = re.match(r"^[-*]\s+(.*)$", stripped)
         if not match:
@@ -50,7 +68,7 @@ def parse_markdown_list(text):
         if not content:
             continue
 
-        item = {"content": content, "children": []}
+        item = {"content": content, "children": [], "heading": False}
 
         # Pop stack until we find appropriate parent depth
         while stack and stack[-1][1] >= depth:
@@ -72,7 +90,7 @@ def create_items_from_parsed(outline, parsed_items, parent=None, start_order=0):
 
     Args:
         outline: The Outline instance to add items to
-        parsed_items: List of dicts with 'content' and 'children' keys
+        parsed_items: List of dicts with 'content', 'children', and 'heading' keys
         parent: Parent OutlineItem (None for root items)
         start_order: Starting order number for items at this level
     """
@@ -82,6 +100,7 @@ def create_items_from_parsed(outline, parsed_items, parent=None, start_order=0):
             parent=parent,
             content=item["content"],
             order=start_order + i,
+            heading=item.get("heading", False),
         )
         if item.get("children"):
             create_items_from_parsed(

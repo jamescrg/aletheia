@@ -1,13 +1,14 @@
 import json
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import F, Max
+from django.db.models import F, Max, Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from apps.case.documents.get_document_data import get_selected_matter
+from apps.case.models import Document, Highlight
 
 from .filters import OutlinesFilter
 from .forms import OutlineForm
@@ -426,6 +427,16 @@ def item_toggle_heading(request, item_id):
 
 
 @login_required
+def item_toggle_highlight(request, item_id):
+    """Toggle highlight state."""
+    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item.highlight = not item.highlight
+    item.save()
+
+    return render(request, "outlines/item.html", {"item": item})
+
+
+@login_required
 def item_move_up(request, item_id):
     """Move item up among its siblings."""
     item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
@@ -643,3 +654,83 @@ def import_markdown(request, outline_id):
 
     # Return 204 to close modal, trigger tree refresh
     return HttpResponse(status=204, headers={"HX-Trigger": "outlineChanged"})
+
+
+# =============================================================================
+# Item Sources
+# =============================================================================
+
+
+@login_required
+def item_sources_modal(request, item_id):
+    """Render modal for managing item sources (documents and highlights)."""
+    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    return render(request, "outlines/sources-modal.html", {"item": item})
+
+
+@login_required
+def item_sources_search(request, item_id):
+    """Search documents and highlights for item sources."""
+    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    matter = item.outline.matter
+    query = request.GET.get("q", "").strip()
+
+    documents = []
+    highlights = []
+
+    if query and matter:
+        # Search documents by name
+        documents = Document.objects.filter(matter=matter, name__icontains=query)[:10]
+
+        # Search highlights by slug or text
+        highlights = (
+            Highlight.objects.filter(document__matter=matter)
+            .filter(Q(slug__icontains=query) | Q(text__icontains=query))
+            .select_related("document")[:10]
+        )
+
+    context = {
+        "item": item,
+        "documents": documents,
+        "highlights": highlights,
+        "query": query,
+    }
+    return render(request, "outlines/sources-results.html", context)
+
+
+@login_required
+@require_POST
+def item_add_source(request, item_id):
+    """Add a document or highlight as a source to an item."""
+    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+
+    source_type = request.POST.get("type")
+    source_id = request.POST.get("id")
+
+    if source_type == "document":
+        document = get_object_or_404(Document, pk=source_id)
+        item.documents.add(document)
+    elif source_type == "highlight":
+        highlight = get_object_or_404(Highlight, pk=source_id)
+        item.highlights.add(highlight)
+
+    return render(request, "outlines/item.html", {"item": item})
+
+
+@login_required
+@require_POST
+def item_remove_source(request, item_id):
+    """Remove a document or highlight source from an item."""
+    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+
+    source_type = request.POST.get("type")
+    source_id = request.POST.get("id")
+
+    if source_type == "document":
+        document = get_object_or_404(Document, pk=source_id)
+        item.documents.remove(document)
+    elif source_type == "highlight":
+        highlight = get_object_or_404(Highlight, pk=source_id)
+        item.highlights.remove(highlight)
+
+    return render(request, "outlines/item.html", {"item": item})

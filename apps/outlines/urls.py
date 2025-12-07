@@ -46,6 +46,28 @@ urlpatterns = [
         views.item_toggle_heading,
         name="item-toggle-heading",
     ),
+    path(
+        "item/<int:item_id>/toggle-highlight/",
+        views.item_toggle_highlight,
+        name="item-toggle-highlight",
+    ),
+    # Item sources
+    path("item/<int:item_id>/sources/", views.item_sources_modal, name="item-sources"),
+    path(
+        "item/<int:item_id>/sources/search/",
+        views.item_sources_search,
+        name="item-sources-search",
+    ),
+    path(
+        "item/<int:item_id>/sources/add/",
+        views.item_add_source,
+        name="item-add-source",
+    ),
+    path(
+        "item/<int:item_id>/sources/remove/",
+        views.item_remove_source,
+        name="item-remove-source",
+    ),
     path("item/<int:item_id>/move/", views.item_move, name="item-move"),
     path("item/<int:item_id>/move-up/", views.item_move_up, name="item-move-up"),
     path("item/<int:item_id>/move-down/", views.item_move_down, name="item-move-down"),
