@@ -292,3 +292,6 @@ FORM_SETTINGS = {"label_suffix": ""}
 
 # Anthropic API Configuration
 ANTHROPIC_API_KEY = env("ANTHROPIC_API_KEY", default="")
+
+# Google Gemini API Configuration
+GEMINI_API_KEY = env("GEMINI_API_KEY", default="")

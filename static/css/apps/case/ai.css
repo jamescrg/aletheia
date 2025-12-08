@@ -146,6 +146,71 @@
   text-align: left;
 }
 
+.ai-conversations-table th.llm,
+.ai-conversations-table td.llm {
+  width: 8rem;
+  text-align: left;
+}
+
+/* LLM Badges */
+.ai-llm-badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+}
+
+.ai-llm-badge-spacer {
+  flex: 1;
+}
+
+.ai-llm-claude {
+  background: var(--violet-100);
+  color: var(--stone-700);
+  border: 1px solid var(--violet-300);
+}
+
+.ai-llm-gemini-flash,
+.ai-llm-gemini-pro {
+  background: var(--lime-100);
+  color: var(--stone-700);
+  border: 1px solid var(--lime-300);
+}
+
+/* New conversation buttons */
+.ai-new-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 1rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.ai-new-claude {
+  background: var(--violet-100);
+  color: var(--violet-700);
+  border: 1px solid var(--violet-300);
+}
+
+.ai-new-claude:hover {
+  background: var(--violet-200);
+}
+
+.ai-new-gemini-flash,
+.ai-new-gemini-pro {
+  background: var(--lime-100);
+  color: var(--lime-700);
+  border: 1px solid var(--lime-300);
+}
+
+.ai-new-gemini-flash:hover,
+.ai-new-gemini-pro:hover {
+  background: var(--lime-200);
+}
+
 /* Title link styled as anchor */
 .ai-title-btn {
   background: none;

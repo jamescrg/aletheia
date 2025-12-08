@@ -17,7 +17,18 @@ from apps.outlines.models import Outline
 
 from .anthropic_client import send_to_claude
 from .context import assemble_matter_context
+from .gemini_client import send_to_gemini
 from .models import Conversation, Message
+
+
+def send_to_llm(llm: str, system_context: str, messages: list[dict]):
+    """Route to the appropriate LLM based on conversation setting."""
+    if llm == "gemini-flash":
+        return send_to_gemini(system_context, messages, model="gemini-2.5-flash")
+    elif llm == "gemini-pro":
+        return send_to_gemini(system_context, messages, model="gemini-2.5-pro")
+    return send_to_claude(system_context, messages)
+
 
 logger = logging.getLogger(__name__)
 
@@ -97,6 +108,38 @@ def conversation_view(request, conv_id):
 
 
 @login_required
+def new_conversation_view(request):
+    """Standalone view for a new (unsaved) conversation."""
+    matter, _ = get_selected_matter(request)
+
+    if not matter:
+        return redirect("case:ai-index")
+
+    # Get LLM from query parameter
+    llm = request.GET.get("llm", "claude")
+    if llm not in ["claude", "gemini-flash", "gemini-pro"]:
+        llm = "claude"
+
+    # Create a dummy conversation object for template (not saved)
+    conversation = Conversation(
+        matter=matter,
+        user=request.user,
+        title="New Conversation",
+        llm=llm,
+    )
+
+    context = {
+        "matter": matter,
+        "conversation": conversation,
+        "messages": [],
+        "is_new": True,
+        "llm": llm,
+    }
+
+    return render(request, "case/ai/conversation-standalone.html", context)
+
+
+@login_required
 def message_list(request):
     """Return message list partial (for HTMX refresh)."""
     matter, _ = get_selected_matter(request)
@@ -140,22 +183,33 @@ def send_message(request):
 
     user_message = request.POST.get("message", "").strip()
     conversation_id = request.POST.get("conversation_id")
+    llm = request.POST.get("llm", "claude")
 
     if not user_message:
         return HttpResponse(status=400)
 
+    # Validate llm
+    if llm not in ["claude", "gemini-flash", "gemini-pro"]:
+        llm = "claude"
+
     # Get or create conversation
+    is_new = False
     if conversation_id:
         conversation = get_object_or_404(
             Conversation, pk=conversation_id, matter=matter, user=request.user
         )
     else:
+        # Create conversation on first message
+        title = user_message[:50]
+        if len(user_message) > 50:
+            title += "..."
         conversation = Conversation.objects.create(
-            matter=matter, user=request.user, title=user_message[:50]
+            matter=matter, user=request.user, title=title, llm=llm
         )
+        is_new = True
 
     # Update title if this is first message and title is default
-    if conversation.title == "New Conversation":
+    if not is_new and conversation.title == "New Conversation":
         conversation.title = user_message[:50]
         if len(user_message) > 50:
             conversation.title += "..."
@@ -169,8 +223,8 @@ def send_message(request):
     chat_history = list(conversation.messages.values("role", "content"))
 
     try:
-        response_text, input_tokens, output_tokens = send_to_claude(
-            context_text, chat_history
+        response_text, input_tokens, output_tokens = send_to_llm(
+            conversation.llm, context_text, chat_history
         )
 
         # Save assistant message
@@ -186,7 +240,7 @@ def send_message(request):
         conversation.save()
 
     except Exception as e:
-        logger.exception("Error calling Claude API")
+        logger.exception("Error calling %s API", conversation.llm)
         # Save error as assistant message
         Message.objects.create(
             conversation=conversation,
@@ -195,7 +249,7 @@ def send_message(request):
         )
 
     # Return updated message list
-    return render(
+    response = render(
         request,
         "case/ai/messages.html",
         {
@@ -204,6 +258,13 @@ def send_message(request):
             "matter": matter,
         },
     )
+
+    # If new conversation, trigger update of hidden field and list refresh
+    if is_new:
+        response["HX-Trigger"] = "conversationCreated"
+        response["X-Conversation-Id"] = str(conversation.id)
+
+    return response
 
 
 @login_required
@@ -224,24 +285,6 @@ def conversation_list(request):
             "matter": matter,
         },
     )
-
-
-@login_required
-def new_conversation(request):
-    """Create a new conversation and return its URL for opening in new tab."""
-    matter, _ = get_selected_matter(request)
-
-    if not matter:
-        return redirect("case:ai-index")
-
-    conversation = Conversation.objects.create(
-        matter=matter, user=request.user, title="New Conversation"
-    )
-
-    # Return the URL for the JS to open in new tab, and trigger list refresh
-    response = HttpResponse(f"/case/ai/conversations/{conversation.id}/view/")
-    response["HX-Trigger"] = "conversationsChanged"
-    return response
 
 
 @login_required

@@ -29,6 +29,8 @@
   <header class="ai-chat-header">
     <h1 id="conversationTitle">{{ conversation.title }}</h1>
     <span class="app-badge badge-purple">{{ matter.name }}</span>
+    <span class="ai-llm-badge-spacer"></span>
+    <span class="app-badge badge-lg ai-llm-{{ conversation.llm }}">{{ conversation.get_llm_display }}</span>
   </header>
   <div class="ai-chat-layout">
     <aside class="ai-chat-sidebar">
@@ -53,13 +55,18 @@
     <main class="ai-chat-main">
       <div id="messageContainer" class="ai-messages">{% include "case/ai/messages.html" %}</div>
       <div class="ai-input-container">
-        <form hx-post="{% url 'case:ai-send' %}"
+        <form id="chatForm"
+              hx-post="{% url 'case:ai-send' %}"
               hx-target="#messageContainer"
               hx-swap="innerHTML scroll:#messageContainer:bottom"
               hx-indicator="#ai-loading"
               hx-disabled-elt="button[type='submit']"
-              hx-on::after-request="this.reset(); updatePromptList();">
-          <input type="hidden" name="conversation_id" value="{{ conversation.id }}">
+              hx-on::after-request="this.reset(); updatePromptList(); handleConversationCreated(event);">
+          <input type="hidden"
+                 name="conversation_id"
+                 id="conversationId"
+                 value="{% if not is_new %}{{ conversation.id }}{% endif %}">
+          <input type="hidden" name="llm" value="{{ conversation.llm }}">
           <textarea name="message"
                     id="aiMessageInput"
                     placeholder="Ask about this matter..."
@@ -106,6 +113,20 @@
       });
       if (promptList.children.length === 0) {
         promptList.innerHTML = '<div class="ai-sidebar-empty">No prompts yet</div>';
+      }
+    }
+
+    function handleConversationCreated(event) {
+      // When a new conversation is created, update the hidden field with the ID
+      const xhr = event.detail.xhr;
+      if (xhr) {
+        const convId = xhr.getResponseHeader('X-Conversation-Id');
+        if (convId) {
+          document.getElementById('conversationId').value = convId;
+          // Update URL without reload so browser history works
+          const newUrl = '/case/ai/conversations/' + convId + '/view/';
+          window.history.replaceState({}, '', newUrl);
+        }
       }
     }
   </script>

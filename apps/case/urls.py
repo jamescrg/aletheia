@@ -320,7 +320,11 @@ urlpatterns = [
     path("case/ai/messages/", ai.message_list, name="ai-messages"),
     path("case/ai/send/", ai.send_message, name="ai-send"),
     path("case/ai/conversations/", ai.conversation_list, name="ai-conversations"),
-    path("case/ai/conversations/new/", ai.new_conversation, name="ai-new-conversation"),
+    path(
+        "case/ai/conversations/new/",
+        ai.new_conversation_view,
+        name="ai-new-conversation-view",
+    ),
     path(
         "case/ai/conversations/<int:conv_id>/",
         ai.select_conversation,

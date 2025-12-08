@@ -3,46 +3,45 @@
   <div class="toolbar-left">
     <h2>Conversations</h2>
     <div class="filter-tools">
-      <button type="button"
-              class="btn-icon"
-              id="newConversationBtn"
-              title="New conversation">
-        <i class="bi bi-plus-lg"></i>
-      </button>
+      <a href="{% url 'case:ai-new-conversation-view' %}?llm=claude"
+         target="_blank"
+         class="btn-sm ai-new-btn ai-new-claude"
+         title="New Claude conversation">
+        <i class="bi bi-plus-lg"></i> Claude
+      </a>
+      <a href="{% url 'case:ai-new-conversation-view' %}?llm=gemini-flash"
+         target="_blank"
+         class="btn-sm ai-new-btn ai-new-gemini-flash"
+         title="New Gemini Flash conversation">
+        <i class="bi bi-plus-lg"></i> Gemini Flash
+      </a>
+      <a href="{% url 'case:ai-new-conversation-view' %}?llm=gemini-pro"
+         target="_blank"
+         class="btn-sm ai-new-btn ai-new-gemini-pro"
+         title="New Gemini Pro conversation">
+        <i class="bi bi-plus-lg"></i> Gemini Pro
+      </a>
       <a href="{% url 'case:ai-create-prompt' %}"
          target="_blank"
          class="btn-icon"
          title="Create prompt for external AI">
         <i class="bi bi-file-text"></i>
       </a>
-      <script>
-        document.getElementById('newConversationBtn').addEventListener('click', function() {
-          fetch('{% url "case:ai-new-conversation" %}', {
-            method: 'POST',
-            headers: {
-              'X-CSRFToken': '{{ csrf_token }}',
-            }
-          })
-          .then(response => response.text())
-          .then(url => {
-            window.open(url, '_blank');
-            htmx.trigger(document.body, 'conversationsChanged');
-          });
-        });
-      </script>
     </div>
   </div>
 </div>
 <div class="table-container">
   <table class="table ai-conversations-table">
     <tr>
+      <th class="created">Date</th>
       <th class="title">Title</th>
+      <th class="llm">Model</th>
       <th class="messages">Messages</th>
-      <th class="created">Created</th>
       <th class="updated">Last Updated</th>
     </tr>
     {% for conv in conversations %}
       <tr class="ai-conversation-row">
+        <td class="created">{{ conv.created_at|date:"Y-m-d" }}</td>
         <td class="title">
           <div class="dropdown">
             <button class="ai-title-btn"
@@ -72,13 +71,13 @@
             </ul>
           </div>
         </td>
+        <td class="llm">{{ conv.get_llm_display }}</td>
         <td class="messages">{{ conv.messages.count }}</td>
-        <td class="created">{{ conv.created_at|date:"M j, Y" }}</td>
         <td class="updated">{{ conv.updated_at|naturaltime }}</td>
       </tr>
     {% empty %}
       <tr>
-        <td colspan="4" class="empty-message">No conversations yet. Click + to start a new conversation.</td>
+        <td colspan="5" class="empty-message">No conversations yet. Click a button above to start a new conversation.</td>
       </tr>
     {% endfor %}
   </table>
