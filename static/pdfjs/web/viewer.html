@@ -53,11 +53,14 @@
       #toolbar button {
         background: #f0efed;
         border: 1px solid #78716c;
-        color: #57534e;
+        color: #44403c;
         padding: 6px 12px;
         cursor: pointer;
         border-radius: 8px;
         font-weight: bold;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
       }
 
       #toolbar button:hover {
@@ -176,10 +179,14 @@
   </head>
   <body>
     <div id="toolbar">
-      <button id="previous" title="Previous Page">◀</button>
+      <button id="previous" title="Previous Page">
+        <i class="bi bi-chevron-left"></i>
+      </button>
       <input type="number" id="pageNumber" value="1" min="1">
       <span>/ <span id="numPages">-</span></span>
-      <button id="next" title="Next Page">▶</button>
+      <button id="next" title="Next Page">
+        <i class="bi bi-chevron-right"></i>
+      </button>
       <div class="toolbarSeparator"></div>
       <button id="zoomOut" title="Zoom Out">−</button>
       <select id="zoomSelect">
@@ -198,8 +205,12 @@
                id="searchInput"
                placeholder="Search..."
                title="Search in document">
-        <button id="searchPrev" title="Previous match (Shift+Enter)">▲</button>
-        <button id="searchNext" title="Next match (Enter)">▼</button>
+        <button id="searchPrev" title="Previous match (Shift+Enter)">
+          <i class="bi bi-chevron-up"></i>
+        </button>
+        <button id="searchNext" title="Next match (Enter)">
+          <i class="bi bi-chevron-down"></i>
+        </button>
         <span id="searchResults"></span>
       </div>
       <button id="createHighlightBtn" title="Create highlight from selected text">+ Highlight</button>
