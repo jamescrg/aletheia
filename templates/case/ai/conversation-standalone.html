@@ -167,10 +167,20 @@
       }
     }
 
-    // Escape key cancels the current request
+    // Escape key: single press cancels request, double press clears textarea
+    let lastEscapeTime = 0;
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
-        htmx.trigger(document.getElementById('chatForm'), 'htmx:abort');
+        const now = Date.now();
+        if (now - lastEscapeTime < 500) {
+          // Double escape - clear textarea
+          document.getElementById('aiMessageInput').value = '';
+          lastEscapeTime = 0;
+        } else {
+          // Single escape - cancel request
+          htmx.trigger(document.getElementById('chatForm'), 'htmx:abort');
+          lastEscapeTime = now;
+        }
       }
     });
 

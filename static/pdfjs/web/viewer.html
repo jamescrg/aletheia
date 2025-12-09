@@ -51,7 +51,7 @@
       }
 
       #toolbar button {
-        background: #e7e5e4;
+        background: #f0efed;
         border: 1px solid #78716c;
         color: #57534e;
         padding: 6px 12px;
@@ -72,9 +72,14 @@
         background: #fef9c3;
       }
 
+      #toolbar #createHighlightBtn,
       #toolbar #downloadBtn {
         position: absolute;
         right: 10px;
+      }
+
+      #toolbar #createHighlightBtn {
+        right: 110px;
       }
 
       #pageNumber {
@@ -106,6 +111,49 @@
         height: 20px;
         background: #666;
         margin: 0 5px;
+      }
+
+      /* Search bar styles */
+      .searchBar {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      #searchInput {
+        width: 150px;
+        padding: 6px 8px;
+        border: 1px solid #78716c;
+        border-radius: 8px;
+        background: #fafaf9;
+        color: #57534e;
+        font-size: 14px;
+      }
+
+      #searchInput:focus {
+        outline: none;
+        border-color: #57534e;
+      }
+
+      #searchInput::placeholder {
+        color: #a8a29e;
+      }
+
+      .searchBar button {
+        padding: 6px 8px;
+        min-width: 32px;
+        margin-left: 0.25rem;
+      }
+
+      #searchResults {
+        font-size: 12px;
+        color: #57534e;
+        min-width: 60px;
+        text-align: center;
+      }
+
+      #searchResults.no-results {
+        color: #dc2626;
       }
 
       /* Highlight overlay styles */
@@ -144,6 +192,16 @@
         <option value="2">200%</option>
       </select>
       <button id="zoomIn" title="Zoom In">+</button>
+      <div class="toolbarSeparator"></div>
+      <div class="searchBar">
+        <input type="text"
+               id="searchInput"
+               placeholder="Search..."
+               title="Search in document">
+        <button id="searchPrev" title="Previous match (Shift+Enter)">▲</button>
+        <button id="searchNext" title="Next match (Enter)">▼</button>
+        <span id="searchResults"></span>
+      </div>
       <button id="createHighlightBtn" title="Create highlight from selected text">+ Highlight</button>
       <button id="downloadBtn" title="Download document">Download</button>
     </div>
@@ -195,10 +253,17 @@
       eventBus,
     });
 
+    // Initialize find controller for search
+    const pdfFindController = new pdfjsViewer.PDFFindController({
+      linkService: pdfLinkService,
+      eventBus,
+    });
+
     const pdfViewer = new pdfjsViewer.PDFViewer({
       container,
       eventBus,
       linkService: pdfLinkService,
+      findController: pdfFindController,
       textLayerMode: 2, // Enable text layer
     });
 
@@ -296,6 +361,99 @@
         }
       }
     }
+
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+    const searchPrev = document.getElementById('searchPrev');
+    const searchNext = document.getElementById('searchNext');
+    let searchTimeout = null;
+
+    function doSearch(query, findPrevious = false, type = '') {
+      if (!query) {
+        // Clear search
+        eventBus.dispatch('findbarclose', { source: window });
+        searchResults.textContent = '';
+        searchResults.classList.remove('no-results');
+        return;
+      }
+
+      eventBus.dispatch('find', {
+        source: window,
+        type: type,
+        query: query,
+        caseSensitive: false,
+        highlightAll: true,
+        findPrevious: findPrevious,
+      });
+    }
+
+    // Debounced search on input
+    searchInput.addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        doSearch(e.target.value);
+      }, 300);
+    });
+
+    // Keyboard shortcuts in search input
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        clearTimeout(searchTimeout);
+        if (e.shiftKey) {
+          doSearch(searchInput.value, true, 'again');
+        } else {
+          doSearch(searchInput.value, false, 'again');
+        }
+      } else if (e.key === 'Escape') {
+        searchInput.value = '';
+        doSearch('');
+        searchInput.blur();
+      }
+    });
+
+    // Prev/Next buttons
+    searchPrev.addEventListener('click', () => {
+      doSearch(searchInput.value, true, 'again');
+    });
+
+    searchNext.addEventListener('click', () => {
+      doSearch(searchInput.value, false, 'again');
+    });
+
+    // Ctrl+F to focus search
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+        searchInput.focus();
+        searchInput.select();
+      }
+    });
+
+    // Listen for search results updates
+    eventBus.on('updatefindmatchescount', (evt) => {
+      const { current, total } = evt.matchesCount;
+      if (total > 0) {
+        searchResults.textContent = `${current} of ${total}`;
+        searchResults.classList.remove('no-results');
+      } else if (searchInput.value) {
+        searchResults.textContent = 'No results';
+        searchResults.classList.add('no-results');
+      } else {
+        searchResults.textContent = '';
+        searchResults.classList.remove('no-results');
+      }
+    });
+
+    eventBus.on('updatefindcontrolstate', (evt) => {
+      const { state, matchesCount } = evt;
+      // state: 0=FOUND, 1=NOT_FOUND, 2=WRAPPED, 3=PENDING
+      if (state === 1 && searchInput.value) {
+        searchResults.textContent = 'No results';
+        searchResults.classList.add('no-results');
+      }
+    });
 
     // Merge overlapping/adjacent rectangles into single line rectangles
     function mergeRects(rects) {
