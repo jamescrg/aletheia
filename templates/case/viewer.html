@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="{% static_v 'css/layout.css' %}">
     <link rel="stylesheet" href="{% static_v 'css/modals.css' %}">
     <link rel="stylesheet" href="{% static_v 'css/badges.css' %}">
+    <link rel="stylesheet" href="{% static_v 'css/interface.css' %}">
     <style>
       * {
         box-sizing: border-box;
@@ -123,14 +124,15 @@
       }
 
       .highlight-item {
+        position: relative;
         display: flex;
         align-items: flex-start;
         gap: 0.5rem;
-        padding: 12px;
+        padding: 0.75rem;
         background: var(--stone-50);
         border: 1px solid var(--stone-300);
         border-radius: var(--radius-md);
-        margin-bottom: 8px;
+        margin-bottom: 0.5rem;
         cursor: pointer;
         transition: background-color 0.15s;
       }
@@ -157,6 +159,14 @@
         font-size: 0.8rem;
         color: var(--color-muted);
         margin-top: 0.25rem;
+      }
+
+      .highlight-importance {
+        position: absolute;
+        bottom: 0.5rem;
+        right: 0.5rem;
+        font-size: 0.75rem;
+        color: var(--stone-400);
       }
 
       .highlight-menu {
@@ -190,7 +200,8 @@
         margin-bottom: 0.25rem;
       }
 
-      #highlights-list.condensed .highlight-citation {
+      #highlights-list.condensed .highlight-citation,
+      #highlights-list.condensed .highlight-importance {
         display: none;
       }
 
@@ -354,6 +365,9 @@
               <div class="highlight-content">
                 <div class="highlight-slug">{{ highlight.slug }}</div>
                 <div class="highlight-citation">{{ highlight.citation }}</div>
+              </div>
+              <div class="highlight-importance">
+                <i class="bi bi-flag-fill"></i> {{ highlight.importance }}
               </div>
               <div class="highlight-menu dropdown">
                 <button class="btn-icon menu-icon"
@@ -693,6 +707,7 @@
           <div class="highlight-slug">${escapeHtml(highlight.slug)}</div>
           <div class="highlight-citation">${escapeHtml(highlight.citation || '')}</div>
         </div>
+        <div class="highlight-importance"><i class="bi bi-flag-fill"></i> ${highlight.importance}</div>
         <div class="highlight-menu dropdown">
           <button class="btn-icon menu-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-three-dots-vertical"></i>
@@ -923,16 +938,16 @@
         slugEl.textContent = data.slug;
       }
 
-      // Update importance badge
+      // Update citation
+      const citationEl = item.querySelector('.highlight-citation');
+      if (citationEl) {
+        citationEl.textContent = data.citation || '';
+      }
+
+      // Update importance
       const impEl = item.querySelector('.highlight-importance');
       if (impEl) {
-        impEl.innerHTML = `<i class="bi bi-flag"></i>${data.importance}`;
-        impEl.className = 'highlight-importance';
-        if (data.importance === 1) {
-          impEl.classList.add('imp-high');
-        } else if (data.importance <= 3) {
-          impEl.classList.add('imp-med');
-        }
+        impEl.innerHTML = `<i class="bi bi-flag-fill"></i> ${data.importance}`;
       }
     }
     </script>

@@ -335,6 +335,7 @@ def edit_highlight(request, highlight_id):
                         "color": highlight.color,
                         "importance": highlight.importance,
                         "text": highlight.text,
+                        "citation": highlight.citation,
                     }
                 )
             return HttpResponse(
