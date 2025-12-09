@@ -732,24 +732,42 @@
     }
 
 
+    let pendingScrollHighlight = null;
+
     function scrollToHighlight(highlightId, page) {
+      // Store the pending scroll target
+      pendingScrollHighlight = highlightId;
+
       // Go to page first
       pdfViewer.currentPageNumber = page;
 
-      // Then scroll to highlight after page renders
-      setTimeout(() => {
-        const container = document.querySelector(`.highlight-container[data-highlight-id="${highlightId}"]`);
-        if (container) {
-          // Get the first overlay (first line of the highlight) to center on
-          const firstOverlay = container.querySelector('.highlight-overlay');
-          if (firstOverlay) {
-            firstOverlay.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          } else {
-            container.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        }
-      }, 500);
+      // Try to scroll immediately if highlight already exists
+      tryScrollToHighlight(highlightId);
     }
+
+    function tryScrollToHighlight(highlightId) {
+      const container = document.querySelector(`.highlight-container[data-highlight-id="${highlightId}"]`);
+      if (container) {
+        // Get the first overlay (first line of the highlight) to center on
+        const firstOverlay = container.querySelector('.highlight-overlay');
+        if (firstOverlay) {
+          firstOverlay.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        pendingScrollHighlight = null;
+      }
+    }
+
+    // Hook into pagerendered to scroll after highlights are drawn
+    eventBus.on('pagerendered', evt => {
+      if (pendingScrollHighlight !== null) {
+        // Wait for highlight rendering (50ms delay + buffer)
+        setTimeout(() => {
+          tryScrollToHighlight(pendingScrollHighlight);
+        }, 100);
+      }
+    });
     </script>
   </body>
 </html>
