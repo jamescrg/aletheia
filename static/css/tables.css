@@ -28,13 +28,21 @@
     min-width: 10rem; /* Ensures a minimum space */
 }
 
-th {
+th,
+.table > :not(caption) > * > th {
   border-bottom: solid 1px var(--border-medium);
   border-right: solid 1px var(--border-medium);
+  background: var(--background-control);
   font-weight: 500;
   padding: 0.625rem 1rem !important;
   vertical-align: top;
   white-space: nowrap;
+}
+
+/* Sideways tables (row headers) - no background on th */
+.totals-table th,
+.ledger-totals th {
+  background: transparent;
 }
 
 th:last-child {

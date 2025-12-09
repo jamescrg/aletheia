@@ -52,15 +52,8 @@
   border-bottom: none;
 }
 
+.dashboard-table .past-due,
 .dashboard-table .due-today {
-  background: var(--hl-yellow);
-}
-
-.dashboard-table .due-tomorrow {
-  background: var(--hl-yellow);
-}
-
-.dashboard-table .priority-high {
   background: var(--hl-yellow);
 }
 

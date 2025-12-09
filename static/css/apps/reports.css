@@ -49,3 +49,10 @@
 .reports-filter-info {
   margin-top: 1.5rem;
 }
+
+/* Override Bootstrap alert-info with theme colors */
+.alert-info {
+  background: var(--background-control);
+  border-color: var(--border-medium);
+  color: var(--color-primary);
+}
