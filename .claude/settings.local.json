@@ -44,7 +44,12 @@
       "Bash(xargs basename:*)",
       "Bash(tree:*)",
       "Bash(DJANGO_SETTINGS_MODULE=config.settings python:*)",
-      "WebFetch(domain:ai.google.dev)"
+      "WebFetch(domain:ai.google.dev)",
+      "WebFetch(domain:caniuse.com)",
+      "WebFetch(domain:www.assemblyai.com)",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:dev.to)",
+      "WebFetch(domain:www.lambdatest.com)"
     ],
     "deny": []
   }

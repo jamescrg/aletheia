@@ -28,6 +28,11 @@ class Conversation(models.Model):
         ordering = ["-updated_at"]
         db_table = "matters_conversation"  # Keep same table name
 
+    def save(self, *args, **kwargs):
+        if self.title:
+            self.title = self.title[0].upper() + self.title[1:]
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.matter.name} - {self.title or 'Untitled'}"
 
