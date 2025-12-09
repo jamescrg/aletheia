@@ -781,6 +781,14 @@
   font-style: italic;
 }
 
+/* Highlighted text (==text==) */
+.ai-markdown mark {
+  background: var(--yellow-200);
+  color: var(--stone-800);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.125rem;
+}
+
 /* Task lists (GitHub-style checkboxes) */
 .ai-markdown ul.contains-task-list {
   list-style: none;
