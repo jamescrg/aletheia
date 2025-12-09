@@ -74,7 +74,17 @@ document.addEventListener('click', function(e) {
 
   if (copyBtn) {
     e.preventDefault();
-    const data = copyBtn.getAttribute('data-copy');
+    let data = copyBtn.getAttribute('data-copy');
+
+    // If data-copy-target is specified, get text from target element
+    const targetSelector = copyBtn.getAttribute('data-copy-target');
+    if (targetSelector) {
+      const targetElement = document.querySelector(targetSelector);
+      if (targetElement) {
+        data = targetElement.textContent.trim();
+      }
+    }
+
     copyToClipboard(copyBtn, data);
   } else if (highlightCopyBtn) {
     const data = highlightCopyBtn.getAttribute('data-copy');
