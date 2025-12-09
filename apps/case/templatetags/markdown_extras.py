@@ -36,6 +36,7 @@ def render_markdown(text):
             "fenced_code",
             "tables",
             "nl2br",
+            "pymdownx.mark",
         ]
     )
     return mark_safe(md.convert(text))
