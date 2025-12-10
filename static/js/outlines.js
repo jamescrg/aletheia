@@ -13,6 +13,10 @@
   let pendingCursorX = null;  // X coordinate to match when positioning cursor
   let pendingClickY = null;  // Y coordinate for click positioning
 
+  // Drag selection state
+  let dragStartItemId = null;  // Item where drag started
+  let isDragSelecting = false;  // Whether we've switched to item selection mode
+
   // Get CSRF token for HTMX requests
   function getCSRFToken() {
     return document.querySelector('[name=csrfmiddlewaretoken]')?.value ||
@@ -180,6 +184,12 @@
   function deleteSelectedItems() {
     const selected = getSelectedItems();
     if (selected.length === 0) return;
+
+    // Confirm deletion for multiple items
+    const count = selected.length;
+    if (!confirm(`Delete ${count} item${count > 1 ? 's' : ''}?`)) {
+      return;
+    }
 
     // Find item to focus after deletion
     const lastSelected = selected[selected.length - 1];
@@ -1338,6 +1348,61 @@
         }
         break;
     }
+  });
+
+  // Drag selection: mousedown starts tracking
+  document.body.addEventListener('mousedown', function(event) {
+    // Only track left mouse button
+    if (event.button !== 0) return;
+
+    const itemEl = event.target.closest('.outline-item');
+    if (itemEl && document.getElementById('outline-tree')) {
+      dragStartItemId = itemEl.dataset.itemId;
+      isDragSelecting = false;
+    } else {
+      dragStartItemId = null;
+    }
+  });
+
+  // Drag selection: mousemove detects crossing items
+  document.body.addEventListener('mousemove', function(event) {
+    // Only process if we have a drag start and mouse button is down
+    if (!dragStartItemId || event.buttons !== 1) return;
+
+    const currentItemEl = event.target.closest('.outline-item');
+    if (!currentItemEl) return;
+
+    const currentItemId = currentItemEl.dataset.itemId;
+
+    // If we've moved to a different item, switch to item selection
+    if (currentItemId !== dragStartItemId) {
+      if (!isDragSelecting) {
+        // First time crossing item boundary - switch to item selection
+        isDragSelecting = true;
+        // Clear any text selection
+        window.getSelection().removeAllRanges();
+      }
+
+      // Clear existing selection and select range
+      clearSelection();
+      selectionAnchorId = dragStartItemId;
+      selectRange(dragStartItemId, currentItemId);
+      setFocusedItem(currentItemEl, true);
+      updateSelectionHighlight();
+
+      // Prevent text selection while drag-selecting items
+      event.preventDefault();
+    }
+  });
+
+  // Drag selection: mouseup ends tracking
+  document.body.addEventListener('mouseup', function(event) {
+    if (isDragSelecting) {
+      // Clear text selection one more time to be safe
+      window.getSelection().removeAllRanges();
+    }
+    dragStartItemId = null;
+    isDragSelecting = false;
   });
 
 })();
