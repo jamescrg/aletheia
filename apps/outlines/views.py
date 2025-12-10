@@ -376,6 +376,7 @@ def item_create(request, outline_id):
 
     parent_id = request.POST.get("parent_id")
     after_id = request.POST.get("after_id")
+    content = request.POST.get("content", "")
 
     parent = None
     if parent_id:
@@ -418,7 +419,7 @@ def item_create(request, outline_id):
             order = max_order + 1
 
     item = OutlineItem.objects.create(
-        outline=outline, parent=parent, content="", order=order
+        outline=outline, parent=parent, content=content, order=order
     )
 
     return render(request, "outlines/item.html", {"item": item, "editing": True})

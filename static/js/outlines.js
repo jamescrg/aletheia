@@ -430,7 +430,7 @@
   }
 
   // Create new item after current
-  function createItemAfter(currentItemId) {
+  function createItemAfter(currentItemId, content = '') {
     const outlineId = getOutlineId();
     if (!outlineId) return;
 
@@ -443,7 +443,7 @@
         'Content-Type': 'application/x-www-form-urlencoded',
         'X-CSRFToken': getCSRFToken()
       },
-      body: `after_id=${currentItemId}&parent_id=${parentId}`
+      body: `after_id=${currentItemId}&parent_id=${parentId}&content=${encodeURIComponent(content)}`
     })
     .then(response => response.text())
     .then(html => {
@@ -1182,8 +1182,17 @@
           // Delete empty item and exit
           deleteItem(itemId);
         } else {
-          // Create new item (let HTMX handle save first)
-          setTimeout(() => createItemAfter(itemId), 100);
+          // Split at cursor: text before stays, text after goes to new item
+          const cursorPos = input.selectionStart;
+          const textBefore = input.value.substring(0, cursorPos);
+          const textAfter = input.value.substring(cursorPos);
+
+          // Update current item with text before cursor
+          input.value = textBefore;
+
+          // Trigger save of current item, then create new item
+          htmx.trigger(input, 'blur');
+          setTimeout(() => createItemAfter(itemId, textAfter), 100);
         }
         break;
 
