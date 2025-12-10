@@ -10,6 +10,51 @@
 {% endblock favicon %}
 {% block content %}
   {% csrf_token %}
+  <div class="outline-toolbar-wrapper">
+    <div class="outline-toolbar">
+      <div class="toolbar-left">
+        <a href="#"
+           hx-post="{% url 'outlines:expand-all' outline.id %}"
+           title="Expand all">
+          <i class="bi bi-arrows-expand"></i>
+        </a>
+        <a href="#"
+           hx-post="{% url 'outlines:collapse-all' outline.id %}"
+           title="Collapse all">
+          <i class="bi bi-arrows-collapse"></i>
+        </a>
+      </div>
+      <div class="toolbar-center"></div>
+      <div class="toolbar-right">
+        <a href="#" id="search-toggle-btn" title="Search & Replace (Ctrl+H)">
+          <i class="bi bi-search"></i>
+        </a>
+        <a href="#"
+           hx-get="{% url 'outlines:import-modal' outline.id %}"
+           hx-target="#htmx-modal-container"
+           data-bs-toggle="modal"
+           data-bs-target="#htmx-modal-container"
+           title="Import from markdown">
+          <i class="bi bi-box-arrow-in-up"></i>
+        </a>
+        <a href="{% url 'outlines:export' outline.id %}"
+           title="Export to markdown">
+          <i class="bi bi-box-arrow-down"></i>
+        </a>
+        <a href="#"
+           hx-get="{% url 'outlines:shortcuts' %}"
+           hx-target="#htmx-modal-container"
+           data-bs-toggle="modal"
+           data-bs-target="#htmx-modal-container"
+           title="Keyboard shortcuts">
+          <i class="bi bi-keyboard"></i>
+        </a>
+        <a href="#" onclick="window.close(); return false;" title="Close">
+          <i class="bi bi-x-lg"></i>
+        </a>
+      </div>
+    </div>
+  </div>
   <!-- Search and Replace Bar -->
   <div id="search-replace-bar" class="search-replace-bar">
     <input type="text" id="search-input" placeholder="Find...">
@@ -24,65 +69,21 @@
     <button type="button" id="replace-one">Replace</button>
     <button type="button" id="replace-all">Replace All</button>
     <button type="button" id="search-close" title="Close">
-      <i class="bi bi-x"></i>
+      <i class="bi bi-x-lg"></i>
     </button>
   </div>
   <div class="outline-page standalone">
     <div class="outline-canvas">
-      <div class="toolbar outline-toolbar">
-        <div class="toolbar-left">
-          {% if outline.matter %}<span class="app-badge badge-purple">{{ outline.matter.name }}</span>{% endif %}
-        </div>
-        <div class="toolbar-center">
-          <span id="outline-title"
-                class="outline-title"
-                hx-get="{% url 'outlines:title' outline.id %}"
-                hx-trigger="click"
-                hx-target="this"
-                hx-swap="innerHTML">{{ outline.title }}</span>
-        </div>
-        <div class="toolbar-right">
-          <a href="#" id="search-toggle-btn" title="Search & Replace (Ctrl+H)">
-            <i class="bi bi-search"></i>
-          </a>
-          <a href="#"
-             hx-get="{% url 'outlines:import-modal' outline.id %}"
-             hx-target="#htmx-modal-container"
-             data-bs-toggle="modal"
-             data-bs-target="#htmx-modal-container"
-             title="Import from markdown">
-            <i class="bi bi-box-arrow-in-up"></i>
-          </a>
-          <a href="{% url 'outlines:export' outline.id %}"
-             title="Export to markdown">
-            <i class="bi bi-box-arrow-down"></i>
-          </a>
-          <a href="#"
-             hx-get="{% url 'outlines:shortcuts' %}"
-             hx-target="#htmx-modal-container"
-             data-bs-toggle="modal"
-             data-bs-target="#htmx-modal-container"
-             title="Keyboard shortcuts">
-            <i class="bi bi-keyboard"></i>
-          </a>
-          <a href="#" onclick="window.close(); return false;" title="Close">
-            <i class="bi bi-x-lg"></i>
-          </a>
-        </div>
+      <div class="outline-header">
+        {% if outline.matter %}<span class="app-badge badge-purple">{{ outline.matter.name }}</span>{% endif %}
+        <span id="outline-title"
+              class="outline-title"
+              hx-get="{% url 'outlines:title' outline.id %}"
+              hx-trigger="click"
+              hx-target="this"
+              hx-swap="innerHTML">{{ outline.title }}</span>
       </div>
       <div class="outline-tree-container">
-        <div class="collapse-controls">
-          <a href="#"
-             hx-post="{% url 'outlines:expand-all' outline.id %}"
-             title="Expand all">
-            <i class="bi bi-arrows-expand"></i>
-          </a>
-          <a href="#"
-             hx-post="{% url 'outlines:collapse-all' outline.id %}"
-             title="Collapse all">
-            <i class="bi bi-arrows-collapse"></i>
-          </a>
-        </div>
         <div id="outline-tree"
              class="outline-tree"
              data-outline-id="{{ outline.id }}"

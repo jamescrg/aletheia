@@ -2158,6 +2158,11 @@
     searchMatches = [];
     currentMatchIndex = -1;
     updateSearchCount();
+    // Clear inputs
+    const searchInput = document.getElementById('search-input');
+    const replaceInput = document.getElementById('replace-input');
+    if (searchInput) searchInput.value = '';
+    if (replaceInput) replaceInput.value = '';
   }
 
   function clearSearchHighlights() {
