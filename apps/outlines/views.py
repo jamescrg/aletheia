@@ -545,6 +545,10 @@ def item_set_heading(request, item_id, level):
     """
     item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
 
+    # If content is provided, save it (prevents auto-delete of empty items)
+    if "content" in request.POST:
+        item.content = request.POST.get("content", "").strip()
+
     old_heading = item.heading
 
     # If promoting nested item to heading, move to root first (before setting heading)
