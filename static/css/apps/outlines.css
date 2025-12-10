@@ -128,7 +128,7 @@
 
 /* Body background for standalone outline page */
 body:has(.outline-page.standalone) {
-  background: var(--stone-300);
+  background: var(--background-muted);
 }
 
 .outline-page.standalone {
@@ -141,6 +141,7 @@ body:has(.outline-page.standalone) {
   padding: 1rem 2rem 2rem 3rem;
   margin-top: 1.5rem;
   min-height: 32rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* Outline toolbar wrapper - full width background */
