@@ -124,4 +124,11 @@ urlpatterns = [
     path("<int:outline_id>/import/", views.import_markdown, name="import"),
     path("<int:outline_id>/import-modal/", views.import_modal, name="import-modal"),
     path("<int:outline_id>/export/", views.export_markdown, name="export"),
+    # Search and Replace
+    path("item/<int:item_id>/replace/", views.item_replace, name="item-replace"),
+    path(
+        "<int:outline_id>/search-replace/",
+        views.search_replace,
+        name="search-replace",
+    ),
 ]

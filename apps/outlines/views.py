@@ -671,6 +671,44 @@ def item_toggle_quote(request, item_id):
 
 
 @login_required
+def item_replace(request, item_id):
+    """Replace text in a single item."""
+    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+
+    search = request.POST.get("search", "")
+    replace = request.POST.get("replace", "")
+    first_only = request.POST.get("first_only", "")
+
+    if search and search in item.content:
+        if first_only:
+            item.content = item.content.replace(search, replace, 1)
+        else:
+            item.content = item.content.replace(search, replace)
+        item.save()
+
+    return JsonResponse({"success": True, "content": item.content})
+
+
+@login_required
+def search_replace(request, outline_id):
+    """Replace all occurrences in an outline."""
+    outline = get_object_or_404(Outline, id=outline_id, user=request.user)
+
+    search = request.POST.get("search", "")
+    replace = request.POST.get("replace", "")
+
+    count = 0
+    if search:
+        items = OutlineItem.objects.filter(outline=outline, content__contains=search)
+        for item in items:
+            item.content = item.content.replace(search, replace)
+            item.save()
+            count += 1
+
+    return JsonResponse({"success": True, "count": count})
+
+
+@login_required
 def item_move_up(request, item_id):
     """Move item up among its siblings, or to parent's previous sibling if first child."""
     item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
