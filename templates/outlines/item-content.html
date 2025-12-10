@@ -1,5 +1,6 @@
+{% load outline_tags %}
 {% if item.quote %}<span class="app-badge app-badge-sm badge-purple"><i class="bi bi-quote"></i></span>{% endif %}
-<span class="item-content">{{ item.content }}</span>
+<span class="item-content">{{ item.content|inline_markdown }}</span>
 {% if item.highlights.all or item.documents.all %}
   <span class="item-sources">
     {% for highlight in item.highlights.all %}

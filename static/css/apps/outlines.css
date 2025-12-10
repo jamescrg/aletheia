@@ -776,3 +776,10 @@ body:has(.outline-page.standalone) {
 .sources-picker:has(.assign-results) > input[type="search"] {
   border-radius: 0.375rem 0.375rem 0 0;
 }
+
+/* Inline markdown highlights */
+.item-content mark {
+  background: var(--hl-yellow);
+  padding: 0 0.125rem;
+  border-radius: 0.125rem;
+}
