@@ -1311,6 +1311,37 @@
           });
         }
         break;
+
+      case '0':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+        // Ctrl+0 for normal, Ctrl+2-5 for heading levels
+        if (event.metaKey || event.ctrlKey) {
+          event.preventDefault();
+          const level = parseInt(event.key);
+          htmx.trigger(input, 'blur');
+          htmx.ajax('POST', `/outlines/item/${itemId}/set-heading/${level}/`, {
+            target: `#outline-item-${itemId}`,
+            swap: 'outerHTML'
+          });
+        }
+        break;
+
+      case ';':
+        // Ctrl+; for add source
+        if (event.metaKey || event.ctrlKey) {
+          event.preventDefault();
+          htmx.trigger(input, 'blur');
+          htmx.ajax('GET', `/outlines/item/${itemId}/sources/`, {
+            target: '#htmx-modal-container'
+          }).then(() => {
+            const modal = new bootstrap.Modal(document.getElementById('htmx-modal-container'));
+            modal.show();
+          });
+        }
+        break;
     }
   };
 
@@ -1926,6 +1957,37 @@
         if ((event.metaKey || event.ctrlKey) && !event.shiftKey) {
           event.preventDefault();
           undo();
+        }
+        break;
+
+      case '0':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+        // Ctrl+0 for normal, Ctrl+2-5 for heading levels
+        if ((event.metaKey || event.ctrlKey) && focusedItem) {
+          event.preventDefault();
+          const level = parseInt(event.key);
+          const itemId = focusedItem.dataset.itemId;
+          htmx.ajax('POST', `/outlines/item/${itemId}/set-heading/${level}/`, {
+            target: `#outline-item-${itemId}`,
+            swap: 'outerHTML'
+          });
+        }
+        break;
+
+      case ';':
+        // Ctrl+; for add source
+        if ((event.metaKey || event.ctrlKey) && focusedItem) {
+          event.preventDefault();
+          const itemId = focusedItem.dataset.itemId;
+          htmx.ajax('GET', `/outlines/item/${itemId}/sources/`, {
+            target: '#htmx-modal-container'
+          }).then(() => {
+            const modal = new bootstrap.Modal(document.getElementById('htmx-modal-container'));
+            modal.show();
+          });
         }
         break;
     }
