@@ -532,15 +532,25 @@ def item_move_up(request, item_id):
 
 @login_required
 def item_move_down(request, item_id):
-    """Move item down among its siblings."""
+    """Move item down among its siblings, or to parent's next sibling if last child."""
     item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
     next_sibling = item.get_next_sibling()
 
     if next_sibling:
-        # Swap order values
+        # Swap order values with next sibling
         item.order, next_sibling.order = next_sibling.order, item.order
         item.save()
         next_sibling.save()
+    elif item.parent:
+        # Last child - try to move to parent's next sibling
+        parent_next_sibling = item.parent.get_next_sibling()
+        if parent_next_sibling:
+            # Shift existing children down to make room at position 0
+            parent_next_sibling.get_children().update(order=F("order") + 1)
+
+            item.parent = parent_next_sibling
+            item.order = 0
+            item.save()
 
     return HttpResponse(status=204)
 

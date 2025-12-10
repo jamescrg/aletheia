@@ -988,8 +988,117 @@
 
     // Find next sibling (must be an outline-item)
     const nextSibling = itemEl.nextElementSibling;
-    if (!nextSibling || !nextSibling.classList.contains('outline-item')) return;
 
+    // If no next sibling, try cross-parent move
+    if (!nextSibling || !nextSibling.classList.contains('outline-item')) {
+      // Check if we're inside item-children (has a parent)
+      const parentChildren = itemEl.parentElement;
+      if (!parentChildren?.classList.contains('item-children')) return;
+
+      const parentItem = parentChildren.closest('.outline-item');
+      if (!parentItem) return;
+
+      // Find parent's next sibling (the "below parent")
+      const belowParent = parentItem.nextElementSibling;
+      if (!belowParent?.classList.contains('outline-item')) return;
+
+      // Block if heading (can't gain a different parent)
+      if (itemEl.classList.contains('heading')) return;
+
+      // Capture state for undo
+      pushUndo({
+        type: 'move_down',
+        itemId: itemId,
+        oldParentId: itemEl.dataset.parentId || null,
+        oldOrder: parseInt(itemEl.dataset.order) || 0
+      });
+
+      // Handle collapsed below parent - expand it first
+      if (belowParent.classList.contains('collapsed')) {
+        // Expand and fetch children from server, then prepend item
+        fetch(`/outlines/item/${belowParent.dataset.itemId}/toggle-collapse/`, {
+          method: 'POST',
+          headers: { 'X-CSRFToken': getCSRFToken() }
+        }).then(response => {
+          if (response.ok) return response.text();
+        }).then(html => {
+          if (html) {
+            const template = document.createElement('template');
+            template.innerHTML = html.trim();
+            const newBelowParent = template.content.firstChild;
+            belowParent.replaceWith(newBelowParent);
+            htmx.process(newBelowParent);
+
+            // Move item to below parent's children (first position)
+            let childrenContainer = newBelowParent.querySelector(':scope > .item-children');
+            if (!childrenContainer) {
+              childrenContainer = document.createElement('div');
+              childrenContainer.className = 'item-children';
+              newBelowParent.appendChild(childrenContainer);
+            }
+            childrenContainer.insertBefore(itemEl, childrenContainer.firstChild);
+            itemEl.dataset.parentId = newBelowParent.dataset.itemId;
+
+            // Clean up old parent if now empty
+            if (parentChildren.children.length === 0) {
+              parentChildren.remove();
+              const collapseToggle = parentItem.querySelector(':scope > .item-row > .collapse-toggle');
+              if (collapseToggle) collapseToggle.remove();
+            }
+
+            if (enterEditMode) focusItem(itemEl, cursorPos);
+          }
+        });
+
+        // POST move to server
+        fetch(`/outlines/item/${itemId}/move-down/`, {
+          method: 'POST',
+          headers: { 'X-CSRFToken': getCSRFToken() }
+        });
+        return;
+      }
+
+      // Below parent is not collapsed - do optimistic DOM update
+      let childrenContainer = belowParent.querySelector(':scope > .item-children');
+      if (!childrenContainer) {
+        childrenContainer = document.createElement('div');
+        childrenContainer.className = 'item-children';
+        belowParent.appendChild(childrenContainer);
+
+        // Add collapse toggle
+        const itemRow = belowParent.querySelector(':scope > .item-row');
+        const existingToggle = itemRow?.querySelector('.collapse-toggle');
+        if (itemRow && !existingToggle) {
+          const bullet = itemRow.querySelector('.item-bullet');
+          if (bullet) {
+            bullet.insertAdjacentHTML('beforebegin', `<button class="collapse-toggle" title="Collapse">
+              <i class="bi bi-chevron-down"></i>
+            </button>`);
+          }
+        }
+      }
+      // Insert at first position
+      childrenContainer.insertBefore(itemEl, childrenContainer.firstChild);
+      itemEl.dataset.parentId = belowParent.dataset.itemId;
+
+      // Clean up old parent if now empty
+      if (parentChildren.children.length === 0) {
+        parentChildren.remove();
+        const collapseToggle = parentItem.querySelector(':scope > .item-row > .collapse-toggle');
+        if (collapseToggle) collapseToggle.remove();
+      }
+
+      if (enterEditMode) focusItem(itemEl, cursorPos);
+
+      // POST to server
+      fetch(`/outlines/item/${itemId}/move-down/`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': getCSRFToken() }
+      });
+      return;
+    }
+
+    // Normal case: swap with next sibling
     // Capture state for undo
     pushUndo({
       type: 'move_down',
