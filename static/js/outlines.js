@@ -371,31 +371,125 @@
     }
   }
 
-  // Indent item (make child of previous sibling)
+  // Indent item (make child of previous sibling) - optimistic UI update
   function indentItem(itemId, keepSelection = false, enterEditMode = false, cursorPos = null) {
+    const itemEl = getItemElement(itemId);
+    if (!itemEl) return;
+
+    // Find previous sibling
+    const prevSibling = itemEl.previousElementSibling;
+    if (!prevSibling || !prevSibling.classList.contains('outline-item')) {
+      // Can't indent - no previous sibling
+      return;
+    }
+
+    // Optimistic DOM update
+    let childrenContainer = prevSibling.querySelector(':scope > .item-children');
+    if (!childrenContainer) {
+      // Create children container
+      childrenContainer = document.createElement('div');
+      childrenContainer.className = 'item-children';
+      prevSibling.appendChild(childrenContainer);
+
+      // Update bullet to collapse button
+      const bullet = prevSibling.querySelector(':scope > .item-row > .item-bullet');
+      if (bullet && !bullet.classList.contains('collapse-btn')) {
+        bullet.outerHTML = `<button class="item-bullet collapse-btn" title="Collapse">
+          <i class="bi bi-chevron-down"></i>
+        </button>`;
+      }
+    }
+
+    // Move the item
+    childrenContainer.appendChild(itemEl);
+
+    // Update data attributes
+    itemEl.dataset.parentId = prevSibling.dataset.itemId;
+
+    // Restore focus/edit mode
+    if (enterEditMode) {
+      editItem(itemEl);
+      if (cursorPos !== null) {
+        setTimeout(() => {
+          const input = itemEl.querySelector('.item-input');
+          if (input) {
+            input.setSelectionRange(cursorPos, cursorPos);
+          }
+        }, 60);
+      }
+    }
+
+    // POST to server in background
     fetch(`/outlines/item/${itemId}/indent/`, {
       method: 'POST',
       headers: {
         'X-CSRFToken': getCSRFToken()
       }
-    })
-    .then(response => {
-      if (response.ok) {
+    }).then(response => {
+      if (!response.ok) {
+        // Revert on error - refresh tree
         refreshTreeAndFocus(itemId, keepSelection, enterEditMode, cursorPos);
       }
     });
   }
 
-  // Outdent item (move to parent's level)
+  // Outdent item (move to parent's level) - optimistic UI update
   function outdentItem(itemId, keepSelection = false, enterEditMode = false, cursorPos = null) {
+    const itemEl = getItemElement(itemId);
+    if (!itemEl) return;
+
+    // Find parent item
+    const parentChildren = itemEl.parentElement;
+    if (!parentChildren || !parentChildren.classList.contains('item-children')) {
+      // Already at root level
+      return;
+    }
+    const parentItem = parentChildren.closest('.outline-item');
+    if (!parentItem) return;
+
+    // Find grandparent container (where we'll insert)
+    const grandparentChildren = parentItem.parentElement;
+
+    // Optimistic DOM update - insert after parent
+    if (grandparentChildren) {
+      grandparentChildren.insertBefore(itemEl, parentItem.nextElementSibling);
+    }
+
+    // Update data attributes
+    itemEl.dataset.parentId = parentItem.dataset.parentId || '';
+
+    // Clean up empty children container
+    if (parentChildren.children.length === 0) {
+      parentChildren.remove();
+      // Revert collapse button to bullet
+      const collapseBtn = parentItem.querySelector(':scope > .item-row > .collapse-btn');
+      if (collapseBtn) {
+        collapseBtn.outerHTML = '<span class="item-bullet">•</span>';
+      }
+    }
+
+    // Restore focus/edit mode
+    if (enterEditMode) {
+      editItem(itemEl);
+      if (cursorPos !== null) {
+        setTimeout(() => {
+          const input = itemEl.querySelector('.item-input');
+          if (input) {
+            input.setSelectionRange(cursorPos, cursorPos);
+          }
+        }, 60);
+      }
+    }
+
+    // POST to server in background
     fetch(`/outlines/item/${itemId}/outdent/`, {
       method: 'POST',
       headers: {
         'X-CSRFToken': getCSRFToken()
       }
-    })
-    .then(response => {
-      if (response.ok) {
+    }).then(response => {
+      if (!response.ok) {
+        // Revert on error - refresh tree
         refreshTreeAndFocus(itemId, keepSelection, enterEditMode, cursorPos);
       }
     });
@@ -441,8 +535,31 @@
     });
   }
 
-  // Move item up among siblings
-  function moveItemUp(itemId) {
+  // Move item up among siblings (optimistic UI)
+  function moveItemUp(itemId, keepSelection = false, enterEditMode = false, cursorPos = null) {
+    const itemEl = getItemElement(itemId);
+    if (!itemEl) return;
+
+    // Find previous sibling (must be an outline-item)
+    const prevSibling = itemEl.previousElementSibling;
+    if (!prevSibling || !prevSibling.classList.contains('outline-item')) return;
+
+    // Optimistic DOM update: swap positions
+    const parent = itemEl.parentNode;
+    parent.insertBefore(itemEl, prevSibling);
+
+    // Restore focus/selection state
+    if (keepSelection && selectedItemIds.size > 0) {
+      selectedItemIds.forEach(id => {
+        const el = getItemElement(id);
+        if (el) el.classList.add('selected');
+      });
+    }
+    if (enterEditMode) {
+      focusItem(itemEl, cursorPos);
+    }
+
+    // POST to server in background
     fetch(`/outlines/item/${itemId}/move-up/`, {
       method: 'POST',
       headers: {
@@ -450,14 +567,42 @@
       }
     })
     .then(response => {
-      if (response.ok) {
-        refreshTreeAndFocus(itemId);
+      if (!response.ok) {
+        // Server rejected - refresh to get correct state
+        refreshTreeAndFocus(itemId, keepSelection, enterEditMode, cursorPos);
       }
+    })
+    .catch(() => {
+      // Network error - refresh to get correct state
+      refreshTreeAndFocus(itemId, keepSelection, enterEditMode, cursorPos);
     });
   }
 
-  // Move item down among siblings
-  function moveItemDown(itemId) {
+  // Move item down among siblings (optimistic UI)
+  function moveItemDown(itemId, keepSelection = false, enterEditMode = false, cursorPos = null) {
+    const itemEl = getItemElement(itemId);
+    if (!itemEl) return;
+
+    // Find next sibling (must be an outline-item)
+    const nextSibling = itemEl.nextElementSibling;
+    if (!nextSibling || !nextSibling.classList.contains('outline-item')) return;
+
+    // Optimistic DOM update: swap positions (insert after next sibling)
+    const parent = itemEl.parentNode;
+    parent.insertBefore(itemEl, nextSibling.nextSibling);
+
+    // Restore focus/selection state
+    if (keepSelection && selectedItemIds.size > 0) {
+      selectedItemIds.forEach(id => {
+        const el = getItemElement(id);
+        if (el) el.classList.add('selected');
+      });
+    }
+    if (enterEditMode) {
+      focusItem(itemEl, cursorPos);
+    }
+
+    // POST to server in background
     fetch(`/outlines/item/${itemId}/move-down/`, {
       method: 'POST',
       headers: {
@@ -465,9 +610,14 @@
       }
     })
     .then(response => {
-      if (response.ok) {
-        refreshTreeAndFocus(itemId);
+      if (!response.ok) {
+        // Server rejected - refresh to get correct state
+        refreshTreeAndFocus(itemId, keepSelection, enterEditMode, cursorPos);
       }
+    })
+    .catch(() => {
+      // Network error - refresh to get correct state
+      refreshTreeAndFocus(itemId, keepSelection, enterEditMode, cursorPos);
     });
   }
 
@@ -518,10 +668,11 @@
 
       case 'ArrowUp':
         if (event.metaKey || event.ctrlKey) {
-          // Move item up
+          // Move item up (optimistic - instant)
           event.preventDefault();
+          const cursorPosUp = input.selectionStart;
           htmx.trigger(input, 'blur');
-          setTimeout(() => moveItemUp(itemId), 100);
+          moveItemUp(itemId, false, true, cursorPosUp);
         } else if (event.shiftKey) {
           // Three-stage shift selection (going up)
           const allTextSelected = input.selectionStart === 0 && input.selectionEnd === input.value.length;
@@ -560,10 +711,11 @@
 
       case 'ArrowDown':
         if (event.metaKey || event.ctrlKey) {
-          // Move item down
+          // Move item down (optimistic - instant)
           event.preventDefault();
+          const cursorPosDown = input.selectionStart;
           htmx.trigger(input, 'blur');
-          setTimeout(() => moveItemDown(itemId), 100);
+          moveItemDown(itemId, false, true, cursorPosDown);
         } else if (event.shiftKey) {
           // Three-stage shift selection (going down)
           const allTextSelected = input.selectionStart === 0 && input.selectionEnd === input.value.length;
