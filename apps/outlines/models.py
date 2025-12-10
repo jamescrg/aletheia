@@ -65,6 +65,7 @@ class OutlineItem(models.Model):
         validators=[MinValueValidator(2), MaxValueValidator(5)],
     )
     highlight = models.BooleanField(default=False)
+    quote = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     # Source references

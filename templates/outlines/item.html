@@ -3,7 +3,8 @@
      data-item-id="{{ item.id }}"
      data-parent-id="{{ item.parent_id|default:'' }}"
      data-order="{{ item.order }}"
-     {% if item.heading %}data-heading="{{ item.heading }}"{% endif %}>
+     {% if item.heading %}data-heading="{{ item.heading }}"{% endif %}
+     {% if item.quote %}data-quote{% endif %}>
   <div class="item-row{% if item.highlight %} hl-yellow{% endif %}">
     <!-- Item menu -->
     <div class="item-menu dropdown">
@@ -71,6 +72,20 @@
               Remove Highlight
             {% else %}
               Highlight
+            {% endif %}
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item"
+             href="#"
+             hx-post="{% url 'outlines:item-toggle-quote' item.id %}"
+             hx-target="closest .outline-item"
+             hx-swap="outerHTML">
+            <i class="bi bi-quote"></i>
+            {% if item.quote %}
+              Remove Quote
+            {% else %}
+              Mark as Quote
             {% endif %}
           </a>
         </li>

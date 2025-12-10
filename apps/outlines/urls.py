@@ -81,6 +81,11 @@ urlpatterns = [
         views.item_toggle_highlight,
         name="item-toggle-highlight",
     ),
+    path(
+        "item/<int:item_id>/toggle-quote/",
+        views.item_toggle_quote,
+        name="item-toggle-quote",
+    ),
     # Item sources
     path("item/<int:item_id>/sources/", views.item_sources_modal, name="item-sources"),
     path(

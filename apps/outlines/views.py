@@ -558,6 +558,28 @@ def item_set_heading(request, item_id, level):
 
     old_heading = item.heading
 
+    # If promoting nested item to heading, move to root first (before setting heading)
+    # This is needed because the model's save() clears heading if parent is set
+    moved_to_root = False
+    if 2 <= level <= 5 and item.parent_id is not None:
+        moved_to_root = True
+        # Find the root-level ancestor
+        root_ancestor = item.parent
+        while root_ancestor.parent:
+            root_ancestor = root_ancestor.parent
+
+        # Shift all root items after root_ancestor to make room
+        OutlineItem.objects.filter(
+            outline=item.outline,
+            parent__isnull=True,
+            order__gt=root_ancestor.order,
+        ).update(order=F("order") + 1)
+
+        # Move item to root level right after root_ancestor
+        item.parent_id = None
+        item.order = root_ancestor.order + 1
+
+    # Now set heading level
     if level == 0:
         item.heading = None
     elif 2 <= level <= 5:
@@ -566,7 +588,7 @@ def item_set_heading(request, item_id, level):
     item.save()
 
     # CASE A: Promoted to heading - adopt following root-level siblings
-    if old_heading is None and item.heading is not None and item.parent is None:
+    if old_heading is None and item.heading is not None:
         # Get root siblings that come after this item (until next heading)
         following_siblings = OutlineItem.objects.filter(
             outline=item.outline,
@@ -620,6 +642,10 @@ def item_set_heading(request, item_id, level):
             item.order = next_order
             item.save()
 
+    # If item was moved to root, trigger full tree refresh
+    if moved_to_root:
+        return HttpResponse(status=204, headers={"HX-Trigger": "outlineChanged"})
+
     return render(request, "outlines/item.html", {"item": item})
 
 
@@ -628,6 +654,16 @@ def item_toggle_highlight(request, item_id):
     """Toggle highlight state."""
     item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
     item.highlight = not item.highlight
+    item.save()
+
+    return render(request, "outlines/item.html", {"item": item})
+
+
+@login_required
+def item_toggle_quote(request, item_id):
+    """Toggle quote state."""
+    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item.quote = not item.quote
     item.save()
 
     return render(request, "outlines/item.html", {"item": item})

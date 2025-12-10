@@ -499,6 +499,11 @@
   white-space: pre-wrap;
 }
 
+.outline-item[data-quote] .item-content-wrapper {
+  border-left: 3px solid var(--stone-300);
+  padding-left: 0.5rem;
+}
+
 /* Item Edit Input (textarea) */
 .item-input {
   display: block;
