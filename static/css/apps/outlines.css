@@ -249,6 +249,7 @@
 
 .outline-tree-container {
   position: relative;
+  margin-left: 0.75rem;
 }
 
 .collapse-controls {
@@ -545,7 +546,17 @@
 }
 
 .outline-item[data-heading] > .item-row .item-content-wrapper {
-  margin-left: 0.25rem;
+  margin-left: 0.5rem;
+}
+
+/* Extend hover area for headings without children to trigger ghost menu */
+.outline-item[data-heading] > .item-row::before {
+  content: '';
+  position: absolute;
+  left: -3.5rem;
+  top: 0;
+  width: 3.5rem;
+  height: 100%;
 }
 
 .outline-item[data-heading="2"] > .item-row .item-content,
