@@ -9,6 +9,8 @@
   let focusedItemId = null;
   let selectedItemIds = new Set();
   let selectionAnchorId = null;  // Where shift+arrow selection started
+  let pendingCursorPosition = null;  // 'start', 'end', or { line: 'first'|'last', x: number }
+  let pendingCursorX = null;  // X coordinate to match when positioning cursor
 
   // Get CSRF token for HTMX requests
   function getCSRFToken() {
@@ -70,6 +72,7 @@
     const itemId = itemElement.dataset.itemId;
     selectedItemIds.add(itemId);
     itemElement.classList.add('selected');
+    updateMultiSelectState();
   }
 
   // Deselect a single item
@@ -78,6 +81,7 @@
     const itemId = itemElement.dataset.itemId;
     selectedItemIds.delete(itemId);
     itemElement.classList.remove('selected');
+    updateMultiSelectState();
   }
 
   // Clear all selections
@@ -87,6 +91,15 @@
     });
     selectedItemIds.clear();
     selectionAnchorId = null;
+    updateMultiSelectState();
+  }
+
+  // Update multi-select class on container
+  function updateMultiSelectState() {
+    const container = document.querySelector('.outline-items');
+    if (container) {
+      container.classList.toggle('has-multi-select', selectedItemIds.size >= 2);
+    }
   }
 
   // Handle shift+arrow selection with anchor tracking
@@ -205,7 +218,9 @@
   }
 
   // Focus an item's input or make it editable (legacy function name)
-  function focusItem(itemElement) {
+  // cursorPos: 'start', 'end', or null (default browser behavior)
+  function focusItem(itemElement, cursorPos = null) {
+    pendingCursorPosition = cursorPos;
     setFocusedItem(itemElement);
     editItem(itemElement);
   }
@@ -511,13 +526,17 @@
           event.preventDefault();
           htmx.trigger(input, 'blur');
           setTimeout(() => handleShiftArrow('up'), 50);
-        } else {
-          // Navigate up
-          event.preventDefault();
-          const prevItem = getPreviousItem(itemEl);
-          if (prevItem) {
-            htmx.trigger(input, 'blur');
-            setTimeout(() => focusItem(prevItem), 50);
+        } else if (input.selectionStart === input.selectionEnd) {
+          // No text selection - check if on first visual line
+          const { isFirstLine, cursorX } = getCursorLine(input);
+          if (isFirstLine) {
+            const prevItem = getPreviousItem(itemEl);
+            if (prevItem) {
+              event.preventDefault();
+              pendingCursorX = cursorX;
+              htmx.trigger(input, 'blur');
+              setTimeout(() => focusItem(prevItem, 'last'), 50);
+            }
           }
         }
         break;
@@ -533,13 +552,17 @@
           event.preventDefault();
           htmx.trigger(input, 'blur');
           setTimeout(() => handleShiftArrow('down'), 50);
-        } else {
-          // Navigate down
-          event.preventDefault();
-          const nextItem = getNextItem(itemEl);
-          if (nextItem) {
-            htmx.trigger(input, 'blur');
-            setTimeout(() => focusItem(nextItem), 50);
+        } else if (input.selectionStart === input.selectionEnd) {
+          // No text selection - check if on last visual line
+          const { isLastLine, cursorX } = getCursorLine(input);
+          if (isLastLine) {
+            const nextItem = getNextItem(itemEl);
+            if (nextItem) {
+              event.preventDefault();
+              pendingCursorX = cursorX;
+              htmx.trigger(input, 'blur');
+              setTimeout(() => focusItem(nextItem, 'first'), 50);
+            }
           }
         }
         break;
@@ -560,6 +583,216 @@
         break;
     }
   };
+
+  // Detect if cursor is on first/last visual line of textarea
+  function getCursorLine(textarea) {
+    const pos = textarea.selectionStart;
+    const text = textarea.value;
+
+    // Create measurer
+    const measurer = document.createElement('div');
+    document.body.appendChild(measurer);
+
+    // Copy styles
+    const style = window.getComputedStyle(textarea);
+    const width = textarea.getBoundingClientRect().width;
+    measurer.style.cssText = `
+      position: absolute;
+      visibility: hidden;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      width: ${width}px;
+      font-size: ${style.fontSize};
+      font-family: ${style.fontFamily};
+      line-height: ${style.lineHeight};
+      padding: ${style.padding};
+      box-sizing: ${style.boxSizing};
+    `;
+
+    // Build content with markers at cursor position and end of text
+    const before = text.substring(0, pos);
+    const after = text.substring(pos);
+    measurer.textContent = '';
+
+    const beforeNode = document.createTextNode(before);
+    // Wrap the first character after cursor in a span to measure its line position
+    const firstCharAfter = after.charAt(0) || '\u200B';
+    const restAfter = after.substring(1);
+    const cursorMarker = document.createElement('span');
+    cursorMarker.textContent = firstCharAfter;
+    const afterNode = document.createTextNode(restAfter);
+    const endMarker = document.createElement('span');
+    endMarker.textContent = '\u200B';
+
+    measurer.appendChild(beforeNode);
+    measurer.appendChild(cursorMarker);
+    measurer.appendChild(afterNode);
+    measurer.appendChild(endMarker);
+
+    const lineHeight = parseFloat(style.lineHeight);
+    const measurerRect = measurer.getBoundingClientRect();
+    const cursorRect = cursorMarker.getBoundingClientRect();
+    const endRect = endMarker.getBoundingClientRect();
+
+    const markerTop = cursorRect.top - measurerRect.top;
+    const endMarkerTop = endRect.top - measurerRect.top;
+
+    // First line: marker is within first lineHeight from top
+    // Last line: cursor and end of text are on the same visual line
+    const isFirstLine = markerTop < lineHeight;
+    const isLastLine = Math.abs(endMarkerTop - markerTop) < lineHeight * 0.5;
+
+    // Get cursor X position relative to measurer
+    const cursorX = cursorRect.left - measurerRect.left;
+
+    // Clean up
+    measurer.remove();
+
+    return { isFirstLine, isLastLine, cursorX };
+  }
+
+  // Find the best cursor position on a specific line (first or last) to match a target X
+  function findCursorPositionForX(textarea, targetX, targetLine) {
+    const text = textarea.value;
+    if (!text) return 0;
+
+    // Create measurer
+    const measurer = document.createElement('div');
+    document.body.appendChild(measurer);
+
+    const style = window.getComputedStyle(textarea);
+    const width = textarea.getBoundingClientRect().width;
+    // lineHeight might be 'normal' or a number - compute actual pixel value
+    let lineHeight = parseFloat(style.lineHeight);
+    if (isNaN(lineHeight) || lineHeight < 10) {
+      // If it's a multiplier or 'normal', calculate from font-size
+      const fontSize = parseFloat(style.fontSize);
+      lineHeight = fontSize * (parseFloat(style.lineHeight) || 1.4);
+    }
+
+    measurer.style.cssText = `
+      position: absolute;
+      visibility: hidden;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      width: ${width}px;
+      font-size: ${style.fontSize};
+      font-family: ${style.fontFamily};
+      font-weight: ${style.fontWeight};
+      line-height: ${style.lineHeight};
+      padding: ${style.padding};
+      box-sizing: ${style.boxSizing};
+    `;
+
+    // First, find the range of characters on the target line
+    // Measure each character to find line boundaries
+    let lineStart = 0;
+    let lineEnd = text.length;
+
+    // Build full content with end marker to get total height
+    measurer.textContent = text + '\u200B';
+    const measurerRect = measurer.getBoundingClientRect();
+    const totalHeight = measurer.scrollHeight;
+
+    // Determine target Y range based on targetLine
+    let targetYMin, targetYMax;
+    if (targetLine === 'first') {
+      // Measure actual first character position
+      measurer.innerHTML = '';
+      const firstMarker = document.createElement('span');
+      firstMarker.textContent = text.charAt(0) || '\u200B';
+      measurer.appendChild(firstMarker);
+      measurer.appendChild(document.createTextNode(text.substring(1)));
+      const firstY = firstMarker.getBoundingClientRect().top - measurer.getBoundingClientRect().top;
+      targetYMin = firstY - lineHeight * 0.5;
+      targetYMax = firstY + lineHeight * 0.5;
+    } else {
+      // Last line - find where the last line starts
+      measurer.innerHTML = '';
+      const endMarker = document.createElement('span');
+      endMarker.textContent = '\u200B';
+      measurer.appendChild(document.createTextNode(text));
+      measurer.appendChild(endMarker);
+      const endY = endMarker.getBoundingClientRect().top - measurer.getBoundingClientRect().top;
+      targetYMin = endY - lineHeight * 0.5;
+      targetYMax = endY + lineHeight * 0.5;
+    }
+
+    // For single-line text or first line, just find the X position directly
+    // Search all characters and find the one closest to targetX on the target line
+    let bestPos = targetLine === 'first' ? 0 : text.length;
+    let bestDist = Infinity;
+
+    // Sample positions to check (more samples for longer text)
+    const step = Math.max(1, Math.floor(text.length / 50));
+    const positions = [];
+    for (let i = 0; i <= text.length; i += step) {
+      positions.push(i);
+    }
+    // Always include the last position
+    if (positions[positions.length - 1] !== text.length) {
+      positions.push(text.length);
+    }
+
+    for (const i of positions) {
+      measurer.innerHTML = '';
+      const beforeText = text.substring(0, i);
+      const charAtPos = text.charAt(i) || '\u200B';
+      const beforeNode = document.createTextNode(beforeText);
+      const marker = document.createElement('span');
+      marker.textContent = charAtPos;
+      measurer.appendChild(beforeNode);
+      measurer.appendChild(marker);
+
+      const newMeasurerRect = measurer.getBoundingClientRect();
+      const markerRect = marker.getBoundingClientRect();
+      const y = markerRect.top - newMeasurerRect.top;
+      const x = markerRect.left - newMeasurerRect.left;
+
+      if (y >= targetYMin && y <= targetYMax) {
+        const dist = Math.abs(x - targetX);
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestPos = i;
+        }
+      }
+    }
+
+    // If we found a good position, refine it by checking nearby characters
+    if (bestDist < Infinity) {
+      const refineStart = Math.max(0, bestPos - step);
+      const refineEnd = Math.min(text.length, bestPos + step);
+
+      for (let i = refineStart; i <= refineEnd; i++) {
+        measurer.innerHTML = '';
+        const beforeText = text.substring(0, i);
+        const charAtPos = text.charAt(i) || '\u200B';
+        const beforeNode = document.createTextNode(beforeText);
+        const marker = document.createElement('span');
+        marker.textContent = charAtPos;
+        measurer.appendChild(beforeNode);
+        measurer.appendChild(marker);
+
+        const newMeasurerRect = measurer.getBoundingClientRect();
+        const markerRect = marker.getBoundingClientRect();
+        const y = markerRect.top - newMeasurerRect.top;
+        const x = markerRect.left - newMeasurerRect.left;
+
+        if (y >= targetYMin && y <= targetYMax) {
+          const dist = Math.abs(x - targetX);
+          if (dist < bestDist) {
+            bestDist = dist;
+            bestPos = i;
+          }
+        }
+      }
+    }
+
+    measurer.remove();
+    return bestPos;
+  }
 
   // Auto-resize textarea to fit content using a hidden measuring div
   window.autoResizeTextarea = function(textarea) {
@@ -597,10 +830,28 @@
       // Wait for browser to lay out the element before measuring
       requestAnimationFrame(() => {
         input.focus();
-        // Place cursor at end
-        input.setSelectionRange(input.value.length, input.value.length);
-        // Auto-resize textarea to fit content
+        // Auto-resize textarea first so measurements are accurate
         autoResizeTextarea(input);
+
+        // Position cursor based on pending position
+        if (pendingCursorPosition === 'end') {
+          input.setSelectionRange(input.value.length, input.value.length);
+        } else if (pendingCursorPosition === 'start') {
+          input.setSelectionRange(0, 0);
+        } else if (pendingCursorPosition === 'first' || pendingCursorPosition === 'last') {
+          // Find best cursor position on target line matching X coordinate
+          if (pendingCursorX !== null) {
+            const pos = findCursorPositionForX(input, pendingCursorX, pendingCursorPosition);
+            input.setSelectionRange(pos, pos);
+          } else {
+            // Fallback to start/end of line
+            const pos = pendingCursorPosition === 'first' ? 0 : input.value.length;
+            input.setSelectionRange(pos, pos);
+          }
+        }
+        pendingCursorPosition = null;
+        pendingCursorX = null;
+
         // Ensure the item is marked as focused
         const itemEl = input.closest('.outline-item');
         if (itemEl) {
