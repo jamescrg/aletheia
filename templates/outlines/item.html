@@ -54,18 +54,18 @@
         </li>
       </ul>
     </div>
-    <!-- Bullet / Collapse toggle -->
+    <!-- Collapse toggle (chevron) for items with children -->
     {% if item.children.exists %}
-      <button class="item-bullet collapse-btn"
+      <button class="collapse-toggle"
               hx-post="{% url 'outlines:item-toggle-collapse' item.id %}"
               hx-target="closest .outline-item"
               hx-swap="outerHTML"
               title="{% if item.collapsed %}Expand{% else %}Collapse{% endif %}">
         <i class="bi bi-chevron-{% if item.collapsed %}right{% else %}down{% endif %}"></i>
       </button>
-    {% else %}
-      <span class="item-bullet">•</span>
     {% endif %}
+    <!-- Bullet -->
+    <span class="item-bullet">•</span>
     <!-- Content -->
     <div class="item-content-wrapper"
          hx-get="{% url 'outlines:item-edit' item.id %}"

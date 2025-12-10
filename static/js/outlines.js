@@ -600,7 +600,60 @@
       oldOrder: parseInt(itemEl.dataset.order) || 0
     });
 
-    // Optimistic DOM update
+    // Expand parent if collapsed - need to refresh from server to get all children
+    if (prevSibling.classList.contains('collapsed')) {
+      // Toggle collapse on server and refresh the parent item
+      fetch(`/outlines/item/${prevSibling.dataset.itemId}/toggle-collapse/`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': getCSRFToken() }
+      }).then(response => {
+        if (response.ok) {
+          return response.text();
+        }
+      }).then(html => {
+        if (html) {
+          // Replace the parent with expanded version from server
+          const template = document.createElement('template');
+          template.innerHTML = html.trim();
+          const newParent = template.content.firstChild;
+          prevSibling.replaceWith(newParent);
+
+          // Process HTMX attributes on the new element
+          htmx.process(newParent);
+
+          // Now append our item to the children
+          const childrenContainer = newParent.querySelector(':scope > .item-children');
+          if (childrenContainer) {
+            childrenContainer.appendChild(itemEl);
+          }
+
+          // Update data attributes
+          itemEl.dataset.parentId = newParent.dataset.itemId;
+
+          // Restore focus/edit mode
+          if (enterEditMode) {
+            editItem(itemEl);
+            if (cursorPos !== null) {
+              setTimeout(() => {
+                const input = itemEl.querySelector('.item-input');
+                if (input) {
+                  input.setSelectionRange(cursorPos, cursorPos);
+                }
+              }, 60);
+            }
+          }
+        }
+      });
+
+      // POST indent to server
+      fetch(`/outlines/item/${itemId}/indent/`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': getCSRFToken() }
+      });
+      return;
+    }
+
+    // Optimistic DOM update (for non-collapsed parents)
     let childrenContainer = prevSibling.querySelector(':scope > .item-children');
     if (!childrenContainer) {
       // Create children container
@@ -608,12 +661,16 @@
       childrenContainer.className = 'item-children';
       prevSibling.appendChild(childrenContainer);
 
-      // Update bullet to collapse button
-      const bullet = prevSibling.querySelector(':scope > .item-row > .item-bullet');
-      if (bullet && !bullet.classList.contains('collapse-btn')) {
-        bullet.outerHTML = `<button class="item-bullet collapse-btn" title="Collapse">
-          <i class="bi bi-chevron-down"></i>
-        </button>`;
+      // Add collapse toggle before the bullet (if not already present)
+      const itemRow = prevSibling.querySelector(':scope > .item-row');
+      const existingToggle = itemRow?.querySelector('.collapse-toggle');
+      if (itemRow && !existingToggle) {
+        const bullet = itemRow.querySelector('.item-bullet');
+        if (bullet) {
+          bullet.insertAdjacentHTML('beforebegin', `<button class="collapse-toggle" title="Collapse">
+            <i class="bi bi-chevron-down"></i>
+          </button>`);
+        }
       }
     }
 
@@ -686,10 +743,10 @@
     // Clean up empty children container
     if (parentChildren.children.length === 0) {
       parentChildren.remove();
-      // Revert collapse button to bullet
-      const collapseBtn = parentItem.querySelector(':scope > .item-row > .collapse-btn');
-      if (collapseBtn) {
-        collapseBtn.outerHTML = '<span class="item-bullet">•</span>';
+      // Remove collapse toggle
+      const collapseToggle = parentItem.querySelector(':scope > .item-row > .collapse-toggle');
+      if (collapseToggle) {
+        collapseToggle.remove();
       }
     }
 

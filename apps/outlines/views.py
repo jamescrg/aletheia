@@ -428,7 +428,8 @@ def item_indent(request, item_id):
         item.order = max_order
         item.save()
 
-    return render(request, "outlines/item.html", {"item": item})
+    # Return 204 for optimistic UI (client already updated DOM)
+    return HttpResponse(status=204)
 
 
 @login_required
@@ -449,7 +450,8 @@ def item_outdent(request, item_id):
         item.order = parent_order + 1
         item.save()
 
-    return render(request, "outlines/item.html", {"item": item})
+    # Return 204 for optimistic UI (client already updated DOM)
+    return HttpResponse(status=204)
 
 
 @login_required
