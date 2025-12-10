@@ -756,9 +756,18 @@ def import_modal(request, outline_id):
 @login_required
 @require_POST
 def import_markdown(request, outline_id):
-    """Import markdown list into outline items."""
+    """Import markdown file into outline items."""
     outline = get_object_or_404(Outline, id=outline_id, user=request.user)
-    markdown_text = request.POST.get("markdown", "")
+
+    markdown_file = request.FILES.get("markdown_file")
+    if not markdown_file:
+        return HttpResponse("No file provided", status=400)
+
+    # Read file content
+    try:
+        markdown_text = markdown_file.read().decode("utf-8")
+    except UnicodeDecodeError:
+        return HttpResponse("File must be UTF-8 encoded text", status=400)
 
     # Parse markdown and create items
     import_markdown_to_outline(outline, markdown_text)
