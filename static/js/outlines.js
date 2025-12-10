@@ -1372,10 +1372,12 @@
         if (event.metaKey || event.ctrlKey) {
           event.preventDefault();
           const level = parseInt(event.key);
-          htmx.trigger(input, 'blur');
+          const content = input.value;
+          // Send content along with heading request (avoids blur which auto-deletes empty items)
           htmx.ajax('POST', `/outlines/item/${itemId}/set-heading/${level}/`, {
             target: `#outline-item-${itemId}`,
-            swap: 'outerHTML'
+            swap: 'outerHTML',
+            values: { content: content }
           });
         }
         break;
