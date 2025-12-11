@@ -5,7 +5,13 @@
     <div class="ai-message-header">
       {% if message.role == "user" %}
         <i class="bi bi-person-circle"></i>
-        <span>You</span>
+        <span>
+          {% if message.user %}
+            {{ message.user.get_full_name|default:message.user.username }}
+          {% else %}
+            You
+          {% endif %}
+        </span>
       {% else %}
         <i class="bi bi-robot"></i>
         <span>Assistant</span>

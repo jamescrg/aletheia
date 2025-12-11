@@ -17,7 +17,11 @@ class Conversation(models.Model):
         Matter, on_delete=models.CASCADE, related_name="ai_conversations"
     )
     user = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="ai_conversations"
+        CustomUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="ai_conversations",
     )
     title = models.CharField(max_length=255, blank=True, default="")
     llm = models.CharField(max_length=20, choices=LLM_CHOICES, default="claude")
@@ -36,6 +40,10 @@ class Conversation(models.Model):
     def __str__(self):
         return f"{self.matter.name} - {self.title or 'Untitled'}"
 
+    def get_participants(self):
+        """Return distinct users who have sent messages in this conversation."""
+        return CustomUser.objects.filter(ai_messages__conversation=self).distinct()
+
 
 class Message(models.Model):
     """Individual message in a conversation."""
@@ -51,6 +59,15 @@ class Message(models.Model):
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    # Track which user sent this message (null for assistant messages)
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="ai_messages",
+    )
 
     # Track token usage for monitoring
     input_tokens = models.IntegerField(null=True, blank=True)

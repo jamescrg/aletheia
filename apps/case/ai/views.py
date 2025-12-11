@@ -16,6 +16,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.case.documents.get_document_data import get_selected_matter
 from apps.case.models import Fact, Highlight
+from apps.matters.models import Matter
 from apps.outlines.models import Outline
 
 from .context import assemble_matter_context
@@ -23,6 +24,11 @@ from .models import ChatAttachment, Conversation, Message
 from .tasks import process_ai_request, process_chat_attachment_ocr
 
 logger = logging.getLogger(__name__)
+
+
+def get_accessible_matters():
+    """Get all matters accessible to logged-in users (currently all open matters)."""
+    return Matter.objects.filter(status="Open")
 
 
 @login_required
@@ -43,7 +49,7 @@ def ai_index(request):
             },
         )
 
-    conversations = Conversation.objects.filter(matter=matter, user=request.user)
+    conversations = Conversation.objects.filter(matter=matter)
 
     context = {
         "app": "documents",
@@ -64,7 +70,7 @@ def ai_list(request):
     if not matter:
         return render(request, "case/ai/list.html", {"conversations": []})
 
-    conversations = Conversation.objects.filter(matter=matter, user=request.user)
+    conversations = Conversation.objects.filter(matter=matter)
 
     return render(
         request,
@@ -85,7 +91,7 @@ def conversation_view(request, conv_id):
         return redirect("case:ai-index")
 
     conversation = get_object_or_404(
-        Conversation, pk=conv_id, matter=matter, user=request.user
+        Conversation, pk=conv_id, matter__in=get_accessible_matters()
     )
 
     messages = conversation.messages.all()
@@ -115,7 +121,6 @@ def new_conversation_view(request):
     # Create a dummy conversation object for template (not saved)
     conversation = Conversation(
         matter=matter,
-        user=request.user,
         title="New Conversation",
         llm=llm,
     )
@@ -142,12 +147,10 @@ def message_list(request):
 
     if conversation_id:
         conversation = get_object_or_404(
-            Conversation, pk=conversation_id, matter=matter, user=request.user
+            Conversation, pk=conversation_id, matter__in=get_accessible_matters()
         )
     else:
-        conversation = Conversation.objects.filter(
-            matter=matter, user=request.user
-        ).first()
+        conversation = Conversation.objects.filter(matter=matter).first()
 
     messages = conversation.messages.all() if conversation else []
 
@@ -188,16 +191,14 @@ def send_message(request):
     is_new = False
     if conversation_id:
         conversation = get_object_or_404(
-            Conversation, pk=conversation_id, matter=matter, user=request.user
+            Conversation, pk=conversation_id, matter__in=get_accessible_matters()
         )
     else:
         # Create conversation on first message
         title = user_message[:50]
         if len(user_message) > 50:
             title += "..."
-        conversation = Conversation.objects.create(
-            matter=matter, user=request.user, title=title, llm=llm
-        )
+        conversation = Conversation.objects.create(matter=matter, title=title, llm=llm)
         is_new = True
 
     # Update title if this is first message and title is default
@@ -207,14 +208,23 @@ def send_message(request):
             conversation.title += "..."
         conversation.save()
 
-    # Save user message immediately
-    Message.objects.create(conversation=conversation, role="user", content=user_message)
+    # Save user message immediately with user attribution
+    Message.objects.create(
+        conversation=conversation, role="user", content=user_message, user=request.user
+    )
 
-    # Assemble context and get chat history for AI
+    # Assemble context and get chat history for AI (include user for identity)
     context_text = assemble_matter_context(
         matter, user=request.user, conversation=conversation
     )
-    chat_history = list(conversation.messages.values("role", "content"))
+
+    # Build chat history with user names for multi-participant context
+    chat_history = []
+    for msg in conversation.messages.select_related("user"):
+        entry = {"role": msg.role, "content": msg.content}
+        if msg.role == "user" and msg.user:
+            entry["user_name"] = msg.user.get_full_name() or msg.user.username
+        chat_history.append(entry)
 
     # Initialize status in cache
     cache_key = f"ai_status_{conversation.id}"
@@ -261,7 +271,7 @@ def ai_status(request, conv_id):
         return HttpResponse(status=400)
 
     conversation = get_object_or_404(
-        Conversation, pk=conv_id, matter=matter, user=request.user
+        Conversation, pk=conv_id, matter__in=get_accessible_matters()
     )
 
     cache_key = f"ai_status_{conv_id}"
@@ -338,7 +348,7 @@ def conversation_list(request):
     if not matter:
         return render(request, "case/ai/conversation-list.html", {"conversations": []})
 
-    conversations = Conversation.objects.filter(matter=matter, user=request.user)
+    conversations = Conversation.objects.filter(matter=matter)
 
     return render(
         request,
@@ -359,7 +369,7 @@ def select_conversation(request, conv_id):
         return redirect("case:ai-index")
 
     conversation = get_object_or_404(
-        Conversation, pk=conv_id, matter=matter, user=request.user
+        Conversation, pk=conv_id, matter__in=get_accessible_matters()
     )
 
     messages = conversation.messages.all()
@@ -384,7 +394,7 @@ def delete_conversation(request, conv_id):
         return redirect("case:ai-index")
 
     conversation = get_object_or_404(
-        Conversation, pk=conv_id, matter=matter, user=request.user
+        Conversation, pk=conv_id, matter__in=get_accessible_matters()
     )
 
     conversation.delete()
@@ -404,7 +414,7 @@ def rename_conversation(request, conv_id):
         return HttpResponse(status=400)
 
     conversation = get_object_or_404(
-        Conversation, pk=conv_id, matter=matter, user=request.user
+        Conversation, pk=conv_id, matter__in=get_accessible_matters()
     )
 
     if request.method == "POST":
@@ -446,7 +456,7 @@ def rename_form(request, conv_id):
         return HttpResponse(status=400)
 
     conversation = get_object_or_404(
-        Conversation, pk=conv_id, matter=matter, user=request.user
+        Conversation, pk=conv_id, matter__in=get_accessible_matters()
     )
 
     return render(
@@ -600,7 +610,7 @@ def chat_upload(request, conv_id):
         return HttpResponse(status=405)
 
     conversation = get_object_or_404(
-        Conversation, pk=conv_id, matter=matter, user=request.user
+        Conversation, pk=conv_id, matter__in=get_accessible_matters()
     )
 
     uploaded_file = request.FILES.get("file")
@@ -655,7 +665,7 @@ def chat_attachment_status(request, conv_id):
         return HttpResponse(status=400)
 
     conversation = get_object_or_404(
-        Conversation, pk=conv_id, matter=matter, user=request.user
+        Conversation, pk=conv_id, matter__in=get_accessible_matters()
     )
 
     return render(
@@ -679,8 +689,7 @@ def delete_attachment(request, attachment_id):
     attachment = get_object_or_404(
         ChatAttachment,
         pk=attachment_id,
-        conversation__matter=matter,
-        conversation__user=request.user,
+        conversation__matter__in=get_accessible_matters(),
     )
 
     conversation = attachment.conversation

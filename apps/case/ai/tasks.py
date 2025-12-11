@@ -30,11 +30,19 @@ def process_ai_request(
     Args:
         conversation_id: ID of the conversation being processed
         context_text: The assembled matter context
-        chat_history: List of message dicts with role and content
+        chat_history: List of message dicts with role, content, and optionally user_name
         llm: The LLM to use (claude, gemini-flash, gemini-pro)
     """
     cache_key = f"ai_status_{conversation_id}"
     started_at = time.time()
+
+    # Check if there are multiple participants and format messages accordingly
+    user_names = {msg.get("user_name") for msg in chat_history if msg.get("user_name")}
+    if len(user_names) > 1:
+        # Multiple participants - prepend names to user messages
+        for msg in chat_history:
+            if msg["role"] == "user" and msg.get("user_name"):
+                msg["content"] = f"[{msg['user_name']}]: {msg['content']}"
 
     def update_status(status: str, message: str):
         """Update the cache with current status."""

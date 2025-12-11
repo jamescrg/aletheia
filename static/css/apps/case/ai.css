@@ -176,6 +176,33 @@
   text-align: left;
 }
 
+.ai-conversations-table th.participants,
+.ai-conversations-table td.participants {
+  width: 8rem;
+  text-align: left;
+}
+
+/* Participant Badges */
+.participant-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--stone-200);
+  color: var(--stone-700);
+  border-radius: 50%;
+  margin-right: 0.25rem;
+  text-transform: uppercase;
+}
+
+.participant-more {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
 /* LLM Badges */
 .ai-llm-badge {
   display: inline-block;
