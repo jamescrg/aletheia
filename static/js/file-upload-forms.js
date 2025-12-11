@@ -114,6 +114,20 @@ const initializeDocumentDropzone = () => {
             // Remove the oldest file (keep the newest)
             this.removeFile(this.files[0]);
           }
+
+          // Parse ISO date from filename, or default to today
+          if (!file.isExistingFile) {
+            const dateField = document.querySelector("#id_date");
+            if (dateField && !dateField.value) {
+              const isoDateMatch = file.name.match(/^(\d{4}-\d{2}-\d{2})/);
+              if (isoDateMatch) {
+                dateField.value = isoDateMatch[1];
+              } else {
+                // Default to today's date
+                dateField.value = new Date().toISOString().split("T")[0];
+              }
+            }
+          }
         });
 
         form.addEventListener("submit", (e) => {

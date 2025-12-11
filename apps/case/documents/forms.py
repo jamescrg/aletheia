@@ -7,10 +7,10 @@ from config.settings import CustomFormRendererCompact
 
 
 class ProceedingChoiceField(forms.ModelChoiceField):
-    """Custom field to display proceedings as 'Forum - Case Number'."""
+    """Custom field to display proceedings with nickname if available."""
 
     def label_from_instance(self, obj):
-        return f"{obj.forum} - {obj.case_number}"
+        return f"{obj.display_name} - {obj.case_number}"
 
 
 class FilesForm(forms.ModelForm):
@@ -33,15 +33,20 @@ class FilesForm(forms.ModelForm):
             "proceeding",
             "date",
             "name",
-            "description",
         ]
         widgets = {
             "date": forms.DateInput(attrs={"type": "date"}),
-            "description": forms.Textarea(attrs={"rows": 3, "class": "span2"}),
             "name": forms.TextInput(attrs={"class": "span2", "autofocus": True}),
         }
 
-    def __init__(self, *args, matter=None, **kwargs):
+    def __init__(
+        self,
+        *args,
+        matter=None,
+        initial_category=None,
+        initial_proceeding=None,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
 
         self.renderer = CustomFormRendererCompact()
@@ -58,6 +63,14 @@ class FilesForm(forms.ModelForm):
             self.fields["proceeding"].queryset = matter.proceeding_set.all().order_by(
                 "forum", "case_number"
             )
+            # Set initial proceeding for new documents: filter value > primary > none
+            if not self.instance.pk:
+                if initial_proceeding:
+                    self.fields["proceeding"].initial = initial_proceeding
+                else:
+                    primary = matter.proceeding_set.filter(primary=True).first()
+                    if primary:
+                        self.fields["proceeding"].initial = primary
         # If editing and has a matter, show proceedings for that matter
         elif self.instance.pk and self.instance.matter:
             self.fields[
@@ -68,13 +81,22 @@ class FilesForm(forms.ModelForm):
         else:
             self.fields["proceeding"].queryset = Proceeding.objects.none()
 
+        # Set initial category from filter (for new documents only)
+        if initial_category and not self.instance.pk:
+            self.fields["category"].initial = initial_category
+
     def clean(self):
         cleaned_data = super().clean()
         matter = cleaned_data.get("matter")
         proceeding = cleaned_data.get("proceeding")
+        category = cleaned_data.get("category")
 
         # Clear proceeding if matter changed and proceeding doesn't belong to new matter
         if proceeding and matter and proceeding.matter_id != matter.id:
+            cleaned_data["proceeding"] = None
+
+        # Clear proceeding if category is not Record or Discovery
+        if proceeding and category not in ("Record", "Discovery"):
             cleaned_data["proceeding"] = None
 
         return cleaned_data

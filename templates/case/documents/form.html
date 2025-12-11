@@ -37,17 +37,15 @@
           <label for="{{ form.date.id_for_label }}">{{ form.date.label }}</label>
           <div>{{ form.date }}{{ form.date.errors }}</div>
         </div>
-        <div class="form-group">
+        <div class="form-group"
+             id="proceeding-group"
+             {% if form.category.value != 'Record' and form.category.value != 'Discovery' %}hidden{% endif %}>
           <label for="{{ form.proceeding.id_for_label }}">{{ form.proceeding.label }}</label>
           <div>{{ form.proceeding }}{{ form.proceeding.errors }}</div>
         </div>
         <div class="form-group">
           <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
           <div>{{ form.name }}{{ form.name.errors }}</div>
-        </div>
-        <div class="form-group">
-          <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
-          <div>{{ form.description }}{{ form.description.errors }}</div>
         </div>
         <div class="span2">
           <label>File</label>
@@ -82,3 +80,21 @@
     </div>
   </div>
 </div>
+<script>
+  (function() {
+    const categorySelect = document.getElementById('id_category');
+    const proceedingGroup = document.getElementById('proceeding-group');
+    const proceedingSelect = document.getElementById('id_proceeding');
+
+    function toggleProceeding() {
+      if (categorySelect.value === 'Record' || categorySelect.value === 'Discovery') {
+        proceedingGroup.hidden = false;
+      } else {
+        proceedingGroup.hidden = true;
+        proceedingSelect.value = '';
+      }
+    }
+
+    categorySelect.addEventListener('change', toggleProceeding);
+  })();
+</script>

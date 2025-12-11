@@ -57,6 +57,16 @@ urlpatterns = [
         name="documents-filter-category",
     ),
     path(
+        "documents/filter/proceeding/",
+        documents.documents_filter_proceeding,
+        name="documents-filter-proceeding-clear",
+    ),
+    path(
+        "documents/filter/proceeding/<int:proceeding_id>/",
+        documents.documents_filter_proceeding,
+        name="documents-filter-proceeding",
+    ),
+    path(
         "documents/filter/keyword/",
         documents.documents_filter_keyword,
         name="documents-filter-keyword",

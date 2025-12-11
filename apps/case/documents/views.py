@@ -94,6 +94,21 @@ def documents_filter_category(request, category=None):
         filter_data.pop("category", None)
 
     request.session["documents_filter"] = filter_data
+    request.session.modified = True
+
+    return redirect("case:documents-list")
+
+
+@login_required
+def documents_filter_proceeding(request, proceeding_id=None):
+    filter_data = request.session.get("documents_filter", {})
+    if proceeding_id:
+        filter_data["proceeding"] = proceeding_id
+    else:
+        filter_data.pop("proceeding", None)
+
+    request.session["documents_filter"] = filter_data
+    request.session.modified = True
 
     return redirect("case:documents-list")
 
@@ -270,7 +285,17 @@ def documents_add(request, matter_id=None):
         )
 
     else:
-        form = FilesForm(matter=matter, use_required_attribute=False)
+        # Get selected category and proceeding from filter to pre-populate form
+        filter_data = request.session.get("documents_filter", {})
+        selected_category = filter_data.get("category")
+        selected_proceeding = filter_data.get("proceeding")
+
+        form = FilesForm(
+            matter=matter,
+            initial_category=selected_category,
+            initial_proceeding=selected_proceeding,
+            use_required_attribute=False,
+        )
 
         return render(
             request,

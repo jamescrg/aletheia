@@ -100,6 +100,16 @@ def get_document_data(request):
         int(importance_value) if importance_value not in (None, "", 0) else None
     )
 
+    # Get selected proceeding
+    selected_proceeding_id = filter_data.get("proceeding")
+    if isinstance(selected_proceeding_id, list):
+        selected_proceeding_id = (
+            selected_proceeding_id[0] if selected_proceeding_id else None
+        )
+    selected_proceeding = None
+    if selected_proceeding_id:
+        selected_proceeding = proceedings.filter(id=selected_proceeding_id).first()
+
     context = {
         "matter": matter,
         "matters": matters,
@@ -112,6 +122,7 @@ def get_document_data(request):
         "selected_keyword": selected_keyword,
         "selected_documents": selected_documents,
         "proceedings": proceedings,
+        "selected_proceeding": selected_proceeding,
         "current_order": current_order,
         "importances": list(range(1, 11)),
         "importance_value": importance_value,
