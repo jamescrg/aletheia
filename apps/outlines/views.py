@@ -9,11 +9,17 @@ from django.views.decorators.http import require_POST
 
 from apps.case.documents.get_document_data import get_selected_matter
 from apps.case.models import Document, Highlight
+from apps.matters.models import Matter
 
 from .filters import OutlinesFilter
 from .forms import OutlineForm
 from .markdown_parser import export_outline_to_markdown, import_markdown_to_outline
 from .models import Outline, OutlineItem
+
+
+def get_accessible_matters():
+    """Get all matters accessible to logged-in users (currently all open matters)."""
+    return Matter.objects.filter(status="Open")
 
 
 def get_outlines_data(request, matter):
@@ -230,7 +236,9 @@ def outline_add(request):
 @login_required
 def outline_edit(request, outline_id):
     """Edit outline metadata."""
-    outline = get_object_or_404(Outline, id=outline_id, user=request.user)
+    outline = get_object_or_404(
+        Outline, id=outline_id, matter__in=get_accessible_matters()
+    )
 
     if request.method == "POST":
         form = OutlineForm(request.POST, instance=outline)
@@ -246,7 +254,9 @@ def outline_edit(request, outline_id):
 @login_required
 def outline_delete(request, outline_id):
     """Delete an outline."""
-    outline = get_object_or_404(Outline, id=outline_id, user=request.user)
+    outline = get_object_or_404(
+        Outline, id=outline_id, matter__in=get_accessible_matters()
+    )
     outline.delete()
     return HttpResponse(status=204, headers={"HX-Trigger": "outlinesChanged"})
 
@@ -254,7 +264,9 @@ def outline_delete(request, outline_id):
 @login_required
 def outline_title(request, outline_id):
     """Update outline title inline."""
-    outline = get_object_or_404(Outline, id=outline_id, user=request.user)
+    outline = get_object_or_404(
+        Outline, id=outline_id, matter__in=get_accessible_matters()
+    )
     if request.method == "POST":
         title = request.POST.get("title", "").strip()
         if title:
@@ -268,7 +280,9 @@ def outline_title(request, outline_id):
 @login_required
 def outline_importance(request, outline_id, value):
     """Update outline importance."""
-    outline = get_object_or_404(Outline, id=outline_id, user=request.user)
+    outline = get_object_or_404(
+        Outline, id=outline_id, matter__in=get_accessible_matters()
+    )
     outline.importance = value
     outline.save()
     return HttpResponse(status=204, headers={"HX-Trigger": "outlinesChanged"})
@@ -277,7 +291,9 @@ def outline_importance(request, outline_id, value):
 @login_required
 def outline_category(request, outline_id, value):
     """Update outline category."""
-    outline = get_object_or_404(Outline, id=outline_id, user=request.user)
+    outline = get_object_or_404(
+        Outline, id=outline_id, matter__in=get_accessible_matters()
+    )
     outline.category = value
     outline.save()
     return HttpResponse(status=204, headers={"HX-Trigger": "outlinesChanged"})
@@ -291,7 +307,9 @@ def outline_category(request, outline_id, value):
 @login_required
 def outline_standalone(request, outline_id):
     """View a single outline in standalone mode (no nav)."""
-    outline = get_object_or_404(Outline, id=outline_id, user=request.user)
+    outline = get_object_or_404(
+        Outline, id=outline_id, matter__in=get_accessible_matters()
+    )
 
     # Update viewed_at timestamp
     outline.viewed_at = timezone.now()
@@ -309,7 +327,9 @@ def outline_standalone(request, outline_id):
 @login_required
 def outline_tree(request, outline_id):
     """HTMX partial for the outline tree."""
-    outline = get_object_or_404(Outline, id=outline_id, user=request.user)
+    outline = get_object_or_404(
+        Outline, id=outline_id, matter__in=get_accessible_matters()
+    )
     root_items = outline.get_root_items()
 
     return render(
@@ -333,14 +353,18 @@ def shortcuts_modal(request):
 @login_required
 def item_content(request, item_id):
     """Get item content display (non-edit mode)."""
-    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item = get_object_or_404(
+        OutlineItem, id=item_id, outline__matter__in=get_accessible_matters()
+    )
     return render(request, "outlines/item-content.html", {"item": item})
 
 
 @login_required
 def item_edit(request, item_id):
     """Edit item content inline."""
-    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item = get_object_or_404(
+        OutlineItem, id=item_id, outline__matter__in=get_accessible_matters()
+    )
 
     if request.method == "POST":
         content = request.POST.get("content", "").strip()
@@ -355,7 +379,9 @@ def item_edit(request, item_id):
 @login_required
 def item_create(request, outline_id):
     """Create a new item."""
-    outline = get_object_or_404(Outline, id=outline_id, user=request.user)
+    outline = get_object_or_404(
+        Outline, id=outline_id, matter__in=get_accessible_matters()
+    )
 
     parent_id = request.POST.get("parent_id")
     after_id = request.POST.get("after_id")
@@ -399,7 +425,9 @@ def item_create(request, outline_id):
 @login_required
 def item_delete(request, item_id):
     """Delete an item and its children."""
-    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item = get_object_or_404(
+        OutlineItem, id=item_id, outline__matter__in=get_accessible_matters()
+    )
 
     # Get previous item for focus
     prev_sibling = item.get_previous_sibling()
@@ -419,7 +447,9 @@ def item_delete(request, item_id):
 @login_required
 def item_indent(request, item_id):
     """Indent item (make child of previous sibling)."""
-    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item = get_object_or_404(
+        OutlineItem, id=item_id, outline__matter__in=get_accessible_matters()
+    )
     prev_sibling = item.get_previous_sibling()
 
     if prev_sibling:
@@ -440,7 +470,9 @@ def item_indent(request, item_id):
 @login_required
 def item_outdent(request, item_id):
     """Outdent item (move to parent's level)."""
-    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item = get_object_or_404(
+        OutlineItem, id=item_id, outline__matter__in=get_accessible_matters()
+    )
 
     if item.parent:
         grandparent = item.parent.parent
@@ -462,7 +494,9 @@ def item_outdent(request, item_id):
 @login_required
 def item_toggle_collapse(request, item_id):
     """Toggle collapsed state."""
-    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item = get_object_or_404(
+        OutlineItem, id=item_id, outline__matter__in=get_accessible_matters()
+    )
     item.collapsed = not item.collapsed
     item.save()
 
@@ -473,7 +507,9 @@ def item_toggle_collapse(request, item_id):
 @require_POST
 def expand_all(request, outline_id):
     """Expand all items in the outline."""
-    outline = get_object_or_404(Outline, id=outline_id, user=request.user)
+    outline = get_object_or_404(
+        Outline, id=outline_id, matter__in=get_accessible_matters()
+    )
     outline.items.filter(collapsed=True).update(collapsed=False)
     return HttpResponse(status=204, headers={"HX-Trigger": "outlineChanged"})
 
@@ -482,7 +518,9 @@ def expand_all(request, outline_id):
 @require_POST
 def collapse_all(request, outline_id):
     """Collapse all items that have children."""
-    outline = get_object_or_404(Outline, id=outline_id, user=request.user)
+    outline = get_object_or_404(
+        Outline, id=outline_id, matter__in=get_accessible_matters()
+    )
     # Only collapse items that have children
     items_with_children = outline.items.filter(children__isnull=False).distinct()
     items_with_children.update(collapsed=True)
@@ -492,7 +530,9 @@ def collapse_all(request, outline_id):
 @login_required
 def item_toggle_heading(request, item_id):
     """Toggle heading state (boolean)."""
-    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item = get_object_or_404(
+        OutlineItem, id=item_id, outline__matter__in=get_accessible_matters()
+    )
 
     # If content is provided, save it (prevents auto-delete of empty items)
     if "content" in request.POST:
@@ -507,7 +547,9 @@ def item_toggle_heading(request, item_id):
 @login_required
 def item_toggle_highlight(request, item_id):
     """Toggle highlight state."""
-    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item = get_object_or_404(
+        OutlineItem, id=item_id, outline__matter__in=get_accessible_matters()
+    )
     item.highlight = not item.highlight
     item.save()
 
@@ -517,7 +559,9 @@ def item_toggle_highlight(request, item_id):
 @login_required
 def item_toggle_quote(request, item_id):
     """Toggle quote state."""
-    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item = get_object_or_404(
+        OutlineItem, id=item_id, outline__matter__in=get_accessible_matters()
+    )
     item.quote = not item.quote
     item.save()
 
@@ -527,7 +571,9 @@ def item_toggle_quote(request, item_id):
 @login_required
 def item_replace(request, item_id):
     """Replace text in a single item."""
-    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item = get_object_or_404(
+        OutlineItem, id=item_id, outline__matter__in=get_accessible_matters()
+    )
 
     search = request.POST.get("search", "")
     replace = request.POST.get("replace", "")
@@ -546,7 +592,9 @@ def item_replace(request, item_id):
 @login_required
 def search_replace(request, outline_id):
     """Replace all occurrences in an outline."""
-    outline = get_object_or_404(Outline, id=outline_id, user=request.user)
+    outline = get_object_or_404(
+        Outline, id=outline_id, matter__in=get_accessible_matters()
+    )
 
     search = request.POST.get("search", "")
     replace = request.POST.get("replace", "")
@@ -565,7 +613,9 @@ def search_replace(request, outline_id):
 @login_required
 def item_move_up(request, item_id):
     """Move item up among its siblings, or to parent's previous sibling if first child."""
-    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item = get_object_or_404(
+        OutlineItem, id=item_id, outline__matter__in=get_accessible_matters()
+    )
     prev_sibling = item.get_previous_sibling()
 
     if prev_sibling:
@@ -591,7 +641,9 @@ def item_move_up(request, item_id):
 @login_required
 def item_move_down(request, item_id):
     """Move item down among its siblings, or to parent's next sibling if last child."""
-    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item = get_object_or_404(
+        OutlineItem, id=item_id, outline__matter__in=get_accessible_matters()
+    )
     next_sibling = item.get_next_sibling()
 
     if next_sibling:
@@ -616,7 +668,9 @@ def item_move_down(request, item_id):
 @login_required
 def item_move(request, item_id):
     """Move item to new position (for drag-drop)."""
-    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item = get_object_or_404(
+        OutlineItem, id=item_id, outline__matter__in=get_accessible_matters()
+    )
 
     new_parent_id = request.POST.get("parent_id")
     new_order = int(request.POST.get("order", 0))
@@ -671,7 +725,9 @@ def get_visual_order(item):
 @require_POST
 def batch_indent(request, outline_id):
     """Indent multiple items - make them children of the item above the first selected."""
-    outline = get_object_or_404(Outline, id=outline_id, user=request.user)
+    outline = get_object_or_404(
+        Outline, id=outline_id, matter__in=get_accessible_matters()
+    )
 
     try:
         data = json.loads(request.body)
@@ -725,7 +781,9 @@ def batch_indent(request, outline_id):
 @require_POST
 def batch_outdent(request, outline_id):
     """Outdent multiple items - move them to their parent's level."""
-    outline = get_object_or_404(Outline, id=outline_id, user=request.user)
+    outline = get_object_or_404(
+        Outline, id=outline_id, matter__in=get_accessible_matters()
+    )
 
     try:
         data = json.loads(request.body)
@@ -785,7 +843,9 @@ def batch_outdent(request, outline_id):
 @login_required
 def import_modal(request, outline_id):
     """Show the import from markdown modal."""
-    outline = get_object_or_404(Outline, id=outline_id, user=request.user)
+    outline = get_object_or_404(
+        Outline, id=outline_id, matter__in=get_accessible_matters()
+    )
     return render(request, "outlines/import-modal.html", {"outline": outline})
 
 
@@ -793,7 +853,9 @@ def import_modal(request, outline_id):
 @require_POST
 def import_markdown(request, outline_id):
     """Import markdown file into outline items."""
-    outline = get_object_or_404(Outline, id=outline_id, user=request.user)
+    outline = get_object_or_404(
+        Outline, id=outline_id, matter__in=get_accessible_matters()
+    )
 
     markdown_file = request.FILES.get("markdown_file")
     if not markdown_file:
@@ -815,7 +877,9 @@ def import_markdown(request, outline_id):
 @login_required
 def export_markdown(request, outline_id):
     """Export outline as markdown file download."""
-    outline = get_object_or_404(Outline, id=outline_id, user=request.user)
+    outline = get_object_or_404(
+        Outline, id=outline_id, matter__in=get_accessible_matters()
+    )
 
     markdown_content = export_outline_to_markdown(outline)
 
@@ -841,7 +905,9 @@ def export_markdown(request, outline_id):
 @require_POST
 def restore_items(request, outline_id):
     """Restore deleted items for undo functionality."""
-    outline = get_object_or_404(Outline, id=outline_id, user=request.user)
+    outline = get_object_or_404(
+        Outline, id=outline_id, matter__in=get_accessible_matters()
+    )
 
     try:
         data = json.loads(request.body)
@@ -887,7 +953,9 @@ def restore_items(request, outline_id):
 @require_POST
 def item_restore_position(request, item_id):
     """Restore an item to a previous position for undo functionality."""
-    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item = get_object_or_404(
+        OutlineItem, id=item_id, outline__matter__in=get_accessible_matters()
+    )
 
     try:
         data = json.loads(request.body)
@@ -924,14 +992,18 @@ def item_restore_position(request, item_id):
 @login_required
 def item_sources_modal(request, item_id):
     """Render inline picker for managing item sources (documents and highlights)."""
-    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item = get_object_or_404(
+        OutlineItem, id=item_id, outline__matter__in=get_accessible_matters()
+    )
     return render(request, "outlines/sources-inline.html", {"item": item})
 
 
 @login_required
 def item_sources_search(request, item_id):
     """Search documents and highlights for item sources."""
-    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item = get_object_or_404(
+        OutlineItem, id=item_id, outline__matter__in=get_accessible_matters()
+    )
     matter = item.outline.matter
     query = request.GET.get("q", "").strip()
 
@@ -962,7 +1034,9 @@ def item_sources_search(request, item_id):
 @require_POST
 def item_add_source(request, item_id):
     """Add a document or highlight as a source to an item."""
-    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item = get_object_or_404(
+        OutlineItem, id=item_id, outline__matter__in=get_accessible_matters()
+    )
 
     source_type = request.POST.get("type")
     source_id = request.POST.get("id")
@@ -981,7 +1055,9 @@ def item_add_source(request, item_id):
 @require_POST
 def item_remove_source(request, item_id):
     """Remove a document or highlight source from an item."""
-    item = get_object_or_404(OutlineItem, id=item_id, outline__user=request.user)
+    item = get_object_or_404(
+        OutlineItem, id=item_id, outline__matter__in=get_accessible_matters()
+    )
 
     source_type = request.POST.get("type")
     source_id = request.POST.get("id")
