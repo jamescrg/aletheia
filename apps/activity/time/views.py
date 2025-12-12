@@ -230,6 +230,12 @@ def time_add(request, id=None, request_app="activity"):
                 return HttpResponse(status=204, headers={"HX-Trigger": "timeChanged"})
             elif request_app == "matters":
                 return redirect("/activity")
+            elif request_app == "case":
+                return render(
+                    request,
+                    "activity/time/success.html",
+                    {"matter": entry.matter, "hours": entry.hours},
+                )
 
     # if no post data has been submitted, show the entry form
     else:
@@ -275,11 +281,14 @@ def time_add(request, id=None, request_app="activity"):
         "form": form,
         "matter_list": matter_list,
         "matter_id": id,
+        "request_app": request_app,
     }
 
     if request_app == "activity":
         return render(request, "activity/time/form.html", context)
     elif request_app == "matters":
+        return render(request, "matters/activity/time-form.html", context)
+    elif request_app == "case":
         return render(request, "matters/activity/time-form.html", context)
 
 
