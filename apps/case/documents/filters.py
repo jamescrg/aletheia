@@ -82,12 +82,18 @@ class FilesFilter(django_filters.FilterSet):
     def __init__(self, *args, matter=None, **kwargs):
         super().__init__(*args, **kwargs)
         if matter:
-            self.filters["proceeding"].queryset = Proceeding.objects.filter(
-                matter=matter
-            ).order_by("forum", "case_number")
-            self.filters["label"].queryset = Label.objects.filter(
+            proceeding_qs = Proceeding.objects.filter(matter=matter).order_by(
+                "forum", "case_number"
+            )
+            label_qs = Label.objects.filter(
                 Q(matter=matter) | Q(matter__isnull=True)
             ).order_by("name")
+
+            # Set on both filter and form field to ensure validation works
+            self.filters["proceeding"].queryset = proceeding_qs
+            self.filters["label"].queryset = label_qs
+            self.form.fields["proceeding"].queryset = proceeding_qs
+            self.form.fields["label"].queryset = label_qs
 
     def filter_keyword(self, queryset, name, value):
         """Filter documents by keyword in name or description."""
