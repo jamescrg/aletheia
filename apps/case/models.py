@@ -133,8 +133,8 @@ class Document(models.Model):
         exclude = ["file"] if not self.file else []
         self.full_clean(exclude=exclude)
 
-        # Set category to "Record" if proceeding is set
-        if self.proceeding and self.category != "Record":
+        # Set category to "Record" if proceeding is set (unless Discovery)
+        if self.proceeding and self.category not in ("Record", "Discovery"):
             self.category = "Record"
 
         super().save(*args, **kwargs)
