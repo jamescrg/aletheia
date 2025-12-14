@@ -1991,25 +1991,198 @@
           const cursorPosUp = getSelectionStart(input);
           input.blur();
           moveItemUp(itemId, false, true, cursorPosUp);
-        } else if (event.shiftKey && getSelectionStart(input) === 0) {
-          // Shift+Up at start - transition to multiselect
+        } else if (event.shiftKey) {
+          // Extend selection upward - use same Y-position logic as non-shift
           event.preventDefault();
-          input.blur();
-          selectItem(itemEl);
-          setTimeout(() => handleShiftArrow('up'), 50);
+          const selection = window.getSelection();
+          if (selection.rangeCount > 0) {
+            const inputRect = input.getBoundingClientRect();
+
+            // Get Y position of selection focus (movable end)
+            const range = selection.getRangeAt(0);
+            const node = selection.focusNode;
+            const offset = selection.focusOffset;
+            let yBefore;
+
+            if (node && node.nodeType === Node.TEXT_NODE) {
+              let charBeforeY = null, charAfterY = null;
+
+              if (offset > 0) {
+                const testRange = document.createRange();
+                testRange.setStart(node, offset - 1);
+                testRange.setEnd(node, offset);
+                charBeforeY = testRange.getBoundingClientRect().top;
+              }
+              if (offset < node.textContent.length) {
+                const testRange = document.createRange();
+                testRange.setStart(node, offset);
+                testRange.setEnd(node, offset + 1);
+                charAfterY = testRange.getBoundingClientRect().top;
+              }
+
+              // For UP: prefer charAfter
+              if (charAfterY !== null) {
+                yBefore = charAfterY;
+              } else if (charBeforeY !== null) {
+                yBefore = charBeforeY;
+              } else {
+                yBefore = range.getBoundingClientRect().top;
+              }
+            } else {
+              yBefore = range.getBoundingClientRect().top;
+            }
+
+            // Extend selection up
+            selection.modify('extend', 'backward', 'line');
+
+            // Get Y position after extend
+            const nodeAfter = selection.focusNode;
+            const offsetAfter = selection.focusOffset;
+            let yAfter;
+
+            if (nodeAfter && nodeAfter.nodeType === Node.TEXT_NODE) {
+              let charAfterYAfter = null, charBeforeYAfter = null;
+
+              if (offsetAfter > 0) {
+                const testRange = document.createRange();
+                testRange.setStart(nodeAfter, offsetAfter - 1);
+                testRange.setEnd(nodeAfter, offsetAfter);
+                charBeforeYAfter = testRange.getBoundingClientRect().top;
+              }
+              if (offsetAfter < nodeAfter.textContent.length) {
+                const testRange = document.createRange();
+                testRange.setStart(nodeAfter, offsetAfter);
+                testRange.setEnd(nodeAfter, offsetAfter + 1);
+                charAfterYAfter = testRange.getBoundingClientRect().top;
+              }
+
+              // After extending UP, prefer charBefore
+              if (charBeforeYAfter !== null) {
+                yAfter = charBeforeYAfter;
+              } else if (charAfterYAfter !== null) {
+                yAfter = charAfterYAfter;
+              } else {
+                yAfter = selection.getRangeAt(0).getBoundingClientRect().top;
+              }
+            } else {
+              yAfter = selection.getRangeAt(0).getBoundingClientRect().top;
+            }
+
+            if (yAfter >= yBefore - 3) {
+              // Didn't extend up - on first line, transition to multiselect
+              input.blur();
+              selectItem(itemEl);
+              setTimeout(() => handleShiftArrow('up'), 50);
+            }
+          }
         } else if (getSelectionStart(input) === getSelectionEnd(input)) {
-          // No text selection - check if on first visual line
-          const { isFirstLine, cursorX } = getCursorLine(input);
-          if (isFirstLine) {
+          // No text selection - try to move up, check if it worked
+          event.preventDefault();
+          const selection = window.getSelection();
+          const posBefore = getSelectionStart(input);
+          const text = getInputValue(input);
+          const inputRect = input.getBoundingClientRect();
+
+          // Get cursor Y by measuring character at cursor position (no DOM changes)
+          // At wrap boundaries, use character X positions to determine affinity
+          const range = selection.getRangeAt(0);
+          const node = range.startContainer;
+          const offset = range.startOffset;
+          let yBefore, cursorX;
+
+          if (node.nodeType === Node.TEXT_NODE) {
+            let charBeforeY = null, charAfterY = null;
+            let charBeforeX = null, charAfterX = null;
+
+            if (offset > 0) {
+              const testRange = document.createRange();
+              testRange.setStart(node, offset - 1);
+              testRange.setEnd(node, offset);
+              const rect = testRange.getBoundingClientRect();
+              charBeforeY = rect.top;
+              charBeforeX = rect.right - inputRect.left;
+            }
+            if (offset < node.textContent.length) {
+              const testRange = document.createRange();
+              testRange.setStart(node, offset);
+              testRange.setEnd(node, offset + 1);
+              const rect = testRange.getBoundingClientRect();
+              charAfterY = rect.top;
+              charAfterX = rect.left - inputRect.left;
+            }
+
+            // For UP: prefer charAfter (where we're going from)
+            // At wrap boundary, this correctly identifies the lower line
+            if (charAfterY !== null) {
+              yBefore = charAfterY;
+              cursorX = charAfterX;
+            } else if (charBeforeY !== null) {
+              yBefore = charBeforeY;
+              cursorX = charBeforeX;
+            } else {
+              const rangeRect = range.getBoundingClientRect();
+              yBefore = rangeRect.top;
+              cursorX = rangeRect.left - inputRect.left;
+            }
+          } else {
+            // Fallback to range rect
+            const rangeRect = range.getBoundingClientRect();
+            yBefore = rangeRect.top;
+            cursorX = rangeRect.left - inputRect.left;
+          }
+
+          // Try to move up
+          selection.modify('move', 'backward', 'line');
+          const posAfter = getSelectionStart(input);
+
+          // Get Y position after move (use same char X-position affinity logic)
+          const rangeAfter = selection.getRangeAt(0);
+          const nodeAfter = rangeAfter.startContainer;
+          const offsetAfter = rangeAfter.startOffset;
+          let yAfter;
+
+          if (nodeAfter.nodeType === Node.TEXT_NODE) {
+            let charBeforeYAfter = null, charAfterYAfter = null;
+            let charAfterXAfter = null;
+
+            if (offsetAfter > 0) {
+              const testRange = document.createRange();
+              testRange.setStart(nodeAfter, offsetAfter - 1);
+              testRange.setEnd(nodeAfter, offsetAfter);
+              charBeforeYAfter = testRange.getBoundingClientRect().top;
+            }
+            if (offsetAfter < nodeAfter.textContent.length) {
+              const testRange = document.createRange();
+              testRange.setStart(nodeAfter, offsetAfter);
+              testRange.setEnd(nodeAfter, offsetAfter + 1);
+              const rect = testRange.getBoundingClientRect();
+              charAfterYAfter = rect.top;
+              charAfterXAfter = rect.left - inputRect.left;
+            }
+
+            // After moving UP, prefer charBefore for consistency
+            // (we landed at "end" of line above)
+            if (charBeforeYAfter !== null) {
+              yAfter = charBeforeYAfter;
+            } else if (charAfterYAfter !== null) {
+              yAfter = charAfterYAfter;
+            } else {
+              yAfter = rangeAfter.getBoundingClientRect().top;
+            }
+          } else {
+            yAfter = rangeAfter.getBoundingClientRect().top;
+          }
+
+          if (yAfter >= yBefore - 3) {
+            // Didn't move up - on first line, go to previous item
             const prevItem = getPreviousItem(itemEl);
             if (prevItem) {
-              event.preventDefault();
               input.blur();
               setTimeout(() => focusItem(prevItem, 'last', cursorX), 50);
             }
           }
+          // Otherwise, already moved up within text
         }
-        // Otherwise let browser handle arrow navigation in wrapped lines
         break;
 
       case 'ArrowDown':
@@ -2020,28 +2193,200 @@
           input.blur();
           moveItemDown(itemId, false, true, cursorPosDown);
         } else if (event.shiftKey) {
-          const textLen = getInputValue(input).length;
-          if (getSelectionEnd(input) === textLen) {
-            // Shift+Down at end - transition to multiselect
-            event.preventDefault();
-            input.blur();
-            selectItem(itemEl);
-            setTimeout(() => handleShiftArrow('down'), 50);
+          // Extend selection downward - use same Y-position logic as non-shift
+          event.preventDefault();
+          const selection = window.getSelection();
+          if (selection.rangeCount > 0) {
+            const inputRect = input.getBoundingClientRect();
+
+            // Get Y position of selection focus (end point)
+            const range = selection.getRangeAt(0);
+            // For extend, we care about the focus, not anchor
+            // focusNode/focusOffset give us the movable end of selection
+            const node = selection.focusNode;
+            const offset = selection.focusOffset;
+            let yBefore;
+
+            if (node && node.nodeType === Node.TEXT_NODE) {
+              let charBeforeY = null, charAfterY = null;
+
+              if (offset > 0) {
+                const testRange = document.createRange();
+                testRange.setStart(node, offset - 1);
+                testRange.setEnd(node, offset);
+                charBeforeY = testRange.getBoundingClientRect().top;
+              }
+              if (offset < node.textContent.length) {
+                const testRange = document.createRange();
+                testRange.setStart(node, offset);
+                testRange.setEnd(node, offset + 1);
+                charAfterY = testRange.getBoundingClientRect().top;
+              }
+
+              // For DOWN: prefer charBefore
+              if (charBeforeY !== null) {
+                yBefore = charBeforeY;
+              } else if (charAfterY !== null) {
+                yBefore = charAfterY;
+              } else {
+                yBefore = range.getBoundingClientRect().top;
+              }
+            } else {
+              yBefore = range.getBoundingClientRect().top;
+            }
+
+            // Extend selection down - first to end of line, then one character to next line
+            selection.modify('extend', 'forward', 'lineboundary');
+            selection.modify('extend', 'forward', 'character');
+
+            // Get Y position after extend
+            let nodeAfter = selection.focusNode;
+            let offsetAfter = selection.focusOffset;
+            let yAfter;
+
+            if (nodeAfter && nodeAfter.nodeType === Node.TEXT_NODE) {
+              let charAfterYAfter = null, charBeforeYAfter = null;
+
+              if (offsetAfter > 0) {
+                const testRange = document.createRange();
+                testRange.setStart(nodeAfter, offsetAfter - 1);
+                testRange.setEnd(nodeAfter, offsetAfter);
+                charBeforeYAfter = testRange.getBoundingClientRect().top;
+              }
+              if (offsetAfter < nodeAfter.textContent.length) {
+                const testRange = document.createRange();
+                testRange.setStart(nodeAfter, offsetAfter);
+                testRange.setEnd(nodeAfter, offsetAfter + 1);
+                charAfterYAfter = testRange.getBoundingClientRect().top;
+              }
+
+              // After extending DOWN, prefer charAfter
+              if (charAfterYAfter !== null) {
+                yAfter = charAfterYAfter;
+              } else if (charBeforeYAfter !== null) {
+                yAfter = charBeforeYAfter;
+              } else {
+                yAfter = selection.getRangeAt(0).getBoundingClientRect().top;
+              }
+            } else {
+              yAfter = selection.getRangeAt(0).getBoundingClientRect().top;
+            }
+
+            if (yAfter <= yBefore + 3) {
+              // Didn't move down - on last line, transition to multiselect
+              input.blur();
+              selectItem(itemEl);
+              setTimeout(() => handleShiftArrow('down'), 50);
+            }
           }
-          // Otherwise let browser handle shift+arrow text selection
         } else if (getSelectionStart(input) === getSelectionEnd(input)) {
-          // No text selection - check if on last visual line
-          const { isLastLine, cursorX } = getCursorLine(input);
-          if (isLastLine) {
+          // No text selection - try to move down, check if it worked
+          event.preventDefault();
+          const selection = window.getSelection();
+          const posBefore = getSelectionStart(input);
+          const text = getInputValue(input);
+          const inputRect = input.getBoundingClientRect();
+
+          // Get cursor Y by measuring character at cursor position (no DOM changes)
+          // At wrap boundaries, use character X positions to determine affinity
+          const range = selection.getRangeAt(0);
+          const node = range.startContainer;
+          const offset = range.startOffset;
+          let yBefore, cursorX;
+
+          if (node.nodeType === Node.TEXT_NODE) {
+            let charBeforeY = null, charAfterY = null;
+            let charBeforeX = null, charAfterX = null;
+
+            if (offset > 0) {
+              const testRange = document.createRange();
+              testRange.setStart(node, offset - 1);
+              testRange.setEnd(node, offset);
+              const rect = testRange.getBoundingClientRect();
+              charBeforeY = rect.top;
+              charBeforeX = rect.right - inputRect.left;
+            }
+            if (offset < node.textContent.length) {
+              const testRange = document.createRange();
+              testRange.setStart(node, offset);
+              testRange.setEnd(node, offset + 1);
+              const rect = testRange.getBoundingClientRect();
+              charAfterY = rect.top;
+              charAfterX = rect.left - inputRect.left;
+            }
+
+            // For DOWN: prefer charBefore (end-of-line perspective)
+            // At wrap boundary, this correctly identifies the upper line
+            if (charBeforeY !== null) {
+              yBefore = charBeforeY;
+              cursorX = charBeforeX;
+            } else if (charAfterY !== null) {
+              yBefore = charAfterY;
+              cursorX = charAfterX;
+            } else {
+              const rangeRect = range.getBoundingClientRect();
+              yBefore = rangeRect.top;
+              cursorX = rangeRect.left - inputRect.left;
+            }
+          } else {
+            // Fallback to range rect
+            const rangeRect = range.getBoundingClientRect();
+            yBefore = rangeRect.top;
+            cursorX = rangeRect.left - inputRect.left;
+          }
+
+          // Try to move down
+          selection.modify('move', 'forward', 'line');
+          const posAfter = getSelectionStart(input);
+
+          // Get Y position after move (use same char X-position affinity logic)
+          const rangeAfter = selection.getRangeAt(0);
+          const nodeAfter = rangeAfter.startContainer;
+          const offsetAfter = rangeAfter.startOffset;
+          let yAfter;
+
+          if (nodeAfter.nodeType === Node.TEXT_NODE) {
+            let charBeforeYAfter = null, charAfterYAfter = null;
+            let charAfterXAfter = null;
+
+            if (offsetAfter > 0) {
+              const testRange = document.createRange();
+              testRange.setStart(nodeAfter, offsetAfter - 1);
+              testRange.setEnd(nodeAfter, offsetAfter);
+              charBeforeYAfter = testRange.getBoundingClientRect().top;
+            }
+            if (offsetAfter < nodeAfter.textContent.length) {
+              const testRange = document.createRange();
+              testRange.setStart(nodeAfter, offsetAfter);
+              testRange.setEnd(nodeAfter, offsetAfter + 1);
+              const rect = testRange.getBoundingClientRect();
+              charAfterYAfter = rect.top;
+              charAfterXAfter = rect.left - inputRect.left;
+            }
+
+            // After moving DOWN, prefer charAfter for consistency
+            // (we landed at "start" of new position)
+            if (charAfterYAfter !== null) {
+              yAfter = charAfterYAfter;
+            } else if (charBeforeYAfter !== null) {
+              yAfter = charBeforeYAfter;
+            } else {
+              yAfter = rangeAfter.getBoundingClientRect().top;
+            }
+          } else {
+            yAfter = rangeAfter.getBoundingClientRect().top;
+          }
+
+          if (yAfter <= yBefore + 3) {
+            // Didn't move down - on last line, go to next item
             const nextItem = getNextItem(itemEl);
             if (nextItem) {
-              event.preventDefault();
               input.blur();
               setTimeout(() => focusItem(nextItem, 'first', cursorX), 50);
             }
           }
+          // Otherwise, already moved down within text
         }
-        // Otherwise let browser handle arrow navigation in wrapped lines
         break;
 
       case 'Escape':
@@ -2060,10 +2405,14 @@
         break;
 
       case 'End':
-        // Go to end of editable text (not into sources)
+        // Go to end of current visual line (not end of entire text)
+        // Shift+End extends selection, End without shift just moves cursor
         event.preventDefault();
-        const textLen = getInputValue(input).length;
-        setInputSelectionRange(input, textLen, textLen);
+        window.getSelection().modify(
+          event.shiftKey ? 'extend' : 'move',
+          'forward',
+          'lineboundary'
+        );
         break;
 
       case 'h':
@@ -2185,93 +2534,36 @@
     }
   };
 
-  // Detect if cursor is on first/last visual line of input (textarea or contenteditable)
+  // Detect if cursor is on first/last visual line of input (contenteditable)
+  // Uses Selection.modify() which correctly handles cursor affinity at wrap boundaries
   function getCursorLine(input) {
-    const pos = getSelectionStart(input);
     const text = getInputValue(input);
-
-    // Create measurer
-    const measurer = document.createElement('div');
-    document.body.appendChild(measurer);
-
-    // Copy styles
-    const style = window.getComputedStyle(input);
-    // For inline elements, use parent container width for wrapping calculation
-    const wrapper = input.closest('.item-content-wrapper');
-    let width;
-    if (wrapper) {
-      const wrapperStyle = window.getComputedStyle(wrapper);
-      width = wrapper.getBoundingClientRect().width - parseFloat(wrapperStyle.paddingLeft) - parseFloat(wrapperStyle.paddingRight);
-    } else {
-      width = input.getBoundingClientRect().width;
-    }
-    measurer.style.cssText = `
-      position: absolute;
-      visibility: hidden;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      width: ${width}px;
-      font-size: ${style.fontSize};
-      font-family: ${style.fontFamily};
-      line-height: ${style.lineHeight};
-      padding: ${style.padding};
-      box-sizing: ${style.boxSizing};
-    `;
-
-    // Build content with markers at cursor position and end of text
-    const before = text.substring(0, pos);
-    const after = text.substring(pos);
-    measurer.textContent = '';
-
-    // To find the cursor's line, wrap the last character before cursor in a span
-    // This avoids issues with zero-width chars at line-wrap boundaries
-    let cursorMarker;
-    if (before.length > 0) {
-      const beforeMain = document.createTextNode(before.slice(0, -1));
-      cursorMarker = document.createElement('span');
-      cursorMarker.textContent = before.slice(-1);
-      measurer.appendChild(beforeMain);
-      measurer.appendChild(cursorMarker);
-    } else {
-      // Cursor at position 0 - use zero-width space
-      cursorMarker = document.createElement('span');
-      cursorMarker.textContent = '\u200B';
-      measurer.appendChild(cursorMarker);
+    const selection = window.getSelection();
+    if (!selection.rangeCount || !text) {
+      return { isFirstLine: true, isLastLine: true, cursorX: 0 };
     }
 
-    const afterNode = document.createTextNode(after);
-    const endMarker = document.createElement('span');
-    endMarker.textContent = '\u200B';
+    // Save current selection
+    const savedRange = selection.getRangeAt(0).cloneRange();
 
-    measurer.appendChild(afterNode);
-    measurer.appendChild(endMarker);
+    // Get cursor's current screen position for X coordinate
+    const cursorRect = savedRange.getBoundingClientRect();
+    const inputRect = input.getBoundingClientRect();
+    const cursorX = cursorRect.left - inputRect.left;
 
-    // lineHeight might be 'normal' or a multiplier - compute actual pixel value
-    let lineHeight = parseFloat(style.lineHeight);
-    if (isNaN(lineHeight) || lineHeight < 10) {
-      // If it's a multiplier or 'normal', calculate from font-size
-      const fontSize = parseFloat(style.fontSize);
-      lineHeight = fontSize * (parseFloat(style.lineHeight) || 1.4);
-    }
+    // Find line boundaries using Selection.modify (respects cursor affinity)
+    selection.modify('move', 'forward', 'lineboundary');
+    const lineEndPos = getSelectionStart(input);
 
-    const measurerRect = measurer.getBoundingClientRect();
-    const cursorRect = cursorMarker.getBoundingClientRect();
-    const endRect = endMarker.getBoundingClientRect();
+    selection.modify('move', 'backward', 'lineboundary');
+    const lineStartPos = getSelectionStart(input);
 
-    const markerTop = cursorRect.top - measurerRect.top;
-    const endMarkerTop = endRect.top - measurerRect.top;
+    // Restore original selection
+    selection.removeAllRanges();
+    selection.addRange(savedRange);
 
-    // First line: cursor is within first lineHeight from top
-    // Last line: cursor and end of text are on the same visual line
-    const isFirstLine = markerTop < lineHeight;
-    const isLastLine = Math.abs(endMarkerTop - markerTop) < lineHeight * 0.5;
-
-    // Get cursor X position relative to measurer (right edge of last char before cursor)
-    const cursorX = cursorRect.right - measurerRect.left;
-
-    // Clean up
-    measurer.remove();
+    const isFirstLine = lineStartPos === 0;
+    const isLastLine = lineEndPos >= text.length;
 
     return { isFirstLine, isLastLine, cursorX };
   }
