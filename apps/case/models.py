@@ -236,3 +236,37 @@ class Fact(models.Model):
 
     class Meta:
         db_table = "app_fact"
+
+
+class Note(models.Model):
+    """Rich markdown note for a matter with inline document/highlight references."""
+
+    user = models.ForeignKey(
+        "accounts.CustomUser",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="case_notes",
+    )
+    matter = models.ForeignKey(Matter, on_delete=models.CASCADE, related_name="notes")
+    title = models.CharField(max_length=255)
+    content = models.TextField(blank=True, default="")  # Markdown content
+
+    # Source references (tracked separately from inline [[doc:id]] syntax)
+    documents = models.ManyToManyField("Document", blank=True, related_name="notes")
+    highlights = models.ManyToManyField("Highlight", blank=True, related_name="notes")
+
+    importance = models.PositiveIntegerField(
+        default=5, validators=[MinValueValidator(1), MaxValueValidator(10)]
+    )
+    labels = models.ManyToManyField(Label, related_name="notes", blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = "app_note"
+        ordering = ["-updated_at"]
