@@ -623,6 +623,52 @@
     const selected = getSelectedItems();
     if (selected.length === 0) return;
 
+    // Check if this would delete all items
+    const allItems = document.querySelectorAll('.outline-item');
+    if (selected.length >= allItems.length) {
+      // Keep the first selected item but clear its content
+      const keepItem = selected[0];
+      const inputEl = keepItem.querySelector('.item-input');
+      const textEl = keepItem.querySelector('.item-text');
+      if (inputEl) setInputValue(inputEl, '');
+      if (textEl) textEl.textContent = '';
+      // Save empty content to server
+      fetch(`/outlines/item/${keepItem.dataset.itemId}/update/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRFToken': getCSRFToken()
+        },
+        body: 'content='
+      });
+      // Delete the rest
+      const toDelete = selected.slice(1);
+      if (toDelete.length > 0) {
+        const deletedItems = toDelete.map(item => serializeItem(item));
+        pushUndo({
+          type: 'delete_item',
+          deletedItems: deletedItems
+        });
+        const deletePromises = toDelete.map(item => {
+          return fetch(`/outlines/item/${item.dataset.itemId}/delete/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': getCSRFToken()
+            }
+          });
+        });
+        Promise.all(deletePromises).then(() => {
+          toDelete.forEach(item => item.remove());
+          clearSelection();
+          focusItem(keepItem, 'start');
+        });
+      } else {
+        clearSelection();
+        focusItem(keepItem, 'start');
+      }
+      return;
+    }
+
     // Confirm deletion for multiple items
     const count = selected.length;
     if (!confirm(`Delete ${count} item${count > 1 ? 's' : ''}?`)) {
@@ -1148,6 +1194,27 @@
     const itemEl = getItemElement(itemId);
     if (!itemEl) return;
 
+    // Check if this is the last item in the outline
+    const allItems = document.querySelectorAll('.outline-item');
+    if (allItems.length === 1) {
+      // Don't delete the last item - clear its content instead
+      const inputEl = itemEl.querySelector('.item-input');
+      const textEl = itemEl.querySelector('.item-text');
+      if (inputEl) setInputValue(inputEl, '');
+      if (textEl) textEl.textContent = '';
+      // Save empty content to server
+      fetch(`/outlines/item/${itemId}/update/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRFToken': getCSRFToken()
+        },
+        body: 'content='
+      });
+      focusItem(itemEl, 'start');
+      return;
+    }
+
     // Capture item for undo before deletion
     const deletedItem = serializeItem(itemEl);
     pushUndo({
@@ -1155,7 +1222,10 @@
       deletedItems: [deletedItem]
     });
 
+    // Prefer next item, fall back to previous
+    const nextItem = getNextItem(itemEl);
     const prevItem = getPreviousItem(itemEl);
+    const focusTarget = nextItem || prevItem;
 
     fetch(`/outlines/item/${itemId}/delete/`, {
       method: 'POST',
@@ -1166,8 +1236,8 @@
     .then(response => {
       if (response.ok) {
         itemEl.remove();
-        if (prevItem) {
-          setTimeout(() => focusItem(prevItem), 50);
+        if (focusTarget) {
+          setTimeout(() => focusItem(focusTarget), 50);
         }
       }
     });
