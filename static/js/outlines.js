@@ -160,7 +160,7 @@
   function serializeItem(itemEl) {
     if (!itemEl) return null;
     const itemId = itemEl.dataset.itemId;
-    const contentEl = itemEl.querySelector(':scope > .item-row .item-content');
+    const contentEl = itemEl.querySelector(':scope > .item-row .item-text');
     const inputEl = itemEl.querySelector(':scope > .item-row .item-input');
     const content = contentEl?.textContent || (inputEl ? getInputValue(inputEl) : '') || '';
     const children = Array.from(itemEl.querySelectorAll(':scope > .item-children > .outline-item'))
@@ -226,7 +226,7 @@
       if (response.ok) {
         const itemEl = getItemElement(op.itemId);
         if (itemEl) {
-          const contentEl = itemEl.querySelector('.item-content');
+          const contentEl = itemEl.querySelector('.item-text');
           if (contentEl) contentEl.textContent = op.oldContent;
           const inputEl = itemEl.querySelector('.item-input');
           if (inputEl) {
@@ -604,7 +604,7 @@
     if (!contentWrapper) return;
 
     const input = contentWrapper.querySelector('.item-input');
-    const viewContent = contentWrapper.querySelector('.item-content');
+    const viewContent = contentWrapper.querySelector('.item-text');
 
     // Sync edit input from view content before entering edit mode
     // This ensures they're always in sync (view content is the source of truth)
@@ -759,7 +759,7 @@
     const parentId = currentItem.dataset.parentId || '';
 
     // Capture original item's current content for undo
-    const originalContent = currentItem.querySelector('.item-content')?.textContent || '';
+    const originalContent = currentItem.querySelector('.item-text')?.textContent || '';
 
     // Get children from current item (will be moved to new item)
     const childrenContainer = currentItem.querySelector(':scope > .item-children');
@@ -938,7 +938,7 @@
     const curContent = curInput ? getInputValue(curInput) : '';
 
     // Get previous sibling's content from view (source of truth)
-    const prevContentEl = prevSibling.querySelector('.item-content');
+    const prevContentEl = prevSibling.querySelector('.item-text');
     const prevContent = prevContentEl?.textContent || '';
 
     // Capture state for undo before making changes
@@ -2350,7 +2350,7 @@
 
     // Update view mode content and exit edit mode
     if (contentWrapper) {
-      const viewContent = contentWrapper.querySelector('.item-content');
+      const viewContent = contentWrapper.querySelector('.item-text');
       if (viewContent) {
         viewContent.textContent = content;
       }
@@ -2471,7 +2471,7 @@
             const selection = window.getSelection();
             if (selection && selection.toString().length > 0) {
               // User selected text - enter edit mode but preserve selection
-              const viewContent = contentWrapper.querySelector('.item-content');
+              const viewContent = contentWrapper.querySelector('.item-text');
               if (viewContent && viewContent.contains(selection.anchorNode)) {
                 // Calculate selection offsets relative to text content
                 const range = selection.getRangeAt(0);
@@ -2790,7 +2790,7 @@
 
   function clearSearchHighlights() {
     // Remove all search highlights from item content
-    document.querySelectorAll('.item-content').forEach(el => {
+    document.querySelectorAll('.item-text').forEach(el => {
       // Restore original text (remove mark tags)
       el.innerHTML = el.textContent;
     });
@@ -2809,7 +2809,7 @@
     const escapedTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const regex = new RegExp(`(${escapedTerm})`, 'gi');
 
-    document.querySelectorAll('.item-content').forEach(el => {
+    document.querySelectorAll('.item-text').forEach(el => {
       const text = el.textContent;
       if (regex.test(text)) {
         const itemEl = el.closest('.outline-item');
@@ -2926,7 +2926,7 @@
         // Update the content element
         const itemEl = getItemElement(itemId);
         if (itemEl) {
-          const contentEl = itemEl.querySelector('.item-content');
+          const contentEl = itemEl.querySelector('.item-text');
           if (contentEl) {
             contentEl.textContent = data.content;
           }
