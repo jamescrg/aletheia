@@ -886,6 +886,16 @@ body:has(.outline-page.standalone) {
   background: var(--red-100);
 }
 
+.item-view mark.mark-purple,
+.item-input mark.mark-purple {
+  background: var(--purple-100);
+}
+
+.item-view mark.mark-orange,
+.item-input mark.mark-orange {
+  background: var(--orange-100);
+}
+
 .item-view mark.mark-citation,
 .item-input mark.mark-citation {
   background: var(--stone-150);

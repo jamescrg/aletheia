@@ -38,9 +38,11 @@ def inline_markdown(text):
     text = re.sub(r"\*(.+?)\*", r"<em>\1</em>", text)
     text = re.sub(r"(?<!\w)_(.+?)_(?!\w)", r"<em>\1</em>", text)
 
-    # Colored highlights: g==text==, r==text==, c==text== → <mark class="mark-{color}">
+    # Colored highlights: g==text==, r==text==, p==text==, o==text==, c==text==
     text = re.sub(r"g==(.+?)==", r'<mark class="mark-green">\1</mark>', text)
     text = re.sub(r"r==(.+?)==", r'<mark class="mark-red">\1</mark>', text)
+    text = re.sub(r"p==(.+?)==", r'<mark class="mark-purple">\1</mark>', text)
+    text = re.sub(r"o==(.+?)==", r'<mark class="mark-orange">\1</mark>', text)
     text = re.sub(r"c==(.+?)==", r'<mark class="mark-citation">\1</mark>', text)
     # Default highlight: ==text== → <mark> (yellow)
     text = re.sub(r"==(.+?)==", r"<mark>\1</mark>", text)

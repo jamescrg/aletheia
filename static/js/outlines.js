@@ -163,9 +163,11 @@
     // Italic: *text* or _text_
     html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
     html = html.replace(/(?<!\w)_(.+?)_(?!\w)/g, '<em>$1</em>');
-    // Colored highlights: g==text==, r==text==, c==text==
+    // Colored highlights: g==, r==, p==, o==, c==
     html = html.replace(/g==(.+?)==/g, '<mark class="mark-green">$1</mark>');
     html = html.replace(/r==(.+?)==/g, '<mark class="mark-red">$1</mark>');
+    html = html.replace(/p==(.+?)==/g, '<mark class="mark-purple">$1</mark>');
+    html = html.replace(/o==(.+?)==/g, '<mark class="mark-orange">$1</mark>');
     html = html.replace(/c==(.+?)==/g, '<mark class="mark-citation">$1</mark>');
     // Default highlight: ==text==
     html = html.replace(/==(.+?)==/g, '<mark>$1</mark>');
@@ -641,7 +643,9 @@
     // Get text content and sources from each item
     const paragraphs = items.map(item => {
       const textEl = item.querySelector('.item-text');
-      const text = textEl?.textContent?.trim() || '';
+      let text = textEl?.textContent?.trim() || '';
+      // Strip highlight markers from text
+      text = text.replace(/[grcpo]?==/g, '');
 
       // Get source citations
       const sources = Array.from(item.querySelectorAll('.source-citation > a[data-bs-toggle="dropdown"]'))
@@ -655,7 +659,9 @@
     }).filter(text => text.length > 0);
 
     // Join as paragraphs (double newline between each)
-    const text = paragraphs.join('\n\n');
+    let text = paragraphs.join('\n\n');
+    // Clean up citation formatting
+    text = text.replace(/\); \(/g, '; ');
 
     // Copy to clipboard with visual feedback
     const button = document.getElementById('copy-btn');
@@ -1954,17 +1960,23 @@
         break;
 
       case 'y':
-        // Alt+Y - wrap selected text with highlight markers ==
+      case 'g':
+      case 'r':
+      case 'p':
+      case 'o':
+        // Alt+Y/G/R/P/O - wrap selected text with highlight markers
         if (event.altKey && !event.ctrlKey && !event.metaKey) {
           const selection = window.getSelection();
           if (selection && selection.toString().length > 0) {
             event.preventDefault();
             let selectedText = selection.toString();
             // Remove any existing highlight markers to prevent nesting
-            selectedText = selectedText.replace(/[grc]?==/g, '');
+            selectedText = selectedText.replace(/[grcpo]?==/g, '');
+            // Determine prefix based on key (y = default/yellow, others use letter)
+            const prefix = event.key === 'y' ? '' : event.key;
             const range = selection.getRangeAt(0);
             range.deleteContents();
-            range.insertNode(document.createTextNode('==' + selectedText + '=='));
+            range.insertNode(document.createTextNode(prefix + '==' + selectedText + '=='));
             // Collapse selection to end
             selection.collapseToEnd();
           }
@@ -1978,8 +1990,8 @@
           if (selection && selection.toString().length > 0) {
             event.preventDefault();
             let selectedText = selection.toString();
-            // Remove all highlight markers (g==, r==, c==, ==)
-            selectedText = selectedText.replace(/[grc]?==/g, '');
+            // Remove all highlight markers
+            selectedText = selectedText.replace(/[grcpo]?==/g, '');
             const range = selection.getRangeAt(0);
             range.deleteContents();
             range.insertNode(document.createTextNode(selectedText));
