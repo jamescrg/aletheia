@@ -914,10 +914,16 @@
     const tempHtml = `
       <div class="outline-item" id="outline-item-${tempId}" data-item-id="${tempId}" data-parent-id="${parentId}">
         <div class="item-row">
+          <div class="item-menu dropdown">
+            <button class="item-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-three-dots-vertical"></i>
+            </button>
+            <ul class="dropdown-menu"></ul>
+          </div>
           <span class="item-bullet">•</span>
           <div class="item-content-wrapper">
-            <span class="item-content">${escapedContent}</span>
-            <div class="item-input" contenteditable="true" data-item-id="${tempId}" onkeydown="handleItemKeydown(event, this)">${escapedContent}</div>
+            <div class="item-view"><span class="item-text">${escapedContent}</span></div>
+            <div class="item-input" contenteditable="true" data-item-id="${tempId}">${escapedContent}</div>
           </div>
         </div>
       </div>`;
@@ -983,9 +989,16 @@
     let tempHtml = `
       <div class="outline-item" id="outline-item-${tempId}" data-item-id="${tempId}" data-parent-id="${parentId}">
         <div class="item-row">
+          <div class="item-menu dropdown">
+            <button class="item-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-three-dots-vertical"></i>
+            </button>
+            <ul class="dropdown-menu"></ul>
+          </div>
           <span class="item-bullet">•</span>
           <div class="item-content-wrapper">
-            <span class="item-content">${escapeHtml(content)}</span>
+            <div class="item-view"><span class="item-text">${escapeHtml(content)}</span></div>
+            <div class="item-input" contenteditable="true" data-item-id="${tempId}">${escapeHtml(content)}</div>
           </div>
         </div>
       </div>`;
@@ -1054,10 +1067,16 @@
     const tempHtml = `
       <div class="outline-item" id="outline-item-${tempId}" data-item-id="${tempId}" data-parent-id="${parentId}">
         <div class="item-row">
+          <div class="item-menu dropdown">
+            <button class="item-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-three-dots-vertical"></i>
+            </button>
+            <ul class="dropdown-menu"></ul>
+          </div>
           <span class="item-bullet">•</span>
           <div class="item-content-wrapper">
-            <span class="item-content"></span>
-            <div class="item-input" contenteditable="true" data-item-id="${tempId}" onkeydown="handleItemKeydown(event, this)"></div>
+            <div class="item-view"><span class="item-text"></span></div>
+            <div class="item-input" contenteditable="true" data-item-id="${tempId}"></div>
           </div>
         </div>
       </div>`;
@@ -1193,7 +1212,13 @@
       prevContentEl.textContent = joinedContent;
     }
 
-    // Enter edit mode on previous sibling (will sync from view content)
+    // Update previous sibling's input content (for edit mode)
+    const prevInput = prevSibling.querySelector('.item-input');
+    if (prevInput) {
+      setInputValue(prevInput, joinedContent);
+    }
+
+    // Enter edit mode on previous sibling
     focusItem(prevSibling, cursorPos);
 
     // Push undo before sending to server
