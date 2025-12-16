@@ -214,10 +214,14 @@ Highlight row layout
 Highlight content (td)
 ------------------------------------------------*/
 
+.highlights-list .dropdown-cell .dropdown {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
 .highlights-list .highlight-slug {
   font-weight: 500;
-  margin-left: 0.25rem;
-  margin-top: 0.25rem;
 }
 
 .highlights-list .highlight-slug span {

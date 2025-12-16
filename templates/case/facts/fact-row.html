@@ -4,104 +4,106 @@
     <span>{{ fact.date|date:'Y-m-d' }}
       {% if fact.time %}{{ fact.time|time:'g:i A' }}{% endif %}
     </span>
-    <div class="fact-actions dropdown">
-      <button class="btn-icon menu-icon"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false">
-        <i class="bi bi-three-dots-vertical"></i>
-      </button>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li>
-          <a class="dropdown-item"
-             href="#"
-             hx-get="{% url 'case:facts-edit' fact.id %}"
-             hx-target="#htmx-modal-container"
-             data-bs-toggle="modal"
-             data-bs-target="#htmx-modal-container"><i class="bi bi-pencil"></i> Edit Fact</a>
-        </li>
-        <li>
-          <a class="dropdown-item"
-             href="#"
-             hx-get="{% url 'case:fact-sources' fact.id %}"
-             hx-target="#htmx-modal-container"
-             data-bs-toggle="modal"
-             data-bs-target="#htmx-modal-container"><i class="bi bi-journal-plus"></i> Add Source</a>
-        </li>
-        <li>
-          <a class="dropdown-item"
-             href="#"
-             hx-get="{% url 'case:labels-apply-modal' 'fact' fact.id %}"
-             hx-target="#htmx-modal-container"
-             data-bs-toggle="modal"
-             data-bs-target="#htmx-modal-container"><i class="bi bi-tag"></i> Add Label</a>
-        </li>
-      </ul>
-    </div>
   </td>
   <td class="description{% if fact.color %} hl-{{ fact.color|lower }}{% endif %}">
-    {{ fact.description }}
-    {% if fact.highlights.all or fact.documents.all %}
-      <span class="fact-sources">
-        {% for highlight in fact.highlights.all %}
-          <span class="source-citation dropdown">
-            <a href="#" data-bs-toggle="dropdown">{{ highlight.citation }}</a>
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item"
-                   href="{% url 'case:highlight-link' highlight.id %}"
-                   target="_blank"><i class="bi bi-eye"></i> View Source</a>
-              </li>
-              <li>
-                <a class="dropdown-item source-copy-btn"
-                   href="#"
-                   data-copy="{{ highlight.citation }}"><i class="bi bi-clipboard"></i> Copy Citation</a>
-              </li>
-              <li>
-                <a class="dropdown-item urgent"
-                   href="#"
-                   hx-post="{% url 'case:fact-remove-source' fact.id %}"
-                   hx-vals='{"type": "highlight", "id": "{{ highlight.id }}"}'
-                   hx-target="#fact-{{ fact.id }}"
-                   hx-swap="outerHTML"><i class="bi bi-x-lg"></i> Remove</a>
-              </li>
-            </ul>
-          </span>
-        {% endfor %}
-        {% for document in fact.documents.all %}
-          <span class="source-citation dropdown">
-            <a href="#" data-bs-toggle="dropdown">{{ document.citation }}</a>
-            <ul class="dropdown-menu">
-              {% if document.file.name|slice:"-4:"|lower == ".pdf" %}
+    <div class="fact-content">
+      <div class="fact-actions dropdown">
+        <button class="btn-icon menu-icon"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+          <i class="bi bi-three-dots-vertical"></i>
+        </button>
+        <ul class="dropdown-menu">
+          <li>
+            <a class="dropdown-item"
+               href="#"
+               hx-get="{% url 'case:facts-edit' fact.id %}"
+               hx-target="#htmx-modal-container"
+               data-bs-toggle="modal"
+               data-bs-target="#htmx-modal-container"><i class="bi bi-pencil"></i> Edit Fact</a>
+          </li>
+          <li>
+            <a class="dropdown-item"
+               href="#"
+               hx-get="{% url 'case:fact-sources' fact.id %}"
+               hx-target="#htmx-modal-container"
+               data-bs-toggle="modal"
+               data-bs-target="#htmx-modal-container"><i class="bi bi-journal-plus"></i> Add Source</a>
+          </li>
+          <li>
+            <a class="dropdown-item"
+               href="#"
+               hx-get="{% url 'case:labels-apply-modal' 'fact' fact.id %}"
+               hx-target="#htmx-modal-container"
+               data-bs-toggle="modal"
+               data-bs-target="#htmx-modal-container"><i class="bi bi-tag"></i> Add Label</a>
+          </li>
+        </ul>
+      </div>
+      <span class="fact-text">{{ fact.description }}</span>
+    </div>
+    <div class="fact-labels">
+      {% if fact.highlights.all or fact.documents.all %}
+        <span class="fact-sources">
+          {% for highlight in fact.highlights.all %}
+            <span class="source-citation dropdown">
+              <a href="#" data-bs-toggle="dropdown">{{ highlight.citation }}</a>
+              <ul class="dropdown-menu">
                 <li>
                   <a class="dropdown-item"
-                     href="{% url 'case:viewer' document.id %}"
-                     target="_blank"><i class="bi bi-eye"></i> View</a>
+                     href="{% url 'case:highlight-link' highlight.id %}"
+                     target="_blank"><i class="bi bi-eye"></i> View Source</a>
                 </li>
-              {% endif %}
-              <li>
-                <a class="dropdown-item"
-                   href="{% url 'case:documents-download' document.id %}"><i class="bi bi-download"></i> Download</a>
-              </li>
-              <li>
-                <a class="dropdown-item source-copy-btn"
-                   href="#"
-                   data-copy="{{ document.citation }}"><i class="bi bi-clipboard"></i> Copy Citation</a>
-              </li>
-              <li>
-                <a class="dropdown-item urgent"
-                   href="#"
-                   hx-post="{% url 'case:fact-remove-source' fact.id %}"
-                   hx-vals='{"type": "document", "id": "{{ document.id }}"}'
-                   hx-target="#fact-{{ fact.id }}"
-                   hx-swap="outerHTML"><i class="bi bi-x-lg"></i> Remove</a>
-              </li>
-            </ul>
-          </span>
-        {% endfor %}
-      </span>
-    {% endif %}
-    <div class="fact-labels">
+                <li>
+                  <a class="dropdown-item source-copy-btn"
+                     href="#"
+                     data-copy="{{ highlight.citation }}"><i class="bi bi-clipboard"></i> Copy Citation</a>
+                </li>
+                <li>
+                  <a class="dropdown-item urgent"
+                     href="#"
+                     hx-post="{% url 'case:fact-remove-source' fact.id %}"
+                     hx-vals='{"type": "highlight", "id": "{{ highlight.id }}"}'
+                     hx-target="#fact-{{ fact.id }}"
+                     hx-swap="outerHTML"><i class="bi bi-x-lg"></i> Remove</a>
+                </li>
+              </ul>
+            </span>
+          {% endfor %}
+          {% for document in fact.documents.all %}
+            <span class="source-citation dropdown">
+              <a href="#" data-bs-toggle="dropdown">{{ document.citation }}</a>
+              <ul class="dropdown-menu">
+                {% if document.file.name|slice:"-4:"|lower == ".pdf" %}
+                  <li>
+                    <a class="dropdown-item"
+                       href="{% url 'case:viewer' document.id %}"
+                       target="_blank"><i class="bi bi-eye"></i> View</a>
+                  </li>
+                {% endif %}
+                <li>
+                  <a class="dropdown-item"
+                     href="{% url 'case:documents-download' document.id %}"><i class="bi bi-download"></i> Download</a>
+                </li>
+                <li>
+                  <a class="dropdown-item source-copy-btn"
+                     href="#"
+                     data-copy="{{ document.citation }}"><i class="bi bi-clipboard"></i> Copy Citation</a>
+                </li>
+                <li>
+                  <a class="dropdown-item urgent"
+                     href="#"
+                     hx-post="{% url 'case:fact-remove-source' fact.id %}"
+                     hx-vals='{"type": "document", "id": "{{ document.id }}"}'
+                     hx-target="#fact-{{ fact.id }}"
+                     hx-swap="outerHTML"><i class="bi bi-x-lg"></i> Remove</a>
+                </li>
+              </ul>
+            </span>
+          {% endfor %}
+        </span>
+      {% endif %}
       {% for label in fact.labels.all %}
         {% include "case/labels/badge.html" with object_type="fact" object=fact %}
       {% endfor %}

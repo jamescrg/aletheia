@@ -1,14 +1,19 @@
 <tr id="highlight-{{ highlight.id }}">
   <td class="date">
     <span>{{ highlight.document.date|date:'Y-m-d'|default:"No date" }}</span>
-    <div class="highlight-actions dropdown">
+  </td>
+  <td class="highlight dropdown-cell">
+    <div class="dropdown">
+      <h3 class="highlight-slug">
+        <span class="hl-{{ highlight.color }}">{{ highlight.slug|default:"Untitled" }}</span>
+      </h3>
       <button class="btn-icon menu-icon"
               type="button"
               data-bs-toggle="dropdown"
               aria-expanded="false">
         <i class="bi bi-three-dots-vertical"></i>
       </button>
-      <ul class="dropdown-menu dropdown-menu-end">
+      <ul class="dropdown-menu">
         <li>
           <a class="dropdown-item"
              href="#"
@@ -42,11 +47,6 @@
         </li>
       </ul>
     </div>
-  </td>
-  <td class="highlight">
-    <h3 class="highlight-slug">
-      <span class="hl-{{ highlight.color }}">{{ highlight.slug|default:"Untitled" }}</span>
-    </h3>
     <div class="highlight-text">{{ highlight.text }}</div>
     <span class="highlight-citation source-citation">{{ highlight.citation }}</span>
     <div class="highlight-labels">

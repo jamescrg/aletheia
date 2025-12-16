@@ -132,6 +132,7 @@ Please run pre-commit hooks and fix any linting errors on all significant change
 - Do not use style tags. Place all styles in a stylesheet.
 - Css values should be in rems and snap to a 0.25rem grid
 - Tests run slowly on this server, when testing, please run targeted unit tests to cover recent changes
+- If a fix fails, clean it up before applying a new fix, unless the solutions are likely to be cumulative.
 
 
 ### Design Standards
