@@ -323,14 +323,49 @@ body:has(.note-page.standalone) {
 
 .note-ref {
   display: inline;
-  color: var(--color-muted);
+  background: var(--hl-gray);
+  color: var(--color-primary);
   font-size: 0.875rem;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
   cursor: pointer;
 }
 
 .note-ref:hover {
-  color: var(--color-primary);
   text-decoration: underline;
+}
+
+/* Highlight colors */
+#note-editor mark {
+  background: var(--yellow-100);
+  color: inherit;
+  padding: 0.0625rem 0.125rem;
+  border-radius: 0.125rem;
+}
+
+#note-editor mark.mark-green,
+#note-editor mark[data-color="mark-green"] {
+  background: var(--lime-100);
+}
+
+#note-editor mark.mark-red,
+#note-editor mark[data-color="mark-red"] {
+  background: var(--red-100);
+}
+
+#note-editor mark.mark-purple,
+#note-editor mark[data-color="mark-purple"] {
+  background: var(--purple-100);
+}
+
+#note-editor mark.mark-orange,
+#note-editor mark[data-color="mark-orange"] {
+  background: var(--orange-100);
+}
+
+#note-editor mark.mark-citation,
+#note-editor mark[data-color="mark-citation"] {
+  background: var(--stone-150);
 }
 
 /* =============================================================================
