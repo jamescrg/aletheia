@@ -3,24 +3,19 @@ from django import forms
 from apps.case.models import Note
 from config.settings import CustomFormRendererCompact
 
-IMPORTANCE_CHOICES = tuple((i, f"Importance {i}") for i in range(1, 11))
-
 
 class NoteForm(forms.ModelForm):
+    default_renderer = CustomFormRendererCompact
+
     class Meta:
         model = Note
-        fields = ("title", "importance")
+        fields = ["date", "category", "title"]
         widgets = {
-            "title": forms.TextInput(
-                attrs={
-                    "autofocus": "autofocus",
-                    "placeholder": "Note title",
-                }
-            ),
-            "importance": forms.Select(choices=IMPORTANCE_CHOICES),
+            "title": forms.TextInput(attrs={"autofocus": True, "class": "span2"}),
+            "date": forms.DateInput(attrs={"type": "date"}),
+            "category": forms.Select(),
         }
 
     def __init__(self, *args, **kwargs):
         kwargs.pop("matter", None)
         super().__init__(*args, **kwargs)
-        self.renderer = CustomFormRendererCompact()

@@ -37,6 +37,13 @@ def get_notes_data(request, matter):
         int(importance_value) if importance_value not in (None, "", 0) else None
     )
 
+    # Get category filter value
+    category_key = filter_data.get("category", "")
+    selected_category = ""
+    if category_key:
+        category_dict = dict(Note.CATEGORY_CHOICES)
+        selected_category = category_dict.get(category_key, "")
+
     return {
         "notes": notes,
         "current_order": current_order,
@@ -47,6 +54,8 @@ def get_notes_data(request, matter):
             f"Importance {importance_value}" if importance_value else ""
         ),
         "category_choices": Note.CATEGORY_CHOICES,
+        "selected_category": selected_category,
+        "selected_category_key": category_key,
     }
 
 
@@ -265,6 +274,20 @@ def notes_filter_importance(request, importance_value):
     """Filter notes by importance."""
     filter_data = request.session.get("notes_filter", {})
     filter_data["importance"] = "" if importance_value == 0 else importance_value
+    request.session["notes_filter"] = filter_data
+
+    return redirect("case:notes-list")
+
+
+@login_required
+def notes_filter_category(request, category):
+    """Filter notes by category."""
+    filter_data = request.session.get("notes_filter", {})
+    if category:
+        filter_data["category"] = category
+    else:
+        filter_data.pop("category", None)
+
     request.session["notes_filter"] = filter_data
 
     return redirect("case:notes-list")

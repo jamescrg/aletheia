@@ -15,6 +15,12 @@ class NotesFilter(django_filters.FilterSet):
         empty_label="All Labels",
         label="Label",
     )
+    category = django_filters.ChoiceFilter(
+        field_name="category",
+        choices=Note.CATEGORY_CHOICES,
+        label="Category",
+        empty_label="All Categories",
+    )
     importance = django_filters.ChoiceFilter(
         field_name="importance",
         choices=IMPORTANCE_CHOICES,
@@ -40,7 +46,7 @@ class NotesFilter(django_filters.FilterSet):
 
     class Meta:
         model = Note
-        fields = ["keyword", "label", "importance", "order_by"]
+        fields = ["keyword", "label", "category", "importance", "order_by"]
 
     def __init__(self, *args, matter=None, **kwargs):
         super().__init__(*args, **kwargs)

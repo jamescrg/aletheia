@@ -322,6 +322,17 @@ urlpatterns = [
         notes.notes_filter_importance,
         name="notes-filter-importance",
     ),
+    path(
+        "case/notes/filter/category/<str:category>/",
+        notes.notes_filter_category,
+        name="notes-filter-category",
+    ),
+    path(
+        "case/notes/filter/category/",
+        notes.notes_filter_category,
+        {"category": ""},
+        name="notes-filter-category-clear",
+    ),
     path("case/notes/sort/<str:order>/", notes.notes_sort, name="notes-sort"),
     path("case/notes/shortcuts/", notes.notes_shortcuts, name="notes-shortcuts"),
     path("case/notes/add/", notes.notes_add, name="notes-add"),
