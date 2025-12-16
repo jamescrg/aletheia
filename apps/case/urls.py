@@ -359,6 +359,11 @@ urlpatterns = [
         notes.note_import_modal,
         name="note-import-modal",
     ),
+    path(
+        "case/notes/<int:note_id>/citations/",
+        notes.reference_citations,
+        name="note-citations",
+    ),
     # Search subapp
     path("case/search/", search.search_index, name="search-index"),
     path("case/search/list/", search.search_list, name="search-list"),

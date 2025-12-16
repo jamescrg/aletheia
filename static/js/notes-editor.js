@@ -320,7 +320,6 @@ const NoteRef = TiptapNode.create({
 let editor = null;
 let autosaveTimer = null;
 let lastSavedContent = "";
-let currentRefType = "document";
 
 // Search state
 let searchMatches = [];
@@ -372,6 +371,9 @@ function initEditor() {
   setupTitleEdit();
   setupSearchBar();
   setupImportExport();
+
+  // Refresh reference citations on load
+  refreshReferenceCitations();
 }
 
 function setupReferenceClicks() {
@@ -399,6 +401,84 @@ function setupReferenceClicks() {
       window.open(url, "_blank");
     }
   });
+}
+
+function collectReferenceIds() {
+  const docIds = [];
+  const hlIds = [];
+
+  editor.state.doc.descendants(function(node) {
+    if (node.type.name === "noteRef") {
+      if (node.attrs.type === "document" && node.attrs.id) {
+        docIds.push(node.attrs.id);
+      } else if (node.attrs.type === "highlight" && node.attrs.id) {
+        hlIds.push(node.attrs.id);
+      }
+    }
+  });
+
+  return { docIds: docIds, hlIds: hlIds };
+}
+
+function refreshReferenceCitations() {
+  if (!editor || !window.NOTE_DATA.citationsUrl) return;
+
+  const refs = collectReferenceIds();
+
+  if (refs.docIds.length === 0 && refs.hlIds.length === 0) return;
+
+  // Build query string
+  const params = new URLSearchParams();
+  refs.docIds.forEach(function(id) { params.append("doc", id); });
+  refs.hlIds.forEach(function(id) { params.append("hl", id); });
+
+  const url = window.NOTE_DATA.citationsUrl + "?" + params.toString();
+
+  fetch(url, {
+    headers: {
+      "X-CSRFToken": getCSRFToken(),
+    },
+  })
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(citations) {
+      let hasChanges = false;
+
+      // Collect updates to apply
+      const updates = [];
+      editor.state.doc.descendants(function(node, pos) {
+        if (node.type.name === "noteRef") {
+          const key = node.attrs.type === "document"
+            ? "doc:" + node.attrs.id
+            : "hl:" + node.attrs.id;
+          const newLabel = citations[key];
+
+          if (newLabel && newLabel !== node.attrs.label) {
+            updates.push({ pos: pos, node: node, newLabel: newLabel });
+            hasChanges = true;
+          }
+        }
+      });
+
+      // Apply updates in reverse order to preserve positions
+      updates.reverse().forEach(function(update) {
+        editor.chain()
+          .setNodeMarkup(update.pos, null, {
+            type: update.node.attrs.type,
+            id: update.node.attrs.id,
+            label: update.newLabel,
+          })
+          .run();
+      });
+
+      if (hasChanges) {
+        scheduleAutosave();
+      }
+    })
+    .catch(function(err) {
+      console.error("Failed to refresh citations:", err);
+    });
 }
 
 function setupTitleEdit() {
@@ -938,13 +1018,14 @@ function setupToolbar() {
     });
   }
 
-  // Reference insertion buttons
-  document.querySelectorAll("[data-ref-type]").forEach(function (btn) {
-    btn.addEventListener("click", function (e) {
+  // Insert source button
+  const insertSourceBtn = document.getElementById("insert-source-btn");
+  if (insertSourceBtn) {
+    insertSourceBtn.addEventListener("click", function (e) {
       e.preventDefault();
-      openReferencePicker(btn.dataset.refType);
+      openReferencePicker();
     });
-  });
+  }
 
   // Expand/Collapse all buttons
   const expandAllBtn = document.getElementById("expand-all-btn");
@@ -1046,10 +1127,10 @@ function setupKeyboardShortcuts() {
       return;
     }
 
-    // Insert reference: Ctrl+;
+    // Insert source: Ctrl+;
     if (mod && e.key === ";") {
       e.preventDefault();
-      openReferencePicker("document");
+      openReferencePicker();
       return;
     }
 
@@ -1138,33 +1219,8 @@ function moveListItem(direction) {
 
 // Reference picker
 function setupReferencePicker() {
-  const overlay = document.getElementById("reference-picker-overlay");
-  const closeBtn = document.getElementById("picker-close");
+  const picker = document.getElementById("reference-picker");
   const searchInput = document.getElementById("reference-search");
-  const tabs = document.querySelectorAll(".picker-tab");
-
-  if (closeBtn) {
-    closeBtn.addEventListener("click", closeReferencePicker);
-  }
-
-  if (overlay) {
-    overlay.addEventListener("click", function (e) {
-      if (e.target === overlay) closeReferencePicker();
-    });
-  }
-
-  tabs.forEach(function (tab) {
-    tab.addEventListener("click", function () {
-      currentRefType = tab.dataset.type;
-      tabs.forEach(function (t) {
-        t.classList.remove("active");
-      });
-      tab.classList.add("active");
-      if (searchInput.value) {
-        searchReferences(searchInput.value);
-      }
-    });
-  });
 
   if (searchInput) {
     let searchTimer;
@@ -1174,55 +1230,130 @@ function setupReferencePicker() {
         searchReferences(searchInput.value);
       }, 300);
     });
+
+    searchInput.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        closeReferencePicker();
+      }
+    });
   }
 
-  // Handle result clicks
+  // Handle result clicks and tab switches (event delegation for dynamic content)
   document
     .getElementById("reference-results")
     .addEventListener("click", function (e) {
-      const item = e.target.closest(".reference-item");
-      if (item) {
-        insertReference(item.dataset.type, item.dataset.id, item.dataset.label);
+      // Handle tab clicks
+      const tab = e.target.closest(".sources-tab");
+      if (tab) {
+        e.preventDefault();
+        document.querySelectorAll("#reference-results .sources-tab").forEach(function(t) {
+          t.classList.remove("active");
+        });
+        tab.classList.add("active");
+        const tabName = tab.dataset.tab;
+        document.querySelectorAll("#reference-results .sources-tab-content").forEach(function(content) {
+          content.classList.toggle("hidden", content.dataset.tab !== tabName);
+        });
+        return;
+      }
+
+      // Handle result item clicks
+      const link = e.target.closest("a[data-type]");
+      if (link) {
+        e.preventDefault();
+        insertReference(link.dataset.type, link.dataset.id, link.dataset.label);
       }
     });
-}
 
-function openReferencePicker(refType) {
-  currentRefType = refType || "document";
-  const overlay = document.getElementById("reference-picker-overlay");
-  const searchInput = document.getElementById("reference-search");
-  const tabs = document.querySelectorAll(".picker-tab");
-  const results = document.getElementById("reference-results");
+  // Close picker on click outside
+  document.addEventListener("mousedown", function (e) {
+    if (!picker) return;
+    if (!picker.classList.contains("active")) return;
 
-  tabs.forEach(function (t) {
-    t.classList.toggle("active", t.dataset.type === currentRefType);
+    // Don't close if clicking inside picker
+    if (picker.contains(e.target)) return;
+
+    // Don't close if clicking Insert button
+    if (e.target.closest("#insert-source-btn")) return;
+
+    closeReferencePicker();
   });
 
-  results.innerHTML = '<div class="reference-empty">Type to search...</div>';
-  overlay.classList.add("active");
+  // Close on Escape anywhere
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && picker && picker.classList.contains("active")) {
+      closeReferencePicker();
+    }
+  });
+}
+
+function openReferencePicker() {
+  const picker = document.getElementById("reference-picker");
+  const searchInput = document.getElementById("reference-search");
+  const results = document.getElementById("reference-results");
+
+  // Position picker below the cursor
+  if (editor && picker) {
+    const { from } = editor.state.selection;
+    const coords = editor.view.coordsAtPos(from);
+
+    // Validate coords - fall back to center of editor if invalid
+    let top, left;
+    if (coords && coords.bottom > 0) {
+      top = coords.bottom + 8;
+      left = coords.left;
+    } else {
+      // Fallback: position in center of editor
+      const editorEl = document.getElementById("note-editor");
+      const editorRect = editorEl.getBoundingClientRect();
+      top = editorRect.top + 100;
+      left = editorRect.left + 50;
+    }
+
+    // Ensure picker doesn't go off-screen right
+    const pickerWidth = 320; // 20rem
+    if (left + pickerWidth > window.innerWidth - 16) {
+      left = window.innerWidth - pickerWidth - 16;
+    }
+
+    // Ensure picker doesn't go off-screen bottom
+    const pickerHeight = 400; // approximate max height
+    if (top + pickerHeight > window.innerHeight - 16) {
+      top = Math.max(100, coords ? coords.top - pickerHeight - 8 : 100);
+    }
+
+    picker.style.top = top + "px";
+    picker.style.left = Math.max(16, left) + "px";
+  }
+
+  results.innerHTML = '<div class="sources-empty-state"><i class="bi bi-search"></i><p>Search for highlights and documents to insert</p></div>';
+  picker.classList.add("active");
   searchInput.value = "";
-  searchInput.focus();
+
+  // Delay focus to prevent scroll jump
+  setTimeout(function() {
+    searchInput.focus({ preventScroll: true });
+  }, 10);
 }
 
 function closeReferencePicker() {
-  const overlay = document.getElementById("reference-picker-overlay");
-  overlay.classList.remove("active");
-  editor.commands.focus();
+  const picker = document.getElementById("reference-picker");
+  if (picker) {
+    picker.classList.remove("active");
+  }
+  if (editor) {
+    editor.commands.focus();
+  }
 }
 
 function searchReferences(query) {
   if (!query.trim()) {
     document.getElementById("reference-results").innerHTML =
-      '<div class="reference-empty">Type to search...</div>';
+      '<div class="sources-empty-state"><i class="bi bi-search"></i><p>Search for highlights and documents to insert</p></div>';
     return;
   }
 
-  const url =
-    window.NOTE_DATA.searchUrl +
-    "?q=" +
-    encodeURIComponent(query) +
-    "&type=" +
-    currentRefType;
+  const url = window.NOTE_DATA.searchUrl + "?q=" + encodeURIComponent(query);
 
   fetch(url, {
     headers: {

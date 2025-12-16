@@ -1,33 +1,51 @@
-{% if documents %}
-  {% for document in documents %}
-    <div class="reference-item"
-         data-type="document"
-         data-id="{{ document.id }}"
-         data-label="{{ document.citation }}">
-      <i class="bi bi-file-earmark"></i>
-      <span class="ref-name">{{ document.name }}</span>
-      {% if document.date %}<span class="ref-date">{{ document.date|date:'Y-m-d' }}</span>{% endif %}
-    </div>
-  {% endfor %}
-{% endif %}
-{% if highlights %}
-  {% for highlight in highlights %}
-    <div class="reference-item"
-         data-type="highlight"
-         data-id="{{ highlight.id }}"
-         data-label="{{ highlight.citation }}">
-      <i class="bi bi-highlighter"></i>
-      <span class="ref-name">{{ highlight.slug }}</span>
-      <span class="ref-doc">{{ highlight.document.name }}</span>
-    </div>
-  {% endfor %}
-{% endif %}
-{% if not documents and not highlights %}
-  <div class="reference-empty">
-    {% if query %}
-      No results found for "{{ query }}"
-    {% else %}
-      Type to search...
-    {% endif %}
+{% if query %}
+  <div class="sources-tabs">
+    <button type="button" class="sources-tab active" data-tab="highlights">
+      <i class="bi bi-highlighter"></i> Highlights
+      {% if highlights %}<span class="sources-tab-count">{{ highlights|length }}</span>{% endif %}
+    </button>
+    <button type="button" class="sources-tab" data-tab="documents">
+      <i class="bi bi-filetype-pdf"></i> Documents
+      {% if documents %}<span class="sources-tab-count">{{ documents|length }}</span>{% endif %}
+    </button>
+  </div>
+  <ul class="assign-results sources-tab-content" data-tab="highlights">
+    {% for highlight in highlights %}
+      <li>
+        <a href="#"
+           data-type="highlight"
+           data-id="{{ highlight.id }}"
+           data-label="{{ highlight.citation }}">
+          <i class="bi bi-highlighter"></i>
+          <span class="hl-{{ highlight.color }}">{{ highlight.slug|truncatechars:80 }}</span>
+          <div class="assign-results-document">
+            <small class="text-muted">{{ highlight.document.name|truncatechars:30 }}</small>
+          </div>
+        </a>
+      </li>
+    {% empty %}
+      <li class="empty-message">No matching highlights found.</li>
+    {% endfor %}
+  </ul>
+  <ul class="assign-results sources-tab-content hidden"
+      data-tab="documents">
+    {% for document in documents %}
+      <li>
+        <a href="#"
+           data-type="document"
+           data-id="{{ document.id }}"
+           data-label="{{ document.citation }}">
+          <i class="bi bi-filetype-pdf urgent"></i>
+          {{ document.name|truncatechars:80 }}
+        </a>
+      </li>
+    {% empty %}
+      <li class="empty-message">No matching documents found.</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <div class="sources-empty-state">
+    <i class="bi bi-search"></i>
+    <p>Search for highlights and documents to insert</p>
   </div>
 {% endif %}

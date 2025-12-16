@@ -310,28 +310,40 @@ def reference_search(request, note_id):
     matter, _ = get_selected_matter(request)
     note = get_object_or_404(Note, pk=note_id)
     query = request.GET.get("q", "").strip()
-    ref_type = request.GET.get("type", "document")
 
     documents = []
     highlights = []
 
     if query and matter:
-        if ref_type == "document":
-            documents = Document.objects.filter(matter=matter, name__icontains=query)[
-                :10
-            ]
-        elif ref_type == "highlight":
-            highlights = (
-                Highlight.objects.filter(document__matter=matter)
-                .filter(Q(slug__icontains=query) | Q(text__icontains=query))
-                .select_related("document")[:10]
-            )
+        # Search both documents and highlights
+        documents = Document.objects.filter(matter=matter, name__icontains=query)[:15]
+        highlights = (
+            Highlight.objects.filter(document__matter=matter)
+            .filter(Q(slug__icontains=query) | Q(text__icontains=query))
+            .select_related("document")[:15]
+        )
 
     context = {
         "note": note,
         "documents": documents,
         "highlights": highlights,
         "query": query,
-        "ref_type": ref_type,
     }
     return render(request, "case/notes/reference-results.html", context)
+
+
+@login_required
+def reference_citations(request, note_id):
+    """Return current citations for references."""
+    doc_ids = request.GET.getlist("doc")
+    hl_ids = request.GET.getlist("hl")
+
+    citations = {}
+
+    for doc in Document.objects.filter(id__in=doc_ids):
+        citations[f"doc:{doc.id}"] = doc.citation
+
+    for hl in Highlight.objects.filter(id__in=hl_ids).select_related("document"):
+        citations[f"hl:{hl.id}"] = hl.citation
+
+    return JsonResponse(citations)

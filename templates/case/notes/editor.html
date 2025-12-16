@@ -30,27 +30,9 @@
         <a href="#" id="expand-all-btn" title="Expand all">
           <i class="bi bi-chevron-expand"></i>
         </a>
-        <div class="dropdown">
-          <button type="button"
-                  class="select-btn"
-                  data-bs-toggle="dropdown"
-                  title="Insert Reference">
-            <i class="bi bi-link-45deg"></i> Insert
-            <small><i class="bi bi-chevron-down"></i></small>
-          </button>
-          <ul class="dropdown-menu">
-            <li>
-              <a class="dropdown-item" href="#" data-ref-type="document">
-                <i class="bi bi-file-earmark"></i> Document
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-ref-type="highlight">
-                <i class="bi bi-highlighter"></i> Highlight
-              </a>
-            </li>
-          </ul>
-        </div>
+        <a href="#" id="insert-source-btn" title="Insert Source (Ctrl+;)">
+          <i class="bi bi-link-45deg"></i>
+        </a>
       </div>
       <div class="toolbar-center"></div>
       <div class="toolbar-right">
@@ -110,27 +92,19 @@
       </div>
       <div id="note-editor"></div>
     </div>
-  </div>
-  <!-- Reference Picker Modal -->
-  <div class="reference-picker-overlay" id="reference-picker-overlay">
-    <div class="reference-picker" id="reference-picker">
-      <div class="reference-picker-header">
-        <span id="picker-title">Insert Reference</span>
-        <button type="button" id="picker-close" class="btn-icon">
-          <i class="bi bi-x-lg"></i>
-        </button>
-      </div>
-      <div class="reference-picker-tabs">
-        <button type="button" class="picker-tab active" data-type="document">Documents</button>
-        <button type="button" class="picker-tab" data-type="highlight">Highlights</button>
-      </div>
+    <!-- Floating Reference Picker -->
+    <div class="sources-picker" id="reference-picker">
       <input type="search"
              id="reference-search"
              name="q"
-             placeholder="Search..."
-             class="reference-search-input"
+             placeholder="Search sources..."
              autocomplete="off">
-      <div id="reference-results" class="reference-results"></div>
+      <div id="reference-results">
+        <div class="sources-empty-state">
+          <i class="bi bi-search"></i>
+          <p>Search for highlights and documents to insert</p>
+        </div>
+      </div>
     </div>
   </div>
   <script>
@@ -141,6 +115,7 @@
       autosaveUrl: "{% url 'case:note-autosave' note.id %}",
       titleUrl: "{% url 'case:note-title' note.id %}",
       searchUrl: "{% url 'case:note-reference-search' note.id %}",
+      citationsUrl: "{% url 'case:note-citations' note.id %}",
     };
   </script>
   <script type="module" src="{% static_v 'js/notes-editor.js' %}"></script>
