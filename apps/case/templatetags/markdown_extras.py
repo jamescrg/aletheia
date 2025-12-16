@@ -4,6 +4,8 @@ import markdown
 from django import template
 from django.utils.safestring import mark_safe
 
+from apps.case.notes.markdown_ext import NoteReferenceExtension
+
 register = template.Library()
 
 
@@ -37,6 +39,7 @@ def render_markdown(text):
             "tables",
             "nl2br",
             "pymdownx.mark",
+            NoteReferenceExtension(),
         ]
     )
     return mark_safe(md.convert(text))

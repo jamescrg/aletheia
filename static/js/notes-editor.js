@@ -15,6 +15,7 @@ import HardBreak from "https://esm.sh/@tiptap/extension-hard-break@2";
 import History from "https://esm.sh/@tiptap/extension-history@2";
 import Dropcursor from "https://esm.sh/@tiptap/extension-dropcursor@2";
 import Gapcursor from "https://esm.sh/@tiptap/extension-gapcursor@2";
+import Highlight from "https://esm.sh/@tiptap/extension-highlight@2";
 import { Plugin, PluginKey } from "https://esm.sh/prosemirror-state";
 import { Decoration, DecorationSet } from "https://esm.sh/prosemirror-view";
 
@@ -352,6 +353,7 @@ function initEditor() {
       History,
       Dropcursor,
       Gapcursor,
+      Highlight.configure({ multicolor: true }),
       NoteRef,
       SearchHighlight,
       CollapseHeadings,
@@ -596,7 +598,15 @@ function markdownToHtml(md) {
       .replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>")
       .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.+?)\*/g, "<em>$1</em>")
-      .replace(/~~(.+?)~~/g, "<s>$1</s>");
+      .replace(/~~(.+?)~~/g, "<s>$1</s>")
+      // Colored highlights: g==, r==, p==, o==, c==
+      .replace(/g==(.+?)==/g, '<mark class="mark-green">$1</mark>')
+      .replace(/r==(.+?)==/g, '<mark class="mark-red">$1</mark>')
+      .replace(/p==(.+?)==/g, '<mark class="mark-purple">$1</mark>')
+      .replace(/o==(.+?)==/g, '<mark class="mark-orange">$1</mark>')
+      .replace(/c==(.+?)==/g, '<mark class="mark-citation">$1</mark>')
+      // Default highlight: ==text==
+      .replace(/==(.+?)==/g, "<mark>$1</mark>");
   }
 
   // Parse lines into list items with depth info
@@ -804,6 +814,20 @@ function htmlToMarkdown(html) {
         return "*" + getChildren() + "*";
       case "s":
         return "~~" + getChildren() + "~~";
+      case "mark":
+        // Check both class and data-color attribute (Tiptap uses data-color)
+        const markColor = node.dataset.color || "";
+        if (node.classList.contains("mark-green") || markColor === "mark-green")
+          return "g==" + getChildren() + "==";
+        if (node.classList.contains("mark-red") || markColor === "mark-red")
+          return "r==" + getChildren() + "==";
+        if (node.classList.contains("mark-purple") || markColor === "mark-purple")
+          return "p==" + getChildren() + "==";
+        if (node.classList.contains("mark-orange") || markColor === "mark-orange")
+          return "o==" + getChildren() + "==";
+        if (node.classList.contains("mark-citation") || markColor === "mark-citation")
+          return "c==" + getChildren() + "==";
+        return "==" + getChildren() + "==";
       case "blockquote":
         return (
           getChildren()
@@ -1138,6 +1162,32 @@ function setupKeyboardShortcuts() {
     if ((mod && e.key === "/") || e.key === "?") {
       e.preventDefault();
       showShortcutsModal();
+      return;
+    }
+
+    // Highlight shortcuts: Alt+Y (yellow), Alt+G (green), Alt+R (red), Alt+P (purple), Alt+O (orange)
+    if (e.altKey && !mod && ["y", "g", "r", "p", "o"].includes(e.key.toLowerCase())) {
+      e.preventDefault();
+      const colorMap = {
+        y: null, // default yellow
+        g: "mark-green",
+        r: "mark-red",
+        p: "mark-purple",
+        o: "mark-orange",
+      };
+      const color = colorMap[e.key.toLowerCase()];
+      if (color) {
+        editor.chain().focus().toggleHighlight({ color }).run();
+      } else {
+        editor.chain().focus().toggleHighlight().run();
+      }
+      return;
+    }
+
+    // Remove highlight: Alt+C
+    if (e.altKey && !mod && e.key.toLowerCase() === "c") {
+      e.preventDefault();
+      editor.chain().focus().unsetHighlight().run();
       return;
     }
 
