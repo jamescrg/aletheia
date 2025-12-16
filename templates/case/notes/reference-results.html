@@ -3,7 +3,7 @@
     <div class="reference-item"
          data-type="document"
          data-id="{{ document.id }}"
-         data-label="{{ document.name }}">
+         data-label="{{ document.citation }}">
       <i class="bi bi-file-earmark"></i>
       <span class="ref-name">{{ document.name }}</span>
       {% if document.date %}<span class="ref-date">{{ document.date|date:'Y-m-d' }}</span>{% endif %}
@@ -15,7 +15,7 @@
     <div class="reference-item"
          data-type="highlight"
          data-id="{{ highlight.id }}"
-         data-label="{{ highlight.slug }}">
+         data-label="{{ highlight.citation }}">
       <i class="bi bi-highlighter"></i>
       <span class="ref-name">{{ highlight.slug }}</span>
       <span class="ref-doc">{{ highlight.document.name }}</span>

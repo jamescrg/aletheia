@@ -323,20 +323,41 @@ urlpatterns = [
         name="notes-filter-importance",
     ),
     path("case/notes/sort/<str:order>/", notes.notes_sort, name="notes-sort"),
+    path("case/notes/shortcuts/", notes.notes_shortcuts, name="notes-shortcuts"),
     path("case/notes/add/", notes.notes_add, name="notes-add"),
     path("case/notes/<int:note_id>/", notes.note_view, name="note-view"),
     path("case/notes/<int:note_id>/edit/", notes.note_edit, name="notes-edit"),
     path("case/notes/<int:note_id>/delete/", notes.note_delete, name="notes-delete"),
     path("case/notes/<int:note_id>/content/", notes.note_content, name="note-content"),
     path(
+        "case/notes/<int:note_id>/category/<str:value>/",
+        notes.note_category,
+        name="note-category",
+    ),
+    path(
+        "case/notes/<int:note_id>/importance/<int:value>/",
+        notes.note_importance,
+        name="note-importance",
+    ),
+    path(
         "case/notes/<int:note_id>/autosave/",
         notes.note_autosave,
         name="note-autosave",
     ),
     path(
+        "case/notes/<int:note_id>/title/",
+        notes.note_title,
+        name="note-title",
+    ),
+    path(
         "case/notes/<int:note_id>/reference-search/",
         notes.reference_search,
         name="note-reference-search",
+    ),
+    path(
+        "case/notes/<int:note_id>/import/",
+        notes.note_import_modal,
+        name="note-import-modal",
     ),
     # Search subapp
     path("case/search/", search.search_index, name="search-index"),

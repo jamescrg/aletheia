@@ -46,6 +46,7 @@ def get_notes_data(request, matter):
         "selected_importance": (
             f"Importance {importance_value}" if importance_value else ""
         ),
+        "category_choices": Note.CATEGORY_CHOICES,
     }
 
 
@@ -187,6 +188,21 @@ def note_autosave(request, note_id):
 
 
 @login_required
+@require_POST
+def note_title(request, note_id):
+    """Update note title."""
+    note = get_object_or_404(Note, pk=note_id)
+
+    title = request.POST.get("title", "").strip()
+    if title:
+        note.title = title
+        note.save(update_fields=["title", "updated_at"])
+        return JsonResponse({"saved": True, "title": note.title})
+
+    return JsonResponse({"saved": False, "error": "Title cannot be empty"}, status=400)
+
+
+@login_required
 def notes_filter(request):
     """Filter modal for notes."""
     matter, matters = get_selected_matter(request)
@@ -251,6 +267,38 @@ def notes_filter_importance(request, importance_value):
     filter_data["importance"] = "" if importance_value == 0 else importance_value
     request.session["notes_filter"] = filter_data
 
+    return redirect("case:notes-list")
+
+
+@login_required
+def notes_shortcuts(request):
+    """Show keyboard shortcuts modal."""
+    return render(request, "case/notes/shortcuts-modal.html")
+
+
+@login_required
+def note_import_modal(request, note_id):
+    """Show import markdown modal."""
+    return render(request, "case/notes/import-modal.html")
+
+
+@login_required
+@require_POST
+def note_category(request, note_id, value):
+    """Update note category."""
+    note = get_object_or_404(Note, pk=note_id)
+    note.category = value
+    note.save(update_fields=["category"])
+    return redirect("case:notes-list")
+
+
+@login_required
+@require_POST
+def note_importance(request, note_id, value):
+    """Update note importance."""
+    note = get_object_or_404(Note, pk=note_id)
+    note.importance = value
+    note.save(update_fields=["importance"])
     return redirect("case:notes-list")
 
 

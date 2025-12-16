@@ -1,6 +1,15 @@
 <div class="table-container">
   <table id="notes-list" class="table notes-list">
     <tr>
+      <th class="category">Category</th>
+      <th class="date">
+        Date
+        <button class="btn-sort {% if 'date' in current_order %}active{% endif %}"
+                hx-get="{% url 'case:notes-sort' 'date' %}"
+                hx-target="#notes">
+          <i class="bi bi-chevron-expand"></i>
+        </button>
+      </th>
       <th class="title">
         Title
         <button class="btn-sort {% if 'title' in current_order %}active{% endif %}"
@@ -9,10 +18,11 @@
           <i class="bi bi-chevron-expand"></i>
         </button>
       </th>
-      <th class="updated">
-        Updated
-        <button class="btn-sort {% if 'updated_at' in current_order %}active{% endif %}"
-                hx-get="{% url 'case:notes-sort' 'updated_at' %}"
+      <th class="user">User</th>
+      <th class="viewed">
+        Viewed
+        <button class="btn-sort {% if 'viewed_at' in current_order %}active{% endif %}"
+                hx-get="{% url 'case:notes-sort' 'viewed_at' %}"
                 hx-target="#notes">
           <i class="bi bi-chevron-expand"></i>
         </button>
@@ -30,7 +40,7 @@
       {% include "case/notes/note-row.html" %}
     {% empty %}
       <tr>
-        <td colspan="3" class="empty-message">No notes found for this matter.</td>
+        <td colspan="6" class="empty-message">No notes found for this matter.</td>
       </tr>
     {% endfor %}
   </table>

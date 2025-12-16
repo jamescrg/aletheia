@@ -3,6 +3,7 @@ from django.contrib.postgres.indexes import GinIndex
 from django.contrib.postgres.search import SearchVectorField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils import timezone
 
 from apps.case.abbreviate import bluebook_abbreviate
 from apps.matters.models import Matter
@@ -241,6 +242,14 @@ class Fact(models.Model):
 class Note(models.Model):
     """Rich markdown note for a matter with inline document/highlight references."""
 
+    CATEGORY_CHOICES = [
+        ("analysis", "Analysis"),
+        ("drafting", "Drafting"),
+        ("interview", "Interview"),
+        ("issue", "Issue"),
+        ("note", "Note"),
+    ]
+
     user = models.ForeignKey(
         "accounts.CustomUser",
         on_delete=models.SET_NULL,
@@ -250,6 +259,8 @@ class Note(models.Model):
     )
     matter = models.ForeignKey(Matter, on_delete=models.CASCADE, related_name="notes")
     title = models.CharField(max_length=255)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default="note")
+    date = models.DateField(default=timezone.localdate)
     content = models.TextField(blank=True, default="")  # Markdown content
 
     # Source references (tracked separately from inline [[doc:id]] syntax)
@@ -259,6 +270,7 @@ class Note(models.Model):
     importance = models.PositiveIntegerField(
         default=5, validators=[MinValueValidator(1), MaxValueValidator(10)]
     )
+    viewed_at = models.DateTimeField(null=True, blank=True)
     labels = models.ManyToManyField(Label, related_name="notes", blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

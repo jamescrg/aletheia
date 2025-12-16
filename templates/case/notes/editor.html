@@ -4,12 +4,32 @@
 {% block title %}
   {{ note.title }} - LawAdmin
 {% endblock title %}
+{% block favicon %}
+  {% if env == 'dev' %}
+    <link rel="icon"
+          type="image/svg+xml"
+          href="{% static 'images/notes-favicon-dev.svg' %}" />
+  {% else %}
+    <link rel="icon"
+          type="image/svg+xml"
+          href="{% static 'images/notes-favicon.svg' %}" />
+  {% endif %}
+{% endblock favicon %}
 {% block content %}
   {% csrf_token %}
   <link rel="stylesheet" href="{% static_v 'css/apps/notes.css' %}" />
   <div class="note-toolbar-wrapper">
     <div class="note-toolbar">
       <div class="toolbar-left">
+        <a href="#" id="save-status-btn" title="Saved" onclick="return false;">
+          <i class="bi bi-cloud-check"></i>
+        </a>
+        <a href="#" id="collapse-all-btn" title="Collapse all">
+          <i class="bi bi-chevron-contract"></i>
+        </a>
+        <a href="#" id="expand-all-btn" title="Expand all">
+          <i class="bi bi-chevron-expand"></i>
+        </a>
         <div class="dropdown">
           <button type="button"
                   class="select-btn"
@@ -34,6 +54,28 @@
       </div>
       <div class="toolbar-center"></div>
       <div class="toolbar-right">
+        <a href="#" id="search-toggle-btn" title="Search & Replace (Ctrl+H)">
+          <i class="bi bi-search"></i>
+        </a>
+        <a href="#"
+           hx-get="{% url 'case:note-import-modal' note.id %}"
+           hx-target="#htmx-modal-container"
+           data-bs-toggle="modal"
+           data-bs-target="#htmx-modal-container"
+           title="Import from markdown">
+          <i class="bi bi-box-arrow-in-up"></i>
+        </a>
+        <a href="#" id="export-btn" title="Export to markdown">
+          <i class="bi bi-box-arrow-down"></i>
+        </a>
+        <a href="#"
+           hx-get="{% url 'case:notes-shortcuts' %}"
+           hx-target="#htmx-modal-container"
+           data-bs-toggle="modal"
+           data-bs-target="#htmx-modal-container"
+           title="Keyboard shortcuts">
+          <i class="bi bi-keyboard"></i>
+        </a>
         <a href="#"
            id="close-btn"
            onclick="window.close(); return false;"
@@ -43,11 +85,28 @@
       </div>
     </div>
   </div>
+  <!-- Search and Replace Bar -->
+  <div id="search-replace-bar" class="search-replace-bar">
+    <input type="text" id="search-input" placeholder="Find...">
+    <input type="text" id="replace-input" placeholder="Replace with...">
+    <span id="search-count"></span>
+    <button type="button" id="search-prev" title="Previous match">
+      <i class="bi bi-chevron-up"></i>
+    </button>
+    <button type="button" id="search-next" title="Next match">
+      <i class="bi bi-chevron-down"></i>
+    </button>
+    <button type="button" id="replace-one">Replace</button>
+    <button type="button" id="replace-all">Replace All</button>
+    <button type="button" id="search-close" title="Close">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
   <div class="note-page standalone">
     <div class="note-canvas">
       <div class="note-header">
-        <span class="note-title">{{ note.title }}</span>
-        <span class="save-status" id="save-status"></span>
+        <span id="note-title" class="note-title" data-note-id="{{ note.id }}">{{ note.title }}</span>
+        {% if note.matter %}<span class="app-badge badge-purple">{{ note.matter.name }}</span>{% endif %}
       </div>
       <div id="note-editor"></div>
     </div>
@@ -77,8 +136,10 @@
   <script>
     window.NOTE_DATA = {
       id: {{ note.id }},
+      title: "{{ note.title|escapejs }}",
       content: "{{ note.content|escapejs }}",
       autosaveUrl: "{% url 'case:note-autosave' note.id %}",
+      titleUrl: "{% url 'case:note-title' note.id %}",
       searchUrl: "{% url 'case:note-reference-search' note.id %}",
     };
   </script>
