@@ -668,12 +668,12 @@ function markdownToHtml(md) {
       .replace(/\*(.+?)\*/g, "<em>$1</em>")
       .replace(/~~(.+?)~~/g, "<s>$1</s>")
       // Colored highlights: g==, r==, p==, o==, c==, a==
-      .replace(/g==(.+?)==/g, '<mark class="mark-green">$1</mark>')
-      .replace(/r==(.+?)==/g, '<mark class="mark-red">$1</mark>')
-      .replace(/p==(.+?)==/g, '<mark class="mark-purple">$1</mark>')
-      .replace(/o==(.+?)==/g, '<mark class="mark-orange">$1</mark>')
-      .replace(/c==(.+?)==/g, '<mark class="mark-citation">$1</mark>')
-      .replace(/a==(.+?)==/g, '<mark class="mark-gray">$1</mark>')
+      .replace(/g==(.+?)==/g, '<mark data-color="mark-green">$1</mark>')
+      .replace(/r==(.+?)==/g, '<mark data-color="mark-red">$1</mark>')
+      .replace(/p==(.+?)==/g, '<mark data-color="mark-purple">$1</mark>')
+      .replace(/o==(.+?)==/g, '<mark data-color="mark-orange">$1</mark>')
+      .replace(/c==(.+?)==/g, '<mark data-color="mark-citation">$1</mark>')
+      .replace(/a==(.+?)==/g, '<mark data-color="mark-gray">$1</mark>')
       // Default highlight: ==text==
       .replace(/==(.+?)==/g, "<mark>$1</mark>");
   }
