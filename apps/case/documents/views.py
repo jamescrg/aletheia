@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from apps.case.models import Document, Label
-from apps.case.views import get_matter_from_url, get_session_key
+from apps.case.views import get_matter_from_url, get_session_key, set_last_tab
 
 from .filters import FilesFilter
 from .forms import BulkFilesForm, FilesForm
@@ -19,6 +19,7 @@ from .get_document_data import get_document_data
 @login_required
 def index(request, matter_id):
     documents_data = get_document_data(request, matter_id)
+    set_last_tab(request, matter_id, "documents")
 
     context = {
         "app": "documents",
