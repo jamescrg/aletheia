@@ -1261,7 +1261,7 @@ function setupKeyboardShortcuts() {
     }
 
     // Highlight shortcuts: Alt+Y (yellow), Alt+G (green), Alt+R (red), Alt+P (purple), Alt+O (orange), Alt+. (gray)
-    if (e.altKey && !mod && ["y", "g", "r", "p", "o", "."].includes(e.key.toLowerCase())) {
+    if (e.altKey && !mod && ["y", "g", "r", "p", "o", "1"].includes(e.key.toLowerCase())) {
       e.preventDefault();
       const colorMap = {
         y: null, // default yellow
