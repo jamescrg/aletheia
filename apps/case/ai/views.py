@@ -15,7 +15,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
 from apps.case.models import Fact, Highlight
-from apps.case.views import get_matter_from_url
+from apps.case.views import get_matter_from_url, set_last_tab
 from apps.matters.models import Matter
 from apps.outlines.models import Outline
 
@@ -35,6 +35,7 @@ def get_accessible_matters():
 def ai_index(request, matter_id):
     """Main AI view - list of conversations."""
     matter, matters = get_matter_from_url(request, matter_id)
+    set_last_tab(request, matter_id, "ai")
 
     conversations = Conversation.objects.filter(matter=matter)
 

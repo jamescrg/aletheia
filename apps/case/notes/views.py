@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from apps.case.models import Document, Highlight, Note
-from apps.case.views import get_matter_from_url, get_session_key
+from apps.case.views import get_matter_from_url, get_session_key, set_last_tab
 
 from .filters import NotesFilter
 from .forms import NoteForm
@@ -65,6 +65,7 @@ def get_notes_data(request, matter, matter_id):
 def notes_index(request, matter_id):
     """Main notes view."""
     matter, matters = get_matter_from_url(request, matter_id)
+    set_last_tab(request, matter_id, "notes")
 
     context = {
         "app": "documents",

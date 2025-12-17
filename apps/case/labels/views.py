@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
 from apps.case.models import Document, Fact, Highlight, Label, Note
-from apps.case.views import get_matter_from_url, get_session_key
+from apps.case.views import get_matter_from_url, get_session_key, set_last_tab
 from apps.matters.models import Matter
 
 from .filters import LabelsFilter
@@ -15,6 +15,7 @@ from .get_label_data import get_label_data
 @login_required
 def labels_index(request, matter_id):
     label_data = get_label_data(request, matter_id)
+    set_last_tab(request, matter_id, "labels")
 
     context = {
         "app": "documents",

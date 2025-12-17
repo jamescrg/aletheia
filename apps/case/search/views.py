@@ -5,7 +5,7 @@ from django.shortcuts import render
 from watson import search as watson
 
 from apps.case.models import Document, Fact, Highlight, Label
-from apps.case.views import get_matter_from_url, get_session_key
+from apps.case.views import get_matter_from_url, get_session_key, set_last_tab
 
 from .filters import SearchFilter
 
@@ -163,6 +163,7 @@ def get_search_data(request, matter, matter_id):
 def search_index(request, matter_id):
     """Main search view with persistent filter panel."""
     matter, matters = get_matter_from_url(request, matter_id)
+    set_last_tab(request, matter_id, "search")
 
     context = {
         "app": "documents",

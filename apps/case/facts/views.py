@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from apps.case.models import Document, Fact, Highlight
-from apps.case.views import get_matter_from_url, get_session_key
+from apps.case.views import get_matter_from_url, get_session_key, set_last_tab
 
 from .filters import FactsFilter
 from .forms import FactForm
@@ -59,6 +59,7 @@ def get_facts_data(request, matter, matter_id):
 def facts_index(request, matter_id):
     """Main facts view."""
     matter, matters = get_matter_from_url(request, matter_id)
+    set_last_tab(request, matter_id, "facts")
 
     context = {
         "app": "documents",
