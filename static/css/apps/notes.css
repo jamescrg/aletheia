@@ -260,6 +260,22 @@ body:has(.note-page.standalone) {
   color: var(--color-primary);
 }
 
+/* Reduce spacing for first paragraph after headings */
+#note-editor .ProseMirror h1 + p,
+#note-editor .ProseMirror h2 + p,
+#note-editor .ProseMirror h3 + p,
+#note-editor .ProseMirror h4 + p,
+#note-editor .ProseMirror h5 + p {
+  margin-top: 0.25rem;
+}
+
+/* Minimize empty paragraphs (blank lines) - Tiptap adds br to empty p */
+#note-editor .ProseMirror p:has(> br:only-child) {
+  margin-top: 0.25rem;
+  margin-bottom: 0;
+  line-height: 1;
+}
+
 #note-editor p {
   line-height: 1.7;
   color: var(--color-primary);
@@ -375,6 +391,11 @@ body:has(.note-page.standalone) {
 #note-editor mark.mark-citation,
 #note-editor mark[data-color="mark-citation"] {
   background: var(--stone-150);
+}
+
+#note-editor mark.mark-gray,
+#note-editor mark[data-color="mark-gray"] {
+  background: var(--stone-200);
 }
 
 /* =============================================================================

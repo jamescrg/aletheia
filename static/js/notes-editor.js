@@ -667,12 +667,13 @@ function markdownToHtml(md) {
       .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.+?)\*/g, "<em>$1</em>")
       .replace(/~~(.+?)~~/g, "<s>$1</s>")
-      // Colored highlights: g==, r==, p==, o==, c==
+      // Colored highlights: g==, r==, p==, o==, c==, a==
       .replace(/g==(.+?)==/g, '<mark class="mark-green">$1</mark>')
       .replace(/r==(.+?)==/g, '<mark class="mark-red">$1</mark>')
       .replace(/p==(.+?)==/g, '<mark class="mark-purple">$1</mark>')
       .replace(/o==(.+?)==/g, '<mark class="mark-orange">$1</mark>')
       .replace(/c==(.+?)==/g, '<mark class="mark-citation">$1</mark>')
+      .replace(/a==(.+?)==/g, '<mark class="mark-gray">$1</mark>')
       // Default highlight: ==text==
       .replace(/==(.+?)==/g, "<mark>$1</mark>");
   }
@@ -895,6 +896,8 @@ function htmlToMarkdown(html) {
           return "o==" + getChildren() + "==";
         if (node.classList.contains("mark-citation") || markColor === "mark-citation")
           return "c==" + getChildren() + "==";
+        if (node.classList.contains("mark-gray") || markColor === "mark-gray")
+          return "a==" + getChildren() + "==";
         return "==" + getChildren() + "==";
       case "blockquote":
         return (
@@ -1257,8 +1260,8 @@ function setupKeyboardShortcuts() {
       return;
     }
 
-    // Highlight shortcuts: Alt+Y (yellow), Alt+G (green), Alt+R (red), Alt+P (purple), Alt+O (orange)
-    if (e.altKey && !mod && ["y", "g", "r", "p", "o"].includes(e.key.toLowerCase())) {
+    // Highlight shortcuts: Alt+Y (yellow), Alt+G (green), Alt+R (red), Alt+P (purple), Alt+O (orange), Alt+. (gray)
+    if (e.altKey && !mod && ["y", "g", "r", "p", "o", "."].includes(e.key.toLowerCase())) {
       e.preventDefault();
       const colorMap = {
         y: null, // default yellow
@@ -1266,6 +1269,7 @@ function setupKeyboardShortcuts() {
         r: "mark-red",
         p: "mark-purple",
         o: "mark-orange",
+        ".": "mark-gray",
       };
       const color = colorMap[e.key.toLowerCase()];
       if (color) {
