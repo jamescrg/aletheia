@@ -310,13 +310,13 @@ body:has(.note-page.standalone) {
 }
 
 #note-editor ul li {
-  margin: 0.25rem 0;
+  margin: 0.5rem 0;
   line-height: 1.6;
   list-style-type: disc;
 }
 
 #note-editor ol li {
-  margin: 0.25rem 0;
+  margin: 0.5rem 0;
   line-height: 1.6;
   list-style-type: decimal;
 }
