@@ -2,7 +2,6 @@
 .section {
   background: var(--background-panel);
   border-radius: var(--radius-md);
-  box-shadow: 0 0.125rem 0.75rem oklch(0 0 0 / 0.1);
   margin-bottom: 1.5rem;
   padding: 1.25rem 1rem 1.5rem;
 }
