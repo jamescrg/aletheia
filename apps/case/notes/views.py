@@ -120,6 +120,24 @@ def notes_add(request, matter_id):
     return render(request, "case/notes/form.html", context)
 
 
+SIDEBAR_SORT_OPTIONS = [
+    ("-updated_at", "Modified, new to old"),
+    ("-created_at", "Created, new to old"),
+    ("title", "Title (A-Z)"),
+]
+
+
+def get_sidebar_sort(request, matter_id):
+    """Get the current sidebar sort order from session."""
+    key = f"notes_sidebar_sort_{matter_id}"
+    return request.session.get(key, "-updated_at")
+
+
+def get_sorted_notes(matter, sort_order):
+    """Get notes for a matter with the specified sort order."""
+    return Note.objects.filter(matter=matter).order_by(sort_order)
+
+
 @login_required
 def note_view(request, note_id):
     """Standalone editor view for a note."""
@@ -130,11 +148,61 @@ def note_view(request, note_id):
     note.viewed_at = timezone.now()
     note.save(update_fields=["viewed_at"])
 
+    # Get all notes for sidebar with sort order
+    sort_order = get_sidebar_sort(request, matter.id)
+    notes = get_sorted_notes(matter, sort_order)
+
     context = {
         "note": note,
         "matter": matter,
+        "notes": notes,
+        "sidebar_sort_options": SIDEBAR_SORT_OPTIONS,
+        "current_sort": sort_order,
     }
     return render(request, "case/notes/editor.html", context)
+
+
+@login_required
+def note_content_partial(request, note_id):
+    """HTMX partial for switching notes in the editor."""
+    note = get_object_or_404(Note, pk=note_id)
+
+    # Update viewed_at timestamp
+    note.viewed_at = timezone.now()
+    note.save(update_fields=["viewed_at"])
+
+    context = {
+        "note": note,
+        "matter": note.matter,
+    }
+    return render(request, "case/notes/editor-content.html", context)
+
+
+@login_required
+def sidebar_sort(request, note_id, sort_key):
+    """Change sidebar sort order and return updated sidebar list."""
+    note = get_object_or_404(Note, pk=note_id)
+    matter = note.matter
+
+    # Validate sort key
+    valid_keys = [key for key, _ in SIDEBAR_SORT_OPTIONS]
+    if sort_key not in valid_keys:
+        sort_key = "-updated_at"
+
+    # Save to session
+    session_key = f"notes_sidebar_sort_{matter.id}"
+    request.session[session_key] = sort_key
+
+    # Get sorted notes
+    notes = get_sorted_notes(matter, sort_key)
+
+    context = {
+        "note": note,
+        "notes": notes,
+        "sidebar_sort_options": SIDEBAR_SORT_OPTIONS,
+        "current_sort": sort_key,
+    }
+    return render(request, "case/notes/sidebar-list.html", context)
 
 
 @login_required

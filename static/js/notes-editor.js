@@ -93,191 +93,6 @@ const SearchHighlight = Extension.create({
   },
 });
 
-// Collapsible headings plugin
-const collapsePluginKey = new PluginKey("collapse");
-
-function getCollapseStorageKey() {
-  return "note-collapse-" + (window.NOTE_DATA ? window.NOTE_DATA.id : "unknown");
-}
-
-function getCollapsedHeadings() {
-  try {
-    const stored = localStorage.getItem(getCollapseStorageKey());
-    return stored ? JSON.parse(stored) : [];
-  } catch (e) {
-    return [];
-  }
-}
-
-function saveCollapsedHeadings(collapsed) {
-  try {
-    localStorage.setItem(getCollapseStorageKey(), JSON.stringify(collapsed));
-  } catch (e) {
-    // localStorage might be full or disabled
-  }
-}
-
-function getHeadingId(node, pos) {
-  // Use heading text content as identifier (more stable than position)
-  return node.textContent.trim().substring(0, 50);
-}
-
-function toggleHeadingCollapse(headingId) {
-  const collapsed = getCollapsedHeadings();
-  const index = collapsed.indexOf(headingId);
-  if (index >= 0) {
-    collapsed.splice(index, 1);
-  } else {
-    collapsed.push(headingId);
-  }
-  saveCollapsedHeadings(collapsed);
-}
-
-function expandAllHeadings() {
-  saveCollapsedHeadings([]);
-  if (editor) {
-    const tr = editor.state.tr;
-    tr.setMeta(collapsePluginKey, { collapsed: [] });
-    editor.view.dispatch(tr);
-  }
-}
-
-function collapseAllHeadings() {
-  if (!editor) return;
-
-  const headingIds = [];
-  editor.state.doc.descendants(function(node, pos) {
-    if (node.type.name === "heading") {
-      headingIds.push(getHeadingId(node, pos));
-    }
-  });
-
-  saveCollapsedHeadings(headingIds);
-  const tr = editor.state.tr;
-  tr.setMeta(collapsePluginKey, { collapsed: headingIds });
-  editor.view.dispatch(tr);
-}
-
-const CollapseHeadings = Extension.create({
-  name: "collapseHeadings",
-
-  addProseMirrorPlugins() {
-    const extension = this;
-    return [
-      new Plugin({
-        key: collapsePluginKey,
-        state: {
-          init() {
-            return { collapsed: getCollapsedHeadings() };
-          },
-          apply(tr, prev) {
-            const meta = tr.getMeta(collapsePluginKey);
-            if (meta !== undefined) {
-              return { collapsed: meta.collapsed };
-            }
-            return prev;
-          },
-        },
-        props: {
-          decorations(state) {
-            const pluginState = this.getState(state);
-            const collapsed = pluginState.collapsed;
-            const decorations = [];
-            const headings = [];
-
-            // First pass: collect all headings with their positions and levels
-            state.doc.descendants(function(node, pos) {
-              if (node.type.name === "heading") {
-                headings.push({
-                  pos: pos,
-                  level: node.attrs.level,
-                  id: getHeadingId(node, pos),
-                  nodeSize: node.nodeSize,
-                });
-              }
-            });
-
-            // Second pass: create decorations
-            headings.forEach(function(heading, index) {
-              const isCollapsed = collapsed.indexOf(heading.id) >= 0;
-
-              // Create chevron widget decoration (insert at start of heading content)
-              const chevronWidget = document.createElement("span");
-              chevronWidget.className = "heading-toggle" + (isCollapsed ? " collapsed" : "");
-              chevronWidget.innerHTML = '<i class="bi bi-chevron-down"></i>';
-              chevronWidget.dataset.headingId = heading.id;
-
-              decorations.push(
-                Decoration.widget(heading.pos + 1, chevronWidget, { side: -1 })
-              );
-
-              // If collapsed, hide each node until next heading of same or higher level
-              if (isCollapsed) {
-                // Add spellcheck="false" to the collapsed heading itself
-                decorations.push(
-                  Decoration.node(heading.pos, heading.pos + heading.nodeSize, {
-                    spellcheck: "false",
-                  })
-                );
-
-                const endPos = findCollapseEndPos(headings, index, state.doc);
-                const startPos = heading.pos + heading.nodeSize;
-
-                // Iterate through nodes and add decoration to each
-                state.doc.nodesBetween(startPos, endPos, function(node, pos) {
-                  if (pos >= startPos && pos < endPos) {
-                    decorations.push(
-                      Decoration.node(pos, pos + node.nodeSize, {
-                        class: "collapsed-content",
-                        spellcheck: "false",
-                      })
-                    );
-                    return false; // Don't descend into children
-                  }
-                });
-              }
-            });
-
-            return DecorationSet.create(state.doc, decorations);
-          },
-          handleDOMEvents: {
-            mousedown: function(view, event) {
-              const toggle = event.target.closest(".heading-toggle");
-              if (toggle) {
-                event.preventDefault();
-                event.stopPropagation();
-                const headingId = toggle.dataset.headingId;
-                toggleHeadingCollapse(headingId);
-                // Dispatch transaction to trigger decoration update
-                const tr = view.state.tr;
-                tr.setMeta(collapsePluginKey, { collapsed: getCollapsedHeadings() });
-                view.dispatch(tr);
-                return true;
-              }
-              return false;
-            },
-          },
-        },
-      }),
-    ];
-  },
-});
-
-function findCollapseEndPos(headings, currentIndex, doc) {
-  const currentHeading = headings[currentIndex];
-  const currentLevel = currentHeading.level;
-
-  // Find next heading of same or higher level (lower number = higher level)
-  for (let i = currentIndex + 1; i < headings.length; i++) {
-    if (headings[i].level <= currentLevel) {
-      return headings[i].pos;
-    }
-  }
-
-  // No next heading found, collapse until end of document
-  return doc.content.size;
-}
-
 // Custom extension for note references (documents and highlights)
 const NoteRef = TiptapNode.create({
   name: "noteRef",
@@ -375,12 +190,12 @@ function initEditor() {
       Highlight.configure({ multicolor: true }),
       NoteRef,
       SearchHighlight,
-      CollapseHeadings,
     ],
     content: initialContent,
     autofocus: true,
     onUpdate: function () {
       scheduleAutosave();
+      scheduleOutlineUpdate();
     },
   });
 
@@ -395,6 +210,9 @@ function initEditor() {
 
   // Refresh reference citations on load
   refreshReferenceCitations();
+
+  // Build heading outline
+  buildOutline();
 }
 
 function setupReferenceClicks() {
@@ -598,7 +416,7 @@ function finishTitleEdit(input, originalTitle) {
   const noteId = input.dataset.noteId;
 
   if (!newTitle || newTitle === originalTitle) {
-    revertToSpan(input, originalTitle);
+    revertToHeading(input, originalTitle);
     return;
   }
 
@@ -618,31 +436,31 @@ function finishTitleEdit(input, originalTitle) {
     })
     .then(function (data) {
       if (data.saved) {
-        revertToSpan(input, data.title);
+        revertToHeading(input, data.title);
       } else {
-        revertToSpan(input, originalTitle);
+        revertToHeading(input, originalTitle);
       }
     })
     .catch(function () {
-      revertToSpan(input, originalTitle);
+      revertToHeading(input, originalTitle);
     });
 }
 
 function cancelTitleEdit(input, originalTitle) {
-  revertToSpan(input, originalTitle);
+  revertToHeading(input, originalTitle);
 }
 
-function revertToSpan(input, title) {
-  const span = document.createElement("span");
-  span.id = "note-title";
-  span.className = "note-title";
-  span.dataset.noteId = input.dataset.noteId;
-  span.textContent = title;
+function revertToHeading(input, title) {
+  const h1 = document.createElement("h1");
+  h1.id = "note-title";
+  h1.className = "note-title";
+  h1.dataset.noteId = input.dataset.noteId;
+  h1.textContent = title;
 
-  input.replaceWith(span);
+  input.replaceWith(h1);
 
   // Re-attach click listener
-  span.addEventListener("click", function () {
+  h1.addEventListener("click", function () {
     startTitleEdit();
   });
 }
@@ -1119,24 +937,6 @@ function setupToolbar() {
     insertSourceBtn.addEventListener("click", function (e) {
       e.preventDefault();
       openReferencePicker();
-    });
-  }
-
-  // Expand/Collapse all buttons
-  const expandAllBtn = document.getElementById("expand-all-btn");
-  const collapseAllBtn = document.getElementById("collapse-all-btn");
-
-  if (expandAllBtn) {
-    expandAllBtn.addEventListener("click", function (e) {
-      e.preventDefault();
-      expandAllHeadings();
-    });
-  }
-
-  if (collapseAllBtn) {
-    collapseAllBtn.addEventListener("click", function (e) {
-      e.preventDefault();
-      collapseAllHeadings();
     });
   }
 }
@@ -1916,5 +1716,202 @@ function importMarkdown(markdown, replace) {
   scheduleAutosave();
 }
 
+// =============================================================================
+// Outline Panel - Heading Navigation
+// =============================================================================
+
+function buildOutline() {
+  const outlineList = document.getElementById("outline-list");
+  if (!outlineList || !editor) return;
+
+  const headings = [];
+
+  // Collect headings from the editor (exclude h1 since title serves as h1)
+  editor.state.doc.descendants(function(node, pos) {
+    if (node.type.name === "heading" && node.attrs.level >= 2) {
+      headings.push({
+        level: node.attrs.level,
+        text: node.textContent.trim(),
+        pos: pos,
+      });
+    }
+  });
+
+  // Build outline HTML
+  if (headings.length === 0) {
+    outlineList.innerHTML = '<li class="outline-empty">No headings</li>';
+    return;
+  }
+
+  let html = "";
+  headings.forEach(function(heading, index) {
+    const text = heading.text || "(empty)";
+    html += '<li class="level-' + heading.level + '" data-pos="' + heading.pos + '">' +
+      text.substring(0, 50) + (text.length > 50 ? "..." : "") + '</li>';
+  });
+
+  outlineList.innerHTML = html;
+
+  // Add click handlers
+  outlineList.querySelectorAll("li[data-pos]").forEach(function(item) {
+    item.addEventListener("click", function() {
+      const pos = parseInt(item.dataset.pos, 10);
+      scrollToHeading(pos);
+    });
+  });
+}
+
+function scrollToHeading(pos) {
+  if (!editor) return;
+
+  // Find the DOM node at this position
+  const domAtPos = editor.view.domAtPos(pos + 1);
+  if (domAtPos && domAtPos.node) {
+    let element = domAtPos.node;
+    // Get the parent element if we have a text node
+    if (element.nodeType === Node.TEXT_NODE) {
+      element = element.parentElement;
+    }
+    // Find the heading element
+    const heading = element.closest("h1, h2, h3, h4, h5, h6");
+    if (heading) {
+      // Scroll manually within the .note-page container
+      const notePage = document.querySelector(".note-page");
+      if (notePage) {
+        const headingRect = heading.getBoundingClientRect();
+        const containerRect = notePage.getBoundingClientRect();
+        const scrollTop = notePage.scrollTop + (headingRect.top - containerRect.top) - 32;
+        notePage.scrollTo({ top: Math.max(0, scrollTop), behavior: "smooth" });
+      }
+    }
+  }
+}
+
+// Debounced outline update
+let outlineTimer = null;
+function scheduleOutlineUpdate() {
+  if (outlineTimer) clearTimeout(outlineTimer);
+  outlineTimer = setTimeout(buildOutline, 500);
+}
+
+// =============================================================================
+// HTMX Integration for Note Switching
+// =============================================================================
+
+function setupHtmxHandlers() {
+  // Trigger autosave and update active state before HTMX request
+  document.body.addEventListener("htmx:beforeRequest", function(e) {
+    if (e.detail.target && e.detail.target.id === "note-editor-container") {
+      if (autosaveTimer) clearTimeout(autosaveTimer);
+      performAutosave();
+
+      // Update active state immediately from clicked element
+      const clickedItem = e.detail.elt;
+      if (clickedItem && clickedItem.dataset.noteId) {
+        updateSidebarActive(clickedItem.dataset.noteId);
+      }
+    }
+  });
+
+  // Reinitialize editor after HTMX swaps new note content
+  document.body.addEventListener("htmx:afterSwap", function(e) {
+    if (e.detail.target && e.detail.target.id === "note-editor-container") {
+      // Destroy old editor
+      if (editor) {
+        editor.destroy();
+        editor = null;
+      }
+
+      // Reset state
+      lastSavedContent = "";
+      searchMatches = [];
+      currentMatchIndex = -1;
+
+      // Reinitialize editor with new NOTE_DATA
+      initEditor();
+    }
+  });
+
+  // Handle browser back/forward navigation
+  window.addEventListener("popstate", function(e) {
+    // Let the browser handle the navigation - page will reload
+  });
+}
+
+function updateSidebarActive(noteId) {
+  const sidebar = document.querySelector(".sidebar-notes-list");
+  if (!sidebar) return;
+
+  // Remove active class from all items
+  sidebar.querySelectorAll("li").forEach(function(item) {
+    item.classList.remove("active");
+  });
+
+  // Add active class to current note
+  const activeItem = sidebar.querySelector('li[data-note-id="' + noteId + '"]');
+  if (activeItem) {
+    activeItem.classList.add("active");
+  }
+}
+
+// =============================================================================
+// Panel Collapse Toggle
+// =============================================================================
+
+function togglePanel(panelClass) {
+  const panel = document.querySelector("." + panelClass);
+  if (!panel) return;
+
+  // Check if panel is currently visible
+  const isVisible = panel.offsetWidth > 0;
+
+  if (isVisible) {
+    // Collapse it
+    panel.classList.add("collapsed");
+    panel.classList.remove("expanded");
+    localStorage.setItem("notes-editor-" + panelClass, "collapsed");
+  } else {
+    // Expand it
+    panel.classList.remove("collapsed");
+    panel.classList.add("expanded");
+    localStorage.setItem("notes-editor-" + panelClass, "expanded");
+  }
+}
+
+function restorePanelStates() {
+  const screenWidth = window.innerWidth;
+
+  // Restore sidebar state (default collapsed < 1200px)
+  const sidebarState = localStorage.getItem("notes-editor-note-sidebar");
+  const sidebar = document.querySelector(".note-sidebar");
+  if (sidebar) {
+    if (sidebarState === "collapsed") {
+      sidebar.classList.add("collapsed");
+    } else if (sidebarState === "expanded" && screenWidth >= 1200) {
+      // Only restore expanded on large screens
+      sidebar.classList.add("expanded");
+    }
+  }
+
+  // Restore outline state (default collapsed < 768px)
+  const outlineState = localStorage.getItem("notes-editor-note-outline");
+  const outline = document.querySelector(".note-outline");
+  if (outline) {
+    if (outlineState === "collapsed") {
+      outline.classList.add("collapsed");
+    } else if (outlineState === "expanded" && screenWidth >= 768) {
+      // Only restore expanded on larger screens
+      outline.classList.add("expanded");
+    }
+  }
+}
+
+// Expose togglePanel globally for onclick handlers
+window.togglePanel = togglePanel;
+
 // Initialize on load
-document.addEventListener("DOMContentLoaded", initEditor);
+document.addEventListener("DOMContentLoaded", function() {
+  restorePanelStates();
+  initEditor();
+  setupHtmxHandlers();
+});
