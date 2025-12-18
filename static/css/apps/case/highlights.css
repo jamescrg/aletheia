@@ -225,12 +225,14 @@ Highlight content (td)
 ------------------------------------------------*/
 
 .highlights-list .dropdown-cell .dropdown {
-  display: flex;
-  align-items: flex-start;
+  display: inline-flex;
+  align-items: center;
   gap: 0.5rem;
+  width: fit-content;
 }
 
 .highlights-list .highlight-slug {
+  margin: 0;
   font-weight: 500;
 }
 
@@ -238,8 +240,9 @@ Highlight content (td)
   padding: 0.25rem 0.5rem;
 }
 
-.highlights-list .highlight-menu-btn {
-  margin-top: -0.125rem;
+.highlights-list .dropdown-cell .btn-ghost {
+  margin-left: 0;
+  flex-shrink: 0;
 }
 
 .highlights-list .highlight-text {
