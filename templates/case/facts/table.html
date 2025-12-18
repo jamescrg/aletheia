@@ -10,6 +10,8 @@
         </button>
       </th>
       <th class="description">Description</th>
+      <th class="sources">Sources</th>
+      <th class="labels">Labels</th>
       <th class="importance">
         <button class="btn-sort {% if 'importance' in current_order %}active{% endif %}"
                 hx-get="{% url 'case:facts-sort' matter.id 'importance' %}"
@@ -23,7 +25,7 @@
       {% include "case/facts/fact-row.html" %}
     {% empty %}
       <tr>
-        <td colspan="3" class="empty-message">No facts found for this matter.</td>
+        <td colspan="5" class="empty-message">No facts found for this matter.</td>
       </tr>
     {% endfor %}
   </table>
