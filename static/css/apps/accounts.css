@@ -2,6 +2,7 @@
 body {
   color: var(--color-darker);
   font-family: 'Open Sans', sans-serif;
+  font-size: 1.125rem;
 }
 
 .vertical-center {
@@ -27,13 +28,14 @@ body {
 .auth-card {
   background: var(--background-panel);
   border-radius: var(--radius-md);
+  box-shadow: 0 0.125rem 0.5rem oklch(0 0 0 / 0.08);
   padding: 1.25rem;
   width: 31.25rem;
 }
 
 .auth-title {
   color: var(--link-hover);
-  font-size: 1.5em;
+  font-size: 1.75rem;
   font-weight: 500;
   margin-bottom: 0.25rem;
   text-align: center;
