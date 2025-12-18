@@ -152,16 +152,15 @@ Fact row layout
 .facts-list .fact-content {
   display: inline-flex;
   align-items: flex-start;
-  gap: 0.25rem;
+  gap: 0.5rem;
 }
 
 .facts-list .fact-actions {
   flex-shrink: 0;
 }
 
-.facts-list .fact-actions button {
-  color: var(--icon-muted);
-  transition: color 0.15s;
+.facts-list .fact-actions .btn-ghost {
+  margin-left: 0;
 }
 
 .facts-list .fact-actions button:hover {

@@ -1,6 +1,6 @@
 from django import forms
 
-from apps.case.models import Note
+from apps.notes.models import Note
 from config.settings import CustomFormRendererCompact
 
 

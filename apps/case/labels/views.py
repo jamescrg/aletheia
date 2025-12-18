@@ -3,9 +3,10 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
-from apps.case.models import Document, Fact, Highlight, Label, Note
+from apps.case.models import Document, Fact, Highlight, Label
 from apps.case.views import get_matter_from_url, get_session_key, set_last_tab
 from apps.matters.models import Matter
+from apps.notes.models import Note
 
 from .filters import LabelsFilter
 from .forms import LabelsForm

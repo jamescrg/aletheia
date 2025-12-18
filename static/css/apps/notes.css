@@ -401,7 +401,7 @@ body:has(.note-page.standalone) {
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
-  padding-bottom: 0.5rem;
+  padding-bottom: 2rem;
 }
 
 .note-header .note-title {

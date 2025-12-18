@@ -47,7 +47,7 @@
           <a href="{% url 'case:highlights-index' matter.id %}">Highlights</a>
         </li>
         <li {% if subapp == "facts" %}class="active"{% endif %}>
-          <a href="{% url 'case:facts-index' matter.id %}">Facts</a>
+          <a href="{% url 'case:facts-index' matter.id %}">Timeline</a>
         </li>
         <li {% if subapp == "notes" %}class="active"{% endif %}>
           <a href="{% url 'case:notes-index' matter.id %}">Notes</a>

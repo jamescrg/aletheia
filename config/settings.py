@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "apps.reports",
     "apps.management",
     "apps.outlines",
+    "apps.notes",
     "django_filters",
     "django_cleanup.apps.CleanupConfig",
     "django_q",

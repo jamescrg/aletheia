@@ -6,7 +6,7 @@ Converts OutlineItems to markdown content with inline reference chips.
 
 from django.core.management.base import BaseCommand
 
-from apps.case.models import Note
+from apps.notes.models import Note
 from apps.outlines.models import Outline
 
 

@@ -4,8 +4,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from apps.case.models import Document, Highlight, Note
+from apps.case.models import Document, Highlight
 from apps.case.views import get_matter_from_url, get_session_key, set_last_tab
+from apps.notes.models import Note
 
 from .filters import NotesFilter
 from .forms import NoteForm

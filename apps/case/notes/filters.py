@@ -1,7 +1,8 @@
 import django_filters
 from django.db.models import Q
 
-from apps.case.models import Label, Note
+from apps.case.models import Label
+from apps.notes.models import Note
 from config.helpers import MultipleOrderingFilter
 
 IMPORTANCE_CHOICES = tuple((i, f"Importance {i}") for i in range(1, 11))
