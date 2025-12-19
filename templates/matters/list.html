@@ -36,14 +36,14 @@
             Matter
             <button class="btn-sort {% if current_order == 'name' %}active{% endif %}"
                     hx-post="{% url 'matters:order-by' 'name' %}">
-              <i class="icon-arrow-up-down"></i>
+              <i class="icon-chevrons-up-down"></i>
             </button>
           </th>
           <th class="work-status">
             Work Status
             <button class="btn-sort {% if current_order == 'description' %}active{% endif %}"
                     hx-post="{% url 'matters:order-by' 'description' %}">
-              <i class="icon-arrow-up-down"></i>
+              <i class="icon-chevrons-up-down"></i>
             </button>
           </th>
           <th class="case-no">Proceeding</th>

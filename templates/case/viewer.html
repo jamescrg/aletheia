@@ -16,6 +16,8 @@
           rel="stylesheet">
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet"
+          href="https://unpkg.com/lucide-static@latest/font/lucide.css">
     <!-- Custom stylesheets -->
     <link rel="stylesheet" href="{% static_v 'css/palette.css' %}">
     <link rel="stylesheet" href="{% static_v 'css/colors.css' %}">
@@ -351,7 +353,7 @@
           </div>
           <div class="highlights-controls">
             <button id="toggle-condensed" class="btn-icon" title="Toggle condensed view">
-              <i class="icon-minimize-2"></i>
+              <i class="icon-chevrons-down-up"></i>
             </button>
           </div>
         </div>
@@ -526,9 +528,9 @@
 
       // Swap icon between collapse and expand
       if (list.classList.contains('condensed')) {
-        icon.className = 'icon-maximize-2';
+        icon.className = 'icon-chevrons-up-down';
       } else {
-        icon.className = 'icon-minimize-2';
+        icon.className = 'icon-chevrons-down-up';
       }
     });
 
