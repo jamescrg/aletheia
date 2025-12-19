@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import F, OuterRef, Subquery
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views.decorators.http import require_POST
 
 from apps.case.models import Document, Highlight
@@ -124,7 +125,13 @@ def notes_add(request, matter_id):
             note.matter = matter
             note.save()
 
-            return HttpResponse(status=204, headers={"HX-Trigger": "notesChanged"})
+            return HttpResponse(
+                status=204,
+                headers={
+                    "HX-Trigger": "notesChanged",
+                    "HX-Redirect": reverse("case:note-view", args=[note.id]),
+                },
+            )
     else:
         form = NoteForm(use_required_attribute=False)
 

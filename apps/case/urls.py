@@ -8,6 +8,7 @@ from apps.case.highlights import views as highlights
 from apps.case.labels import views as labels
 from apps.case.notes import views as notes
 from apps.case.search import views as search
+from apps.case.witnesses import views as witnesses
 
 app_name = "case"
 
@@ -168,6 +169,37 @@ urlpatterns = [
     ),
     path("case/<int:matter_id>/facts/print/", facts.facts_print, name="facts-print"),
     path("case/<int:matter_id>/facts/pdf/", facts.facts_pdf, name="facts-pdf"),
+    # Witnesses (matter-scoped)
+    path(
+        "case/<int:matter_id>/witnesses/",
+        witnesses.witnesses_index,
+        name="witnesses-index",
+    ),
+    path(
+        "case/<int:matter_id>/witnesses/list/",
+        witnesses.witnesses_list,
+        name="witnesses-list",
+    ),
+    path(
+        "case/<int:matter_id>/witnesses/add/",
+        witnesses.witnesses_add,
+        name="witnesses-add",
+    ),
+    path(
+        "case/<int:matter_id>/witnesses/filter/",
+        witnesses.witnesses_filter,
+        name="witnesses-filter",
+    ),
+    path(
+        "case/<int:matter_id>/witnesses/filter/importance/<int:importance_value>/",
+        witnesses.witnesses_filter_importance,
+        name="witnesses-filter-importance",
+    ),
+    path(
+        "case/<int:matter_id>/witnesses/sort/<str:order>/",
+        witnesses.witnesses_sort,
+        name="witnesses-sort",
+    ),
     # Notes (matter-scoped)
     path("case/<int:matter_id>/notes/", notes.notes_index, name="notes-index"),
     path("case/<int:matter_id>/notes/list/", notes.notes_list, name="notes-list"),
@@ -434,6 +466,27 @@ urlpatterns = [
         "case/facts/<int:fact_id>/importance/<int:importance>/",
         facts.fact_importance,
         name="fact-importance",
+    ),
+    # Witness operations
+    path(
+        "case/witnesses/<int:witness_id>/edit/",
+        witnesses.witnesses_edit,
+        name="witnesses-edit",
+    ),
+    path(
+        "case/witnesses/<int:witness_id>/delete/",
+        witnesses.witnesses_delete,
+        name="witnesses-delete",
+    ),
+    path(
+        "case/witnesses/<int:witness_id>/importance/<int:importance>/",
+        witnesses.witness_importance,
+        name="witness-importance",
+    ),
+    path(
+        "case/witnesses/<int:witness_id>/alignment/<str:alignment>/",
+        witnesses.witness_alignment,
+        name="witness-alignment",
     ),
     # Note operations
     path("case/notes/<int:note_id>/", notes.note_view, name="note-view"),

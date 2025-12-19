@@ -6,13 +6,23 @@
       Recent
     {% endif %}
   </span>
+</div>
+<div class="sidebar-panel-toolbar">
+  <button class="panel-btn"
+          hx-get="{% if note.matter %}{% url 'case:notes-add' note.matter.id %}{% else %}{% url 'notes:add' %}{% endif %}"
+          hx-target="#htmx-modal-container"
+          data-bs-toggle="modal"
+          data-bs-target="#htmx-modal-container"
+          title="New Note">
+    <i class="bi bi-plus-lg"></i>
+  </button>
   <div class="dropdown">
-    <button class="sidebar-sort-btn"
+    <button class="panel-btn"
             type="button"
             data-bs-toggle="dropdown"
             aria-expanded="false"
             title="Sort notes">
-      <i class="bi bi-arrow-down-up"></i>
+      <i class="bi bi-sort-up-alt"></i>
     </button>
     <ul class="dropdown-menu dropdown-menu-end">
       {% for key, label in sidebar_sort_options %}

@@ -9,11 +9,10 @@ class NoteForm(forms.ModelForm):
 
     class Meta:
         model = Note
-        fields = ["category", "topic", "title"]
+        fields = ["category", "title"]
         widgets = {
             "title": forms.TextInput(attrs={"autofocus": True, "class": "span2"}),
             "category": forms.Select(),
-            "topic": forms.TextInput(attrs={"class": "span2"}),
         }
 
     def __init__(self, *args, **kwargs):

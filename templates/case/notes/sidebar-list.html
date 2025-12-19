@@ -6,8 +6,18 @@
       Notes
     {% endif %}
   </span>
+</div>
+<div class="sidebar-panel-toolbar">
+  <button class="panel-btn"
+          hx-get="{% url 'case:notes-add' note.matter.id %}"
+          hx-target="#htmx-modal-container"
+          data-bs-toggle="modal"
+          data-bs-target="#htmx-modal-container"
+          title="New Note">
+    <i class="bi bi-plus-lg"></i>
+  </button>
   <div class="dropdown">
-    <button class="sidebar-sort-btn"
+    <button class="panel-btn"
             type="button"
             data-bs-toggle="dropdown"
             aria-expanded="false"

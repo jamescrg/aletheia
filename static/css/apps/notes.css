@@ -66,7 +66,8 @@ body:has(.note-page.standalone) {
   text-overflow: ellipsis;
 }
 
-.note-sidebar .sidebar-sort-btn {
+/* Common panel button style */
+.panel-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -80,37 +81,29 @@ body:has(.note-page.standalone) {
   transition: all 0.15s ease;
 }
 
-.note-sidebar .sidebar-sort-btn:hover {
+.panel-btn:hover {
   background: var(--background-lighter);
   color: var(--color-primary);
 }
 
-/* Panel collapse toggle button */
-.panel-collapse-btn {
+.note-sidebar .sidebar-panel-toolbar {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.125rem 0.375rem;
-  font-size: 1rem;
-  border: solid 1px var(--border-dark);
-  background: var(--background-lighter);
-  color: var(--button-toolbar);
-  border-radius: 0.375rem;
-  cursor: pointer;
-  transition: all 0.15s ease;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--border-medium);
 }
 
-.panel-collapse-btn:hover {
-  background: var(--background-lighter);
-  color: var(--color-primary);
+.note-sidebar .sidebar-panel-toolbar .panel-btn i {
+  color: inherit;
 }
 
 
 .note-sidebar .sidebar-notes-list {
   list-style: none;
   margin: 0 0.5rem;
-  padding: 0;
-  padding-top: 0.5rem;
+  padding: 0.5rem 0;
   overflow-y: auto;
   flex: 1;
 }
@@ -199,21 +192,6 @@ body:has(.note-page.standalone) {
   background: var(--background-muted);
   border-bottom: 1px solid var(--border-medium);
   flex-shrink: 0;
-}
-
-.note-outline .outline-collapse-btn {
-  border: none;
-  background: none;
-  color: var(--color-muted);
-  cursor: pointer;
-  padding: 0.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.note-outline .outline-collapse-btn:hover {
-  color: var(--color-primary);
 }
 
 .note-outline .outline-list {

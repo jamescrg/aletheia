@@ -237,3 +237,41 @@ class Fact(models.Model):
 
     class Meta:
         db_table = "app_fact"
+
+
+class Witness(models.Model):
+    """Witness associated with a matter."""
+
+    ALIGNMENT_CHOICES = [
+        ("friendly", "Friendly"),
+        ("neutral", "Neutral"),
+        ("hostile", "Hostile"),
+    ]
+
+    user = models.ForeignKey(
+        "accounts.CustomUser", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    matter = models.ForeignKey(
+        Matter, on_delete=models.CASCADE, related_name="witnesses"
+    )
+    name = models.CharField(max_length=255)
+    affiliation = models.CharField(max_length=255, blank=True)
+    phone = models.CharField(max_length=50, blank=True)
+    email = models.EmailField(blank=True)
+    address = models.TextField(blank=True)
+    alignment = models.CharField(
+        max_length=20, choices=ALIGNMENT_CHOICES, default="neutral"
+    )
+    knowledge = models.TextField(blank=True)
+    importance = models.PositiveIntegerField(
+        default=5, validators=[MinValueValidator(1), MaxValueValidator(10)]
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = "app_witness"
+        ordering = ["name"]

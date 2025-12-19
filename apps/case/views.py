@@ -4,7 +4,16 @@ from django.shortcuts import get_object_or_404, redirect
 from apps.matters.models import Matter
 
 # Valid tabs for the case app
-VALID_TABS = ["documents", "highlights", "facts", "notes", "labels", "search", "ai"]
+VALID_TABS = [
+    "documents",
+    "highlights",
+    "facts",
+    "witnesses",
+    "notes",
+    "labels",
+    "search",
+    "ai",
+]
 DEFAULT_TAB = "documents"
 
 

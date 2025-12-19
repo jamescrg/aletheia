@@ -1,0 +1,34 @@
+<div class="dropdown">
+  <button class="button-link"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false">
+    {% if witness.alignment == "friendly" %}
+      Friendly
+    {% elif witness.alignment == "hostile" %}
+      Hostile
+    {% else %}
+      Neutral
+    {% endif %}
+  </button>
+  <ul class="dropdown-menu">
+    <li>
+      <a class="dropdown-item"
+         href="#"
+         hx-get="{% url 'case:witness-alignment' witness.id 'friendly' %}"
+         hx-target="#witnesses">Friendly</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
+         hx-get="{% url 'case:witness-alignment' witness.id 'neutral' %}"
+         hx-target="#witnesses">Neutral</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
+         hx-get="{% url 'case:witness-alignment' witness.id 'hostile' %}"
+         hx-target="#witnesses">Hostile</a>
+    </li>
+  </ul>
+</div>

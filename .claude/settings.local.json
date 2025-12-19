@@ -58,7 +58,8 @@
       "Bash(git commit:*)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(mkdir:*)",
-      "Bash(git show:*)"
+      "Bash(git show:*)",
+      "Bash(wc:*)"
     ],
     "deny": []
   }

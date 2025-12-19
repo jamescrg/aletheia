@@ -1,0 +1,27 @@
+<div class="modal-dialog modal-md">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Filter Witnesses</h1>
+      <div>
+        <a href="#" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg"></i>
+        </a>
+      </div>
+    </div>
+    <div class="modal-body">
+      <form id="witnesses-filter-form"
+            class="form-responsive form-spacious filter"
+            hx-target="#htmx-modal-container"
+            hx-post="{% url 'case:witnesses-filter' matter.id %}">
+        {% csrf_token %}
+        {{ filter.form }}
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" form="witnesses-filter-form" class="submit">Apply</button>
+      <a class="btn-icon"
+         href="#"
+         hx-post="{% url 'management:clear-filters' session_key='witnesses_filter' trigger='witnessesChanged' %}">Restore Defaults</a>
+    </div>
+  </div>
+</div>

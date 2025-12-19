@@ -1,0 +1,18 @@
+{% load phone_numbers %}
+<tr id="witness-{{ witness.id }}">
+  <td class="alignment dropdown-cell">{% include "case/witnesses/alignment-display.html" %}</td>
+  <td class="name">
+    <a href="#"
+       hx-get="{% url 'case:witnesses-edit' witness.id %}"
+       hx-target="#htmx-modal-container"
+       data-bs-toggle="modal"
+       data-bs-target="#htmx-modal-container">{{ witness.name }}</a>
+  </td>
+  <td class="affiliation">{{ witness.affiliation|default:"" }}</td>
+  <td class="knowledge">{{ witness.knowledge|default:""|truncatewords:15 }}</td>
+  <td class="phone">{{ witness.phone|phone_number }}</td>
+  <td class="email">
+    {% if witness.email %}<a href="mailto:{{ witness.email }}">{{ witness.email }}</a>{% endif %}
+  </td>
+  <td class="importance dropdown-cell">{% include "case/witnesses/importance-display.html" %}</td>
+</tr>

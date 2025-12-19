@@ -1,0 +1,77 @@
+/* Witnesses List Table */
+.witnesses-list {
+  min-width: 50rem;
+}
+
+.witnesses-list .alignment {
+  width: 9rem;
+}
+
+.witnesses-list .name {
+  width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.witnesses-list .affiliation {
+  width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.witnesses-list .knowledge {
+  /* Variable width - takes remaining space */
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.witnesses-list .phone {
+  width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.witnesses-list .email {
+  width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.witnesses-list .importance {
+  width: 3rem;
+  text-align: center;
+}
+
+.witnesses-list th.importance .btn-sort {
+  margin: 0;
+}
+
+.witnesses-list .importance .dropdown-menu {
+  min-width: 2rem;
+}
+
+/* Overflow handling */
+.table-container:has(.witnesses-list) {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.witnesses-list {
+  overflow: visible;
+}
+
+.witnesses-list td {
+  overflow: visible;
+  vertical-align: top;
+}
+
+.witnesses-list td.name,
+.witnesses-list td.affiliation,
+.witnesses-list td.phone,
+.witnesses-list td.email {
+  overflow: hidden;
+}
