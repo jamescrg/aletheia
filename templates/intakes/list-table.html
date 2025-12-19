@@ -41,14 +41,14 @@
             Date
             <button class="btn-sort {% if current_order == 'date' %}active{% endif %}"
                     hx-post="{% url 'intakes:order-by' 'date' %}">
-              <i class="icon-chevrons-up-down"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
           <th class="intake-name">
             Name
             <button class="btn-sort {% if current_order == 'name' %}active{% endif %}"
                     hx-post="{% url 'intakes:order-by' 'name' %}">
-              <i class="icon-chevrons-up-down"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
           <th class="intake-phone">Phone</th>

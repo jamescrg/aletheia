@@ -33,28 +33,28 @@
             Date
             <button class="btn-sort {% if current_order == 'date' %}active{% endif %}"
                     hx-post="{% url 'invoicing:payments-order-by' 'date' %}">
-              <i class="icon-chevrons-up-down"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
           <th class="matter">
             Matter
             <button class="btn-sort {% if current_order == 'matter' %}active{% endif %}"
                     hx-post="{% url 'invoicing:payments-order-by' 'matter' %}">
-              <i class="icon-chevrons-up-down"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
           <th class="method">
             Method
             <button class="btn-sort {% if current_order == 'payment_method' %}active{% endif %}"
                     hx-post="{% url 'invoicing:payments-order-by' 'payment_method' %}">
-              <i class="icon-chevrons-up-down"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
           <th class="detail">
             Detail
             <button class="btn-sort {% if current_order == 'detail' %}active{% endif %}"
                     hx-post="{% url 'invoicing:payments-order-by' 'detail' %}">
-              <i class="icon-chevrons-up-down"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
           <th class="amount">Amount</th>

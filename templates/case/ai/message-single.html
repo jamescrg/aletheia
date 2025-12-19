@@ -25,9 +25,9 @@
     {% endif %}
     {% if message.role == "assistant" %}
       <button class="ai-copy-btn btn-icon"
-              onclick="navigator.clipboard.writeText(this.closest('.ai-message-content').querySelector('.ai-message-text').innerText).then(() => { this.innerHTML = '<i class=\'icon-check\'></i>'; setTimeout(() => { this.innerHTML = '<i class=\'icon-clipboard\'></i>'; }, 2000); })"
+              onclick="navigator.clipboard.writeText(this.closest('.ai-message-content').querySelector('.ai-message-text').innerText).then(() => { this.innerHTML = '<i class=\'icon-check\'></i>'; setTimeout(() => { this.innerHTML = '<i class=\'icon-copy\'></i>'; }, 2000); })"
               title="Copy to clipboard">
-        <i class="icon-clipboard"></i>
+        <i class="icon-copy"></i>
       </button>
     {% endif %}
   </div>

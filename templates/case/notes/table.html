@@ -7,7 +7,7 @@
         <button class="btn-sort {% if 'title' in current_order %}active{% endif %}"
                 hx-get="{% url 'case:notes-sort' matter.id 'title' %}"
                 hx-target="#notes">
-          <i class="icon-chevrons-up-down"></i>
+          <i class="icon-arrow-up-down"></i>
         </button>
       </th>
       <th class="user">Author</th>
@@ -16,7 +16,7 @@
         <button class="btn-sort {% if 'created_at' in current_order %}active{% endif %}"
                 hx-get="{% url 'case:notes-sort' matter.id 'created_at' %}"
                 hx-target="#notes">
-          <i class="icon-chevrons-up-down"></i>
+          <i class="icon-arrow-up-down"></i>
         </button>
       </th>
       <th class="updated">
@@ -24,7 +24,7 @@
         <button class="btn-sort {% if 'updated_at' in current_order %}active{% endif %}"
                 hx-get="{% url 'case:notes-sort' matter.id 'updated_at' %}"
                 hx-target="#notes">
-          <i class="icon-chevrons-up-down"></i>
+          <i class="icon-arrow-up-down"></i>
         </button>
       </th>
       <th class="importance">

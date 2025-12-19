@@ -1,7 +1,7 @@
 /* Lucide icon vertical alignment fix */
 [class^="icon-"],
 [class*=" icon-"] {
-  vertical-align: -0.125em;
+  vertical-align: -0.15em;
 }
 
 .icon,

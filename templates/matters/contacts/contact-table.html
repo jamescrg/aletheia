@@ -88,7 +88,7 @@
                   hx-target="#contacts"
                   hx-swap="innerHTML"
                   hx-post="{% url 'matters:contacts-sort' id=matter.id order='group' %}">
-            <i class="icon-chevrons-up-down"></i>
+            <i class="icon-arrow-up-down"></i>
           </button>
         </th>
         <th class="role">
@@ -97,7 +97,7 @@
                   hx-target="#contacts"
                   hx-swap="innerHTML"
                   hx-post="{% url 'matters:contacts-sort' id=matter.id order='role' %}">
-            <i class="icon-chevrons-up-down"></i>
+            <i class="icon-arrow-up-down"></i>
           </button>
         </th>
         <th class="name">
@@ -106,7 +106,7 @@
                   hx-target="#contacts"
                   hx-swap="innerHTML"
                   hx-post="{% url 'matters:contacts-sort' id=matter.id order='name' %}">
-            <i class="icon-chevrons-up-down"></i>
+            <i class="icon-arrow-up-down"></i>
           </button>
         </th>
         <th class="email">Email</th>
@@ -140,7 +140,7 @@
                         class="btn btn-sm action-btn copy-btn"
                         data-copy="{{ item.contact.email }}"
                         title="Copy email">
-                  <i class="icon-clipboard"></i>
+                  <i class="icon-copy"></i>
                 </button>
               </div>
             {% endif %}
@@ -160,7 +160,7 @@
                         class="btn btn-sm action-btn copy-btn"
                         data-copy="{{ item.contact.phone1|phone_number }}"
                         title="Copy phone number">
-                  <i class="icon-clipboard"></i>
+                  <i class="icon-copy"></i>
                 </button>
               </div>
             {% endif %}

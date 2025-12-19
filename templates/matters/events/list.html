@@ -67,21 +67,21 @@
             Date
             <button class="btn-sort {% if current_order == 'date' %}active{% endif %}"
                     hx-post="{% url 'matters:events-filter-sort' id=matter.id order='date' %}">
-              <i class="icon-chevrons-up-down"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
           <th class="party">
             Party
             <button class="btn-sort {% if current_order == 'party' %}active{% endif %}"
                     hx-post="{% url 'matters:events-filter-sort' id=matter.id order='party' %}">
-              <i class="icon-chevrons-up-down"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
           <th class="description">
             Description
             <button class="btn-sort {% if current_order == 'description' %}active{% endif %}"
                     hx-post="{% url 'matters:events-filter-sort' id=matter.id order='description' %}">
-              <i class="icon-chevrons-up-down"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
           <th class="duration">Duration</th>
@@ -90,7 +90,7 @@
             Status
             <button class="btn-sort {% if current_order == 'status' %}active{% endif %}"
                     hx-post="{% url 'matters:events-filter-sort' id=matter.id order='status' %}">
-              <i class="icon-chevrons-up-down"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
         </tr>

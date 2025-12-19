@@ -7,7 +7,7 @@
         <button class="btn-sort {% if 'date' in current_order %}active{% endif %}"
                 hx-get="{% url 'outlines:sort' 'date' %}"
                 hx-target="#outlines">
-          <i class="icon-chevrons-up-down"></i>
+          <i class="icon-arrow-up-down"></i>
         </button>
       </th>
       <th class="title">
@@ -15,7 +15,7 @@
         <button class="btn-sort {% if 'title' in current_order %}active{% endif %}"
                 hx-get="{% url 'outlines:sort' 'title' %}"
                 hx-target="#outlines">
-          <i class="icon-chevrons-up-down"></i>
+          <i class="icon-arrow-up-down"></i>
         </button>
       </th>
       <th class="user">User</th>
@@ -24,7 +24,7 @@
         <button class="btn-sort {% if 'viewed_at' in current_order %}active{% endif %}"
                 hx-get="{% url 'outlines:sort' 'viewed_at' %}"
                 hx-target="#outlines">
-          <i class="icon-chevrons-up-down"></i>
+          <i class="icon-arrow-up-down"></i>
         </button>
       </th>
       <th class="importance">

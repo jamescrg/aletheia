@@ -37,7 +37,7 @@
                     <li>
                       <a class="dropdown-item source-copy-btn"
                          href="#"
-                         data-copy="{% for h in highlights %}{{ h.citation }}{% if not forloop.last %}; {% endif %}{% endfor %}{% if highlights and documents %}; {% endif %}{% for d in documents %}{{ d.citation }}{% if not forloop.last %}; {% endif %}{% endfor %}"><i class="icon-clipboard"></i> Copy Citation
+                         data-copy="{% for h in highlights %}{{ h.citation }}{% if not forloop.last %}; {% endif %}{% endfor %}{% if highlights and documents %}; {% endif %}{% for d in documents %}{{ d.citation }}{% if not forloop.last %}; {% endif %}{% endfor %}"><i class="icon-copy"></i> Copy Citation
                         {% if total_count > 1 %}s{% endif %}
                       </a>
                     </li>
@@ -83,7 +83,7 @@
                 <li>
                   <a class="dropdown-item source-copy-btn"
                      href="#"
-                     data-copy="{{ highlight.citation }}"><i class="icon-clipboard"></i> Copy Citation</a>
+                     data-copy="{{ highlight.citation }}"><i class="icon-copy"></i> Copy Citation</a>
                 </li>
                 <li>
                   <a class="dropdown-item urgent"
@@ -114,7 +114,7 @@
                 <li>
                   <a class="dropdown-item source-copy-btn"
                      href="#"
-                     data-copy="{{ document.citation }}"><i class="icon-clipboard"></i> Copy Citation</a>
+                     data-copy="{{ document.citation }}"><i class="icon-copy"></i> Copy Citation</a>
                 </li>
                 <li>
                   <a class="dropdown-item urgent"

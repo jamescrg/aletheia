@@ -6,7 +6,7 @@
         <button class="btn-sort {% if 'date' in current_order %}active{% endif %}"
                 hx-get="{% url 'case:facts-sort' matter.id 'date' %}"
                 hx-target="#facts">
-          <i class="icon-chevrons-up-down"></i>
+          <i class="icon-arrow-up-down"></i>
         </button>
       </th>
       <th class="description">Description</th>

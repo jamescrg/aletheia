@@ -51,21 +51,21 @@
           Issue Date
           <button class="btn-sort {% if current_order == 'date_issued' %}active{% endif %}"
                   hx-get="{% url 'invoicing:invoices-order-by' 'date_issued' %}">
-            <i class="icon-chevrons-up-down"></i>
+            <i class="icon-arrow-up-down"></i>
           </button>
         </th>
         <th class="matter">
           Matter
           <button class="btn-sort {% if current_order == 'matter' %}active{% endif %}"
                   hx-get="{% url 'invoicing:invoices-order-by' 'matter' %}">
-            <i class="icon-chevrons-up-down"></i>
+            <i class="icon-arrow-up-down"></i>
           </button>
         </th>
         <th class="status">
           Status
           <button class="btn-sort {% if current_order == 'status' %}active{% endif %}"
                   hx-get="{% url 'invoicing:invoices-order-by' 'status' %}">
-            <i class="icon-chevrons-up-down"></i>
+            <i class="icon-arrow-up-down"></i>
           </button>
         </th>
         <th class="amount">Fees</th>

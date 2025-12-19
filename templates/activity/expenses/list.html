@@ -18,7 +18,7 @@
         </button>
         <a href="#"
            class="{% if filter_label == "unbilled" %}toggle-active{% endif %}"
-           hx-post="{% url 'activity:expenses-filter-quick' 'unbilled' %}"><i class="icon-file with-text"></i>Unbilled</a>
+           hx-post="{% url 'activity:expenses-filter-quick' 'unbilled' %}"><i class="icon-mail-x with-text"></i>Unbilled</a>
         <a class="{% if filter_label == "today" %}toggle-active{% endif %}"
            href="#"
            hx-post="{% url 'activity:expenses-filter-quick' 'today' %}"><i class="icon-calendar with-text"></i>Today</a>
@@ -54,7 +54,7 @@
           Date
           <button class="btn-sort {% if current_order == 'date' %}active{% endif %}"
                   hx-post="{% url 'activity:expenses-order-by' 'date' %}">
-            <i class="icon-chevrons-up-down"></i>
+            <i class="icon-arrow-up-down"></i>
           </button>
         </th>
         <th class="user">User</th>
@@ -62,14 +62,14 @@
           Matter
           <button class="btn-sort {% if current_order == 'matter' %}active{% endif %}"
                   hx-post="{% url 'activity:expenses-order-by' 'matter' %}">
-            <i class="icon-chevrons-up-down"></i>
+            <i class="icon-arrow-up-down"></i>
           </button>
         </th>
         <th class="actions">
           Description
           <button class="btn-sort {% if current_order == 'description' %}active{% endif %}"
                   hx-post="{% url 'activity:expenses-order-by' 'description' %}">
-            <i class="icon-chevrons-up-down"></i>
+            <i class="icon-arrow-up-down"></i>
           </button>
         </th>
         <th class="amount">Amount</th>
