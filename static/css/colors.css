@@ -37,7 +37,7 @@
   /* ==========================================================================
      Navigation
      ========================================================================== */
-  --background-nav: var(--stone-350);
+  --background-nav: var(--stone-200);
   --color-nav: var(--stone-600);
   --background-nav-tab-active: var(--background-body);
   --background-subnav: var(--stone-200);
