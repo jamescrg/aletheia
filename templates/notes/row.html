@@ -37,7 +37,7 @@
   </td>
   <td class="user">{{ note.author.get_short_name|default:note.author.username|default:"—" }}</td>
   <td class="created">{{ note.created_at|date:"Y-m-d" }}</td>
-  <td class="viewed">{{ note.viewed_at|date:"Y-m-d"|default:"—" }}</td>
+  <td class="updated">{{ note.updated_at|date:"Y-m-d" }}</td>
   <td class="importance dropdown-cell">
     <div class="dropdown">
       <button class="button-link"

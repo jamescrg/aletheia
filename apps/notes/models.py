@@ -42,9 +42,9 @@ class Note(models.Model):
     )
 
     importance = models.PositiveIntegerField(default=5)
-    viewed_at = models.DateTimeField(null=True, blank=True)
     labels = models.ManyToManyField("case.Label", related_name="notes", blank=True)
 
+    viewed_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -54,3 +54,27 @@ class Note(models.Model):
     class Meta:
         db_table = "app_note"
         ordering = ["-updated_at"]
+
+
+class NoteView(models.Model):
+    """Tracks when each user last viewed each note."""
+
+    user = models.ForeignKey(
+        "accounts.CustomUser",
+        on_delete=models.CASCADE,
+        related_name="note_views",
+    )
+    note = models.ForeignKey(
+        Note,
+        on_delete=models.CASCADE,
+        related_name="views",
+    )
+    viewed_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "app_note_view"
+        unique_together = ("user", "note")
+        ordering = ["-viewed_at"]
+
+    def __str__(self):
+        return f"{self.user} viewed {self.note} at {self.viewed_at}"
