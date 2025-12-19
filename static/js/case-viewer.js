@@ -366,7 +366,7 @@ class DocumentViewer {
 
     // Re-render all pages with new scale
     this.container.innerHTML =
-      '<div id="loading-indicator"><i class="bi bi-arrow-repeat spin"></i> Updating zoom...</div>';
+      '<div id="loading-indicator"><i class="icon-refresh-cw spin"></i> Updating zoom...</div>';
     this.pageContainers = [];
     this.pageViewports = [];
 
@@ -506,7 +506,7 @@ class DocumentViewer {
       <div class="highlight-text">${this.escapeHtml(highlight.text.substring(0, 100))}${highlight.text.length > 100 ? "..." : ""}</div>
       <div class="highlight-actions">
         <button class="btn btn-sm btn-link delete-highlight" data-highlight-id="${highlight.id}" title="Delete">
-          <i class="bi bi-trash"></i>
+          <i class="icon-trash-2"></i>
         </button>
       </div>
     `;

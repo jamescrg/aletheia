@@ -59,7 +59,9 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(mkdir:*)",
       "Bash(git show:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "WebFetch(domain:lucide.dev)",
+      "Bash(xargs sed:*)"
     ],
     "deny": []
   }

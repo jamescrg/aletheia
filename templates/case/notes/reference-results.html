@@ -1,11 +1,11 @@
 {% if query %}
   <div class="sources-tabs">
     <button type="button" class="sources-tab active" data-tab="highlights">
-      <i class="bi bi-highlighter"></i> Highlights
+      <i class="icon-highlighter"></i> Highlights
       {% if highlights %}<span class="sources-tab-count">{{ highlights|length }}</span>{% endif %}
     </button>
     <button type="button" class="sources-tab" data-tab="documents">
-      <i class="bi bi-filetype-pdf"></i> Documents
+      <i class="icon-file-text"></i> Documents
       {% if documents %}<span class="sources-tab-count">{{ documents|length }}</span>{% endif %}
     </button>
   </div>
@@ -16,7 +16,7 @@
            data-type="highlight"
            data-id="{{ highlight.id }}"
            data-label="{{ highlight.citation }}">
-          <i class="bi bi-highlighter"></i>
+          <i class="icon-highlighter"></i>
           <span class="hl-{{ highlight.color }}">{{ highlight.slug|truncatechars:80 }}</span>
           <div class="assign-results-document">
             <small class="text-muted">{{ highlight.document.name|truncatechars:30 }}</small>
@@ -35,7 +35,7 @@
            data-type="document"
            data-id="{{ document.id }}"
            data-label="{{ document.citation }}">
-          <i class="bi bi-filetype-pdf urgent"></i>
+          <i class="icon-file-text urgent"></i>
           {{ document.name|truncatechars:80 }}
         </a>
       </li>
@@ -45,7 +45,7 @@
   </ul>
 {% else %}
   <div class="sources-empty-state">
-    <i class="bi bi-search"></i>
+    <i class="icon-search"></i>
     <p>Search for highlights and documents to insert</p>
   </div>
 {% endif %}

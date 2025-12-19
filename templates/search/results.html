@@ -8,7 +8,7 @@
     <div class="search-cards">
       {% for matter in matters %}
         <a href="{% url 'matters:detail' id=matter.id %}" class="search-card">
-          <span class="app-badge app-badge-lg badge-gray"><i class="bi bi-briefcase"></i></span>
+          <span class="app-badge app-badge-lg badge-gray"><i class="icon-briefcase"></i></span>
           <div class="search-card-content">
             <div class="search-card-title">{{ matter.name }}</div>
             {% if matter.work_status %}<div class="search-card-meta">{{ matter.work_status|truncatewords:8 }}</div>{% endif %}
@@ -29,7 +29,7 @@
       {% for contact in contacts %}
         <a href="{% url 'contacts:select' contact_id=contact.id %}"
            class="search-card">
-          <span class="app-badge app-badge-lg badge-gray"><i class="bi bi-person"></i></span>
+          <span class="app-badge app-badge-lg badge-gray"><i class="icon-user"></i></span>
           <div class="search-card-content">
             <div class="search-card-title">{{ contact.name }}</div>
             <div class="search-card-meta">
@@ -53,7 +53,7 @@
       {% for intake in intakes %}
         <a href="{% url 'intakes:detail-index' id=intake.id %}"
            class="search-card">
-          <span class="app-badge app-badge-lg badge-gray"><i class="bi bi-inbox"></i></span>
+          <span class="app-badge app-badge-lg badge-gray"><i class="icon-inbox"></i></span>
           <div class="search-card-content">
             <div class="search-card-title">{{ intake.name }}</div>
             <div class="search-card-meta">
@@ -78,7 +78,7 @@
         <a href="{% url 'notes:note-view' note.id %}"
            class="search-card"
            target="_blank">
-          <span class="app-badge app-badge-lg badge-gray"><i class="bi bi-sticky"></i></span>
+          <span class="app-badge app-badge-lg badge-gray"><i class="icon-sticky-note"></i></span>
           <div class="search-card-content">
             <div class="search-card-title">{{ note.title }}</div>
             <div class="search-card-meta">
@@ -93,7 +93,7 @@
 {% endif %}
 {% if not matters and not contacts and not intakes and not notes %}
   <div class="search-empty">
-    <i class="bi bi-search"></i>
+    <i class="icon-search"></i>
     <p>No results found</p>
   </div>
 {% endif %}

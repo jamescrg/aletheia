@@ -10,13 +10,13 @@
               hx-trigger="click"
               data-bs-toggle="modal"
               data-bs-target="#htmx-modal-container">
-        <i class="bi bi-funnel"></i> Filter
+        <i class="icon-list-filter"></i> Filter
       </button>
       {% if client %}
         <a href="{% url 'reports:client-statement-pdf' %}"
            class="btn-icon"
            onclick="javascript: return confirm('Are you sure you want to download the activity report?')">
-          <i class="bi bi-cloud-download"></i> Export PDF
+          <i class="icon-cloud-download"></i> Export PDF
         </a>
       {% endif %}
     </div>

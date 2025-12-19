@@ -2,14 +2,14 @@
 <li id="folder-{{ folder.id }}"
     class="folder-item-container list-group-item{% if selected_folder and selected_folder.id == folder.id %} item-selected-highlight{% endif %}">
   <div>
-    <i class="bi bi-folder"></i>
+    <i class="icon-folder"></i>
     <a href="{% url 'folders:select' folder_id=folder.id %}">{{ folder.name|truncatechars:28 }}</a>
   </div>
   <button class="btn-icon menu-icon"
           type="button"
           data-bs-toggle="dropdown"
           aria-expanded="false">
-    <i class="bi bi-three-dots-vertical"></i>
+    <i class="icon-ellipsis-vertical"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end"
       aria-labelledby="folderDropdown">
@@ -19,7 +19,7 @@
          hx-get="{% url 'folders:edit' folder_id=folder.id %}"
          hx-target="#htmx-modal-container"
          data-bs-toggle="modal"
-         data-bs-target="#htmx-modal-container"><i class="bi bi-pencil"></i> Edit</a>
+         data-bs-target="#htmx-modal-container"><i class="icon-pencil"></i> Edit</a>
     </li>
     <li>
       <a class="dropdown-item"
@@ -27,7 +27,7 @@
          hx-get="{% url 'folders:delete-confirm' folder_id=folder.id %}"
          hx-target="#htmx-modal-container"
          data-bs-toggle="modal"
-         data-bs-target="#htmx-modal-container"><i class="bi bi-trash"></i> Delete</a>
+         data-bs-target="#htmx-modal-container"><i class="icon-trash-2"></i> Delete</a>
     </li>
   </ul>
 </li>

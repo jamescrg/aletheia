@@ -3,7 +3,7 @@
   <div class="ai-conversation-view">
     <div class="ai-conversation-header">
       <a href="{% url 'case:ai-index' matter.id %}" class="ai-back-link">
-        <i class="bi bi-arrow-left"></i>
+        <i class="icon-arrow-left"></i>
         Back to conversations
       </a>
       <div class="ai-conversation-title-wrapper">
@@ -13,7 +13,7 @@
                 hx-target="#conversationTitle"
                 hx-swap="outerHTML"
                 title="Rename conversation">
-          <i class="bi bi-pencil"></i>
+          <i class="icon-pencil"></i>
         </button>
       </div>
     </div>
@@ -35,12 +35,12 @@
                       required
                       onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); this.form.requestSubmit(); }"></textarea>
             <button type="submit" class="ai-send-btn">
-              <i class="bi bi-send"></i>
+              <i class="icon-send"></i>
             </button>
           </div>
         </form>
         <div id="ai-loading" class="htmx-indicator ai-loading">
-          <i class="bi bi-hourglass-split spin"></i>
+          <i class="icon-hourglass spin"></i>
           <span>Thinking...</span>
         </div>
       </div>

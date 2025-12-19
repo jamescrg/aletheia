@@ -29,19 +29,19 @@
                   class="btn btn-sm action-btn copy-btn card-copy-btn-right"
                   data-copy="{{ selected_contact.name }}&#10;{% if selected_contact.company %}{{ selected_contact.company }}&#10;{% endif %}{{ selected_contact.address }}"
                   title="Copy address">
-            <i class="bi bi-clipboard"></i>
+            <i class="icon-copy"></i>
           </button>
           <a href="https://www.google.com/maps/search/?api=1&query={{ selected_contact.address|urlencode }}"
              target="_blank"
              class="btn btn-sm action-btn card-copy-btn-right"
              title="Open in Google Maps">
-            <i class="bi bi-geo-alt"></i>
+            <i class="icon-map-pin"></i>
           </a>
           <a href="https://www.zillow.com/homes/{{ selected_contact.address|zillow_address }}_rb/"
              target="_blank"
              class="btn btn-sm action-btn card-copy-btn-right"
              title="Search on Zillow">
-            <i class="bi bi-house"></i>
+            <i class="icon-house"></i>
           </a>
         </div>
       </div>
@@ -54,7 +54,7 @@
         {% if selected_contact.email %}
           <div class="contact-item contact-phone-item">
             <div class="contact-phone-text">
-              <i class="bi bi-envelope"></i>
+              <i class="icon-mail"></i>
               <a href="mailto:{{ selected_contact.email }}">{{ selected_contact.email }}</a>
             </div>
             <div class="contact-phone-buttons">
@@ -62,7 +62,7 @@
                       class="btn btn-sm action-btn copy-btn"
                       data-copy="{{ selected_contact.email }}"
                       title="Copy email">
-                <i class="bi bi-clipboard"></i>
+                <i class="icon-copy"></i>
               </button>
             </div>
           </div>
@@ -70,7 +70,7 @@
         {% if selected_contact.email2 %}
           <div class="contact-item contact-phone-item">
             <div class="contact-phone-text">
-              <i class="bi bi-envelope"></i>
+              <i class="icon-mail"></i>
               <a href="mailto:{{ selected_contact.email2 }}">{{ selected_contact.email2 }}</a>
             </div>
             <div class="contact-phone-buttons">
@@ -78,7 +78,7 @@
                       class="btn btn-sm action-btn copy-btn"
                       data-copy="{{ selected_contact.email2 }}"
                       title="Copy email">
-                <i class="bi bi-clipboard"></i>
+                <i class="icon-copy"></i>
               </button>
             </div>
           </div>
@@ -93,7 +93,7 @@
         {% if selected_contact.phone1 %}
           <div class="contact-item contact-phone-item">
             <div class="contact-phone-text">
-              <i class="bi bi-telephone"></i>
+              <i class="icon-phone"></i>
               {{ selected_contact.phone1|phone_number }} - {{ selected_contact.phone1_label|lower }}
             </div>
             <div class="contact-phone-buttons">
@@ -101,12 +101,12 @@
                       class="btn btn-sm action-btn copy-btn"
                       data-copy="{{ selected_contact.phone1|phone_number }}"
                       title="Copy phone number">
-                <i class="bi bi-clipboard"></i>
+                <i class="icon-copy"></i>
               </button>
               <a href="tel:{{ selected_contact.phone1|phone_tel }}"
                  class="btn btn-sm action-btn copy-btn contact-call-btn"
                  title="Call">
-                <i class="bi bi-telephone-outbound"></i>
+                <i class="icon-phone-outbound"></i>
               </a>
             </div>
           </div>
@@ -114,7 +114,7 @@
         {% if selected_contact.phone2 %}
           <div class="contact-item contact-phone-item">
             <div class="contact-phone-text">
-              <i class="bi bi-telephone"></i>
+              <i class="icon-phone"></i>
               {{ selected_contact.phone2|phone_number }} - {{ selected_contact.phone2_label|lower }}
             </div>
             <div class="contact-phone-buttons">
@@ -122,12 +122,12 @@
                       class="btn btn-sm action-btn copy-btn"
                       data-copy="{{ selected_contact.phone2|phone_number }}"
                       title="Copy phone number">
-                <i class="bi bi-clipboard"></i>
+                <i class="icon-copy"></i>
               </button>
               <a href="tel:{{ selected_contact.phone2|phone_tel }}"
                  class="btn btn-sm action-btn copy-btn contact-call-btn"
                  title="Call">
-                <i class="bi bi-telephone-outbound"></i>
+                <i class="icon-phone-outbound"></i>
               </a>
             </div>
           </div>
@@ -135,7 +135,7 @@
         {% if selected_contact.phone3 %}
           <div class="contact-item contact-phone-item">
             <div class="contact-phone-text">
-              <i class="bi bi-telephone"></i>
+              <i class="icon-phone"></i>
               {{ selected_contact.phone3|phone_number }} - {{ selected_contact.phone3_label|lower }}
             </div>
             <div class="contact-phone-buttons">
@@ -143,12 +143,12 @@
                       class="btn btn-sm action-btn copy-btn"
                       data-copy="{{ selected_contact.phone3|phone_number }}"
                       title="Copy phone number">
-                <i class="bi bi-clipboard"></i>
+                <i class="icon-copy"></i>
               </button>
               <a href="tel:{{ selected_contact.phone3|phone_tel }}"
                  class="btn btn-sm action-btn copy-btn contact-call-btn"
                  title="Call">
-                <i class="bi bi-telephone-outbound"></i>
+                <i class="icon-phone-outbound"></i>
               </a>
             </div>
           </div>
@@ -161,7 +161,7 @@
     <div class="contact-card">
       <div class="contact-card-content-with-copy">
         <div class="contact-card-text">
-          <i class="bi bi-globe contact-card-icon"></i>
+          <i class="icon-globe contact-card-icon"></i>
           <a href="{{ selected_contact.website }}"
              target="_blank"
              rel="noopener noreferrer">{{ selected_contact.website }}</a>
@@ -170,7 +170,7 @@
                 class="btn btn-sm action-btn copy-btn card-copy-btn-right"
                 data-copy="{{ selected_contact.website }}"
                 title="Copy website">
-          <i class="bi bi-clipboard"></i>
+          <i class="icon-copy"></i>
         </button>
       </div>
     </div>
@@ -179,7 +179,7 @@
     <div class="contact-card">
       <div class="contact-card-content-with-copy">
         <div class="contact-card-text">
-          <i class="bi bi-geo-alt contact-card-icon"></i>
+          <i class="icon-map-pin contact-card-icon"></i>
           <a href="{{ selected_contact.map }}"
              target="_blank"
              rel="noopener noreferrer">Map</a>

@@ -50,7 +50,7 @@ Search Input
 .search-input {
   flex: 1;
   padding: 0.5rem 0.75rem;
-  border: 1px solid var(--background-nav);
+  border: 1px solid var(--border-medium);
   border-right: none;
   border-radius: var(--radius-md) 0 0 var(--radius-md);
   background: var(--background-lighter);
@@ -65,7 +65,7 @@ Search Input
   align-items: center;
   padding: 0 0.75rem;
   background: var(--background-muted);
-  border: 1px solid var(--background-nav);
+  border: 1px solid var(--border-medium);
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
   color: var(--color-muted);
 }

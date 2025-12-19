@@ -12,7 +12,7 @@
               type="button"
               data-bs-toggle="dropdown"
               aria-expanded="false">
-        <i class="bi bi-three-dots-vertical"></i>
+        <i class="icon-ellipsis-vertical"></i>
       </button>
       <ul class="dropdown-menu">
         <li>
@@ -21,7 +21,7 @@
              hx-get="{% url 'outlines:item-sources' item.id %}"
              hx-target="closest .item-row"
              hx-swap="afterend">
-            <i class="bi bi-journal-plus"></i>
+            <i class="icon-book-plus"></i>
             Add Source
           </a>
         </li>
@@ -31,7 +31,7 @@
              hx-post="{% url 'outlines:item-toggle-heading' item.id %}"
              hx-target="closest .outline-item"
              hx-swap="outerHTML">
-            <i class="bi bi-type-h2"></i>
+            <i class="icon-heading-2"></i>
             {% if item.heading %}
               Remove Heading
             {% else %}
@@ -45,7 +45,7 @@
              hx-post="{% url 'outlines:item-toggle-highlight' item.id %}"
              hx-target="closest .outline-item"
              hx-swap="outerHTML">
-            <i class="bi bi-highlighter"></i>
+            <i class="icon-highlighter"></i>
             {% if item.highlight %}
               Remove Highlight
             {% else %}
@@ -59,7 +59,7 @@
              hx-post="{% url 'outlines:item-toggle-quote' item.id %}"
              hx-target="closest .outline-item"
              hx-swap="outerHTML">
-            <i class="bi bi-quote"></i>
+            <i class="icon-quote"></i>
             {% if item.quote %}
               Remove Quote
             {% else %}
@@ -76,7 +76,7 @@
               hx-target="closest .outline-item"
               hx-swap="outerHTML"
               title="{% if item.collapsed %}Expand{% else %}Collapse{% endif %}">
-        <i class="bi bi-chevron-{% if item.collapsed %}right{% else %}down{% endif %}"></i>
+        <i class="icon-chevron-{% if item.collapsed %}right{% else %}down{% endif %}"></i>
       </button>
     {% endif %}
     <!-- Bullet -->

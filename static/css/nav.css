@@ -65,8 +65,10 @@
 
 .navbar .settings-link {
   font-size: 1.25rem;
-  position: relative;
-  top: 0.1rem;
+}
+
+.navbar .settings-link i {
+  vertical-align: baseline;
 }
 
 /* ==========================================================================

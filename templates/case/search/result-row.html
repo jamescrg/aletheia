@@ -1,12 +1,12 @@
 <article class="search-result-row result-{{ result.type }}">
   {% if result.type == "document" %}
-    <span class="app-badge app-badge-lg badge-gray"><i class="bi bi-filetype-pdf urgent"></i></span>
+    <span class="app-badge app-badge-lg badge-gray"><i class="icon-file-text urgent"></i></span>
   {% elif result.type == "highlight" %}
-    <span class="app-badge app-badge-lg badge-yellow"><i class="bi bi-highlighter"></i></span>
+    <span class="app-badge app-badge-lg badge-yellow"><i class="icon-highlighter"></i></span>
   {% elif result.type == "fact" %}
-    <span class="app-badge app-badge-lg badge-green"><i class="bi bi-calendar-event"></i></span>
+    <span class="app-badge app-badge-lg badge-green"><i class="icon-calendar"></i></span>
   {% elif result.type == "note" %}
-    <span class="app-badge app-badge-lg badge-blue"><i class="bi bi-journal-text"></i></span>
+    <span class="app-badge app-badge-lg badge-blue"><i class="icon-book-text"></i></span>
   {% endif %}
   <div class="result-content">
     {% if result.type == "document" %}

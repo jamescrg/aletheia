@@ -9,7 +9,7 @@
                 hx-trigger="click"
                 data-bs-toggle="modal"
                 data-bs-target="#htmx-modal-container">
-          <i class="bi bi-plus-lg"></i>
+          <i class="icon-plus"></i>
         </button>
         <button type="button"
                 class="btn-icon"
@@ -18,7 +18,7 @@
                 hx-trigger="click"
                 data-bs-toggle="modal"
                 data-bs-target="#htmx-modal-container">
-          <i class="bi bi-filter"></i>Filter
+          <i class="icon-list-filter"></i>Filter
         </button>
         <button type="button"
                 id="files-category-filter"
@@ -27,7 +27,7 @@
                 aria-expanded="false">
           {{ selected_category|default:"All Categories" }}
           <small>
-            <i class="bi bi-chevron-down"></i>
+            <i class="icon-chevron-down"></i>
           </small>
         </button>
         <ul class="dropdown-menu">
@@ -83,7 +83,7 @@
             All Proceedings
           {% endif %}
           <small>
-            <i class="bi bi-chevron-down"></i>
+            <i class="icon-chevron-down"></i>
           </small>
         </button>
         <ul class="dropdown-menu">
@@ -107,7 +107,7 @@
                 class="select-btn filter-dropdown-button priority-dropdown {% if importance_value %}toggle-active{% endif %}"
                 data-bs-toggle="dropdown"
                 aria-expanded="false">
-        <span><i class="bi bi-flag with-text"></i>
+        <span><i class="icon-flag with-text"></i>
         {% if importance_value %}
           {% if importance_value == 1 %}
             1 only
@@ -119,7 +119,7 @@
         {% endif %}
       </span>
       <small>
-        <i class="bi bi-chevron-down"></i>
+        <i class="icon-chevron-down"></i>
       </small>
     </button>
     <ul class="dropdown-menu">
@@ -129,7 +129,7 @@
           <a class="dropdown-item {% if importance == importance_value %}active{% endif %}"
              href="#"
              hx-get="{% url 'case:documents-filter-importance' matter.id importance %}"
-             hx-target="#documents"><i class="bi bi-flag"></i>
+             hx-target="#documents"><i class="icon-flag"></i>
           {% if importance == 1 %}
             1 only
           {% else %}
@@ -143,7 +143,7 @@
     <a class="dropdown-item {% if not importance_value %}active{% endif %}"
        href="#"
        hx-get="{% url 'case:documents-filter-importance' matter.id 0 %}"
-       hx-target="#documents"><i class="bi bi-flag"></i> All Levels</a>
+       hx-target="#documents"><i class="icon-flag"></i> All Levels</a>
   </li>
 </ul>
 {% if selected_documents %}
@@ -159,7 +159,7 @@
           hx-target="#documents"
           hx-swap="outerHTML"
           class="btn-icon">
-    <i class="bi bi-x-lg"></i> Clear
+    <i class="icon-x"></i> Clear
   </button>
 {% endif %}
 </div>

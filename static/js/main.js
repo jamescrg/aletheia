@@ -107,7 +107,7 @@ document.addEventListener('click', function(e) {
 function copyToClipboard(button, data) {
   navigator.clipboard.writeText(data).then(() => {
     const originalHtml = button.innerHTML;
-    button.innerHTML = '<i class="bi bi-check-lg"></i>';
+    button.innerHTML = '<i class="icon-check"></i>';
     button.style.color = 'green';
     setTimeout(() => {
       button.innerHTML = originalHtml;
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
       navigator.clipboard.writeText(data).then(() => {
         const originalHtml = this.innerHTML;
 
-        this.innerHTML = '<i class="bi bi-check-lg"></i>';
+        this.innerHTML = '<i class="icon-check"></i>';
         this.style.color = 'green';
 
         setTimeout(() => {

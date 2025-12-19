@@ -8,19 +8,19 @@
     <ul class="list-group">
       <li class="folder-item-container list-group-item{% if client_status == 'Pending' %} item-selected-highlight{% endif %}">
         <div>
-          <i class="bi bi-person"></i>
+          <i class="icon-user"></i>
           <a href="{% url 'folders:client' 'Pending' %}">Pending</a>
         </div>
       </li>
       <li class="folder-item-container list-group-item{% if client_status == 'Current' %} item-selected-highlight{% endif %}">
         <div>
-          <i class="bi bi-person"></i>
+          <i class="icon-user"></i>
           <a href="{% url 'folders:client' 'Current' %}">Current</a>
         </div>
       </li>
       <li class="folder-item-container list-group-item{% if client_status == 'Former' %} item-selected-highlight{% endif %}">
         <div>
-          <i class="bi bi-person"></i>
+          <i class="icon-user"></i>
           <a href="{% url 'folders:client' 'Former' %}">Former</a>
         </div>
       </li>
@@ -39,7 +39,7 @@
                 hx-target="#htmx-modal-container"
                 data-bs-toggle="modal"
                 data-bs-target="#htmx-modal-container">
-          <i class="bi bi-plus-lg"></i>
+          <i class="icon-plus"></i>
         </button>
       </div>
     </div>
@@ -51,7 +51,7 @@
       {% endfor %}
       <li class="folder-item-container list-group-item{% if not client_status and not selected_folder %} item-selected-highlight{% endif %}">
         <div>
-          <i class="bi bi-folder"></i>
+          <i class="icon-folder"></i>
           <a href="{% url 'folders:unsorted' %}">Unsorted</a>
         </div>
       </li>

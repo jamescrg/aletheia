@@ -23,14 +23,14 @@
                 class="copy-btn"
                 data-copy-target="#contact-full-details"
                 title="Copy all details">
-          <i class="bi bi-clipboard"></i>
+          <i class="icon-copy"></i>
         </button>
       {% endif %}
       <a href="{% url 'contacts:toggle-google-sync' id=selected_contact.id %}">
         {% if selected_contact.google_id %}
-          <i class="bi bi-cloud-slash"></i>
+          <i class="icon-cloud-off"></i>
         {% else %}
-          <i class="bi bi-cloud-upload"></i>
+          <i class="icon-cloud-upload"></i>
         {% endif %}
       </a>
       <a href="#"
@@ -39,7 +39,7 @@
          hx-trigger="click"
          data-bs-toggle="modal"
          data-bs-target="#htmx-modal-container">
-        <i class="bi bi-pencil"></i>
+        <i class="icon-pencil"></i>
       </a>
     </div>
   </div>

@@ -7,19 +7,19 @@
         <div class="toolbar-left">
           <h1>{{ matter.name }}</h1>
           <div class="filter-tools">
-            <a href="{% url 'case:select-matter' matter.id %}" class="icon-green">Case<i class="bi bi-arrow-right-circle ms-2"></i></a>
-            <button class="icon-green"
+            <a href="{% url 'case:select-matter' matter.id %}" class="accent-link">Case<i class="icon-circle-arrow-right ms-2"></i></a>
+            <button class="accent-link"
                     hx-get="/activity/time/add/{{ matter.id }}/matters"
                     hx-target="#htmx-modal-container"
                     data-bs-toggle="modal"
                     data-bs-target="#htmx-modal-container">+ Time</button>
-            <button class="icon-green"
+            <button class="accent-link"
                     hx-get="/activity/expenses/add/{{ matter.id }}/matters"
                     hx-target="#htmx-modal-container"
                     data-bs-toggle="modal"
                     data-bs-target="#htmx-modal-container">+ Expense</button>
             <a href={% url 'matters:print' id=matter.id %}>
-              <i class="bi bi-printer"></i>
+              <i class="icon-printer"></i>
             </a>
             <a href="#"
                hx-get="{% url 'matters:edit' id=matter.id %}"
@@ -27,7 +27,7 @@
                hx-trigger="click"
                data-bs-toggle="modal"
                data-bs-target="#htmx-modal-container">
-              <i class="bi bi-pencil"></i>
+              <i class="icon-pencil"></i>
             </a>
           </div>
         </div>

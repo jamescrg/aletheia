@@ -1,3 +1,8 @@
+/* Lucide icon vertical alignment fix */
+[class^="icon-"],
+[class*=" icon-"] {
+  vertical-align: -0.15em;
+}
 
 .icon,
 .icon:hover {
@@ -16,36 +21,36 @@
   padding: 0;
 }
 
-.bi-plus-lg {
+.icon-plus {
   color: var(--add);
 }
 
-.bi-plus-download {
+.icon-download {
   color:var(--link);
 }
 
-.bi-x-lg {
+.icon-x {
   font-size: 1rem;
 }
 
-.bi-folder {
+.icon-folder {
   color: var(--icon-muted);
   margin-right: 0.75rem;
 }
 
-.bi-trash {
+.icon-trash-2 {
   color: var(--urgent);
 }
 
-.bi-square,
-.bi-caret-up,
-.bi-check-square,
-.bi-exclamation-square {
+.icon-square,
+.icon-chevron-up,
+.icon-square-check,
+.icon-alert-triangle {
   color: var(--icon-muted);
 }
 
-.bi-calendar-week,
-.bi-arrow-up-right-circle {
+.icon-calendar-days,
+.icon-arrow-up-right {
   margin-right: 0.5rem;
 }
 

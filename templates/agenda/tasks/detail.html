@@ -8,7 +8,7 @@
       <h1 class="modal-title">{{ task.description }}</h1>
       <div>
         <a href="#" data-bs-dismiss="modal">
-          <i class="bi bi-x-lg"></i>
+          <i class="icon-x"></i>
         </a>
       </div>
     </div>
@@ -27,7 +27,7 @@
                hx-get="{% url 'agenda:tasks-edit' id=task.id %}"
                hx-target="#htmx-modal-container"
                hx-trigger="click">
-              <i class="bi bi-pencil"></i>
+              <i class="icon-pencil"></i>
             </a>
           </div>
         </div>

@@ -7,7 +7,7 @@
                 hx-target="#htmx-modal-container"
                 data-bs-toggle="modal"
                 data-bs-target="#htmx-modal-container">
-          <i class="bi bi-plus-lg"></i>
+          <i class="icon-plus"></i>
         </button>
       </div>
     </div>
@@ -40,7 +40,7 @@
                       class="btn btn-sm action-btn copy-btn"
                       data-copy="{{ proceeding.case_number }}"
                       title="Copy case number">
-                <i class="bi bi-clipboard"></i>
+                <i class="icon-copy"></i>
               </button>
             {% endif %}
             {{ proceeding.case_number }}
@@ -48,9 +48,9 @@
           <td class="status">{{ proceeding.status }}</td>
           <td class="center-data">
             {% if proceeding.primary %}
-              <i class="bi bi-check-circle-fill true-bool"></i>
+              <i class="icon-circle-check true-bool"></i>
             {% else %}
-              <i class="bi bi-x-circle-fill error false-bool"></i>
+              <i class="icon-circle-x error false-bool"></i>
             {% endif %}
           </td>
         </tr>

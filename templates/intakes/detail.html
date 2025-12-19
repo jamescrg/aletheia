@@ -9,7 +9,7 @@
           <div class="toolbar-right">
             {% if contact %}
               <a href={% url 'contacts:select' contact_id=contact.id %}>
-                <i class="bi bi-person-check"></i>
+                <i class="icon-user-check"></i>
               </a>
             {% else %}
               <a href="#"
@@ -18,7 +18,7 @@
                  hx-trigger="click"
                  data-bs-toggle="modal"
                  data-bs-target="#htmx-modal-container">
-                <i class="bi bi-person-plus"></i>
+                <i class="icon-user-plus"></i>
               </a>
             {% endif %}
             <a href="#"
@@ -29,7 +29,7 @@
                hx-trigger="click"
                data-bs-toggle="modal"
                data-bs-target="#htmx-modal-container">
-              <i class="bi bi-pencil"></i>
+              <i class="icon-pencil"></i>
             </a>
           </div>
         </div>
@@ -55,7 +55,7 @@
                          target="_blank"
                          class="btn btn-sm action-btn"
                          title="Open in Google Maps">
-                        <i class="bi bi-geo-alt"></i>
+                        <i class="icon-map-pin"></i>
                       </a>
                     </div>
                   </div>
@@ -77,7 +77,7 @@
                          target="_blank"
                          class="btn btn-sm action-btn"
                          title="Open in Google Maps">
-                        <i class="bi bi-geo-alt"></i>
+                        <i class="icon-map-pin"></i>
                       </a>
                     </div>
                   </div>
@@ -94,7 +94,7 @@
                        target="_blank"
                        class="btn btn-sm action-btn"
                        title="Search on Zillow">
-                      <i class="bi bi-house"></i>
+                      <i class="icon-house"></i>
                     </a>
                   {% endif %}
                 </div>
@@ -136,7 +136,7 @@
                  hx-trigger="click"
                  data-bs-toggle="modal"
                  data-bs-target="#htmx-modal-container">
-                <i class="bi bi-plus-lg"></i>
+                <i class="icon-plus"></i>
               </a>
             </div>
           </div>

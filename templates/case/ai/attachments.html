@@ -6,19 +6,19 @@
        {% endif %}>
     {% for attachment in attachments %}
       <div class="ai-attachment-chip ai-attachment-{{ attachment.ocr_status }}">
-        <i class="bi bi-file-pdf"></i>
+        <i class="icon-file-text"></i>
         <span class="ai-attachment-name" title="{{ attachment.filename }}">{{ attachment.filename|truncatechars:20 }}</span>
         {% if attachment.ocr_status == "pending" or attachment.ocr_status == "processing" %}
           <span class="ai-attachment-status">
-            <i class="bi bi-hourglass-split spin"></i>
+            <i class="icon-hourglass spin"></i>
           </span>
         {% elif attachment.ocr_status == "completed" %}
           <span class="ai-attachment-status">
-            <i class="bi bi-check-lg"></i>
+            <i class="icon-check"></i>
           </span>
         {% elif attachment.ocr_status == "failed" %}
           <span class="ai-attachment-status" title="OCR failed">
-            <i class="bi bi-exclamation-triangle"></i>
+            <i class="icon-alert-triangle"></i>
           </span>
         {% endif %}
         <button type="button"
@@ -27,7 +27,7 @@
                 hx-target=".ai-attachments-list"
                 hx-swap="outerHTML"
                 title="Remove attachment">
-          <i class="bi bi-x"></i>
+          <i class="icon-x"></i>
         </button>
       </div>
     {% endfor %}

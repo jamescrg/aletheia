@@ -21,10 +21,10 @@
         </div>
         <div class="toolbar-right">
           <a href="#" id="copyPromptBtn" title="Copy to clipboard">
-            <i class="bi bi-clipboard"></i>
+            <i class="icon-copy"></i>
           </a>
           <a href="#" onclick="window.close(); return false;" title="Close">
-            <i class="bi bi-x-lg"></i>
+            <i class="icon-x"></i>
           </a>
         </div>
       </div>
@@ -39,7 +39,7 @@
       navigator.clipboard.writeText(promptText).then(function() {
         const btn = document.getElementById('copyPromptBtn');
         const originalHtml = btn.innerHTML;
-        btn.innerHTML = '<i class="bi bi-check"></i>';
+        btn.innerHTML = '<i class="icon-check"></i>';
         setTimeout(function() {
           btn.innerHTML = originalHtml;
         }, 2000);

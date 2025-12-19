@@ -53,7 +53,7 @@ table.matter-contacts {
   flex-shrink: 0;
 }
 
-.matter-contacts .bi-envelope {
+.matter-contacts .icon-mail {
   margin-right: 0.5rem;
   position: relative;
   bottom: 0;

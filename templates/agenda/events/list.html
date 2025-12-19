@@ -7,14 +7,14 @@
                 hx-target="#htmx-modal-container"
                 data-bs-toggle="modal"
                 data-bs-target="#htmx-modal-container">
-          <i class="bi bi-plus-lg"></i>
+          <i class="icon-plus"></i>
         </button>
         <button type="button"
                 hx-get="{% url 'agenda:events-filter' %}"
                 hx-target="#htmx-modal-container"
                 data-bs-toggle="modal"
                 data-bs-target="#htmx-modal-container">
-          <i class="bi bi-filter"></i>Filter
+          <i class="icon-list-filter"></i>Filter
         </button>
         <button type="button"
                 id="events-status-filter"
@@ -23,7 +23,7 @@
                 aria-expanded="false">
           {{ events_filter_status|default:"All Statuses" }}
           <small>
-            <i class="bi bi-chevron-down"></i>
+            <i class="icon-chevron-down"></i>
           </small>
         </button>
         <ul class="dropdown-menu">
@@ -60,7 +60,7 @@
          hx-target="#htmx-modal-container"
          data-bs-toggle="modal"
          data-bs-target="#htmx-modal-container">
-        <i class="bi bi-calendar-week"></i>Deadline Calculator
+        <i class="icon-calendar-days"></i>Deadline Calculator
       </a>
     </div>
   </div>
@@ -74,7 +74,7 @@
                     hx-target="#events"
                     hx-swap="innerHTML"
                     hx-post="{% url 'agenda:events-filter-sort' 'date' %}">
-              <i class="bi bi-chevron-expand"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
           <th class="matter">
@@ -83,7 +83,7 @@
                     hx-target="#events"
                     hx-swap="innerHTML"
                     hx-post="{% url 'agenda:events-filter-sort' 'matter__name' %}">
-              <i class="bi bi-chevron-expand"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
           <th class="description">
@@ -92,7 +92,7 @@
                     hx-target="#events"
                     hx-swap="innerHTML"
                     hx-post="{% url 'agenda:events-filter-sort' 'description' %}">
-              <i class="bi bi-chevron-expand"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
           <th class="duration">Duration</th>
@@ -103,7 +103,7 @@
                     hx-target="#events"
                     hx-swap="innerHTML"
                     hx-post="{% url 'agenda:events-filter-sort' 'party' %}">
-              <i class="bi bi-chevron-expand"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
           <th class="status">
@@ -112,7 +112,7 @@
                     hx-target="#events"
                     hx-swap="innerHTML"
                     hx-post="{% url 'agenda:events-filter-sort' 'status' %}">
-              <i class="bi bi-chevron-expand"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
         </tr>

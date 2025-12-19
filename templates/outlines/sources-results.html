@@ -1,11 +1,11 @@
 {% if query %}
   <div class="sources-tabs">
     <button type="button" class="sources-tab active" data-tab="highlights">
-      <i class="bi bi-highlighter"></i> Highlights
+      <i class="icon-highlighter"></i> Highlights
       {% if highlights %}<span class="sources-tab-count">{{ highlights|length }}</span>{% endif %}
     </button>
     <button type="button" class="sources-tab" data-tab="documents">
-      <i class="bi bi-filetype-pdf"></i> Documents
+      <i class="icon-file-text"></i> Documents
       {% if documents %}<span class="sources-tab-count">{{ documents|length }}</span>{% endif %}
     </button>
   </div>
@@ -17,7 +17,7 @@
            hx-vals='{"type": "highlight", "id": "{{ highlight.id }}"}'
            hx-target="#outline-item-{{ item.id }}"
            hx-swap="outerHTML">
-          <i class="bi bi-highlighter"></i>
+          <i class="icon-highlighter"></i>
           <span class="hl-{{ highlight.color }}">{{ highlight.slug|truncatechars:80 }}</span>
           <div class="assign-results-document">
             <small class="text-muted">{{ highlight.document.name|truncatechars:20 }}</small>
@@ -37,7 +37,7 @@
            hx-vals='{"type": "document", "id": "{{ document.id }}"}'
            hx-target="#outline-item-{{ item.id }}"
            hx-swap="outerHTML">
-          <i class="bi bi-filetype-pdf urgent"></i>
+          <i class="icon-file-text urgent"></i>
           {{ document.name|truncatechars:80 }}
         </a>
       </li>
@@ -59,7 +59,7 @@
   </script>
 {% else %}
   <div class="sources-empty-state">
-    <i class="bi bi-search"></i>
+    <i class="icon-search"></i>
     <p>Search for highlights and documents to add as sources</p>
   </div>
 {% endif %}

@@ -11,7 +11,7 @@
                   hx-trigger="click"
                   data-bs-toggle="modal"
                   data-bs-target="#htmx-modal-container">
-            <i class="bi bi-plus-lg"></i>
+            <i class="icon-plus"></i>
           </button>
           <button type="button"
                   class="btn-icon"
@@ -20,7 +20,7 @@
                   hx-trigger="click"
                   data-bs-toggle="modal"
                   data-bs-target="#htmx-modal-container">
-            <i class="bi bi-filter"></i>Filter
+            <i class="icon-list-filter"></i>Filter
           </button>
         </div>
       </div>
@@ -33,28 +33,28 @@
             Date
             <button class="btn-sort {% if current_order == 'date' %}active{% endif %}"
                     hx-post="{% url 'invoicing:payments-order-by' 'date' %}">
-              <i class="bi bi-chevron-expand"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
           <th class="matter">
             Matter
             <button class="btn-sort {% if current_order == 'matter' %}active{% endif %}"
                     hx-post="{% url 'invoicing:payments-order-by' 'matter' %}">
-              <i class="bi bi-chevron-expand"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
           <th class="method">
             Method
             <button class="btn-sort {% if current_order == 'payment_method' %}active{% endif %}"
                     hx-post="{% url 'invoicing:payments-order-by' 'payment_method' %}">
-              <i class="bi bi-chevron-expand"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
           <th class="detail">
             Detail
             <button class="btn-sort {% if current_order == 'detail' %}active{% endif %}"
                     hx-post="{% url 'invoicing:payments-order-by' 'detail' %}">
-              <i class="bi bi-chevron-expand"></i>
+              <i class="icon-arrow-up-down"></i>
             </button>
           </th>
           <th class="amount">Amount</th>

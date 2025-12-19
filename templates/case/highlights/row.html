@@ -10,25 +10,25 @@
          data-bs-toggle="modal"
          data-bs-target="#htmx-modal-container"
          title="Edit highlight">
-        <i class="bi bi-pencil"></i>
+        <i class="icon-pencil"></i>
       </a>
       <a href="{% url 'case:highlight-link' highlight.id %}"
          target="_blank"
          class="btn-ghost"
          title="View in document">
-        <i class="bi bi-arrow-up-right-circle"></i>
+        <i class="icon-arrow-up-right"></i>
       </a>
       <button type="button"
               class="btn-ghost highlight-copy-btn"
               title="Copy highlight and source"
               data-copy="{{ highlight.text }} {{ highlight.citation }}">
-        <i class="bi bi-clipboard"></i>
+        <i class="icon-copy"></i>
       </button>
       <button type="button"
               class="btn-ghost highlight-link-btn"
               title="Copy link to highlight"
               data-url="{% url 'case:highlight-link' highlight.id %}">
-        <i class="bi bi-link-45deg"></i>
+        <i class="icon-link"></i>
       </button>
       <a href="#"
          class="btn-ghost"
@@ -37,7 +37,7 @@
          data-bs-toggle="modal"
          data-bs-target="#htmx-modal-container"
          title="Add label">
-        <i class="bi bi-tag"></i>
+        <i class="icon-tag"></i>
       </a>
     </h3>
     <div class="highlight-card-text">{{ highlight.text }}</div>

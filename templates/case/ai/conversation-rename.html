@@ -9,7 +9,7 @@
          autofocus
          onkeydown="if(event.key === 'Escape') { htmx.trigger(document.body, 'conversationRenameCancel'); }">
   <button type="submit" class="ai-rename-save" title="Save">
-    <i class="bi bi-check"></i>
+    <i class="icon-check"></i>
   </button>
   <button type="button"
           class="ai-rename-cancel"
@@ -17,6 +17,6 @@
           hx-get="{% url 'case:ai-conversations' %}"
           hx-target="#conversationList"
           hx-swap="innerHTML">
-    <i class="bi bi-x"></i>
+    <i class="icon-x"></i>
   </button>
 </form>

@@ -7,21 +7,21 @@
                 hx-target="#htmx-modal-container"
                 data-bs-toggle="modal"
                 data-bs-target="#htmx-modal-container">
-          <i class="bi bi-plus-lg"></i>
+          <i class="icon-plus"></i>
         </button>
         <button hx-get="{% url 'activity:expenses-filter' %}"
                 hx-target="#htmx-modal-container"
                 class="{% if filter_label == "custom" %}toggle-active{% endif %}"
                 data-bs-toggle="modal"
                 data-bs-target="#htmx-modal-container">
-          <i class="bi bi-filter with-text"></i>Filter
+          <i class="icon-list-filter with-text"></i>Filter
         </button>
         <a href="#"
            class="{% if filter_label == "unbilled" %}toggle-active{% endif %}"
-           hx-post="{% url 'activity:expenses-filter-quick' 'unbilled' %}"><i class="bi bi-file-break with-text"></i>Unbilled</a>
+           hx-post="{% url 'activity:expenses-filter-quick' 'unbilled' %}"><i class="icon-mail-x with-text"></i>Unbilled</a>
         <a class="{% if filter_label == "today" %}toggle-active{% endif %}"
            href="#"
-           hx-post="{% url 'activity:expenses-filter-quick' 'today' %}"><i class="bi bi-calendar-event with-text"></i>Today</a>
+           hx-post="{% url 'activity:expenses-filter-quick' 'today' %}"><i class="icon-calendar with-text"></i>Today</a>
       </div>
     </div>
     <div class="toolbar-right">
@@ -30,18 +30,18 @@
                 type="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false">
-          <i class="bi bi-cloud-download"></i>
+          <i class="icon-cloud-download"></i>
         </button>
         <ul class="dropdown-menu">
           <li>
             <a class="dropdown-item"
                href="{% url 'activity:expenses-export' 'standard' %}"
-               onclick="javascript: return confirm('Are you sure you want to download records?')"><i class="bi bi-file-earmark-spreadsheet"></i> Standard</a>
+               onclick="javascript: return confirm('Are you sure you want to download records?')"><i class="icon-file-spreadsheet"></i> Standard</a>
           </li>
           <li>
             <a class="dropdown-item"
                href="{% url 'activity:expenses-export' 'clio' %}"
-               onclick="javascript: return confirm('Are you sure you want to download records?')"><i class="bi bi-cloud-upload"></i> Clio</a>
+               onclick="javascript: return confirm('Are you sure you want to download records?')"><i class="icon-cloud-upload"></i> Clio</a>
           </li>
         </ul>
       </div>
@@ -54,7 +54,7 @@
           Date
           <button class="btn-sort {% if current_order == 'date' %}active{% endif %}"
                   hx-post="{% url 'activity:expenses-order-by' 'date' %}">
-            <i class="bi bi-chevron-expand"></i>
+            <i class="icon-arrow-up-down"></i>
           </button>
         </th>
         <th class="user">User</th>
@@ -62,14 +62,14 @@
           Matter
           <button class="btn-sort {% if current_order == 'matter' %}active{% endif %}"
                   hx-post="{% url 'activity:expenses-order-by' 'matter' %}">
-            <i class="bi bi-chevron-expand"></i>
+            <i class="icon-arrow-up-down"></i>
           </button>
         </th>
         <th class="actions">
           Description
           <button class="btn-sort {% if current_order == 'description' %}active{% endif %}"
                   hx-post="{% url 'activity:expenses-order-by' 'description' %}">
-            <i class="bi bi-chevron-expand"></i>
+            <i class="icon-arrow-up-down"></i>
           </button>
         </th>
         <th class="amount">Amount</th>

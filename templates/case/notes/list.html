@@ -8,7 +8,7 @@
               hx-trigger="click"
               data-bs-toggle="modal"
               data-bs-target="#htmx-modal-container">
-        <i class="bi bi-plus-lg"></i>
+        <i class="icon-plus"></i>
       </button>
       <button type="button"
               class="btn-icon"
@@ -17,7 +17,7 @@
               hx-trigger="click"
               data-bs-toggle="modal"
               data-bs-target="#htmx-modal-container">
-        <i class="bi bi-filter"></i>Filter
+        <i class="icon-list-filter"></i>Filter
       </button>
       <button type="button"
               id="notes-category-filter"
@@ -26,7 +26,7 @@
               aria-expanded="false">
         {{ selected_category|default:"All Categories" }}
         <small>
-          <i class="bi bi-chevron-down"></i>
+          <i class="icon-chevron-down"></i>
         </small>
       </button>
       <ul class="dropdown-menu">
@@ -53,7 +53,7 @@
                 aria-expanded="false">
           {{ selected_topic|default:"All Topics" }}
           <small>
-            <i class="bi bi-chevron-down"></i>
+            <i class="icon-chevron-down"></i>
           </small>
         </button>
         <ul class="dropdown-menu">
@@ -79,7 +79,7 @@
               data-bs-toggle="dropdown"
               aria-expanded="false">
         <span>
-          <i class="bi bi-flag with-text"></i>
+          <i class="icon-flag with-text"></i>
           {% if importance_value %}
             {% if importance_value == 1 %}
               1 only
@@ -91,7 +91,7 @@
           {% endif %}
         </span>
         <small>
-          <i class="bi bi-chevron-down"></i>
+          <i class="icon-chevron-down"></i>
         </small>
       </button>
       <ul class="dropdown-menu">
@@ -102,7 +102,7 @@
                  href="#"
                  hx-get="{% url 'case:notes-filter-importance' matter.id importance %}"
                  hx-target="#notes">
-                <i class="bi bi-flag"></i>
+                <i class="icon-flag"></i>
                 {% if importance == 1 %}
                   1 only
                 {% else %}
@@ -117,7 +117,7 @@
              href="#"
              hx-get="{% url 'case:notes-filter-importance' matter.id 0 %}"
              hx-target="#notes">
-            <i class="bi bi-flag"></i> All Levels
+            <i class="icon-flag"></i> All Levels
           </a>
         </li>
       </ul>
