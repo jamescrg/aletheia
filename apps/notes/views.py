@@ -1,16 +1,17 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import F, OuterRef, Subquery
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from apps.management.pagination import CustomPaginator
 
 from .filters import NotesFilter
 from .forms import NoteForm
-from .models import Note
+from .models import Note, NoteView
 
 SIDEBAR_SORT_OPTIONS = [
+    ("-viewed_at", "Recently viewed"),
     ("-updated_at", "Modified, new to old"),
     ("-created_at", "Created, new to old"),
     ("title", "Title (A-Z)"),
@@ -275,12 +276,38 @@ def note_importance(request, note_id, value):
 
 def get_sidebar_sort(request):
     """Get the current sidebar sort order from session for standalone notes."""
-    return request.session.get("standalone_notes_sidebar_sort", "-updated_at")
+    return request.session.get("standalone_notes_sidebar_sort", "-viewed_at")
 
 
-def get_sorted_standalone_notes(sort_order):
-    """Get recent standalone notes with the specified sort order, limited to 20."""
-    return Note.objects.filter(matter__isnull=True).order_by(sort_order)[:20]
+def record_note_view(user, note):
+    """Record that a user viewed a note, updating or creating the NoteView record."""
+    NoteView.objects.update_or_create(
+        user=user,
+        note=note,
+        defaults={},  # viewed_at is auto_now, so it updates automatically
+    )
+
+
+def get_sorted_standalone_notes(user, sort_order="-viewed_at"):
+    """Get standalone notes sorted by user's view history or specified order."""
+    notes = Note.objects.filter(matter__isnull=True)
+
+    if sort_order == "-viewed_at":
+        # Sort by user's personal view history
+        user_views = NoteView.objects.filter(
+            user=user,
+            note=OuterRef("pk"),
+        ).values(
+            "viewed_at"
+        )[:1]
+
+        notes = notes.annotate(user_viewed_at=Subquery(user_views)).order_by(
+            F("user_viewed_at").desc(nulls_last=True)
+        )
+    else:
+        notes = notes.order_by(sort_order)
+
+    return notes[:20]
 
 
 @login_required
@@ -288,13 +315,12 @@ def note_view(request, note_id):
     """Standalone editor view for a note without a matter."""
     note = get_object_or_404(Note, pk=note_id, matter__isnull=True)
 
-    # Update viewed_at timestamp
-    note.viewed_at = timezone.now()
-    note.save(update_fields=["viewed_at"])
+    # Record user's view of this note
+    record_note_view(request.user, note)
 
     # Get all standalone notes for sidebar with sort order
     sort_order = get_sidebar_sort(request)
-    notes = get_sorted_standalone_notes(sort_order)
+    notes = get_sorted_standalone_notes(request.user, sort_order)
 
     context = {
         "note": note,
@@ -310,9 +336,8 @@ def note_content_partial(request, note_id):
     """HTMX partial for switching notes in the editor."""
     note = get_object_or_404(Note, pk=note_id, matter__isnull=True)
 
-    # Update viewed_at timestamp
-    note.viewed_at = timezone.now()
-    note.save(update_fields=["viewed_at"])
+    # Record user's view of this note
+    record_note_view(request.user, note)
 
     context = {
         "note": note,
@@ -328,13 +353,13 @@ def sidebar_sort(request, note_id, sort_key):
     # Validate sort key
     valid_keys = [key for key, _ in SIDEBAR_SORT_OPTIONS]
     if sort_key not in valid_keys:
-        sort_key = "-updated_at"
+        sort_key = "-viewed_at"
 
     # Save to session
     request.session["standalone_notes_sidebar_sort"] = sort_key
 
     # Get sorted notes
-    notes = get_sorted_standalone_notes(sort_key)
+    notes = get_sorted_standalone_notes(request.user, sort_key)
 
     context = {
         "note": note,
