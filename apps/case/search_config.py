@@ -3,6 +3,7 @@
 from watson import search as watson
 
 from apps.case.models import Document, Fact, Highlight
+from apps.notes.models import Note
 
 # Register Document model for search
 watson.register(
@@ -20,4 +21,10 @@ watson.register(
 watson.register(
     Fact,
     fields=("description",),
+)
+
+# Register Note model for search
+watson.register(
+    Note,
+    fields=("title", "content"),
 )
