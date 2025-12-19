@@ -5,13 +5,13 @@
      hx-swap="outerHTML">
   <div class="ai-status-content">
     {% if status == "connecting" %}
-      <i class="bi bi-cloud-arrow-up spin"></i>
+      <i class="icon-cloud-upload spin"></i>
     {% elif status == "thinking" %}
-      <i class="bi bi-lightbulb pulse"></i>
+      <i class="icon-lightbulb pulse"></i>
     {% elif status == "generating" %}
-      <i class="bi bi-pencil-square pulse"></i>
+      <i class="icon-pencil-square pulse"></i>
     {% else %}
-      <i class="bi bi-hourglass-split spin"></i>
+      <i class="icon-hourglass spin"></i>
     {% endif %}
     <span class="ai-status-message">{{ message|render_markdown }}</span>
     {% if elapsed_seconds %}<span class="ai-status-elapsed">({{ elapsed_seconds }}s)</span>{% endif %}

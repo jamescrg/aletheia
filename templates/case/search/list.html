@@ -13,7 +13,7 @@
                hx-trigger="keyup changed delay:500ms"
                hx-include="#search-query-input, .search-scope-checkbox"
                autofocus>
-        <span class="search-input-icon"><i class="bi bi-search"></i></span>
+        <span class="search-input-icon"><i class="icon-search"></i></span>
       </div>
       <div id="search-result-count" class="search-result-count">
         {% if query or filter_data %}
@@ -21,7 +21,7 @@
                   hx-post="{% url 'case:search-clear' matter.id %}"
                   hx-swap="none"
                   title="Clear search and filters">
-            {{ results|length }} result{{ results|length|pluralize }} <i class="bi bi-x"></i>
+            {{ results|length }} result{{ results|length|pluralize }} <i class="icon-x"></i>
           </button>
         {% endif %}
       </div>

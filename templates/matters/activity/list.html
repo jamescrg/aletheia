@@ -6,7 +6,7 @@
     </div>
     <div class="toolbar-right">
       <a href="{% url 'activity:time-filter-matter' matter.id %}"
-         class="icon-green">View All Activity <i class="bi bi-arrow-up-right-circle ms-2"></i></a>
+         class="icon-green">View All Activity <i class="icon-arrow-up-right ms-2"></i></a>
       <a href="{% url 'matters:activity-report' matter.id %}">Activity Report</a>
     </div>
   </div>
@@ -20,7 +20,7 @@
                hx-post="{% url 'matters:activity-sort' matter.id %}"
                hx-target="#matterActivityTable"
                hx-swap="outerHTML">
-              <i class="bi bi-chevron-expand"></i>
+              <i class="icon-chevrons-up-down"></i>
             </a>
           </th>
           <th class="user">User</th>

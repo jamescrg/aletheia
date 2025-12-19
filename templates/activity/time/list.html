@@ -7,31 +7,31 @@
                 hx-target="#htmx-modal-container"
                 data-bs-toggle="modal"
                 data-bs-target="#htmx-modal-container">
-          <i class="bi bi-plus-lg"></i>
+          <i class="icon-plus"></i>
         </button>
         <button hx-get="{% url 'activity:time-filter' %}"
                 hx-target="#htmx-modal-container"
                 class="{% if filter_label == "custom" %}toggle-active{% endif %}"
                 data-bs-toggle="modal"
                 data-bs-target="#htmx-modal-container">
-          <i class="bi bi-filter with-text"></i>Filter
+          <i class="icon-list-filter with-text"></i>Filter
         </button>
         <button class="{% if filter_label == "unbilled" %}toggle-active{% endif %}"
                 hx-post="{% url 'activity:time-filter-quick' 'unbilled' %}">
-          <i class="bi bi-file-break with-text"></i>Unbilled
+          <i class="icon-file with-text"></i>Unbilled
         </button>
         <button class="{% if filter_label == "today" %}toggle-active{% endif %}"
                 hx-post="{% url 'activity:time-filter-quick' 'today' %}">
-          <i class="bi bi-calendar-event with-text"></i>Today
+          <i class="icon-calendar with-text"></i>Today
         </button>
         <button type="button"
                 id="time-user-filter"
                 class="select-btn filter-dropdown-button {% if selected_user %}toggle-active{% endif %}"
                 data-bs-toggle="dropdown"
                 aria-expanded="false">
-          <span><i class="bi bi-{% if selected_user %}person{% else %}people{% endif %} with-text"></i>{{ selected_user|default:"All Users" }}</span>
+          <span><i class="icon-{% if selected_user %}user{% else %}users{% endif %} with-text"></i>{{ selected_user|default:"All Users" }}</span>
           <small>
-            <i class="bi bi-chevron-down"></i>
+            <i class="icon-chevron-down"></i>
           </small>
         </button>
         <ul class="dropdown-menu"
@@ -42,7 +42,7 @@
                href="#"
                hx-post="{% url 'activity:time-filter-user' 0 %}"
                hx-target="#time-table"
-               hx-swap="outerHTML"><i class="bi bi-people"></i> All Users</a>
+               hx-swap="outerHTML"><i class="icon-users"></i> All Users</a>
           </li>
           {% for user in users %}
             <li>
@@ -50,7 +50,7 @@
                  href="#"
                  hx-post="{% url 'activity:time-filter-user' user.id %}"
                  hx-target="#time-table"
-                 hx-swap="outerHTML"><i class="bi bi-person"></i> {{ user.username|title }}</a>
+                 hx-swap="outerHTML"><i class="icon-user"></i> {{ user.username|title }}</a>
             </li>
           {% endfor %}
         </ul>
@@ -64,25 +64,25 @@
               data-bs-toggle="modal"
               data-bs-target="#htmx-modal-container"
               title="View Abbreviation Codes">
-        <i class="bi bi-code-square"></i>
+        <i class="icon-code"></i>
       </button>
       <div class="dropdown">
         <button class="btn-icon"
                 type="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false">
-          <i class="bi bi-cloud-download"></i>
+          <i class="icon-cloud-download"></i>
         </button>
         <ul class="dropdown-menu">
           <li>
             <a class="dropdown-item"
                href="{% url 'activity:time-export' 'standard' %}"
-               onclick="javascript: return confirm('Are you sure you want to download records?')"><i class="bi bi-file-earmark-spreadsheet"></i> Standard</a>
+               onclick="javascript: return confirm('Are you sure you want to download records?')"><i class="icon-file-spreadsheet"></i> Standard</a>
           </li>
           <li>
             <a class="dropdown-item"
                href="{% url 'activity:time-export' 'clio' %}"
-               onclick="javascript: return confirm('Are you sure you want to download records?')"><i class="bi bi-cloud-upload"></i> Clio</a>
+               onclick="javascript: return confirm('Are you sure you want to download records?')"><i class="icon-cloud-upload"></i> Clio</a>
           </li>
         </ul>
       </div>
@@ -95,7 +95,7 @@
           Date
           <button class="btn-sort {% if current_order == 'date' %}active{% endif %}"
                   hx-post="{% url 'activity:time-order-by' 'date' %}">
-            <i class="bi bi-chevron-expand"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="user">User</th>
@@ -103,14 +103,14 @@
           Matter
           <button class="btn-sort {% if current_order == 'matter' %}active{% endif %}"
                   hx-post="{% url 'activity:time-order-by' 'matter' %}">
-            <i class="bi bi-chevron-expand"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="actions">
           Actions
           <button class="btn-sort {% if current_order == 'actions' %}active{% endif %}"
                   hx-post="{% url 'activity:time-order-by' 'actions' %}">
-            <i class="bi bi-chevron-expand"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="numeric hours">Hours</th>

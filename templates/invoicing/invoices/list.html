@@ -9,7 +9,7 @@
                 hx-trigger="click"
                 data-bs-toggle="modal"
                 data-bs-target="#htmx-modal-container">
-          <i class="bi bi-plus-lg"></i>
+          <i class="icon-plus"></i>
         </button>
         <button type="button"
                 class="btn-icon"
@@ -18,7 +18,7 @@
                 hx-trigger="click"
                 data-bs-toggle="modal"
                 data-bs-target="#htmx-modal-container">
-          <i class="bi bi-filter"></i>Filter
+          <i class="icon-list-filter"></i>Filter
         </button>
         <a type="button"
            class="btn-icon {% if selected_status == "DRAFT" %}toggle-active{% endif %}"
@@ -51,21 +51,21 @@
           Issue Date
           <button class="btn-sort {% if current_order == 'date_issued' %}active{% endif %}"
                   hx-get="{% url 'invoicing:invoices-order-by' 'date_issued' %}">
-            <i class="bi bi-chevron-expand"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="matter">
           Matter
           <button class="btn-sort {% if current_order == 'matter' %}active{% endif %}"
                   hx-get="{% url 'invoicing:invoices-order-by' 'matter' %}">
-            <i class="bi bi-chevron-expand"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="status">
           Status
           <button class="btn-sort {% if current_order == 'status' %}active{% endif %}"
                   hx-get="{% url 'invoicing:invoices-order-by' 'status' %}">
-            <i class="bi bi-chevron-expand"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="amount">Fees</th>
@@ -73,7 +73,7 @@
         <th class="amount">Total</th>
         <th class="amount">Amount Due</th>
         <th class="download">
-          <i class="bi bi-download"></i>
+          <i class="icon-download"></i>
         </th>
       </tr>
       {% for invoice in objects %}

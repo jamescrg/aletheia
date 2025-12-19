@@ -351,7 +351,7 @@
           </div>
           <div class="highlights-controls">
             <button id="toggle-condensed" class="btn-icon" title="Toggle condensed view">
-              <i class="bi bi-arrows-collapse"></i>
+              <i class="icon-minimize-2"></i>
             </button>
           </div>
         </div>
@@ -366,14 +366,14 @@
                 <div class="highlight-citation">{{ highlight.citation }}</div>
               </div>
               <div class="highlight-importance">
-                <i class="bi bi-flag-fill"></i> {{ highlight.importance }}
+                <i class="icon-flag"></i> {{ highlight.importance }}
               </div>
               <div class="highlight-menu dropdown">
                 <button class="btn-icon menu-icon"
                         type="button"
                         data-bs-toggle="dropdown"
                         aria-expanded="false">
-                  <i class="bi bi-three-dots-vertical"></i>
+                  <i class="icon-ellipsis-vertical"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
                   <li>
@@ -403,7 +403,7 @@
             <h1 class="modal-title">Create Highlight</h1>
             <div>
               <a href="#" data-bs-dismiss="modal">
-                <i class="bi bi-x-lg"></i>
+                <i class="icon-x"></i>
               </a>
             </div>
           </div>
@@ -526,9 +526,9 @@
 
       // Swap icon between collapse and expand
       if (list.classList.contains('condensed')) {
-        icon.className = 'bi bi-arrows-expand';
+        icon.className = 'icon-maximize-2';
       } else {
-        icon.className = 'bi bi-arrows-collapse';
+        icon.className = 'icon-minimize-2';
       }
     });
 
@@ -710,10 +710,10 @@
           <div class="highlight-slug">${escapeHtml(highlight.slug)}</div>
           <div class="highlight-citation">${escapeHtml(highlight.citation || '')}</div>
         </div>
-        <div class="highlight-importance"><i class="bi bi-flag-fill"></i> ${highlight.importance}</div>
+        <div class="highlight-importance"><i class="icon-flag"></i> ${highlight.importance}</div>
         <div class="highlight-menu dropdown">
           <button class="btn-icon menu-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-three-dots-vertical"></i>
+            <i class="icon-ellipsis-vertical"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
             <li>
@@ -950,7 +950,7 @@
       // Update importance
       const impEl = item.querySelector('.highlight-importance');
       if (impEl) {
-        impEl.innerHTML = `<i class="bi bi-flag-fill"></i> ${data.importance}`;
+        impEl.innerHTML = `<i class="icon-flag"></i> ${data.importance}`;
       }
     }
     </script>

@@ -9,7 +9,7 @@
   display: flex;
 }
 
-.folder-item .bi-folder {
+.folder-item .icon-folder {
   color: var(--icon-muted);
 }
 
@@ -41,8 +41,8 @@
 }
 
 
-.list-group-item .bi-person,
-.list-group-item .bi-folder {
+.list-group-item .icon-user,
+.list-group-item .icon-folder {
   color: var(--icon-muted);
   margin-right: 0.75rem;
 }

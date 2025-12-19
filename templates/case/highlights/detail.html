@@ -4,7 +4,7 @@
       <h1 class="modal-title">{{ highlight.slug|default:"Untitled" }}</h1>
       <div>
         <a href="#" data-bs-dismiss="modal">
-          <i class="bi bi-x-lg"></i>
+          <i class="icon-x"></i>
         </a>
       </div>
     </div>
@@ -15,7 +15,7 @@
           <span class="highlight-detail-date">{{ highlight.document.date|date:'F j, Y'|default:"No date" }}</span>
         </div>
         <span class="highlight-detail-importance">
-          <i class="bi bi-flag"></i> {{ highlight.importance }}
+          <i class="icon-flag"></i> {{ highlight.importance }}
         </span>
       </div>
       <div class="highlight-detail-text">{{ highlight.text }}</div>
@@ -24,7 +24,7 @@
         {% if highlight.labels.all %}
           <div class="highlight-detail-labels">
             {% for label in highlight.labels.all %}
-              <span class="app-badge label-{{ label.color }}"><i class="bi bi-tag"></i>{{ label.name }}</span>
+              <span class="app-badge label-{{ label.color }}"><i class="icon-tag"></i>{{ label.name }}</span>
             {% endfor %}
           </div>
         {% endif %}

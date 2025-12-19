@@ -17,7 +17,7 @@
               hx-trigger="click"
               data-bs-toggle="modal"
               data-bs-target="#htmx-modal-container">
-        <i class="bi bi-filter"></i> Filter
+        <i class="icon-list-filter"></i> Filter
       </button>
       <div class="dropdown">
         <button type="button"
@@ -26,7 +26,7 @@
                 data-bs-toggle="dropdown"
                 aria-expanded="false">
           {{ selected_group|default:"All Groups" }}
-          <small><i class="bi bi-chevron-down"></i></small>
+          <small><i class="icon-chevron-down"></i></small>
         </button>
         <ul class="dropdown-menu">
           <li>
@@ -54,7 +54,7 @@
                 data-bs-toggle="dropdown"
                 aria-expanded="false">
           {{ selected_role|default:"All Roles" }}
-          <small><i class="bi bi-chevron-down"></i></small>
+          <small><i class="icon-chevron-down"></i></small>
         </button>
         <ul class="dropdown-menu">
           <li>
@@ -88,7 +88,7 @@
                   hx-target="#contacts"
                   hx-swap="innerHTML"
                   hx-post="{% url 'matters:contacts-sort' id=matter.id order='group' %}">
-            <i class="bi bi-chevron-expand"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="role">
@@ -97,7 +97,7 @@
                   hx-target="#contacts"
                   hx-swap="innerHTML"
                   hx-post="{% url 'matters:contacts-sort' id=matter.id order='role' %}">
-            <i class="bi bi-chevron-expand"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="name">
@@ -106,7 +106,7 @@
                   hx-target="#contacts"
                   hx-swap="innerHTML"
                   hx-post="{% url 'matters:contacts-sort' id=matter.id order='name' %}">
-            <i class="bi bi-chevron-expand"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="email">Email</th>
@@ -140,7 +140,7 @@
                         class="btn btn-sm action-btn copy-btn"
                         data-copy="{{ item.contact.email }}"
                         title="Copy email">
-                  <i class="bi bi-clipboard"></i>
+                  <i class="icon-clipboard"></i>
                 </button>
               </div>
             {% endif %}
@@ -153,14 +153,14 @@
                   <a href="tel:{{ item.contact.phone1|phone_tel }}"
                      class="btn btn-sm action-btn copy-btn contact-call-btn"
                      title="Call">
-                    <i class="bi bi-telephone-outbound"></i>
+                    <i class="icon-phone-outbound"></i>
                   </a>
                 </span>
                 <button type="button"
                         class="btn btn-sm action-btn copy-btn"
                         data-copy="{{ item.contact.phone1|phone_number }}"
                         title="Copy phone number">
-                  <i class="bi bi-clipboard"></i>
+                  <i class="icon-clipboard"></i>
                 </button>
               </div>
             {% endif %}

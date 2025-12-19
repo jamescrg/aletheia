@@ -42,7 +42,7 @@ const initializeDocumentDropzone = () => {
       maxFiles: 1,
       addRemoveLinks: false,
       dictDefaultMessage: "Drop file here or click to upload",
-      dictRemoveFile: '<i class="bi bi-trash"></i>',
+      dictRemoveFile: '<i class="icon-trash-2"></i>',
       acceptedFiles: ".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png",
       previewTemplate: `
         <div class="dz-preview dz-file-preview">
@@ -51,7 +51,7 @@ const initializeDocumentDropzone = () => {
             <span class="dz-size" data-dz-size></span>
           </div>
           <a class="dz-remove" href="javascript:undefined;" data-dz-remove>
-            <i class="bi bi-trash"></i>
+            <i class="icon-trash-2"></i>
           </a>
         </div>
       `,
@@ -154,8 +154,8 @@ const initializeDocumentDropzone = () => {
           if (submitButton) {
             submitButton.disabled = true;
             submitButton.innerHTML = hasNewFile
-              ? '<i class="bi bi-arrow-repeat spin"></i> Uploading...'
-              : '<i class="bi bi-arrow-repeat spin"></i> Saving...';
+              ? '<i class="icon-refresh-cw spin"></i> Uploading...'
+              : '<i class="icon-refresh-cw spin"></i> Saving...';
           }
 
           fetch(form.action, {
@@ -252,7 +252,7 @@ const initializeMarkdownDropzone = () => {
             <span class="dz-size" data-dz-size></span>
           </div>
           <a class="dz-remove" href="javascript:undefined;" data-dz-remove>
-            <i class="bi bi-trash"></i>
+            <i class="icon-trash-2"></i>
           </a>
         </div>
       `,
@@ -283,7 +283,7 @@ const initializeMarkdownDropzone = () => {
           const submitButton = form.querySelector('button[type="submit"]');
           submitButton.disabled = true;
           submitButton.innerHTML =
-            '<i class="bi bi-arrow-repeat spin"></i> Importing...';
+            '<i class="icon-refresh-cw spin"></i> Importing...';
 
           fetch(form.action, {
             method: "POST",

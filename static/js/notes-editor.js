@@ -856,15 +856,15 @@ function updateSaveStatus(status) {
   if (status === "unsaved") {
     btn.classList.add("active");
     btn.title = "Unsaved changes";
-    icon.className = "bi bi-cloud-arrow-up";
+    icon.className = "icon-cloud-upload";
   } else if (status === "saving") {
     btn.classList.add("active");
     btn.title = "Saving...";
-    icon.className = "bi bi-cloud-arrow-up";
+    icon.className = "icon-cloud-upload";
   } else {
     btn.classList.remove("active");
     btn.title = "Saved";
-    icon.className = "bi bi-cloud-check";
+    icon.className = "icon-cloud-check";
   }
 }
 
@@ -1272,7 +1272,7 @@ function openReferencePicker() {
     picker.style.left = Math.max(16, left) + "px";
   }
 
-  results.innerHTML = '<div class="sources-empty-state"><i class="bi bi-search"></i><p>Search for highlights and documents to insert</p></div>';
+  results.innerHTML = '<div class="sources-empty-state"><i class="icon-search"></i><p>Search for highlights and documents to insert</p></div>';
   picker.classList.add("active");
   searchInput.value = "";
 
@@ -1295,7 +1295,7 @@ function closeReferencePicker() {
 function searchReferences(query) {
   if (!query.trim()) {
     document.getElementById("reference-results").innerHTML =
-      '<div class="sources-empty-state"><i class="bi bi-search"></i><p>Search for highlights and documents to insert</p></div>';
+      '<div class="sources-empty-state"><i class="icon-search"></i><p>Search for highlights and documents to insert</p></div>';
     return;
   }
 
@@ -1776,7 +1776,7 @@ function buildOutline() {
 
       if (hasChildren) {
         html += '<li class="outline-item has-children level-' + heading.level + collapsedClass + '" data-pos="' + heading.pos + '">';
-        html += '<span class="outline-toggle"><i class="bi bi-chevron-down"></i></span>';
+        html += '<span class="outline-toggle"><i class="icon-chevron-down"></i></span>';
         html += '<span class="outline-text">' + text + '</span>';
         html += '<ul class="outline-children">';
         html += buildHierarchicalHtml(children);
@@ -1933,7 +1933,7 @@ function updateCollapseButtonIcon() {
     return item.classList.contains("collapsed");
   });
 
-  icon.className = allCollapsed ? "bi bi-chevron-expand" : "bi bi-chevron-contract";
+  icon.className = allCollapsed ? "icon-chevrons-up-down" : "icon-chevrons-down-up";
 }
 
 // =============================================================================

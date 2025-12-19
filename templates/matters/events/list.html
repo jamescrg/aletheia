@@ -6,14 +6,14 @@
                 hx-target="#htmx-modal-container"
                 data-bs-toggle="modal"
                 data-bs-target="#htmx-modal-container">
-          <i class="bi bi-plus-lg"></i>
+          <i class="icon-plus"></i>
         </button>
         <button type="button"
                 hx-get="{% url 'agenda:events-filter' %}"
                 hx-target="#htmx-modal-container"
                 data-bs-toggle="modal"
                 data-bs-target="#htmx-modal-container">
-          <i class="bi bi-filter"></i>Filter
+          <i class="icon-list-filter"></i>Filter
         </button>
         <button type="button"
                 id="events-status-filter"
@@ -22,7 +22,7 @@
                 aria-expanded="false">
           {{ events_filter_status|default:"All Statuses" }}
           <small>
-            <i class="bi bi-chevron-down"></i>
+            <i class="icon-chevron-down"></i>
           </small>
         </button>
         <ul class="dropdown-menu">
@@ -55,7 +55,7 @@
          hx-target="#htmx-modal-container"
          data-bs-toggle="modal"
          data-bs-target="#htmx-modal-container">
-        <i class="bi bi-calendar-week"></i>Deadline Calculator
+        <i class="icon-calendar-days"></i>Deadline Calculator
       </a>
     </div>
   </div>
@@ -67,21 +67,21 @@
             Date
             <button class="btn-sort {% if current_order == 'date' %}active{% endif %}"
                     hx-post="{% url 'matters:events-filter-sort' id=matter.id order='date' %}">
-              <i class="bi bi-chevron-expand"></i>
+              <i class="icon-chevrons-up-down"></i>
             </button>
           </th>
           <th class="party">
             Party
             <button class="btn-sort {% if current_order == 'party' %}active{% endif %}"
                     hx-post="{% url 'matters:events-filter-sort' id=matter.id order='party' %}">
-              <i class="bi bi-chevron-expand"></i>
+              <i class="icon-chevrons-up-down"></i>
             </button>
           </th>
           <th class="description">
             Description
             <button class="btn-sort {% if current_order == 'description' %}active{% endif %}"
                     hx-post="{% url 'matters:events-filter-sort' id=matter.id order='description' %}">
-              <i class="bi bi-chevron-expand"></i>
+              <i class="icon-chevrons-up-down"></i>
             </button>
           </th>
           <th class="duration">Duration</th>
@@ -90,7 +90,7 @@
             Status
             <button class="btn-sort {% if current_order == 'status' %}active{% endif %}"
                     hx-post="{% url 'matters:events-filter-sort' id=matter.id order='status' %}">
-              <i class="bi bi-chevron-expand"></i>
+              <i class="icon-chevrons-up-down"></i>
             </button>
           </th>
         </tr>

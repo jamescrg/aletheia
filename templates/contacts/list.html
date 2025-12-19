@@ -1,7 +1,7 @@
 <ul class="list-group">
   {% for contact in contacts %}
     <li class="list-group-item{% if selected_contact and selected_contact.id == contact.id %} item-selected-highlight{% endif %}">
-      <i class="bi bi-person"></i>
+      <i class="icon-user"></i>
       <a href="{% url 'contacts:select' contact_id=contact.id %}">{{ contact.name }}</a>
     </li>
   {% empty %}

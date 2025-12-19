@@ -5,7 +5,7 @@
               hx-target="#htmx-modal-container"
               data-bs-toggle="modal"
               data-bs-target="#htmx-modal-container">
-        <i class="bi bi-plus-lg"></i>
+        <i class="icon-plus"></i>
       </button>
       <button type="button"
               class="btn-icon"
@@ -15,14 +15,14 @@
               hx-swap="#outerHTML"
               data-bs-toggle="modal"
               data-bs-target="#htmx-modal-container">
-        <i class="bi bi-filter"></i>Filter
+        <i class="icon-list-filter"></i>Filter
       </button>
       <button type="button"
               id="tasks-priority-filter"
               class="select-btn filter-dropdown-button priority-dropdown {% if priority_value %}toggle-active{% endif %}"
               data-bs-toggle="dropdown"
               aria-expanded="false">
-      <span><i class="bi bi-flag with-text"></i>
+      <span><i class="icon-flag with-text"></i>
       {% if priority_value %}
         {% if priority_value == 1 %}
           1 only
@@ -34,7 +34,7 @@
       {% endif %}
     </span>
     <small>
-      <i class="bi bi-chevron-down"></i>
+      <i class="icon-chevron-down"></i>
     </small>
   </button>
   <ul class="dropdown-menu"
@@ -46,7 +46,7 @@
          href="#"
          hx-post="{% url 'matters:tasks-filter-priority' matter.id priority %}"
          hx-target="#matterTasks"
-         hx-swap="#outerHTML"><i class="bi bi-flag"></i>
+         hx-swap="#outerHTML"><i class="icon-flag"></i>
       {% if priority == 1 %}
         1 only
       {% else %}
@@ -60,7 +60,7 @@
      href="#"
      hx-post="{% url 'matters:tasks-filter-priority' matter.id 0 %}"
      hx-target="#matterTasks"
-     hx-swap="#outerHTML"><i class="bi bi-flag"></i> All Levels</a>
+     hx-swap="#outerHTML"><i class="icon-flag"></i> All Levels</a>
 </li>
 </ul>
 <button type="button"
@@ -68,9 +68,9 @@
         class="select-btn filter-dropdown-button {% if user_id %}toggle-active{% endif %}"
         data-bs-toggle="dropdown"
         aria-expanded="false">
-  <span><i class="bi bi-{% if user_id %}person{% else %}people{% endif %} with-text"></i>{{ selected_user|default:"All Users" }}</span>
+  <span><i class="icon-{% if user_id %}user{% else %}users{% endif %} with-text"></i>{{ selected_user|default:"All Users" }}</span>
   <small>
-    <i class="bi bi-chevron-down"></i>
+    <i class="icon-chevron-down"></i>
   </small>
 </button>
 <ul class="dropdown-menu" hx-target="#matterTasks" hx-swap="outerHTML">
@@ -79,7 +79,7 @@
        href="#"
        hx-post="{% url 'matters:tasks-filter-user' matter.id 0 %}"
        hx-target="#matterTasks"
-       hx-swap="#outerHTML"><i class="bi bi-people"></i> All Users</a>
+       hx-swap="#outerHTML"><i class="icon-users"></i> All Users</a>
   </li>
   {% for user in users %}
     <li>
@@ -87,12 +87,12 @@
          href="#"
          hx-post="{% url 'matters:tasks-filter-user' matter.id user.id %}"
          hx-target="#matterTasks"
-         hx-swap="#outerHTML"><i class="bi bi-person"></i> {{ user.username|title }}</a>
+         hx-swap="#outerHTML"><i class="icon-user"></i> {{ user.username|title }}</a>
     </li>
   {% endfor %}
 </ul>
 <a href="{% url 'agenda:tasks-index' %}" class="return-to-agenda">
-  Back to Agenda <i class="bi bi-arrow-up-left-circle ms-2"></i>
+  Back to Agenda <i class="icon-arrow-up-left ms-2"></i>
 </a>
 </div>
 </div>
@@ -107,7 +107,7 @@
                   hx-target="#matterTasks"
                   hx-swap="innerHTML"
                   hx-post="{% url 'matters:tasks-filter-sort' matter.id 'priority' %}">
-            <i class="bi bi-flag"></i>
+            <i class="icon-flag"></i>
           </button>
         </th>
         <th class="matter">
@@ -116,7 +116,7 @@
                   hx-target="#matterTasks"
                   hx-swap="innerHTML"
                   hx-post="{% url 'matters:tasks-filter-sort' matter.id 'matter__name' %}">
-            <i class="bi bi-chevron-expand"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="description">
@@ -125,7 +125,7 @@
                   hx-target="#matterTasks"
                   hx-swap="innerHTML"
                   hx-post="{% url 'matters:tasks-filter-sort' matter.id 'description' %}">
-            <i class="bi bi-chevron-expand"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="status">
@@ -134,7 +134,7 @@
                   hx-target="#matterTasks"
                   hx-swap="innerHTML"
                   hx-post="{% url 'matters:tasks-filter-sort' matter.id 'status' %}">
-            <i class="bi bi-chevron-expand"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="user">
@@ -143,7 +143,7 @@
                   hx-target="#matterTasks"
                   hx-swap="innerHTML"
                   hx-post="{% url 'matters:tasks-filter-sort' matter.id 'user__username' %}">
-            <i class="bi bi-chevron-expand"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="date">
@@ -152,7 +152,7 @@
                   hx-target="#matterTasks"
                   hx-swap="innerHTML"
                   hx-post="{% url 'matters:tasks-filter-sort' matter.id 'date_due' %}">
-            <i class="bi bi-chevron-expand"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
       </tr>

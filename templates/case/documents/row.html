@@ -24,7 +24,7 @@
               <li>
                 <a class="dropdown-item"
                    href="{% url 'case:viewer' document.id %}"
-                   target="_blank"><i class="bi bi-eye"></i> View Document</a>
+                   target="_blank"><i class="icon-eye"></i> View Document</a>
               </li>
             {% endif %}
             <li>
@@ -33,16 +33,16 @@
                  hx-get="{% url 'case:documents-edit' document.id %}"
                  hx-target="#htmx-modal-container"
                  data-bs-toggle="modal"
-                 data-bs-target="#htmx-modal-container"><i class="bi bi-pencil"></i> Edit Details</a>
+                 data-bs-target="#htmx-modal-container"><i class="icon-pencil"></i> Edit Details</a>
             </li>
             <li>
               <a class="dropdown-item"
-                 href="{% url 'case:documents-download' document.id %}"><i class="bi bi-download"></i> Download</a>
+                 href="{% url 'case:documents-download' document.id %}"><i class="icon-download"></i> Download</a>
             </li>
             <li>
               <a class="dropdown-item document-link-btn"
                  href="#"
-                 data-url="{% url 'case:viewer' document.id %}"><i class="bi bi-link-45deg"></i> Copy Link to File</a>
+                 data-url="{% url 'case:viewer' document.id %}"><i class="icon-link"></i> Copy Link to File</a>
             </li>
             <li>
               <a class="dropdown-item"
@@ -50,12 +50,12 @@
                  hx-get="{% url 'case:labels-apply-modal' 'document' document.id %}"
                  hx-target="#htmx-modal-container"
                  data-bs-toggle="modal"
-                 data-bs-target="#htmx-modal-container"><i class="bi bi-tag"></i> Add Label</a>
+                 data-bs-target="#htmx-modal-container"><i class="icon-tag"></i> Add Label</a>
             </li>
             {% if document.highlight_count %}
               <li>
                 <a class="dropdown-item"
-                   href="{% url 'case:highlights-for-document' document.id %}"><i class="bi bi-highlighter"></i> Review Highlights</a>
+                   href="{% url 'case:highlights-for-document' document.id %}"><i class="icon-highlighter"></i> Review Highlights</a>
               </li>
             {% endif %}
           </ul>

@@ -9,16 +9,16 @@
               hx-trigger="click"
               data-bs-toggle="modal"
               data-bs-target="#htmx-modal-container">
-        <i class="bi bi-filter"></i>Filter
+        <i class="icon-list-filter"></i>Filter
       </button>
       <button type="button"
               id="highlights-document-filter"
               class="select-btn filter-dropdown-button {% if selected_document %}toggle-active{% endif %}"
               data-bs-toggle="dropdown"
               aria-expanded="false">
-        <span><i class="bi bi-file-earmark with-text"></i>{{ selected_document.name|default:"All Documents"|truncatechars:30 }}</span>
+        <span><i class="icon-file with-text"></i>{{ selected_document.name|default:"All Documents"|truncatechars:30 }}</span>
         <small>
-          <i class="bi bi-chevron-down"></i>
+          <i class="icon-chevron-down"></i>
         </small>
       </button>
       <ul class="dropdown-menu"
@@ -29,7 +29,7 @@
              href="#"
              hx-post="{% url 'case:highlights-filter-document-clear' matter.id %}"
              hx-target="#highlights"
-             hx-swap="outerHTML"><i class="bi bi-files"></i> All Documents</a>
+             hx-swap="outerHTML"><i class="icon-files"></i> All Documents</a>
         </li>
         {% for doc in documents %}
           <li>
@@ -37,7 +37,7 @@
                href="#"
                hx-post="{% url 'case:highlights-filter-document' matter.id doc.id %}"
                hx-target="#highlights"
-               hx-swap="outerHTML"><i class="bi bi-file-earmark"></i> {{ doc.name|truncatechars:30 }}</a>
+               hx-swap="outerHTML"><i class="icon-file"></i> {{ doc.name|truncatechars:30 }}</a>
           </li>
         {% endfor %}
       </ul>
@@ -46,7 +46,7 @@
               class="select-btn filter-dropdown-button priority-dropdown {% if importance_value %}toggle-active{% endif %}"
               data-bs-toggle="dropdown"
               aria-expanded="false">
-      <span><i class="bi bi-flag with-text"></i>
+      <span><i class="icon-flag with-text"></i>
       {% if importance_value %}
         {% if importance_value == 1 %}
           1 only
@@ -58,7 +58,7 @@
       {% endif %}
     </span>
     <small>
-      <i class="bi bi-chevron-down"></i>
+      <i class="icon-chevron-down"></i>
     </small>
   </button>
   <ul class="dropdown-menu">
@@ -68,7 +68,7 @@
         <a class="dropdown-item {% if importance == importance_value %}active{% endif %}"
            href="#"
            hx-get="{% url 'case:highlights-filter-importance' matter.id importance %}"
-           hx-target="#highlights"><i class="bi bi-flag"></i>
+           hx-target="#highlights"><i class="icon-flag"></i>
         {% if importance == 1 %}
           1 only
         {% else %}
@@ -82,7 +82,7 @@
   <a class="dropdown-item {% if not importance_value %}active{% endif %}"
      href="#"
      hx-get="{% url 'case:highlights-filter-importance' matter.id 0 %}"
-     hx-target="#highlights"><i class="bi bi-flag"></i> All Levels</a>
+     hx-target="#highlights"><i class="icon-flag"></i> All Levels</a>
 </li>
 </ul>
 <input type="text"

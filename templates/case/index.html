@@ -11,7 +11,7 @@
                     data-bs-toggle="dropdown"
                     aria-expanded="false">
               <small>
-                <i class="bi bi-chevron-down"></i>
+                <i class="icon-chevron-down"></i>
               </small>
             </button>
             <ul class="dropdown-menu">
@@ -27,7 +27,7 @@
               {% endfor %}
             </ul>
             {% if matter %}
-              <a href="{% url 'matters:contacts' id=matter.id %}" class="icon-green">Matter Details<i class="bi bi-arrow-left-circle ms-2"></i></a>
+              <a href="{% url 'matters:contacts' id=matter.id %}" class="icon-green">Matter Details<i class="icon-arrow-left-circle ms-2"></i></a>
               <button class="icon-green"
                       hx-get="/activity/time/add/{{ matter.id }}/case"
                       hx-target="#htmx-modal-container"

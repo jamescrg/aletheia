@@ -7,25 +7,25 @@
          target="_blank"
          class="btn-sm ai-new-btn ai-new-claude"
          title="New Claude conversation">
-        <i class="bi bi-plus-lg"></i> Claude
+        <i class="icon-plus"></i> Claude
       </a>
       <a href="{% url 'case:ai-new-conversation-view' matter.id %}?llm=gemini-flash"
          target="_blank"
          class="btn-sm ai-new-btn ai-new-gemini-flash"
          title="New Gemini Flash conversation">
-        <i class="bi bi-plus-lg"></i> Gemini Flash
+        <i class="icon-plus"></i> Gemini Flash
       </a>
       <a href="{% url 'case:ai-new-conversation-view' matter.id %}?llm=gemini-pro"
          target="_blank"
          class="btn-sm ai-new-btn ai-new-gemini-pro"
          title="New Gemini Pro conversation">
-        <i class="bi bi-plus-lg"></i> Gemini Pro
+        <i class="icon-plus"></i> Gemini Pro
       </a>
       <a href="{% url 'case:ai-create-prompt' matter.id %}"
          target="_blank"
          class="btn-icon"
          title="Create prompt for external AI">
-        <i class="bi bi-file-text"></i>
+        <i class="icon-file-text"></i>
       </a>
     </div>
   </div>
@@ -53,7 +53,7 @@
               <li>
                 <a class="dropdown-item"
                    href="{% url 'case:ai-conversation-view' conv.id %}"
-                   target="_blank"><i class="bi bi-box-arrow-up-right"></i> Resume</a>
+                   target="_blank"><i class="icon-external-link"></i> Resume</a>
               </li>
               <li>
                 <a class="dropdown-item"
@@ -61,14 +61,14 @@
                    hx-get="{% url 'case:ai-rename-form' conv.id %}"
                    hx-target="#htmx-modal-container"
                    data-bs-toggle="modal"
-                   data-bs-target="#htmx-modal-container"><i class="bi bi-pencil"></i> Rename</a>
+                   data-bs-target="#htmx-modal-container"><i class="icon-pencil"></i> Rename</a>
               </li>
               <li>
                 <a class="dropdown-item text-danger"
                    href="#"
                    hx-post="{% url 'case:ai-delete-conversation' conv.id %}"
                    hx-confirm="Delete this conversation?"
-                   hx-swap="none"><i class="bi bi-trash"></i> Delete</a>
+                   hx-swap="none"><i class="icon-trash-2"></i> Delete</a>
               </li>
             </ul>
           </div>

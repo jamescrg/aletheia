@@ -9,13 +9,13 @@
              hx-target="#htmx-modal-container"
              hx-trigger="click"
              data-bs-toggle="modal"
-             data-bs-target="#htmx-modal-container"><i class="bi bi-plus-lg"></i></a>
+             data-bs-target="#htmx-modal-container"><i class="icon-plus"></i></a>
           <button hx-get="/matters/filter"
                   hx-target="#htmx-modal-container"
                   class="{% if filter_label == "custom" %}toggle-active{% endif %}"
                   data-bs-toggle="modal"
                   data-bs-target="#htmx-modal-container">
-            <i class="bi bi-filter"></i>Filter
+            <i class="icon-list-filter"></i>Filter
           </button>
           <button class="{% if filter_label == "Pending" %}toggle-active{% endif %}"
                   hx-post="{% url 'matters:filter-quick-status' 'Pending' %}">Pending</button>
@@ -36,14 +36,14 @@
             Matter
             <button class="btn-sort {% if current_order == 'name' %}active{% endif %}"
                     hx-post="{% url 'matters:order-by' 'name' %}">
-              <i class="bi bi-chevron-expand"></i>
+              <i class="icon-chevrons-up-down"></i>
             </button>
           </th>
           <th class="work-status">
             Work Status
             <button class="btn-sort {% if current_order == 'description' %}active{% endif %}"
                     hx-post="{% url 'matters:order-by' 'description' %}">
-              <i class="bi bi-chevron-expand"></i>
+              <i class="icon-chevrons-up-down"></i>
             </button>
           </th>
           <th class="case-no">Proceeding</th>

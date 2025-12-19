@@ -810,7 +810,7 @@
     ]).then(() => {
       if (button) {
         const originalHtml = button.innerHTML;
-        button.innerHTML = '<i class="bi bi-check-lg"></i>';
+        button.innerHTML = '<i class="icon-check"></i>';
         button.style.color = 'green';
         setTimeout(() => {
           button.innerHTML = originalHtml;
@@ -932,7 +932,7 @@
         <div class="item-row">
           <div class="item-menu dropdown">
             <button class="item-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-three-dots-vertical"></i>
+              <i class="icon-ellipsis-vertical"></i>
             </button>
             <ul class="dropdown-menu"></ul>
           </div>
@@ -1057,7 +1057,7 @@
         <div class="item-row">
           <div class="item-menu dropdown">
             <button class="item-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-three-dots-vertical"></i>
+              <i class="icon-ellipsis-vertical"></i>
             </button>
             <ul class="dropdown-menu"></ul>
           </div>
@@ -1186,7 +1186,7 @@
         <div class="item-row">
           <div class="item-menu dropdown">
             <button class="item-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-three-dots-vertical"></i>
+              <i class="icon-ellipsis-vertical"></i>
             </button>
             <ul class="dropdown-menu"></ul>
           </div>
@@ -1603,7 +1603,7 @@
         const bullet = itemRow.querySelector('.item-bullet');
         if (bullet) {
           bullet.insertAdjacentHTML('beforebegin', `<button class="collapse-toggle" title="Collapse">
-            <i class="bi bi-chevron-down"></i>
+            <i class="icon-chevron-down"></i>
           </button>`);
         }
       }
@@ -1907,7 +1907,7 @@
           const bullet = itemRow.querySelector('.item-bullet');
           if (bullet) {
             bullet.insertAdjacentHTML('beforebegin', `<button class="collapse-toggle" title="Collapse">
-              <i class="bi bi-chevron-down"></i>
+              <i class="icon-chevron-down"></i>
             </button>`);
           }
         }
@@ -2063,7 +2063,7 @@
           const bullet = itemRow.querySelector('.item-bullet');
           if (bullet) {
             bullet.insertAdjacentHTML('beforebegin', `<button class="collapse-toggle" title="Collapse">
-              <i class="bi bi-chevron-down"></i>
+              <i class="icon-chevron-down"></i>
             </button>`);
           }
         }

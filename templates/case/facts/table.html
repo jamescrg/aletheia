@@ -6,7 +6,7 @@
         <button class="btn-sort {% if 'date' in current_order %}active{% endif %}"
                 hx-get="{% url 'case:facts-sort' matter.id 'date' %}"
                 hx-target="#facts">
-          <i class="bi bi-chevron-expand"></i>
+          <i class="icon-chevrons-up-down"></i>
         </button>
       </th>
       <th class="description">Description</th>
@@ -17,7 +17,7 @@
                 hx-get="{% url 'case:facts-sort' matter.id 'importance' %}"
                 hx-target="#facts"
                 title="Sort by importance">
-          <i class="bi bi-flag"></i>
+          <i class="icon-flag"></i>
         </button>
       </th>
     </tr>

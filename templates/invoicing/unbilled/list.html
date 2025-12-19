@@ -14,7 +14,7 @@
         Matter
         <button class="btn-sort {% if current_order == 'name' %}active{% endif %}"
                 hx-post="{% url 'invoicing:unbilled-sort' 'name' %}">
-          <i class="bi bi-chevron-expand"></i>
+          <i class="icon-chevrons-up-down"></i>
         </button>
       </th>
       <th class="numeric unbilled-hours">Hours</th>
@@ -24,7 +24,7 @@
         Activity
         <button class="btn-sort {% if current_order == 'total_activity' %}active{% endif %}"
                 hx-post="{% url 'invoicing:unbilled-sort' 'total_activity' %}">
-          <i class="bi bi-chevron-expand"></i>
+          <i class="icon-chevrons-up-down"></i>
         </button>
       </th>
       <th class="numeric unbilled-col">Trust</th>
@@ -32,7 +32,7 @@
         Clearance
         <button class="btn-sort {% if current_order == 'clearance' %}active{% endif %}"
                 hx-post="{% url 'invoicing:unbilled-sort' 'clearance' %}">
-          <i class="bi bi-chevron-expand"></i>
+          <i class="icon-chevrons-up-down"></i>
         </button>
       </th>
     </tr>
@@ -47,7 +47,7 @@
              data-bs-target="#htmx-modal-container"
              title="Create Invoice"
              class="create-invoice-icon">
-            <i class="bi bi-clipboard-plus"></i>
+            <i class="icon-clipboard-plus"></i>
           </a>
         </td>
         <td class="numeric unbilled-hours">{{ matter.unbilled_hours|floatformat:1 }}</td>

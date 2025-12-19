@@ -9,7 +9,7 @@
     <title>PDF Viewer</title>
     <link rel="stylesheet" href="pdf_viewer.css">
     <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+          href="https://unpkg.com/lucide-static@latest/font/lucide.css">
     <style>
       html,
       body {
@@ -186,16 +186,16 @@
   <body>
     <div id="toolbar">
       <button id="previous" title="Previous Page">
-        <i class="bi bi-chevron-left"></i>
+        <i class="icon-chevron-left"></i>
       </button>
       <input type="number" id="pageNumber" value="1" min="1">
       <span>/ <span id="numPages">-</span></span>
       <button id="next" title="Next Page">
-        <i class="bi bi-chevron-right"></i>
+        <i class="icon-chevron-right"></i>
       </button>
       <div class="toolbarSeparator"></div>
       <button id="zoomOut" title="Zoom Out">
-        <i class="bi bi-zoom-out"></i>
+        <i class="icon-zoom-out"></i>
       </button>
       <select id="zoomSelect">
         <option value="page-width" selected>Fit Width</option>
@@ -207,7 +207,7 @@
         <option value="2">200%</option>
       </select>
       <button id="zoomIn" title="Zoom In">
-        <i class="bi bi-zoom-in"></i>
+        <i class="icon-zoom-in"></i>
       </button>
       <div class="toolbarSeparator"></div>
       <div class="searchBar">
@@ -216,18 +216,18 @@
                placeholder="Search..."
                title="Search in document">
         <button id="searchPrev" title="Previous match (Shift+Enter)">
-          <i class="bi bi-chevron-up"></i>
+          <i class="icon-chevron-up"></i>
         </button>
         <button id="searchNext" title="Next match (Enter)">
-          <i class="bi bi-chevron-down"></i>
+          <i class="icon-chevron-down"></i>
         </button>
         <span id="searchResults"></span>
       </div>
       <button id="createHighlightBtn" title="Create highlight from selected text">
-        <i class="bi bi-plus"></i> Highlight
+        <i class="icon-plus"></i> Highlight
       </button>
       <button id="downloadBtn" title="Download document">
-        <i class="bi bi-download"></i>
+        <i class="icon-download"></i>
       </button>
     </div>
     <div id="viewerContainer">

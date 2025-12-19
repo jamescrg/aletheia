@@ -19,14 +19,14 @@
             hx-swap="outerHTML"
             onclick="event.stopPropagation();"
             title="Rename conversation">
-      <i class="bi bi-pencil"></i>
+      <i class="icon-pencil"></i>
     </button>
     <button class="ai-conversation-delete"
             hx-post="{% url 'case:ai-delete-conversation' conv.id %}"
             hx-swap="none"
             onclick="event.stopPropagation();"
             title="Delete conversation">
-      <i class="bi bi-trash"></i>
+      <i class="icon-trash-2"></i>
     </button>
   </div>
 {% empty %}

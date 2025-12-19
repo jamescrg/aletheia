@@ -6,7 +6,7 @@
         <button class="btn-sort {% if 'created' in current_order %}active{% endif %}"
                 hx-get="{% url 'case:highlights-filter-sort' matter.id 'created' %}"
                 hx-target="#highlights">
-          <i class="bi bi-chevron-expand"></i>
+          <i class="icon-chevrons-up-down"></i>
         </button>
       </th>
       <th class="highlight">
@@ -14,7 +14,7 @@
         <button class="btn-sort {% if 'slug' in current_order %}active{% endif %}"
                 hx-get="{% url 'case:highlights-filter-sort' matter.id 'slug' %}"
                 hx-target="#highlights">
-          <i class="bi bi-chevron-expand"></i>
+          <i class="icon-chevrons-up-down"></i>
         </button>
       </th>
       <th class="date">
@@ -22,7 +22,7 @@
         <button class="btn-sort {% if 'date' in current_order %}active{% endif %}"
                 hx-get="{% url 'case:highlights-filter-sort' matter.id 'date' %}"
                 hx-target="#highlights">
-          <i class="bi bi-chevron-expand"></i>
+          <i class="icon-chevrons-up-down"></i>
         </button>
       </th>
       <th class="importance">
@@ -30,7 +30,7 @@
                 hx-get="{% url 'case:highlights-filter-sort' matter.id 'importance' %}"
                 hx-target="#highlights"
                 title="Sort by importance">
-          <i class="bi bi-flag"></i>
+          <i class="icon-flag"></i>
         </button>
       </th>
     </tr>

@@ -7,7 +7,7 @@
     {% endfor %}
   {% else %}
     <div class="search-empty-state">
-      <i class="bi bi-search"></i>
+      <i class="icon-search"></i>
       <p>Search across your matter</p>
       <p class="search-stats">
         {{ doc_count }} document{{ doc_count|pluralize }},
@@ -27,7 +27,7 @@
               hx-post="{% url 'case:search-clear' matter.id %}"
               hx-swap="none"
               title="Clear search and filters">
-        {{ results|length }} result{{ results|length|pluralize }}<strong><i class="bi bi-x"></i></strong>
+        {{ results|length }} result{{ results|length|pluralize }}<strong><i class="icon-x"></i></strong>
       </button>
     {% endif %}
   </div>

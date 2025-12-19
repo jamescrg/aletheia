@@ -9,7 +9,7 @@
               <span class="item-sources">
                 <span class="source-citation dropdown">
                   <a href="#" data-bs-toggle="dropdown">
-                    <i class="bi bi-link-45deg"></i>
+                    <i class="icon-link"></i>
                     {% if total_count > 1 %}{{ total_count }}{% endif %}
                   </a>
                   <ul class="dropdown-menu">
@@ -18,7 +18,7 @@
                       <li>
                         <a class="dropdown-item"
                            href="{% url 'case:highlight-link' highlight.id %}"
-                           target="_blank"><i class="bi bi-eye"></i> {{ highlight.citation }}</a>
+                           target="_blank"><i class="icon-eye"></i> {{ highlight.citation }}</a>
                       </li>
                     {% endfor %}
                     {% for document in documents %}
@@ -26,10 +26,10 @@
                         {% if document.file.name|slice:"-4:"|lower == ".pdf" %}
                           <a class="dropdown-item"
                              href="{% url 'case:viewer' document.id %}"
-                             target="_blank"><i class="bi bi-eye"></i> {{ document.citation }}</a>
+                             target="_blank"><i class="icon-eye"></i> {{ document.citation }}</a>
                         {% else %}
                           <a class="dropdown-item"
-                             href="{% url 'case:documents-download' document.id %}"><i class="bi bi-download"></i> {{ document.citation }}</a>
+                             href="{% url 'case:documents-download' document.id %}"><i class="icon-download"></i> {{ document.citation }}</a>
                         {% endif %}
                       </li>
                     {% endfor %}
@@ -37,7 +37,7 @@
                     <li>
                       <a class="dropdown-item source-copy-btn"
                          href="#"
-                         data-copy="{% for h in highlights %}{{ h.citation }}{% if not forloop.last %}; {% endif %}{% endfor %}{% if highlights and documents %}; {% endif %}{% for d in documents %}{{ d.citation }}{% if not forloop.last %}; {% endif %}{% endfor %}"><i class="bi bi-clipboard"></i> Copy Citation
+                         data-copy="{% for h in highlights %}{{ h.citation }}{% if not forloop.last %}; {% endif %}{% endfor %}{% if highlights and documents %}; {% endif %}{% for d in documents %}{{ d.citation }}{% if not forloop.last %}; {% endif %}{% endfor %}"><i class="icon-clipboard"></i> Copy Citation
                         {% if total_count > 1 %}s{% endif %}
                       </a>
                     </li>
@@ -49,7 +49,7 @@
                            hx-post="{% url 'outlines:item-remove-source' item.id %}"
                            hx-vals='{"type": "highlight", "id": "{{ highlight.id }}"}'
                            hx-target="closest .outline-item"
-                           hx-swap="outerHTML"><i class="bi bi-x-lg"></i> Remove {{ highlight.citation|truncatechars:30 }}</a>
+                           hx-swap="outerHTML"><i class="icon-x"></i> Remove {{ highlight.citation|truncatechars:30 }}</a>
                       </li>
                     {% endfor %}
                     {% for document in documents %}
@@ -59,7 +59,7 @@
                            hx-post="{% url 'outlines:item-remove-source' item.id %}"
                            hx-vals='{"type": "document", "id": "{{ document.id }}"}'
                            hx-target="closest .outline-item"
-                           hx-swap="outerHTML"><i class="bi bi-x-lg"></i> Remove {{ document.citation|truncatechars:30 }}</a>
+                           hx-swap="outerHTML"><i class="icon-x"></i> Remove {{ document.citation|truncatechars:30 }}</a>
                       </li>
                     {% endfor %}
                   </ul>
@@ -78,12 +78,12 @@
                 <li>
                   <a class="dropdown-item"
                      href="{% url 'case:highlight-link' highlight.id %}"
-                     target="_blank"><i class="bi bi-eye"></i> View Source</a>
+                     target="_blank"><i class="icon-eye"></i> View Source</a>
                 </li>
                 <li>
                   <a class="dropdown-item source-copy-btn"
                      href="#"
-                     data-copy="{{ highlight.citation }}"><i class="bi bi-clipboard"></i> Copy Citation</a>
+                     data-copy="{{ highlight.citation }}"><i class="icon-clipboard"></i> Copy Citation</a>
                 </li>
                 <li>
                   <a class="dropdown-item urgent"
@@ -91,7 +91,7 @@
                      hx-post="{% url 'outlines:item-remove-source' item.id %}"
                      hx-vals='{"type": "highlight", "id": "{{ highlight.id }}"}'
                      hx-target="closest .outline-item"
-                     hx-swap="outerHTML"><i class="bi bi-x-lg"></i> Remove</a>
+                     hx-swap="outerHTML"><i class="icon-x"></i> Remove</a>
                 </li>
               </ul>
             </span>
@@ -104,17 +104,17 @@
                   <li>
                     <a class="dropdown-item"
                        href="{% url 'case:viewer' document.id %}"
-                       target="_blank"><i class="bi bi-eye"></i> View</a>
+                       target="_blank"><i class="icon-eye"></i> View</a>
                   </li>
                 {% endif %}
                 <li>
                   <a class="dropdown-item"
-                     href="{% url 'case:documents-download' document.id %}"><i class="bi bi-download"></i> Download</a>
+                     href="{% url 'case:documents-download' document.id %}"><i class="icon-download"></i> Download</a>
                 </li>
                 <li>
                   <a class="dropdown-item source-copy-btn"
                      href="#"
-                     data-copy="{{ document.citation }}"><i class="bi bi-clipboard"></i> Copy Citation</a>
+                     data-copy="{{ document.citation }}"><i class="icon-clipboard"></i> Copy Citation</a>
                 </li>
                 <li>
                   <a class="dropdown-item urgent"
@@ -122,7 +122,7 @@
                      hx-post="{% url 'outlines:item-remove-source' item.id %}"
                      hx-vals='{"type": "document", "id": "{{ document.id }}"}'
                      hx-target="closest .outline-item"
-                     hx-swap="outerHTML"><i class="bi bi-x-lg"></i> Remove</a>
+                     hx-swap="outerHTML"><i class="icon-x"></i> Remove</a>
                 </li>
               </ul>
             </span>

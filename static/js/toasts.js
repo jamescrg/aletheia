@@ -5,10 +5,10 @@
 
 const Toast = (function () {
   const ICONS = {
-    success: "bi-check-circle-fill",
-    error: "bi-exclamation-circle-fill",
-    warning: "bi-exclamation-triangle-fill",
-    info: "bi-info-circle-fill",
+    success: "icon-circle-check",
+    error: "icon-alert-circle",
+    warning: "icon-alert-triangle",
+    info: "icon-info",
   };
 
   const COLORS = {
@@ -63,7 +63,7 @@ const Toast = (function () {
         <i class="bi ${icon} me-2" style="color: ${color};"></i>
         <strong class="me-auto">${escapeHtml(title || capitalize(type))}</strong>
         <button type="button" class="toast-close" data-bs-dismiss="toast" aria-label="Close">
-          <i class="bi bi-x-lg"></i>
+          <i class="icon-x"></i>
         </button>
       </div>
       <div class="toast-body">
