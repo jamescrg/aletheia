@@ -1,6 +1,6 @@
 {% block content %}
   {% load humanize %}
-  <div class="section trust">
+  <div class="trust">
     <div class="toolbar">
       <div class="toolbar-left">
         <div class="filter-tools">
@@ -36,7 +36,7 @@
             <td class="date">{{ transaction.date|date:'Y-m-d' }}</td>
             <td class="note">
               <a href="#"
-                 hx-get="/trust/{{ transaction.id }}/edit"
+                 hx-get="{% url 'trust:edit' id=transaction.id %}"
                  hx-target="#htmx-modal-container"
                  data-bs-toggle="modal"
                  data-bs-target="#htmx-modal-container">{{ transaction.description }}</a>

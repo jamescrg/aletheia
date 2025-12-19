@@ -19,7 +19,8 @@ def trust_index(request):
     trust_data = get_trust_data(request)
 
     context = {
-        "app": "trust",
+        "app": "invoicing",
+        "subapp": "trust",
         "page": "summary",
     } | trust_data
 
@@ -33,7 +34,8 @@ def trust_list(request):
     trust_data = get_trust_data(request)
 
     context = {
-        "app": "trust",
+        "app": "invoicing",
+        "subapp": "trust",
         "page": "summary",
     }
 
@@ -59,7 +61,8 @@ def history_index(request, interval="30days"):
     )
 
     context = {
-        "app": "trust",
+        "app": "invoicing",
+        "subapp": "trust",
         "page": "history",
         "session_key": "trust_history_pagination",
         "trigger_key": "trustHistoryChanged",
@@ -89,7 +92,8 @@ def history(request, interval="30days"):
     )
 
     context = {
-        "app": "trust",
+        "app": "invoicing",
+        "subapp": "trust",
         "pagination": pagination,
         "page": "history",
         "interval": interval,
@@ -114,7 +118,8 @@ def client_index(request, id):
     transactions = trust.get_client_history(id)
 
     context = {
-        "app": "trust",
+        "app": "invoicing",
+        "subapp": "trust",
         "client": client,
         "page": "client",
         "pending_client_balance": pending_client_balance,
@@ -135,7 +140,8 @@ def client(request, id):
     transactions = trust.get_client_history(id)
 
     context = {
-        "app": "trust",
+        "app": "invoicing",
+        "subapp": "trust",
         "client": client,
         "page": "client",
         "pending_client_balance": pending_client_balance,
@@ -183,10 +189,11 @@ def add(request, client_id=None):
             form.fields["contact"].queryset = clients
 
     context = {
-        "app": "trust",
+        "app": "invoicing",
+        "subapp": "trust",
         "edit": False,
         "add": True,
-        "action": "/trust/add",
+        "action": "/invoicing/trust/add",
         "form": form,
     }
 
@@ -222,10 +229,11 @@ def edit(request, id):
         form = TransactionForm(instance=transaction, use_required_attribute=False)
 
     context = {
-        "app": "trust",
+        "app": "invoicing",
+        "subapp": "trust",
         "edit": True,
         "add": False,
-        "action": f"/trust/{id}/edit",
+        "action": f"/invoicing/trust/{id}/edit",
         "transaction": transaction,
         "form": form,
     }

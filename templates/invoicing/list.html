@@ -18,6 +18,9 @@
         <li {% if subapp == "collection" %}class="active"{% endif %}>
           <a href="{% url 'invoicing:collection-index' %}">Collection</a>
         </li>
+        <li {% if subapp == "trust" %}class="active"{% endif %}>
+          <a href="{% url 'trust:index' %}">Trust</a>
+        </li>
       </ul>
     </nav>
     <div class="section subsection">
