@@ -11,12 +11,12 @@
         <div class="filter-tools">
           {% include "invoicing/invoices/status.html" %}
           {% if invoice.status == 'SENT' %}
-            <button class="icon-green"
+            <button class="accent-link"
                     hx-get="{% url 'invoicing:quick-invoice-payment' pk=invoice.id payment_type='direct' %}"
                     hx-target="#htmx-modal-container"
                     data-bs-toggle="modal"
                     data-bs-target="#htmx-modal-container">+ Card</button>
-            <button class="icon-green"
+            <button class="accent-link"
                     hx-get="{% url 'invoicing:quick-invoice-payment' pk=invoice.id payment_type='trust' %}"
                     hx-target="#htmx-modal-container"
                     data-bs-toggle="modal"

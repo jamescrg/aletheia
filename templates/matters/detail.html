@@ -7,13 +7,13 @@
         <div class="toolbar-left">
           <h1>{{ matter.name }}</h1>
           <div class="filter-tools">
-            <a href="{% url 'case:select-matter' matter.id %}" class="icon-green">Case<i class="icon-arrow-right-circle ms-2"></i></a>
-            <button class="icon-green"
+            <a href="{% url 'case:select-matter' matter.id %}" class="accent-link">Case<i class="icon-arrow-right-circle ms-2"></i></a>
+            <button class="accent-link"
                     hx-get="/activity/time/add/{{ matter.id }}/matters"
                     hx-target="#htmx-modal-container"
                     data-bs-toggle="modal"
                     data-bs-target="#htmx-modal-container">+ Time</button>
-            <button class="icon-green"
+            <button class="accent-link"
                     hx-get="/activity/expenses/add/{{ matter.id }}/matters"
                     hx-target="#htmx-modal-container"
                     data-bs-toggle="modal"

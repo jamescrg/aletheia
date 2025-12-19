@@ -27,8 +27,8 @@
               {% endfor %}
             </ul>
             {% if matter %}
-              <a href="{% url 'matters:contacts' id=matter.id %}" class="icon-green">Matter Details<i class="icon-arrow-left-circle ms-2"></i></a>
-              <button class="icon-green"
+              <a href="{% url 'matters:contacts' id=matter.id %}" class="accent-link">Matter Details<i class="icon-arrow-left-circle ms-2"></i></a>
+              <button class="accent-link"
                       hx-get="/activity/time/add/{{ matter.id }}/case"
                       hx-target="#htmx-modal-container"
                       data-bs-toggle="modal"

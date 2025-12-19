@@ -43,8 +43,8 @@
   color: var(--color-primary);
 }
 
-.icon-green {
-  color: var(--icon-green) !important;
+.accent-link {
+  color: var(--accent-link) !important;
 }
 
 .icon-yellow {
