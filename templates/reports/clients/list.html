@@ -21,31 +21,31 @@
       <th>
         Client
         <a href="?sort=client_name&direction={% if current_sort == 'client_name' and current_direction == 'asc' %}desc{% else %}asc{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
-          <i class="icon-arrow-up-down"></i>
+          <i class="icon-chevrons-up-down"></i>
         </a>
       </th>
       <th class="numeric">
         Hours
         <a href="?sort=total_hours&direction={% if current_sort == 'total_hours' and current_direction == 'desc' %}asc{% else %}desc{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
-          <i class="icon-arrow-up-down"></i>
+          <i class="icon-chevrons-up-down"></i>
         </a>
       </th>
       <th class="numeric">
         Fees
         <a href="?sort=total_fees&direction={% if current_sort == 'total_fees' and current_direction == 'desc' %}asc{% else %}desc{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
-          <i class="icon-arrow-up-down"></i>
+          <i class="icon-chevrons-up-down"></i>
         </a>
       </th>
       <th class="numeric">
         Invoices
         <a href="?sort=total_invoices&direction={% if current_sort == 'total_invoices' and current_direction == 'desc' %}asc{% else %}desc{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
-          <i class="icon-arrow-up-down"></i>
+          <i class="icon-chevrons-up-down"></i>
         </a>
       </th>
       <th class="numeric">
         Payments
         <a href="?sort=total_payments&direction={% if current_sort == 'total_payments' and current_direction == 'desc' %}asc{% else %}desc{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
-          <i class="icon-arrow-up-down"></i>
+          <i class="icon-chevrons-up-down"></i>
         </a>
       </th>
     </tr>

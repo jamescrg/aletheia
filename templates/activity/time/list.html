@@ -95,7 +95,7 @@
           Date
           <button class="btn-sort {% if current_order == 'date' %}active{% endif %}"
                   hx-post="{% url 'activity:time-order-by' 'date' %}">
-            <i class="icon-arrow-up-down"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="user">User</th>
@@ -103,14 +103,14 @@
           Matter
           <button class="btn-sort {% if current_order == 'matter' %}active{% endif %}"
                   hx-post="{% url 'activity:time-order-by' 'matter' %}">
-            <i class="icon-arrow-up-down"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="actions">
           Actions
           <button class="btn-sort {% if current_order == 'actions' %}active{% endif %}"
                   hx-post="{% url 'activity:time-order-by' 'actions' %}">
-            <i class="icon-arrow-up-down"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="numeric hours">Hours</th>

@@ -68,7 +68,8 @@
 }
 
 .navbar .settings-link i {
-  vertical-align: baseline;
+  position: relative;
+  top: calc(-0.25rem + 1px);
 }
 
 /* ==========================================================================

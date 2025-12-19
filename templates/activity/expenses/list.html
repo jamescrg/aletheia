@@ -54,7 +54,7 @@
           Date
           <button class="btn-sort {% if current_order == 'date' %}active{% endif %}"
                   hx-post="{% url 'activity:expenses-order-by' 'date' %}">
-            <i class="icon-arrow-up-down"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="user">User</th>
@@ -62,14 +62,14 @@
           Matter
           <button class="btn-sort {% if current_order == 'matter' %}active{% endif %}"
                   hx-post="{% url 'activity:expenses-order-by' 'matter' %}">
-            <i class="icon-arrow-up-down"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="actions">
           Description
           <button class="btn-sort {% if current_order == 'description' %}active{% endif %}"
                   hx-post="{% url 'activity:expenses-order-by' 'description' %}">
-            <i class="icon-arrow-up-down"></i>
+            <i class="icon-chevrons-up-down"></i>
           </button>
         </th>
         <th class="amount">Amount</th>
