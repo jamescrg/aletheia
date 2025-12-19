@@ -6,6 +6,7 @@ from watson import search as watson
 
 from apps.case.models import Document, Fact, Highlight, Label
 from apps.case.views import get_matter_from_url, get_session_key, set_last_tab
+from apps.notes.models import Note
 
 from .filters import SearchFilter
 
@@ -48,6 +49,13 @@ def get_search_data(request, matter, matter_id):
                     "object": obj,
                     "rank": getattr(result, "watson_rank", 0),
                     "date": obj.date,
+                }
+            elif isinstance(obj, Note) and obj.matter_id == matter.id:
+                result_item = {
+                    "type": "note",
+                    "object": obj,
+                    "rank": getattr(result, "watson_rank", 0),
+                    "date": obj.created_at.date() if obj.created_at else None,
                 }
 
             if result_item:
@@ -145,6 +153,7 @@ def get_search_data(request, matter, matter_id):
         Highlight.objects.filter(document__matter=matter).count() if matter else 0
     )
     fact_count = Fact.objects.filter(matter=matter).count() if matter else 0
+    note_count = Note.objects.filter(matter=matter).count() if matter else 0
 
     return {
         "results": results,
@@ -156,6 +165,7 @@ def get_search_data(request, matter, matter_id):
         "doc_count": doc_count,
         "highlight_count": highlight_count,
         "fact_count": fact_count,
+        "note_count": note_count,
     }
 
 

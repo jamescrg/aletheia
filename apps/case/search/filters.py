@@ -15,6 +15,7 @@ class SearchFilter(django_filters.FilterSet):
         ("document", "Documents"),
         ("highlight", "Highlights"),
         ("fact", "Facts"),
+        ("note", "Notes"),
     ]
 
     result_type = django_filters.ChoiceFilter(
