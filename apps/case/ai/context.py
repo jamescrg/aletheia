@@ -3,10 +3,9 @@ Context assembly for AI chat.
 
 Gathers matter data for the system prompt with priority:
 1. Matter overview, contacts, proceedings (always included)
-2. Outlines - Full hierarchical content with sources (highest priority)
-3. Highlights - Annotated document excerpts with citations
-4. Documents - OCR text excerpts (ranked by importance)
-5. Timeline facts, tasks, events, settlement (budget-limited)
+2. Highlights - Annotated document excerpts with citations
+3. Documents - OCR text excerpts (ranked by importance)
+4. Timeline facts, tasks, events, settlement (budget-limited)
 
 Time entries are excluded per user request.
 """
@@ -23,7 +22,6 @@ from apps.case.models import Document, Fact, Highlight
 from apps.matters.models import Relationship
 from apps.matters.proceedings.models import Proceeding
 from apps.matters.settlement.models import SettlementEntry
-from apps.outlines.models import Outline
 
 logger = logging.getLogger(__name__)
 
@@ -57,9 +55,6 @@ MATTER_CONTEXT_TEMPLATE = """
 ## Court Proceedings
 {proceedings}
 {chat_attachments}
-## Outlines & Notes
-{outlines}
-
 ## Document Highlights
 {highlights}
 
@@ -111,13 +106,12 @@ def assemble_matter_context(matter, user=None, conversation=None) -> str:
     2. Contacts (always included)
     3. Proceedings (always included)
     4. Chat attachments (if provided, highest priority for temporary context)
-    5. Outlines (highest priority user content)
-    6. Highlights (second priority)
-    7. Documents (third priority, by importance)
-    8. Timeline facts (by importance)
-    9. Tasks (pending first)
-    10. Events (upcoming first)
-    11. Settlement info
+    5. Highlights (highest priority)
+    6. Documents (second priority, by importance)
+    7. Timeline facts (by importance)
+    8. Tasks (pending first)
+    9. Events (upcoming first)
+    10. Settlement info
     """
     sections = {}
     remaining_budget = MAX_CONTEXT_CHARS
@@ -146,13 +140,7 @@ def assemble_matter_context(matter, user=None, conversation=None) -> str:
     else:
         sections["chat_attachments"] = ""
 
-    # 5. Outlines (highest priority - user notes and research)
-    budget_outlines = min(remaining_budget // 3, 25000)
-    outlines = format_outlines(matter, budget_outlines)
-    sections["outlines"] = outlines
-    remaining_budget -= len(outlines)
-
-    # 5. Highlights (second priority)
+    # 5. Highlights (highest priority)
     budget_highlights = min(remaining_budget // 3, 15000)
     highlights = format_highlights(matter, budget_highlights)
     sections["highlights"] = highlights
@@ -264,83 +252,6 @@ def format_proceedings(matter) -> str:
             f"- {proc.forum}: Case #{proc.case_number}{primary}\n"
             f"  Filed: {proc.date_filed}, Status: {proc.status}"
         )
-
-    return "\n".join(lines)
-
-
-def format_outlines(matter, budget: int) -> str:
-    """Format outlines with hierarchical content (highest priority)."""
-    outlines = Outline.objects.filter(matter=matter).order_by("-importance", "-date")
-
-    if not outlines:
-        return "No outlines or notes."
-
-    lines = []
-    char_count = 0
-
-    for outline in outlines:
-        header = f"\n### {outline.title}"
-        if outline.date:
-            header += f" ({outline.date})"
-
-        if char_count + len(header) > budget:
-            lines.append("\n... (additional outlines omitted for brevity)")
-            break
-
-        lines.append(header)
-        char_count += len(header)
-
-        # Get outline items in hierarchical order
-        items = format_outline_items(outline, budget - char_count)
-        lines.append(items)
-        char_count += len(items)
-
-        if char_count > budget:
-            break
-
-    return "\n".join(lines) if lines else "No outlines."
-
-
-def format_outline_items(outline, budget: int) -> str:
-    """Format outline items with indentation for hierarchy."""
-    root_items = outline.get_root_items()
-    lines = []
-    char_count = 0
-
-    def format_item_recursive(item, depth=0):
-        nonlocal char_count
-        if char_count > budget:
-            return
-
-        indent = "  " * depth
-        prefix = "- " if not item.heading else "## "
-        content = item.content.strip() if item.content else "(empty)"
-
-        line = f"{indent}{prefix}{content}"
-
-        # Add source references if any
-        sources = []
-        for doc in item.documents.all()[:3]:
-            sources.append(f"[Doc: {doc.name}]")
-        for hl in item.highlights.all()[:3]:
-            sources.append(f"[Highlight: {hl.slug}]")
-        if sources:
-            line += " " + " ".join(sources)
-
-        if char_count + len(line) > budget:
-            return
-
-        lines.append(line)
-        char_count += len(line) + 1
-
-        # Recurse for children
-        for child in item.get_children():
-            format_item_recursive(child, depth + 1)
-
-    for item in root_items:
-        format_item_recursive(item)
-        if char_count > budget:
-            break
 
     return "\n".join(lines)
 

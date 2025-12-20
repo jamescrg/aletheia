@@ -17,7 +17,6 @@ from django.shortcuts import get_object_or_404, render
 from apps.case.models import Fact, Highlight
 from apps.case.views import get_matter_from_url, set_last_tab
 from apps.matters.models import Matter
-from apps.outlines.models import Outline
 
 from .context import assemble_matter_context
 from .models import ChatAttachment, Conversation, Message
@@ -481,41 +480,6 @@ def create_prompt(request, matter_id):
             "as identified by an attorney:\n\n" + "\n\n".join(highlight_lines)
         )
 
-    # Build outlines section
-    def format_outline_items(items, depth=0):
-        """Recursively format outline items with indentation."""
-        lines = []
-        for item in items:
-            indent = "  " * depth
-            content = item.content.strip() if item.content else "(empty)"
-            if item.heading:
-                lines.append(f"{indent}**{content}**")
-            else:
-                lines.append(f"{indent}- {content}")
-            # Recursively add children
-            children = item.get_children()
-            if children:
-                lines.extend(format_outline_items(children, depth + 1))
-        return lines
-
-    outlines = Outline.objects.filter(matter=matter).order_by("-importance", "-date")
-    outline_blocks = []
-    for outline in outlines:
-        block_lines = [f"### {outline.title} ({outline.date})"]
-        root_items = outline.get_root_items()
-        if root_items:
-            block_lines.append("")  # blank line after header
-            block_lines.extend(format_outline_items(root_items))
-        outline_blocks.append("\n".join(block_lines))
-
-    outlines_section = ""
-    if outline_blocks:
-        outlines_section = (
-            "\n\n## Attorney Notes\n\n"
-            "The following are attorney notes and research outlines "
-            "for this matter:\n\n" + "\n\n".join(outline_blocks)
-        )
-
     # Build the prompt text with proper markdown formatting
     prompt_text = f"""## Request Date
 
@@ -530,7 +494,7 @@ def create_prompt(request, matter_id):
 
 ## General Guidelines for Responding
 
-{legal_guidelines}{timeline_section}{highlights_section}{outlines_section}"""
+{legal_guidelines}{timeline_section}{highlights_section}"""
 
     context = {
         "matter": matter,
