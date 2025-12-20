@@ -1,7 +1,0 @@
-{% extends "case/index.html" %}
-{% block subcontent %}
-  <div id="outlines"
-       hx-trigger="outlinesChanged from:body"
-       hx-get="{% url 'outlines:list' %}"
-       hx-target="this">{% include "outlines/list.html" %}</div>
-{% endblock subcontent %}

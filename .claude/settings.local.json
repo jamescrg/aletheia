@@ -61,7 +61,8 @@
       "Bash(git show:*)",
       "Bash(wc:*)",
       "WebFetch(domain:lucide.dev)",
-      "Bash(xargs sed:*)"
+      "Bash(xargs sed:*)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }
