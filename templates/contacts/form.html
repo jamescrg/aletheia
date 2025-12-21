@@ -1,4 +1,4 @@
-<div class="modal-dialog modal-md">
+<div class="modal-dialog modal-lg">
   <div class="modal-content">
     <div class="modal-header">
       <h1 class="modal-title">
@@ -18,10 +18,29 @@
       <form id="contact-form"
             hx-post="{{ action }}"
             hx-target="#htmx-modal-container"
-            class="form-compact col2 contacts-form">
+            class="contacts-form-grid">
         {% csrf_token %}
         {% if intake_id %}<input type="hidden" name="intake_id" value="{{ intake_id }}" />{% endif %}
-        {{ form }}
+        <div class="contacts-form-left form-compact col2">
+          {% for field in form %}
+            {% if field.name == 'client_status' or field.name == 'folder' or field.name == 'name' or field.name == 'company' or field.name == 'email' or field.name == 'email2' or field.name == 'address' %}
+              <div class="form-group field-{{ field.name }}">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <div>{{ field }}{{ field.errors }}</div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+        <div class="contacts-form-right form-compact col2">
+          {% for field in form %}
+            {% if field.name == 'phone1' or field.name == 'phone1_label' or field.name == 'phone2' or field.name == 'phone2_label' or field.name == 'phone3' or field.name == 'phone3_label' or field.name == 'website' or field.name == 'notes' %}
+              <div class="form-group field-{{ field.name }}">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <div>{{ field }}{{ field.errors }}</div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
       </form>
     </div>
     <div class="modal-footer">

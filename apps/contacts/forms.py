@@ -18,6 +18,8 @@ class ContactForm(forms.ModelForm):
             "folder",
             "name",
             "company",
+            "email",
+            "email2",
             "address",
             "phone1",
             "phone1_label",
@@ -25,8 +27,6 @@ class ContactForm(forms.ModelForm):
             "phone2_label",
             "phone3",
             "phone3_label",
-            "email",
-            "email2",
             "website",
             "notes",
         )
@@ -58,18 +58,8 @@ class ContactForm(forms.ModelForm):
             "email": forms.TextInput(attrs={"class": "span2"}),
             "email2": forms.TextInput(attrs={"class": "span2"}),
             "website": forms.URLInput(attrs={"class": "span2"}),
-            "address": forms.Textarea(
-                attrs={
-                    "class": "span2",
-                    "rows": "3",
-                }
-            ),
-            "notes": forms.Textarea(
-                attrs={
-                    "class": "span2",
-                    "rows": "3",
-                }
-            ),
+            "address": forms.Textarea(attrs={"class": "span2", "rows": "3"}),
+            "notes": forms.Textarea(attrs={"class": "span2", "rows": "7"}),
             "phone1_label": forms.Select(choices=PHONE_LABELS),
             "phone2_label": forms.Select(choices=PHONE_LABELS),
             "phone3_label": forms.Select(choices=PHONE_LABELS),
@@ -83,6 +73,7 @@ class ContactForm(forms.ModelForm):
             "phone1_label": "For",
             "phone2_label": "For",
             "phone3_label": "For",
+            "email2": "Email 2",
         }
 
     def __init__(self, *args, **kwargs):

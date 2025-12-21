@@ -287,6 +287,7 @@ textarea {
 /* Mobile: single column for all form-compact layouts */
 .col2,
 .col3,
+.col4,
 .col5 {
   grid-template-columns: 1fr;
 }
@@ -299,6 +300,10 @@ textarea {
 
   .col3 {
     grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .col4 {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
   }
 
   .col5 {
