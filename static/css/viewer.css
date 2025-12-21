@@ -1,0 +1,302 @@
+/* Document Viewer Styles */
+
+* {
+  box-sizing: border-box;
+}
+
+*:focus,
+*:focus-visible,
+button:focus,
+.btn:focus,
+.btn:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: "Open Sans", sans-serif;
+}
+
+/* Main container */
+#main-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+}
+
+/* PDF iframe container */
+#pdf-iframe-container {
+  flex: 1;
+  background: var(--background-panel);
+}
+
+#pdf-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Highlights Sidebar */
+#highlights-sidebar {
+  width: 280px;
+  background: var(--background-panel);
+  border-left: 1px solid var(--border-medium);
+  overflow-y: auto;
+  padding: 0.5rem 1rem 1rem 1rem;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+#highlights-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 49px;
+  margin: -0.5rem -1rem 0.75rem -1rem;
+  padding: 0 1rem;
+  background: var(--background-muted);
+  border-bottom: 1px solid var(--border-medium);
+  flex-shrink: 0;
+}
+
+#highlights-header .btn-icon {
+  padding: 0.125rem 0.25rem;
+  background: none;
+  border: none;
+  color: var(--stone-700);
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+#highlights-header #createHighlightBtn {
+  padding: 0 0.375rem;
+  margin-right: 0.5rem;
+  border-radius: 0.375rem;
+  position: relative;
+  top: 1px;
+}
+
+#highlights-header #createHighlightBtn:hover {
+  background: var(--yellow-100);
+}
+
+.highlights-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.highlights-controls .btn-icon:hover {
+  color: var(--stone-900);
+}
+
+#highlights-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.highlight-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: var(--stone-50);
+  border: 1px solid var(--stone-300);
+  border-radius: var(--radius-md);
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.highlight-item:hover {
+  background: var(--stone-100);
+}
+
+.highlight-item.active {
+  background: var(--stone-100);
+}
+
+.highlight-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.highlight-slug {
+  font-size: 0.9rem;
+  word-wrap: break-word;
+}
+
+.highlight-citation {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  margin-top: 0.25rem;
+}
+
+.highlight-importance {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--stone-400);
+}
+
+.highlight-menu {
+  flex-shrink: 0;
+}
+
+.highlight-menu .btn-icon {
+  position: relative;
+  right: -0.25rem;
+  padding: 0 0 0.25rem 0.25rem;
+  color: var(--stone-400);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.highlight-menu .btn-icon:hover {
+  color: var(--stone-700);
+}
+
+.no-highlights {
+  color: var(--stone-400);
+  text-align: center;
+  padding: 20px;
+  font-size: 0.875rem;
+}
+
+/* Condensed view */
+#highlights-list.condensed .highlight-item {
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+#highlights-list.condensed .highlight-citation,
+#highlights-list.condensed .highlight-importance {
+  display: none;
+}
+
+#highlights-list.condensed .highlight-slug {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Highlight colors - selected state (border uses -300 values) */
+.highlight-item.hl-yellow.active {
+  border: 2px solid var(--yellow-400);
+}
+
+.highlight-item.hl-green.active {
+  border: 2px solid var(--lime-400);
+}
+
+.highlight-item.hl-blue.active {
+  border: 2px solid var(--blue-400);
+}
+
+.highlight-item.hl-orange.active {
+  border: 2px solid var(--orange-400);
+}
+
+.highlight-item.hl-red.active {
+  border: 2px solid var(--red-400);
+}
+
+.highlight-item.hl-purple.active {
+  border: 2px solid var(--violet-400);
+}
+
+/* Modal */
+.modal-content {
+  background: var(--stone-100);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--stone-300);
+}
+
+.modal-header .modal-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.modal-header a {
+  color: var(--green-800);
+  text-decoration: none;
+}
+
+.modal-footer {
+  border-top: 1px solid var(--stone-300);
+}
+
+#highlight-form .form-control,
+#highlight-form .form-select {
+  background: var(--stone-50);
+  border: 1px solid var(--stone-300);
+  border-radius: var(--radius-md);
+}
+
+#highlight-form .form-control:focus,
+#highlight-form .form-select:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: var(--stone-400);
+}
+
+.highlight-color-row {
+  width: 33%;
+}
+
+#highlight-form textarea {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.modal-footer .btn {
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+}
+
+.modal-footer .btn-secondary {
+  background: var(--stone-300);
+  color: var(--stone-700);
+}
+
+.modal-footer .btn-secondary:hover {
+  background: var(--stone-400);
+}
+
+.modal-footer .submit {
+  background: var(--lime-800);
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--stone-100);
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+}
+
+.modal-footer .submit:hover {
+  background: var(--lime-900);
+}
+
+/* Edit modal grid - matches highlights.css */
+.highlight-edit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.highlight-edit-grid .span3 {
+  grid-column: span 3;
+}
