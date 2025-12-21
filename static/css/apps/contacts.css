@@ -67,10 +67,33 @@
  Contacts form
 ========================================================================== */
 
-.contacts-form input,
-.contacts-form select,
-.contacts-form textarea {
+.contacts-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contacts-form-grid input,
+.contacts-form-grid select,
+.contacts-form-grid textarea {
   width: 100%;
+}
+
+@media (min-width: 768px) {
+  .contacts-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .contacts-form-right.col2 {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .contacts-form-grid .field-notes textarea {
+    height: 11.25rem;
+  }
 }
 
 .contacts-assignment-select {
