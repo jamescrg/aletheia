@@ -24,6 +24,21 @@ TEXT_THRESHOLD = 500
 _current_document_id = None
 
 
+def sanitize_text(text):
+    """
+    Remove NUL (0x00) characters that PostgreSQL cannot store in text fields.
+    Also removes other problematic control characters.
+    """
+    if not text:
+        return text
+    # Remove NUL bytes and other control characters (except newline, tab, carriage return)
+    return "".join(
+        char
+        for char in text
+        if char == "\n" or char == "\t" or char == "\r" or ord(char) >= 32
+    )
+
+
 @hookimpl
 def get_progressbar_class():
     """Return a progress bar class bound to the current document."""
@@ -43,21 +58,26 @@ def extract_existing_text(pdf_content):
         pdf_content: bytes of the PDF file
 
     Returns:
-        tuple: (extracted_text, page_count)
+        tuple: (extracted_text, page_count, content_chars)
+            - extracted_text: formatted text with page headers
+            - page_count: number of pages
+            - content_chars: character count of actual content (excluding headers)
     """
     reader = PdfReader(BytesIO(pdf_content))
     text_parts = []
+    content_chars = 0
 
     for page_num, page in enumerate(reader.pages, start=1):
         text = page.extract_text() or ""
+        content_chars += len(text.strip())
         text_parts.append(f"--- Page {page_num} ---\n{text}")
 
-    return "\n\n".join(text_parts), len(reader.pages)
+    return "\n\n".join(text_parts), len(reader.pages), content_chars
 
 
-def has_sufficient_text(text, threshold=TEXT_THRESHOLD):
+def has_sufficient_text(content_chars, threshold=TEXT_THRESHOLD):
     """Check if extracted text meets minimum threshold."""
-    return len(text.strip()) > threshold
+    return content_chars > threshold
 
 
 def run_ocrmypdf(input_content, document_id=None):
@@ -137,16 +157,18 @@ def process_document_ocr(document_id):
             original_content = f.read()
 
         # Try to extract text from existing text layer
-        existing_text, page_count = extract_existing_text(original_content)
+        existing_text, page_count, content_chars = extract_existing_text(
+            original_content
+        )
 
-        if has_sufficient_text(existing_text):
+        if has_sufficient_text(content_chars):
             # PDF already has a good text layer - just store the text
             logger.info(
                 f"Document {document_id} has existing text layer "
-                f"({len(existing_text)} chars), skipping OCR"
+                f"({content_chars} chars), skipping OCR"
             )
 
-            document.ocr_text = existing_text
+            document.ocr_text = sanitize_text(existing_text)
             document.page_count = page_count
             document.ocr_status = "extracted"
             document.ocr_processed_at = timezone.now()
@@ -164,7 +186,7 @@ def process_document_ocr(document_id):
             # Need to OCR - run ocrmypdf to create searchable PDF
             logger.info(
                 f"Document {document_id} needs OCR "
-                f"(only {len(existing_text.strip())} chars found)"
+                f"(only {content_chars} content chars found)"
             )
 
             # Set page_count early so progress can show "X/Y"
@@ -180,9 +202,9 @@ def process_document_ocr(document_id):
             default_storage.save(file_path, ContentFile(ocr_pdf_content))
 
             # Extract text from the new OCR'd PDF
-            final_text, page_count = extract_existing_text(ocr_pdf_content)
+            final_text, page_count, _ = extract_existing_text(ocr_pdf_content)
 
-            document.ocr_text = final_text
+            document.ocr_text = sanitize_text(final_text)
             document.page_count = page_count
             document.ocr_status = "completed"
             document.ocr_processed_at = timezone.now()

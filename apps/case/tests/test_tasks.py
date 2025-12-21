@@ -7,41 +7,72 @@ from apps.case.documents.tasks import (
     has_sufficient_text,
     process_document_ocr,
     retry_failed_ocr,
+    sanitize_text,
 )
 
 pytestmark = pytest.mark.django_db
 
 
+class TestSanitizeText:
+    def test_removes_nul_characters(self):
+        """NUL bytes should be stripped."""
+        text = "Hello\x00World"
+        assert sanitize_text(text) == "HelloWorld"
+
+    def test_preserves_newlines_and_tabs(self):
+        """Newlines and tabs should be preserved."""
+        text = "Line1\nLine2\tTabbed"
+        assert sanitize_text(text) == "Line1\nLine2\tTabbed"
+
+    def test_removes_control_characters(self):
+        """Control characters (except newline/tab/cr) should be stripped."""
+        text = "Hello\x01\x02\x03World"
+        assert sanitize_text(text) == "HelloWorld"
+
+    def test_handles_none(self):
+        """None input should return None."""
+        assert sanitize_text(None) is None
+
+    def test_handles_empty_string(self):
+        """Empty string should return empty string."""
+        assert sanitize_text("") == ""
+
+
 class TestExtractExistingText:
     def test_extracts_text_from_pdf(self, pdf_file):
         """Test text extraction from a PDF."""
-        text, page_count = extract_existing_text(pdf_file.read())
+        text, page_count, content_chars = extract_existing_text(pdf_file.read())
         assert page_count >= 1
         assert "--- Page 1 ---" in text
+        assert isinstance(content_chars, int)
 
     def test_returns_page_count(self, pdf_file):
         """Test that page count is returned correctly."""
-        _, page_count = extract_existing_text(pdf_file.read())
+        _, page_count, _ = extract_existing_text(pdf_file.read())
         assert page_count == 1
+
+    def test_content_chars_excludes_headers(self, pdf_file):
+        """Test that content_chars doesn't count page header text."""
+        text, page_count, content_chars = extract_existing_text(pdf_file.read())
+        # The page header "--- Page 1 ---" should not be counted in content_chars
+        assert content_chars < len(text)
 
 
 class TestHasSufficientText:
     def test_sufficient_text(self):
-        text = "a" * 600
-        assert has_sufficient_text(text) is True
+        content_chars = 600
+        assert has_sufficient_text(content_chars) is True
 
     def test_insufficient_text(self):
-        text = "a" * 400
-        assert has_sufficient_text(text) is False
+        content_chars = 400
+        assert has_sufficient_text(content_chars) is False
 
-    def test_whitespace_stripped(self):
-        text = " " * 1000
-        assert has_sufficient_text(text) is False
+    def test_zero_chars(self):
+        assert has_sufficient_text(0) is False
 
     def test_custom_threshold(self):
-        text = "a" * 50
-        assert has_sufficient_text(text, threshold=30) is True
-        assert has_sufficient_text(text, threshold=100) is False
+        assert has_sufficient_text(50, threshold=30) is True
+        assert has_sufficient_text(50, threshold=100) is False
 
 
 class TestProcessDocumentOcr:
@@ -67,8 +98,8 @@ class TestProcessDocumentOcr:
         mock_storage.open.return_value.__enter__.return_value.read.return_value = (
             b"PDF content"
         )
-        # Return text > 500 chars so OCR is skipped
-        mock_extract.return_value = ("a" * 600, 5)
+        # Return text with > 500 content chars so OCR is skipped
+        mock_extract.return_value = ("a" * 600, 5, 600)
 
         process_document_ocr(document.id)
 
@@ -85,10 +116,10 @@ class TestProcessDocumentOcr:
         mock_storage.open.return_value.__enter__.return_value.read.return_value = (
             b"PDF content"
         )
-        # First call returns insufficient text, second call (after OCR) returns more
+        # First call returns insufficient content chars, second call (after OCR) returns more
         mock_extract.side_effect = [
-            ("short", 3),  # Before OCR
-            ("a" * 600, 3),  # After OCR
+            ("short", 3, 5),  # Before OCR - only 5 content chars
+            ("a" * 600, 3, 600),  # After OCR
         ]
         mock_ocr.return_value = b"OCR'd PDF content"
 
