@@ -71,6 +71,7 @@ Matter List
 }
 
 .edit-status > label {
+  display: block;
   width: 100%;
 }
 
