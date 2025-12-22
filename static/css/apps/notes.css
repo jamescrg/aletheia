@@ -573,7 +573,8 @@ body:has(.note-page.standalone) {
 }
 
 /* Minimize empty paragraphs (blank lines) - Tiptap adds br to empty p */
-#note-editor .ProseMirror p:has(> br:only-child) {
+/* Only apply to top-level paragraphs, not inside lists */
+#note-editor .ProseMirror > p:has(> br:only-child) {
   margin-top: 0.25rem;
   margin-bottom: 0;
   line-height: 1;
