@@ -3,8 +3,14 @@
   margin: 1rem 0 0 0.25rem;
 }
 
+.table-container:has(.matter-contacts) {
+  overflow-x: auto;
+  overflow-y: visible;
+  max-width: 100%;
+}
+
 table.matter-contacts {
-  min-width: 79rem;
+  min-width: 65rem;
   width: 100%;
 }
 
