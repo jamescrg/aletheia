@@ -3,6 +3,8 @@ from django.urls import path
 from apps.agenda.dash.views import dash_index
 from apps.agenda.events.views import (
     events_add,
+    events_api,
+    events_calendar,
     events_deadline_form,
     events_deadline_modal,
     events_deadline_results,
@@ -14,7 +16,9 @@ from apps.agenda.events.views import (
     events_filter_status,
     events_index,
     events_list,
+    events_quick_update,
     events_select,
+    events_view_mode,
 )
 from apps.agenda.tasks.views import (
     clear_tasks,
@@ -119,6 +123,12 @@ urlpatterns = [
     ),
     path("events/", events_index, name="events-index"),
     path("events/list/", events_list, name="events-list"),
+    path("events/calendar/", events_calendar, name="events-calendar"),
+    path("events/api/", events_api, name="events-api"),
+    path(
+        "events/<int:id>/quick-update", events_quick_update, name="events-quick-update"
+    ),
+    path("events/view/<str:mode>", events_view_mode, name="events-view-mode"),
     path("events/select", events_select, name="events-select"),
     path("events/add", events_add, name="events-add"),
     path("events/add/<str:origin>", events_add, name="events-add-origin"),

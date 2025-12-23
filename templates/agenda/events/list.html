@@ -49,6 +49,22 @@
             </li>
           </ul>
         </div>
+        <div class="view-toggle">
+          <button type="button"
+                  class="{% if view_mode == 'list' %}toggle-active{% endif %}"
+                  hx-post="{% url 'agenda:events-view-mode' 'list' %}"
+                  hx-swap="none"
+                  title="List View">
+            <i class="icon-list"></i>
+          </button>
+          <button type="button"
+                  class="{% if view_mode == 'calendar' %}toggle-active{% endif %}"
+                  hx-post="{% url 'agenda:events-view-mode' 'calendar' %}"
+                  hx-swap="none"
+                  title="Calendar View">
+            <i class="icon-calendar"></i>
+          </button>
+        </div>
       </div>
     </div>
     <div class="toolbar-right">
