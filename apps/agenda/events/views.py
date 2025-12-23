@@ -164,18 +164,28 @@ def events_add(request, matter_id=None, origin="events"):
 
     # if no post data has been submitted, show the contact form
     else:
+        # Use date from query param if provided, otherwise today
+        date_param = request.GET.get("date")
+        if date_param:
+            try:
+                initial_date = datetime.strptime(date_param, "%Y-%m-%d").date()
+            except ValueError:
+                initial_date = date.today()
+        else:
+            initial_date = date.today()
+
         if matter_id:
             form = EventForm(
                 initial={
                     "matter": matter_id,
-                    "date": date.today(),
+                    "date": initial_date,
                 },
                 use_required_attribute=False,
             )
         else:
             form = EventForm(
                 initial={
-                    "date": date.today(),
+                    "date": initial_date,
                 },
                 use_required_attribute=False,
             )
@@ -224,7 +234,7 @@ def events_edit(request, id, origin="events"):
         # if not, add it
         # this ensures the matter is available in the form select element
         # even when the matter is closed
-        if event.matter not in matter_list:
+        if event.matter and event.matter not in matter_list:
             matter_list |= Matter.objects.filter(pk=event.matter.id)
 
         # bind list of matters to select element
@@ -266,7 +276,7 @@ def events_edit(request, id, origin="events"):
     # if not, add it
     # this ensures the matter is available in the form select element
     # even when the matter is closed
-    if event.matter not in matter_list:
+    if event.matter and event.matter not in matter_list:
         matter_list |= Matter.objects.filter(pk=event.matter.id)
 
     # bind list of matters to select element
@@ -420,7 +430,15 @@ def events_api(request):
     for event in events:
         matter_name = event.matter.name if event.matter else ""
         description = event.description or "Untitled"
-        title = f"{matter_name} - {description}" if matter_name else description
+
+        # Build title: {Matter} - {Description} - {User Initials}
+        title_parts = []
+        if matter_name:
+            title_parts.append(matter_name)
+        title_parts.append(description)
+        if event.assigned_to and event.assigned_to.initials:
+            title_parts.append(event.assigned_to.initials)
+        title = " - ".join(title_parts)
 
         fc_event = {
             "id": str(event.id),

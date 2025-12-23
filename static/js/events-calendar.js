@@ -134,8 +134,11 @@ document.addEventListener("alpine:init", () => {
 
     handleDateClick(info) {
       // Open add modal with pre-filled date
-      htmx.ajax("GET", "/events/add", {
+      htmx.ajax("GET", `/events/add?date=${info.dateStr}`, {
         target: "#htmx-modal-container",
+        swap: "innerHTML",
+      }).then(() => {
+        window.dispatchEvent(new CustomEvent("open-modal"));
       });
     },
 
