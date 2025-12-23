@@ -122,7 +122,7 @@ def run_ocrmypdf(input_content, document_id=None):
         os.unlink(output_path)
 
 
-def process_document_ocr(document_id):
+def process_document_ocr(document_id, force=False):
     """
     Background task to process a PDF document for text extraction/OCR.
 
@@ -131,6 +131,10 @@ def process_document_ocr(document_id):
     2. If yes: extract text, store in database, set status to "extracted"
     3. If no: run ocrmypdf to create searchable PDF, replace original file,
        set status to "completed"
+
+    Args:
+        document_id: ID of the Document to process
+        force: If True, always run OCR regardless of existing text layer
     """
     from apps.case.models import Document
 
@@ -161,7 +165,7 @@ def process_document_ocr(document_id):
             original_content
         )
 
-        if has_sufficient_text(content_chars):
+        if has_sufficient_text(content_chars) and not force:
             # PDF already has a good text layer - just store the text
             logger.info(
                 f"Document {document_id} has existing text layer "
@@ -184,10 +188,16 @@ def process_document_ocr(document_id):
             )
         else:
             # Need to OCR - run ocrmypdf to create searchable PDF
-            logger.info(
-                f"Document {document_id} needs OCR "
-                f"(only {content_chars} content chars found)"
-            )
+            if force:
+                logger.info(
+                    f"Document {document_id} force OCR requested "
+                    f"({content_chars} content chars existed)"
+                )
+            else:
+                logger.info(
+                    f"Document {document_id} needs OCR "
+                    f"(only {content_chars} content chars found)"
+                )
 
             # Set page_count early so progress can show "X/Y"
             document.page_count = page_count

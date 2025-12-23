@@ -394,6 +394,16 @@ urlpatterns = [
         name="retry-ocr",
     ),
     path(
+        "case/documents/<int:document_id>/accept-ocr/",
+        documents.accept_ocr,
+        name="accept-ocr",
+    ),
+    path(
+        "case/documents/<int:document_id>/force-ocr/",
+        documents.force_ocr,
+        name="force-ocr",
+    ),
+    path(
         "case/documents/<int:document_id>/highlights/add/",
         highlights.add_highlight,
         name="add-highlight",
