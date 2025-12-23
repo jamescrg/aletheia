@@ -157,21 +157,14 @@ body {
   color: var(--stone-400);
 }
 
-.highlight-menu {
+.highlight-edit-btn {
   flex-shrink: 0;
-}
-
-.highlight-menu .btn-icon {
-  position: relative;
-  right: -0.25rem;
-  padding: 0 0 0.25rem 0.25rem;
   color: var(--stone-400);
-  background: none;
-  border: none;
-  cursor: pointer;
+  padding-left: 0.25rem;
+  text-decoration: none;
 }
 
-.highlight-menu .btn-icon:hover {
+.highlight-edit-btn:hover {
   color: var(--stone-700);
 }
 

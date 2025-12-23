@@ -66,27 +66,11 @@
               <div class="highlight-importance">
                 <i class="icon-flag"></i> {{ highlight.importance }}
               </div>
-              <div class="highlight-menu dropdown" x-data="dropdown()">
-                <button class="btn-icon menu-icon"
-                        type="button"
-                        x-ref="button"
-                        @click="toggle()"
-                        :aria-expanded="open">
-                  <i class="icon-ellipsis-vertical"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" x-ref="menu" x-show="open">
-                  <li>
-                    <a class="dropdown-item edit-highlight"
-                       href="#"
-                       data-highlight-id="{{ highlight.id }}">Edit</a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item delete-highlight"
-                       href="#"
-                       data-highlight-id="{{ highlight.id }}">Delete</a>
-                  </li>
-                </ul>
-              </div>
+              <a href="#"
+                 class="highlight-edit-btn edit-highlight"
+                 data-highlight-id="{{ highlight.id }}">
+                <i class="icon-pencil"></i>
+              </a>
             </div>
           {% empty %}
             <div class="no-highlights">
@@ -472,19 +456,9 @@
           <div class="highlight-citation">${escapeHtml(highlight.citation || '')}</div>
         </div>
         <div class="highlight-importance"><i class="icon-flag"></i> ${highlight.importance}</div>
-        <div class="highlight-menu dropdown" x-data="dropdown()">
-          <button class="btn-icon menu-icon" type="button" x-ref="button" @click="toggle()" :aria-expanded="open">
-            <i class="icon-ellipsis-vertical"></i>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end" x-ref="menu" x-show="open">
-            <li>
-              <a class="dropdown-item edit-highlight" href="#" data-highlight-id="${highlight.id}">Edit</a>
-            </li>
-            <li>
-              <a class="dropdown-item delete-highlight" href="#" data-highlight-id="${highlight.id}">Delete</a>
-            </li>
-          </ul>
-        </div>
+        <a href="#" class="highlight-edit-btn edit-highlight" data-highlight-id="${highlight.id}">
+          <i class="icon-pencil"></i>
+        </a>
       `;
       list.appendChild(item);
 
