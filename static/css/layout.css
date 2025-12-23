@@ -19,6 +19,8 @@ body {
 
 .content {
   padding-bottom: 3rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
   padding-top: 1.5rem;
 }
 
@@ -68,10 +70,7 @@ body {
 /* Container */
 .container {
   width: 100%;
-  max-width: 1320px;
   margin: 0 auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
 }
 
 /* Spacing utilities */
