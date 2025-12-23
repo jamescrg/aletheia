@@ -159,8 +159,21 @@
   margin-left: 0.5rem;
 }
 
-.ocr-badge.ocr-failed {
-  background-color: var(--error-background);
+.ocr-badge:hover {
+  opacity: 1;
+}
+
+.ocr-action-btn {
+  padding: 0;
+  font-size: inherit;
+  border: none;
+  background: none;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ocr-action-btn:hover {
+  color: var(--link-hover);
 }
 
 /*------------------------------------------------

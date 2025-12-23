@@ -724,3 +724,49 @@ def retry_ocr(request, document_id):
     document.save(update_fields=["ocr_status"])
 
     return JsonResponse({"success": True, "status": "pending"})
+
+
+@login_required
+@require_POST
+def accept_ocr(request, document_id):
+    """Accept extracted text and mark OCR as completed."""
+    document = get_object_or_404(Document, id=document_id)
+
+    if document.ocr_status != "extracted":
+        return HttpResponse(status=400)
+
+    document.ocr_status = "completed"
+    document.save(update_fields=["ocr_status"])
+
+    # Return empty response - badge disappears
+    return HttpResponse("")
+
+
+@login_required
+@require_POST
+def force_ocr(request, document_id):
+    """Force OCR on a document that was previously skipped."""
+    document = get_object_or_404(Document, id=document_id)
+
+    if document.ocr_status != "extracted":
+        return HttpResponse(status=400)
+
+    from django_q.tasks import async_task
+
+    async_task(
+        "apps.case.documents.tasks.process_document_ocr",
+        document.id,
+        True,  # force=True
+        task_name=f"OCR-Force-{document.id}",
+        group="ocr_processing",
+    )
+
+    document.ocr_status = "pending"
+    document.save(update_fields=["ocr_status"])
+
+    # Return the badge HTML showing pending status
+    return render(
+        request,
+        "case/documents/ocr-badge.html",
+        {"document": document},
+    )
