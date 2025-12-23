@@ -6,6 +6,12 @@
      :aria-expanded="open"><i class="icon-tag"></i>{{ label.name }}</a>
   <ul class="dropdown-menu" x-ref="menu" x-show="open">
     <li>
+      <a class="dropdown-item"
+         href="#"
+         hx-get="{% url 'case:labels-apply-modal' object_type object.id %}{% if view %}?view={{ view }}{% endif %}"
+         hx-target="#htmx-modal-container"><i class="icon-tag"></i> Add Label</a>
+    </li>
+    <li>
       <a class="dropdown-item urgent"
          href="#"
          hx-post="{% url 'case:remove-label-from' object_type object.id %}"
