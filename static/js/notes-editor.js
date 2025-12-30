@@ -252,7 +252,7 @@ function setupReferenceClicks() {
       e.preventDefault();
       dropdown.classList.remove("show");
       if (currentHighlightId) {
-        window.open("/case/highlights/" + currentHighlightId + "/", "_blank");
+        window.open("/case/highlights/" + currentHighlightId + "/link/", "_blank");
       }
     });
   }
