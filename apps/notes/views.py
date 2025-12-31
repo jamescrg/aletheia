@@ -122,12 +122,12 @@ def notes_add(request):
             note.matter = None
             note.save()
 
+            # Open new note in a new browser tab
+            note_url = reverse("notes:note-view", args=[note.id])
             return HttpResponse(
-                status=204,
-                headers={
-                    "HX-Trigger": "notesChanged",
-                    "HX-Redirect": reverse("notes:note-view", args=[note.id]),
-                },
+                f'<script>window.open("{note_url}", "_blank");'
+                "window.dispatchEvent(new CustomEvent('close-modal'));</script>",
+                headers={"HX-Trigger": "notesChanged"},
             )
     else:
         form = NoteForm(use_required_attribute=False)
