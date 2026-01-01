@@ -243,33 +243,37 @@ SESSION_SAVE_EVERY_REQUEST = True
 prepare_path(f"{BASE_DIR}/logs/debug.log")
 
 LOGGING = {
-    # The version number of our log
     "version": 1,
-    # django uses some of its own loggers for internal operations.
-    # In case you want to disable them just replace the False above with true.
     "disable_existing_loggers": False,
     "formatters": {
         "timestamped": {
-            "format": "{asctime} {message}",
+            "format": "{asctime} {levelname} {name} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "[{levelname}] {name}: {message}",
             "style": "{",
         },
     },
-    # A handler for writing the messages to a file
-    # A logger can have multiple handlers
     "handlers": {
         "file": {
             "level": "DEBUG",
-            "class": "logging.FileHandler",
+            "class": "logging.handlers.RotatingFileHandler",
             "filename": BASE_DIR / "logs/debug.log",
+            "maxBytes": 5 * 1024 * 1024,  # 5 MB
+            "backupCount": 3,  # Keep 3 old files
             "formatter": "timestamped",
+        },
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
         },
     },
     "loggers": {
-        # notice the blank ''
-        # Usually you would put built in loggers like django or root here
         "": {
             "level": "DEBUG",
-            "handlers": ["file"],  # notice how file variable is called ,
+            "handlers": ["file"],
             "propagate": True,
         },
     },
@@ -298,3 +302,6 @@ ANTHROPIC_API_KEY = env("ANTHROPIC_API_KEY", default="")
 
 # Google Gemini API Configuration
 GEMINI_API_KEY = env("GEMINI_API_KEY", default="")
+
+# CourtListener API Configuration (for citation verification)
+COURTLISTENER_API_TOKEN = env("COURTLISTENER_API_KEY", default="")

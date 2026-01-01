@@ -76,6 +76,10 @@ class Message(AuditMixin, models.Model):
     # Track token usage for monitoring
     input_tokens = models.IntegerField(null=True, blank=True)
     output_tokens = models.IntegerField(null=True, blank=True)
+
+    # Verified citations for assistant messages
+    verified_citations = models.JSONField(default=list, blank=True)
+
     history = HistoricalRecords()
 
     class Meta:

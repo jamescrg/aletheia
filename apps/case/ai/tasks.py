@@ -13,6 +13,7 @@ from django.core.files.storage import default_storage
 from pypdf import PdfReader
 
 from .anthropic_client import send_to_claude
+from .citations import citations_to_dict, verify_all_citations
 from .gemini_client import send_to_gemini_streaming
 
 logger = logging.getLogger(__name__)
@@ -88,7 +89,33 @@ def process_ai_request(
                 context_text, chat_history
             )
 
+        # Verify citations in the response
+        update_status("verifying", "Verifying citations...")
+        logger.info(
+            "Starting citation verification for conversation %s", conversation_id
+        )
+        try:
+            verified_citations = verify_all_citations(response_text)
+            citations_data = citations_to_dict(verified_citations)
+            logger.info(
+                "Citation verification complete for conversation %s: %d citations found",
+                conversation_id,
+                len(citations_data),
+            )
+        except Exception as e:
+            logger.exception(
+                "Citation verification failed for conversation %s: %s",
+                conversation_id,
+                e,
+            )
+            citations_data = []
+
         # Set complete status with response data
+        logger.info(
+            "Storing %d citations in cache for conversation %s",
+            len(citations_data),
+            conversation_id,
+        )
         cache.set(
             cache_key,
             {
@@ -97,6 +124,7 @@ def process_ai_request(
                 "response": response_text,
                 "input_tokens": input_tokens,
                 "output_tokens": output_tokens,
+                "citations": citations_data,
             },
             timeout=600,
         )

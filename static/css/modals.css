@@ -40,6 +40,7 @@
   pointer-events: auto;
 }
 
+.modal-xl { max-width: 1140px; }
 .modal-lg { max-width: 800px; }
 .modal-md { max-width: 500px; }
 .modal-sm { max-width: 300px; }
@@ -68,6 +69,7 @@
 }
 
 .modal-title {
+  color: var(--color-primary);
   font-size: 1.25rem;
   font-weight: 500;
   margin: 0;

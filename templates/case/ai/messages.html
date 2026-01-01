@@ -1,4 +1,4 @@
-{% load humanize markdown_extras %}
+{% load humanize markdown_extras citation_extras %}
 {% for message in messages %}
   <div class="ai-message ai-message-{{ message.role }}"
        id="message-{{ message.id }}"
@@ -21,7 +21,13 @@
     </div>
     <div class="ai-message-content">
       {% if message.role == "assistant" %}
-        <div class="ai-message-text ai-markdown">{{ message.content|render_markdown }}</div>
+        <div class="ai-message-text ai-markdown">
+          {% if message.verified_citations %}
+            {{ message.content|render_markdown|enhance_citations:message.verified_citations }}
+          {% else %}
+            {{ message.content|render_markdown }}
+          {% endif %}
+        </div>
       {% else %}
         <div class="ai-message-text">{{ message.content|linebreaks }}</div>
       {% endif %}

@@ -65,7 +65,10 @@
       "Bash(rm:*)",
       "WebFetch(domain:alpinejs.dev)",
       "Bash(netstat:*)",
-      "Bash(ss:*)"
+      "Bash(ss:*)",
+      "WebFetch(domain:www.courtlistener.com)",
+      "WebFetch(domain:free.law)",
+      "WebFetch(domain:unpkg.com)"
     ],
     "deny": []
   }
