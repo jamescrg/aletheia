@@ -1,0 +1,16 @@
+{% if has_citations %}
+  <div class="citations-summary">
+    <div class="citations-summary-header">
+      <i class="icon-scale"></i>
+      <span>Citations: {{ verified_count }} verified, {{ unverified_count }} unverified</span>
+    </div>
+    {% if unverified %}
+      <div class="citations-unverified-list">
+        <strong>Unverified citations:</strong>
+        <ul>
+          {% for cit in unverified %}<li>{{ cit.original_text }}</li>{% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+{% endif %}

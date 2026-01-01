@@ -301,13 +301,22 @@ def ai_status(request, conv_id):
     status_data = cache.get(cache_key, {"status": "unknown", "message": "Checking..."})
 
     if status_data["status"] == "complete":
-        # Save assistant message
+        # Get verified citations from status data
+        verified_citations = status_data.get("citations", [])
+        logger.info(
+            "Retrieved %d citations from cache for conversation %s",
+            len(verified_citations),
+            conv_id,
+        )
+
+        # Save assistant message with citations
         assistant_message = Message.objects.create(
             conversation=conversation,
             role="assistant",
             content=status_data["response"],
             input_tokens=status_data.get("input_tokens"),
             output_tokens=status_data.get("output_tokens"),
+            verified_citations=verified_citations,
         )
 
         # Update conversation timestamp
