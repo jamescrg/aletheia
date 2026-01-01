@@ -20,6 +20,16 @@ def normalize_markdown(text):
     text = re.sub(r"([^\n])\n(```)", r"\1\n\n\2", text)
     # Add blank line before headers
     text = re.sub(r"([^\n])\n(#{1,6} )", r"\1\n\n\2", text)
+
+    # Convert backtick-wrapped case names to italics
+    # AI sometimes uses `Case v. Name` instead of *Case v. Name*
+    # Pattern matches: `Something v. Something` or `Something v Something`
+    text = re.sub(
+        r"`([A-Z][^`]*?\s+v\.?\s+[A-Z][^`]*?)`",
+        r"*\1*",
+        text,
+    )
+
     return text
 
 

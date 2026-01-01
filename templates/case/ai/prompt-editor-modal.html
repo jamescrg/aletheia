@@ -48,8 +48,7 @@
       <form id="promptEditorForm"
             hx-post="{% url 'case:ai-send' matter.id %}"
             hx-target="#messageContainer"
-            hx-swap="innerHTML"
-            hx-on::after-request="window.dispatchEvent(new CustomEvent('close-modal')); updatePromptList(); scrollMessagesToBottom();">
+            hx-swap="innerHTML">
         <input type="hidden" name="conversation_id" value="{{ conversation_id }}">
         <input type="hidden" name="llm" value="{{ llm }}">
         <input type="hidden" name="message" id="promptEditorMessage">
@@ -131,6 +130,13 @@
     // Clear draft on successful submit
     localStorage.removeItem(DRAFT_KEY);
     document.getElementById('promptEditorForm').requestSubmit();
+  });
+
+  // Close modal after form submission completes
+  document.getElementById('promptEditorForm').addEventListener('htmx:afterRequest', function() {
+    window.dispatchEvent(new CustomEvent('close-modal'));
+    updatePromptList();
+    scrollMessagesToBottom();
   });
 
   // Clear button handler
