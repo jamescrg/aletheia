@@ -220,3 +220,155 @@
 .source-citation a:hover {
   text-decoration: underline;
 }
+
+/* =============================================================================
+   Case Law
+   ============================================================================= */
+
+/* Case Law List Table */
+#caselaws-table .table-fixed {
+  table-layout: fixed;
+  min-width: 50rem;
+}
+
+#caselaws-table .col-citation {
+  width: 12rem;
+}
+
+#caselaws-table .col-case-name {
+  /* Variable width - takes remaining space */
+}
+
+#caselaws-table .col-court {
+  width: 14rem;
+}
+
+#caselaws-table .col-date {
+  width: 8rem;
+}
+
+#caselaws-table .col-actions {
+  width: 6rem;
+  text-align: right;
+}
+
+#caselaws-table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+/* Case Law View Page */
+.caselaw-view {
+  max-width: 60rem;
+}
+
+.caselaw-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.caselaw-header h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+}
+
+.caselaw-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.caselaw-citation {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.caselaw-notes {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: var(--background-control);
+  border-radius: var(--radius);
+}
+
+.caselaw-notes label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.caselaw-text {
+  margin-top: 1rem;
+}
+
+.caselaw-text label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.caselaw-text-content {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* Lookup Result Styles */
+.lookup-result {
+  padding: 1rem;
+  background: var(--background-control);
+  border-radius: var(--radius);
+}
+
+.lookup-result-header h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.125rem;
+}
+
+.lookup-result-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.lookup-result-citation {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.lookup-result-preview {
+  margin-top: 1rem;
+}
+
+.lookup-result-preview label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.lookup-result-text {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  max-height: 10rem;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  padding: 0.75rem;
+  background: var(--background-card);
+  border-radius: var(--radius-sm);
+}
+
+.lookup-result-actions {
+  text-align: right;
+}

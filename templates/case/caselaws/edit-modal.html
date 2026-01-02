@@ -1,0 +1,30 @@
+<div class="modal-dialog modal-md">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Edit Notes</h1>
+      <div>
+        <a href="#" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </a>
+      </div>
+    </div>
+    <div class="modal-body">
+      <form id="caselaw-edit-form"
+            action="{% url 'case:caselaw-edit' case_law.id %}"
+            method="post"
+            class="form-compact">
+        {% csrf_token %}
+        <div class="field">
+          <label for="notes">Notes</label>
+          <textarea id="notes"
+                    name="notes"
+                    rows="8"
+                    placeholder="Add your notes about this case...">{{ case_law.notes }}</textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" form="caselaw-edit-form" class="submit">Save Notes</button>
+    </div>
+  </div>
+</div>

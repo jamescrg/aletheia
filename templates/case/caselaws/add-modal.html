@@ -1,0 +1,36 @@
+<div class="modal-dialog modal-md">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Look Up Case Law</h1>
+      <div>
+        <a href="#" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </a>
+      </div>
+    </div>
+    <div class="modal-body">
+      <form id="caselaw-lookup-form"
+            hx-post="{% url 'case:caselaws-lookup' matter.id %}"
+            hx-target="#lookup-result"
+            class="form-compact">
+        {% csrf_token %}
+        <div class="field">
+          <label for="citation-input">Citation</label>
+          <input type="text"
+                 id="citation-input"
+                 name="citation"
+                 placeholder="e.g., 410 U.S. 113 or Roe v. Wade"
+                 autocomplete="off"
+                 autofocus>
+          <small class="field-help">Enter a case citation or case name to search CourtListener</small>
+        </div>
+      </form>
+      <div id="lookup-result"></div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" form="caselaw-lookup-form" class="submit">
+        <i class="icon-search"></i> Look Up
+      </button>
+    </div>
+  </div>
+</div>

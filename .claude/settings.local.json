@@ -74,7 +74,8 @@
       "Bash(systemctl list-units:*)",
       "Bash(lsof:*)",
       "Bash(fuser:*)",
-      "WebFetch(domain:googleapis.github.io)"
+      "WebFetch(domain:googleapis.github.io)",
+      "Bash(sudo cat:*)"
     ],
     "deny": []
   }
