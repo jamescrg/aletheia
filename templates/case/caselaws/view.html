@@ -1,0 +1,55 @@
+{% extends "case/index.html" %}
+{% block subcontent %}
+  <div class="caselaw-view">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <a href="{% url 'case:caselaws-index' matter.id %}" class="btn-ghost">
+          <i class="icon-arrow-left"></i> Back to Case Law
+        </a>
+      </div>
+      <div class="toolbar-right">
+        {% if case_law.courtlistener_url %}
+          <a href="{{ case_law.courtlistener_url }}"
+             target="_blank"
+             class="btn-ghost"
+             title="View on CourtListener">
+            <i class="icon-external-link"></i> CourtListener
+          </a>
+        {% endif %}
+        <button type="button"
+                class="btn-ghost"
+                hx-get="{% url 'case:caselaw-edit' case_law.id %}"
+                hx-target="#htmx-modal-container"
+                title="Edit Notes">
+          <i class="icon-pencil"></i>
+        </button>
+        <button type="button"
+                class="btn-ghost btn-danger"
+                hx-post="{% url 'case:caselaw-delete' case_law.id %}"
+                hx-confirm="Delete this case law entry?"
+                title="Delete">
+          <i class="icon-trash-2"></i>
+        </button>
+      </div>
+    </div>
+    <div class="caselaw-header">
+      <h2>{{ case_law.case_name }}</h2>
+      <div class="caselaw-meta">
+        <span class="caselaw-citation">{{ case_law.citation }}</span>
+        {% if case_law.court %}<span class="caselaw-court">{{ case_law.court }}</span>{% endif %}
+        {% if case_law.date_filed %}<span class="caselaw-date">{{ case_law.date_filed|date:"F j, Y" }}</span>{% endif %}
+        {% if case_law.docket_number %}<span class="caselaw-docket">{{ case_law.docket_number }}</span>{% endif %}
+      </div>
+    </div>
+    {% if case_law.notes %}
+      <div class="caselaw-notes">
+        <label>Notes</label>
+        <div class="caselaw-notes-content">{{ case_law.notes|linebreaks }}</div>
+      </div>
+    {% endif %}
+    <div class="caselaw-text">
+      <label>Opinion Text</label>
+      <div class="caselaw-text-content">{{ case_law.text|linebreaks }}</div>
+    </div>
+  </div>
+{% endblock subcontent %}

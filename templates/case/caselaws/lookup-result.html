@@ -1,0 +1,39 @@
+{% if error %}
+  <div class="alert alert-warning mt-3">
+    <i class="icon-alert-triangle"></i> {{ error }}
+  </div>
+{% elif result %}
+  <div class="lookup-result mt-3">
+    <div class="lookup-result-header">
+      <h3>{{ result.case_name }}</h3>
+      <div class="lookup-result-meta">
+        <span class="lookup-result-citation">{{ result.citation }}</span>
+        {% if result.court %}<span class="lookup-result-court">{{ result.court }}</span>{% endif %}
+        {% if result.date_filed %}<span class="lookup-result-date">{{ result.date_filed }}</span>{% endif %}
+      </div>
+    </div>
+    {% if existing %}
+      <div class="alert alert-info mt-2">
+        <i class="icon-info"></i> This case is already saved to this matter.
+        <a href="{% url 'case:caselaw-view' existing.id %}">View it</a>
+      </div>
+    {% else %}
+      {% if text_preview %}
+        <div class="lookup-result-preview">
+          <label>Preview</label>
+          <div class="lookup-result-text">{{ text_preview|truncatechars:500 }}</div>
+        </div>
+      {% endif %}
+      <form id="caselaw-save-form"
+            hx-post="{% url 'case:caselaws-save' matter.id %}"
+            hx-target="#htmx-modal-container">
+        {% csrf_token %}
+        <div class="lookup-result-actions mt-3">
+          <button type="submit" class="submit">
+            <i class="icon-plus"></i> Add to Matter
+          </button>
+        </div>
+      </form>
+    {% endif %}
+  </div>
+{% endif %}

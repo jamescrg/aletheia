@@ -19,7 +19,7 @@ from django.conf import settings
 
 from apps.agenda.events.models import Event
 from apps.agenda.tasks.models import Task
-from apps.case.models import Document, Fact, Highlight
+from apps.case.models import CaseLaw, Document, Fact, Highlight
 from apps.matters.models import Relationship
 from apps.matters.proceedings.models import Proceeding
 from apps.matters.settlement.models import SettlementEntry
@@ -67,6 +67,9 @@ MATTER_CONTEXT_TEMPLATE = """
 
 ## Documents
 {documents}
+
+## Case Law Research
+{caselaws}
 
 ## Timeline / Key Facts
 {timeline}
@@ -169,29 +172,35 @@ def assemble_matter_context(matter, user=None, conversation=None) -> str:
     sections["documents"] = documents
     remaining_budget -= len(documents)
 
-    # 7. Timeline (by importance)
+    # 7. Case Law Research
+    budget_caselaws = min(remaining_budget // 3, 20000)
+    caselaws = format_caselaws(matter, budget_caselaws)
+    sections["caselaws"] = caselaws
+    remaining_budget -= len(caselaws)
+
+    # 8. Timeline (by importance)
     budget_timeline = min(remaining_budget // 4, 10000)
     timeline = format_timeline(matter, budget_timeline)
     sections["timeline"] = timeline
     remaining_budget -= len(timeline)
 
-    # 8. Tasks
+    # 9. Tasks
     budget_tasks = min(remaining_budget // 3, 5000)
     tasks = format_tasks(matter, budget_tasks)
     sections["tasks"] = tasks
     remaining_budget -= len(tasks)
 
-    # 9. Events
+    # 10. Events
     budget_events = min(remaining_budget // 2, 5000)
     events = format_events(matter, budget_events)
     sections["events"] = events
     remaining_budget -= len(events)
 
-    # 10. Settlement
+    # 11. Settlement
     settlement = format_settlement(matter)
     sections["settlement"] = settlement
 
-    # 11. Previous Conversations (summaries + flagged reference conversations)
+    # 12. Previous Conversations (summaries + flagged reference conversations)
     budget_conversations = min(remaining_budget, 15000)
     previous_conversations = format_previous_conversations(
         matter, conversation, budget_conversations
@@ -391,6 +400,57 @@ def format_documents(matter, budget: int) -> str:
         char_count += len(entry)
 
     return "\n".join(lines) if lines else "No documents."
+
+
+def format_caselaws(matter, budget: int) -> str:
+    """Format case law research retrieved from CourtListener."""
+    caselaws = CaseLaw.objects.filter(matter=matter).order_by("-date_filed")
+
+    if not caselaws:
+        return "No case law research added."
+
+    lines = []
+    char_count = 0
+
+    for case in caselaws:
+        # Case header with citation and metadata
+        header = f"\n### {case.case_name}"
+        if case.citation:
+            header += f", {case.citation}"
+        if case.court:
+            header += f"\n**Court:** {case.court}"
+        if case.date_filed:
+            header += f" | **Date:** {case.date_filed}"
+
+        if char_count + len(header) > budget:
+            lines.append("\n... (additional case law omitted for brevity)")
+            break
+
+        lines.append(header)
+        char_count += len(header)
+
+        # Include user notes if any
+        if case.notes:
+            notes_preview = case.notes[:500]
+            if len(case.notes) > 500:
+                notes_preview += "..."
+            notes_section = f"\n**Notes:** {notes_preview}"
+            lines.append(notes_section)
+            char_count += len(notes_section)
+
+        # Include case text (truncated to fit budget)
+        if case.text:
+            text_budget = min(budget - char_count, 5000)  # Max 5k per case
+            text_preview = case.text[:text_budget]
+            if len(case.text) > text_budget:
+                text_preview += "\n... (opinion text truncated)"
+            lines.append(f"\n{text_preview}")
+            char_count += len(text_preview)
+
+        if char_count > budget:
+            break
+
+    return "\n".join(lines) if lines else "No case law research added."
 
 
 def format_timeline(matter, budget: int) -> str:

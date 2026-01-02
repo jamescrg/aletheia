@@ -2,6 +2,7 @@ from django.urls import path
 
 from apps.case import views
 from apps.case.ai import views as ai
+from apps.case.caselaws import views as caselaws
 from apps.case.documents import views as documents
 from apps.case.facts import views as facts
 from apps.case.highlights import views as highlights
@@ -169,6 +170,32 @@ urlpatterns = [
     ),
     path("case/<int:matter_id>/facts/print/", facts.facts_print, name="facts-print"),
     path("case/<int:matter_id>/facts/pdf/", facts.facts_pdf, name="facts-pdf"),
+    # Case Law (matter-scoped)
+    path(
+        "case/<int:matter_id>/caselaws/",
+        caselaws.caselaws_index,
+        name="caselaws-index",
+    ),
+    path(
+        "case/<int:matter_id>/caselaws/list/",
+        caselaws.caselaws_list,
+        name="caselaws-list",
+    ),
+    path(
+        "case/<int:matter_id>/caselaws/add/",
+        caselaws.caselaws_add,
+        name="caselaws-add",
+    ),
+    path(
+        "case/<int:matter_id>/caselaws/lookup/",
+        caselaws.caselaws_lookup,
+        name="caselaws-lookup",
+    ),
+    path(
+        "case/<int:matter_id>/caselaws/save/",
+        caselaws.caselaws_save,
+        name="caselaws-save",
+    ),
     # Witnesses (matter-scoped)
     path(
         "case/<int:matter_id>/witnesses/",
@@ -444,6 +471,22 @@ urlpatterns = [
         "case/highlights/<int:highlight_id>/link/",
         highlights.highlight_link,
         name="highlight-link",
+    ),
+    # Case Law operations
+    path(
+        "case/caselaws/<int:caselaw_id>/",
+        caselaws.caselaw_view,
+        name="caselaw-view",
+    ),
+    path(
+        "case/caselaws/<int:caselaw_id>/edit/",
+        caselaws.caselaw_edit,
+        name="caselaw-edit",
+    ),
+    path(
+        "case/caselaws/<int:caselaw_id>/delete/",
+        caselaws.caselaw_delete,
+        name="caselaw-delete",
     ),
     # Fact operations
     path("case/facts/<int:fact_id>/edit/", facts.facts_edit, name="facts-edit"),

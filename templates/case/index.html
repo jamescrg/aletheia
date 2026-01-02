@@ -51,6 +51,9 @@
           <li {% if subapp == "facts" %}class="active"{% endif %}>
             <a href="{% url 'case:facts-index' matter.id %}">Timeline</a>
           </li>
+          <li {% if subapp == "caselaws" %}class="active"{% endif %}>
+            <a href="{% url 'case:caselaws-index' matter.id %}">Case Law</a>
+          </li>
           <li {% if subapp == "witnesses" %}class="active"{% endif %}>
             <a href="{% url 'case:witnesses-index' matter.id %}">Witnesses</a>
           </li>

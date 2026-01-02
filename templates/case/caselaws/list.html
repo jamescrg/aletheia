@@ -1,0 +1,79 @@
+<div class="toolbar">
+  <div class="toolbar-left">
+    <div class="filter-tools">
+      <button type="button"
+              class="btn-icon"
+              hx-get="{% url 'case:caselaws-add' matter.id %}"
+              hx-target="#htmx-modal-container"
+              hx-trigger="click">
+        <i class="icon-plus"></i>
+      </button>
+      <input type="text"
+             id="caselaws-keyword-input"
+             name="keyword"
+             placeholder="Search cases..."
+             value="{{ keyword }}"
+             class="filter-input keyword-input"
+             hx-get="{% url 'case:caselaws-list' matter.id %}"
+             hx-target="#caselaws"
+             hx-trigger="keyup changed delay:500ms"
+             hx-include="this">
+    </div>
+  </div>
+</div>
+<div id="caselaws-table">
+  {% if case_laws %}
+    <table class="table table-fixed">
+      <thead>
+        <tr>
+          <th class="col-citation">Citation</th>
+          <th class="col-case-name">Case Name</th>
+          <th class="col-court">Court</th>
+          <th class="col-date">Date</th>
+          <th class="col-actions"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for case_law in case_laws %}
+          <tr>
+            <td class="col-citation">
+              <a href="{% url 'case:caselaw-view' case_law.id %}">{{ case_law.citation }}</a>
+            </td>
+            <td class="col-case-name">
+              <a href="{% url 'case:caselaw-view' case_law.id %}">{{ case_law.case_name|truncatechars:60 }}</a>
+            </td>
+            <td class="col-court">{{ case_law.court|truncatechars:30 }}</td>
+            <td class="col-date">
+              {% if case_law.date_filed %}{{ case_law.date_filed|date:"M j, Y" }}{% endif %}
+            </td>
+            <td class="col-actions">
+              <div class="row-actions">
+                {% if case_law.courtlistener_url %}
+                  <a href="{{ case_law.courtlistener_url }}"
+                     target="_blank"
+                     class="btn-ghost"
+                     title="View on CourtListener">
+                    <i class="icon-external-link"></i>
+                  </a>
+                {% endif %}
+                <button type="button"
+                        class="btn-ghost btn-danger"
+                        hx-post="{% url 'case:caselaw-delete' case_law.id %}"
+                        hx-confirm="Delete this case law entry?"
+                        hx-target="#caselaws"
+                        title="Delete">
+                  <i class="icon-trash-2"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="empty-state">
+      <p>No case law added yet.</p>
+      <p class="text-muted">Click the + button to look up and add a case.</p>
+    </div>
+  {% endif %}
+</div>

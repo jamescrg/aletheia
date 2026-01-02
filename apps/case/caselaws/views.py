@@ -1,0 +1,274 @@
+"""
+Views for case law management.
+
+Allows users to look up case citations via CourtListener and save them to matters.
+"""
+
+import logging
+
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
+
+from apps.case.courtlistener import fetch_case_by_citation
+from apps.case.models import CaseLaw
+from apps.case.views import get_matter_from_url, get_session_key, set_last_tab
+from apps.matters.models import Matter
+
+logger = logging.getLogger(__name__)
+
+
+def get_accessible_matters():
+    """Get all matters accessible to logged-in users."""
+    return Matter.objects.filter(status="Open")
+
+
+def get_caselaws_data(request, matter, matter_id):
+    """Get case law data with filters applied from session."""
+    filter_session_key = get_session_key("caselaws_filter", matter_id)
+    filter_data = request.session.get(filter_session_key, {})
+
+    case_laws = []
+    if matter:
+        queryset = CaseLaw.objects.filter(matter=matter).order_by("-date_filed")
+
+        # Apply keyword filter if present
+        keyword = filter_data.get("keyword", "")
+        if isinstance(keyword, list):
+            keyword = keyword[0] if keyword else ""
+        if keyword:
+            queryset = queryset.filter(case_name__icontains=keyword) | queryset.filter(
+                citation__icontains=keyword
+            )
+
+        case_laws = queryset
+
+    # Get current sort order
+    current_order = filter_data.get("order_by", "-date_filed")
+    if isinstance(current_order, list):
+        current_order = current_order[0] if current_order else "-date_filed"
+
+    # Get keyword value
+    keyword = filter_data.get("keyword", "")
+    if isinstance(keyword, list):
+        keyword = keyword[0] if keyword else ""
+
+    return {
+        "case_laws": case_laws,
+        "current_order": current_order,
+        "keyword": keyword,
+    }
+
+
+@login_required
+def caselaws_index(request, matter_id):
+    """Main case law view."""
+    matter, matters = get_matter_from_url(request, matter_id)
+    set_last_tab(request, matter_id, "caselaws")
+
+    context = {
+        "app": "documents",
+        "subapp": "caselaws",
+        "matter": matter,
+        "matters": matters,
+    } | get_caselaws_data(request, matter, matter_id)
+
+    return render(request, "case/caselaws/main.html", context)
+
+
+@login_required
+def caselaws_list(request, matter_id):
+    """HTMX partial for case law list."""
+    matter, _ = get_matter_from_url(request, matter_id)
+
+    context = {
+        "matter": matter,
+    } | get_caselaws_data(request, matter, matter_id)
+
+    return render(request, "case/caselaws/list.html", context)
+
+
+@login_required
+def caselaws_add(request, matter_id):
+    """Show add case law modal."""
+    matter, _ = get_matter_from_url(request, matter_id)
+
+    return render(
+        request,
+        "case/caselaws/add-modal.html",
+        {"matter": matter},
+    )
+
+
+@login_required
+def caselaws_lookup(request, matter_id):
+    """HTMX endpoint to look up a citation."""
+    matter, _ = get_matter_from_url(request, matter_id)
+    citation_text = request.POST.get("citation", "").strip()
+
+    if not citation_text:
+        return render(
+            request,
+            "case/caselaws/lookup-result.html",
+            {"error": "Please enter a citation"},
+        )
+
+    # Look up the citation
+    result = fetch_case_by_citation(citation_text)
+
+    if not result.get("found"):
+        return render(
+            request,
+            "case/caselaws/lookup-result.html",
+            {"error": result.get("error", "Citation not found")},
+        )
+
+    # Check if already saved to this matter
+    existing = None
+    if result.get("cluster_id"):
+        existing = CaseLaw.objects.filter(
+            matter=matter, cluster_id=result["cluster_id"]
+        ).first()
+
+    # Store result in session to avoid HTML escaping issues with large text
+    session_key = f"caselaw_lookup_{matter_id}"
+    request.session[session_key] = result
+
+    return render(
+        request,
+        "case/caselaws/lookup-result.html",
+        {
+            "matter": matter,
+            "result": result,
+            "existing": existing,
+            "text_preview": result.get("text", "")[:1000],
+        },
+    )
+
+
+@login_required
+@require_POST
+def caselaws_save(request, matter_id):
+    """Save a case law to the matter."""
+    matter, _ = get_matter_from_url(request, matter_id)
+
+    # Get data from session (stored during lookup to avoid HTML escaping issues)
+    session_key = f"caselaw_lookup_{matter_id}"
+    result = request.session.get(session_key, {})
+
+    if not result:
+        return HttpResponse(
+            "No case data found. Please look up the citation again.", status=400
+        )
+
+    # Extract data from session result
+    case_name = result.get("case_name", "")
+    citation = result.get("citation", "")
+    court = result.get("court", "")
+    court_id = result.get("court_id", "")
+    date_filed = result.get("date_filed") or None
+    docket_number = result.get("docket_number", "")
+    cluster_id = result.get("cluster_id")
+    opinion_id = result.get("opinion_id")
+    courtlistener_url = result.get("courtlistener_url", "")
+    text = result.get("text", "")
+    html = result.get("html", "")
+
+    # Clean up session
+    del request.session[session_key]
+
+    # Convert IDs to int
+    cluster_id = int(cluster_id) if cluster_id else None
+    opinion_id = int(opinion_id) if opinion_id else None
+
+    # Check for duplicates
+    if cluster_id:
+        existing = CaseLaw.objects.filter(matter=matter, cluster_id=cluster_id).first()
+        if existing:
+            # Already exists - redirect to view
+            response = HttpResponse(status=204)
+            response["HX-Redirect"] = f"/case/caselaws/{existing.id}/"
+            return response
+
+    # Create the case law
+    case_law = CaseLaw.objects.create(
+        matter=matter,
+        case_name=case_name,
+        citation=citation,
+        court=court,
+        court_id=court_id,
+        date_filed=date_filed,
+        docket_number=docket_number,
+        cluster_id=cluster_id,
+        opinion_id=opinion_id,
+        courtlistener_url=courtlistener_url,
+        text=text,
+        html=html,
+        created_by=request.user,
+        updated_by=request.user,
+    )
+
+    logger.info("Saved case law %s to matter %s", case_law, matter)
+
+    # Return redirect to view the case
+    response = HttpResponse(status=204)
+    response["HX-Redirect"] = f"/case/caselaws/{case_law.id}/"
+    return response
+
+
+@login_required
+def caselaw_view(request, caselaw_id):
+    """View a case law entry."""
+    case_law = get_object_or_404(
+        CaseLaw, pk=caselaw_id, matter__in=get_accessible_matters()
+    )
+    matter = case_law.matter
+
+    return render(
+        request,
+        "case/caselaws/view.html",
+        {
+            "app": "documents",
+            "subapp": "caselaws",
+            "matter": matter,
+            "case_law": case_law,
+        },
+    )
+
+
+@login_required
+def caselaw_edit(request, caselaw_id):
+    """Edit case law notes."""
+    case_law = get_object_or_404(
+        CaseLaw, pk=caselaw_id, matter__in=get_accessible_matters()
+    )
+
+    if request.method == "POST":
+        case_law.notes = request.POST.get("notes", "")
+        case_law.updated_by = request.user
+        case_law.save()
+
+        return redirect("case:caselaw-view", caselaw_id=case_law.id)
+
+    return render(
+        request,
+        "case/caselaws/edit-modal.html",
+        {"case_law": case_law},
+    )
+
+
+@login_required
+@require_POST
+def caselaw_delete(request, caselaw_id):
+    """Delete a case law entry."""
+    case_law = get_object_or_404(
+        CaseLaw, pk=caselaw_id, matter__in=get_accessible_matters()
+    )
+    matter_id = case_law.matter_id
+
+    case_law.delete()
+
+    response = HttpResponse(status=204)
+    response["HX-Redirect"] = f"/case/{matter_id}/caselaws/"
+    return response

@@ -274,3 +274,52 @@ class Witness(AuditMixin, models.Model):
     class Meta:
         db_table = "app_witness"
         ordering = ["name"]
+
+
+class CaseLaw(AuditMixin, models.Model):
+    """A case law opinion retrieved from CourtListener."""
+
+    matter = models.ForeignKey(
+        Matter, on_delete=models.CASCADE, related_name="case_laws"
+    )
+
+    # Citation info
+    citation = models.CharField(max_length=255)  # e.g., "410 U.S. 113"
+    case_name = models.CharField(max_length=500)  # e.g., "Roe v. Wade"
+
+    # Court/date info
+    court = models.CharField(max_length=255)  # Full court name
+    court_id = models.CharField(max_length=50, blank=True)  # CourtListener court ID
+    date_filed = models.DateField(null=True, blank=True)
+    docket_number = models.CharField(max_length=255, blank=True)
+
+    # CourtListener IDs for future reference
+    cluster_id = models.IntegerField(null=True, blank=True)
+    opinion_id = models.IntegerField(null=True, blank=True)
+    courtlistener_url = models.URLField(max_length=500, blank=True)
+
+    # Full text
+    text = models.TextField()  # Plain text version
+    html = models.TextField(blank=True)  # HTML with citations (optional)
+
+    # User notes
+    notes = models.TextField(blank=True)
+
+    # Labels (like other case app models)
+    labels = models.ManyToManyField(Label, blank=True, related_name="case_laws")
+
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return f"{self.case_name}, {self.citation}"
+
+    class Meta:
+        db_table = "app_case_law"
+        ordering = ["-date_filed", "case_name"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["matter", "cluster_id"],
+                name="unique_case_per_matter",
+                condition=models.Q(cluster_id__isnull=False),
+            )
+        ]
