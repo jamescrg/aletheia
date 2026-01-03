@@ -187,6 +187,94 @@ def enhance_citations(html_content, citations_list):
     return mark_safe(result)
 
 
+@register.filter
+def normalize_linebreaks(text):
+    """
+    Normalize line breaks in pre-formatted legal text from CourtListener.
+
+    CourtListener text uses \\n\\n for ALL line breaks. We distinguish:
+    - Paragraph breaks: \\n\\n followed by indentation (spaces)
+    - Line wraps: \\n\\n followed directly by text (no indent)
+    - Page numbers: form feed + number, or centered numbers (20+ leading spaces)
+
+    Returns HTML with paragraphs wrapped in <p> tags and page numbers styled.
+
+    Usage: {{ case_law.text|normalize_linebreaks }}
+    """
+    if not text:
+        return text
+
+    # Normalize different line ending styles
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+
+    page_placeholder = "\x00PAGE\x00"
+
+    # Mark page numbers that follow form feed characters
+    # Form feed (\x0c) is a page break indicator in many court documents
+    text = re.sub(
+        r"\x0c\s*(\d{1,3})\s*\n",
+        page_placeholder + r"\1" + page_placeholder + "\n",
+        text,
+    )
+
+    # Mark centered page numbers (20+ leading spaces = centered on page)
+    text = re.sub(
+        r"\n\n[ ]{20,}(\d{1,3})[ ]*(?=\n)",
+        "\n\n" + page_placeholder + r"\1" + page_placeholder,
+        text,
+    )
+
+    # Remove any remaining form feeds
+    text = text.replace("\x0c", "\n\n")
+
+    # Preserve paragraph breaks (double newline followed by indentation)
+    # These are real paragraph starts with 4+ spaces of indentation
+    para_placeholder = "\x00PARA\x00"
+    text = re.sub(r"\n\n([ ]{4,})", para_placeholder + r"\1", text)
+
+    # Also preserve breaks before centered text (like headers)
+    # These have significant leading whitespace
+    text = re.sub(r"\n\n([ ]{10,})", para_placeholder + r"\1", text)
+
+    # Convert remaining double newlines (line wraps) to single space
+    text = re.sub(r"\n\n", " ", text)
+
+    # Convert any remaining single newlines to spaces
+    text = text.replace("\n", " ")
+
+    # Collapse multiple spaces into one
+    text = re.sub(r"  +", " ", text)
+
+    # Restore paragraph breaks
+    text = text.replace(para_placeholder, "\n\n")
+
+    # Restore page numbers with marker
+    text = re.sub(
+        page_placeholder + r"(\d{1,3})" + page_placeholder,
+        r"\n\n:::PAGE:::\1:::ENDPAGE:::\n\n",
+        text,
+    )
+
+    # Split into paragraphs and wrap in <p> tags
+    paragraphs = text.strip().split("\n\n")
+    html_parts = []
+
+    for para in paragraphs:
+        para = para.strip()
+        if not para:
+            continue
+
+        # Check if this is a page number
+        page_match = re.match(r":::PAGE:::(\d{1,3}):::ENDPAGE:::", para)
+        if page_match:
+            page_num = page_match.group(1)
+            html_parts.append(f'<p class="page-number">{escape(page_num)}</p>')
+        else:
+            html_parts.append(f"<p>{escape(para)}</p>")
+
+    return mark_safe("\n".join(html_parts))
+
+
 @register.inclusion_tag("case/ai/citations-summary.html")
 def citations_summary(citations_list):
     """

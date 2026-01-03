@@ -133,7 +133,7 @@ def notes_add(request, matter_id):
                 headers={"HX-Trigger": "notesChanged"},
             )
     else:
-        form = NoteForm(use_required_attribute=False)
+        form = NoteForm(initial={"matter": matter}, use_required_attribute=False)
 
     context = {
         "app": "documents",

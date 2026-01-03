@@ -1,6 +1,7 @@
 {% extends "case/index.html" %}
+{% load citation_extras %}
 {% block subcontent %}
-  <div class="caselaw-view">
+  <div class="caselaw-view" x-data="{ raw: false }">
     <div class="toolbar">
       <div class="toolbar-left">
         <a href="{% url 'case:caselaws-index' matter.id %}" class="btn-ghost">
@@ -8,6 +9,14 @@
         </a>
       </div>
       <div class="toolbar-right">
+        <button type="button"
+                class="btn-ghost"
+                @click="raw = !raw"
+                :title="raw ? 'Show formatted' : 'Show raw text'">
+          <i class="icon-code" x-show="!raw"></i>
+          <i class="icon-type" x-show="raw"></i>
+          <span x-text="raw ? 'Formatted' : 'Raw'"></span>
+        </button>
         {% if case_law.courtlistener_url %}
           <a href="{{ case_law.courtlistener_url }}"
              target="_blank"
@@ -32,24 +41,27 @@
         </button>
       </div>
     </div>
-    <div class="caselaw-header">
-      <h2>{{ case_law.case_name }}</h2>
-      <div class="caselaw-meta">
-        <span class="caselaw-citation">{{ case_law.citation }}</span>
-        {% if case_law.court %}<span class="caselaw-court">{{ case_law.court }}</span>{% endif %}
-        {% if case_law.date_filed %}<span class="caselaw-date">{{ case_law.date_filed|date:"F j, Y" }}</span>{% endif %}
-        {% if case_law.docket_number %}<span class="caselaw-docket">{{ case_law.docket_number }}</span>{% endif %}
+    <div class="caselaw-canvas">
+      <div class="caselaw-header">
+        <h2>{{ case_law.case_name }}</h2>
+        <div class="caselaw-meta">
+          <span class="caselaw-citation">{{ case_law.citation }}</span>
+          {% if case_law.court %}<span class="caselaw-court">{{ case_law.court }}</span>{% endif %}
+          {% if case_law.date_filed %}<span class="caselaw-date">{{ case_law.date_filed|date:"F j, Y" }}</span>{% endif %}
+          {% if case_law.docket_number %}<span class="caselaw-docket">{{ case_law.docket_number }}</span>{% endif %}
+        </div>
       </div>
-    </div>
-    {% if case_law.notes %}
-      <div class="caselaw-notes">
-        <label>Notes</label>
-        <div class="caselaw-notes-content">{{ case_law.notes|linebreaks }}</div>
+      {% if case_law.notes %}
+        <div class="caselaw-notes">
+          <label>Notes</label>
+          <div class="caselaw-notes-content">{{ case_law.notes|linebreaks }}</div>
+        </div>
+      {% endif %}
+      <div class="caselaw-text">
+        <label x-text="raw ? 'Raw Text' : 'Opinion Text'">Opinion Text</label>
+        <div class="caselaw-text-content" x-show="!raw">{{ case_law.text|normalize_linebreaks }}</div>
+        <pre class="caselaw-text-raw" x-show="raw" x-cloak>{{ case_law.text }}</pre>
       </div>
-    {% endif %}
-    <div class="caselaw-text">
-      <label>Opinion Text</label>
-      <div class="caselaw-text-content">{{ case_law.text|linebreaks }}</div>
     </div>
   </div>
 {% endblock subcontent %}
