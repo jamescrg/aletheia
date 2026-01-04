@@ -45,14 +45,14 @@
           <li {% if subapp == "documents" %}class="active"{% endif %}>
             <a href="{% url 'case:documents-index' matter.id %}">Documents</a>
           </li>
+          <li {% if subapp == "caselaws" %}class="active"{% endif %}>
+            <a href="{% url 'case:caselaws-index' matter.id %}">Case Law</a>
+          </li>
           <li {% if subapp == "highlights" %}class="active"{% endif %}>
             <a href="{% url 'case:highlights-index' matter.id %}">Highlights</a>
           </li>
           <li {% if subapp == "facts" %}class="active"{% endif %}>
             <a href="{% url 'case:facts-index' matter.id %}">Timeline</a>
-          </li>
-          <li {% if subapp == "caselaws" %}class="active"{% endif %}>
-            <a href="{% url 'case:caselaws-index' matter.id %}">Case Law</a>
           </li>
           <li {% if subapp == "witnesses" %}class="active"{% endif %}>
             <a href="{% url 'case:witnesses-index' matter.id %}">Witnesses</a>

@@ -6,6 +6,11 @@
     <div class="dropdown" x-data="dropdown()">
       <h3 class="highlight-slug">
         <a href="#" x-ref="button" @click.prevent="toggle()">
+          {% if highlight.caselaw %}
+            <i class="icon-gavel source-icon"></i>
+          {% else %}
+            <i class="icon-file-text source-icon"></i>
+          {% endif %}
           <span class="hl-{{ highlight.color }}">{{ highlight.slug|default:"Untitled" }}</span>
         </a>
       </h3>

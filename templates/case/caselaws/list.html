@@ -70,13 +70,6 @@
                        href="{% url 'case:caselaw-viewer' case_law.id %}"
                        target="_blank"><i class="icon-eye"></i> View Case</a>
                   </li>
-                  <li>
-                    <a class="dropdown-item"
-                       href="#"
-                       @click="open = false"
-                       hx-get="{% url 'case:caselaw-edit' case_law.id %}"
-                       hx-target="#htmx-modal-container"><i class="icon-pencil"></i> Edit Notes</a>
-                  </li>
                   {% if case_law.courtlistener_url %}
                     <li>
                       <a class="dropdown-item"

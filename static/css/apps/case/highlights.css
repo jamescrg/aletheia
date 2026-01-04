@@ -242,6 +242,13 @@ Highlight content (td)
   padding: 0.25rem 0.5rem;
 }
 
+.highlights-list .highlight-slug .source-icon {
+  color: var(--text-muted);
+  margin-left: 0.5rem;
+  margin-right: 0.25rem;
+  font-size: 0.875rem;
+}
+
 .highlights-list .dropdown-cell .btn-ghost {
   margin-left: 0;
   flex-shrink: 0;
