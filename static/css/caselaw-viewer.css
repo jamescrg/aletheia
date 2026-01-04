@@ -1,0 +1,273 @@
+/* Case Law Viewer Styles */
+
+/* =============================================================================
+   Body Background - Darkest layer (matches notes standalone)
+   ============================================================================= */
+
+body:has(#case-content-container) {
+  background: var(--background-subnav);
+}
+
+/* =============================================================================
+   Main Layout
+   ============================================================================= */
+
+#main-container {
+  height: 100vh;
+}
+
+/* =============================================================================
+   Case Content Container - Left panel
+   ============================================================================= */
+
+#case-content-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* =============================================================================
+   Case Header/Toolbar - Darkest (matches notes toolbar)
+   ============================================================================= */
+
+#case-header {
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1.5rem;
+  background: var(--background-subnav);
+  border-bottom: 1px solid var(--border-medium);
+  flex-shrink: 0;
+}
+
+#case-header .btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.125rem 0.375rem;
+  background: none;
+  border: none;
+  border-radius: 0.375rem;
+  color: var(--button-toolbar);
+  font-size: 1.25rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+#case-header .btn-icon:hover {
+  background: var(--background-section);
+  color: var(--color-primary);
+}
+
+.case-header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.case-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.case-citation {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* =============================================================================
+   Case Content - Lightest (the "canvas")
+   ============================================================================= */
+
+#case-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem 3rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  font-family: var(--font-body);
+  background: var(--background-light);
+}
+
+/* =============================================================================
+   Highlights Sidebar - Medium (matches notes panels)
+   ============================================================================= */
+
+#highlights-sidebar {
+  background: var(--background-section);
+}
+
+#highlights-header {
+  height: 3rem;
+  background: var(--background-subnav);
+  margin: -0.5rem -1rem 0 -1rem;
+  padding: 0 1rem;
+}
+
+#highlights-header .btn-icon {
+  color: var(--button-toolbar);
+}
+
+#highlights-header .btn-icon:hover {
+  color: var(--color-primary);
+}
+
+#highlights-header #createHighlightBtn {
+  background: var(--yellow-100);
+  color: var(--color-primary);
+}
+
+#highlights-header #createHighlightBtn:hover {
+  background: var(--yellow-200);
+}
+
+#highlights-list {
+  padding: 0.75rem 0;
+}
+
+.highlight-item {
+  background: var(--background-light);
+  border: 1px solid var(--border-light);
+}
+
+.highlight-item:hover {
+  background: var(--background-card);
+}
+
+.highlight-item.active {
+  background: var(--background-card);
+}
+
+/* Case law HTML styles (from case.css) */
+#case-content.caselaw-html opinion {
+  display: block;
+}
+
+#case-content.caselaw-html author {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+#case-content.caselaw-html blockquote {
+  margin: 1rem 0 1rem 1.5rem;
+  padding-left: 1rem;
+  border-left: 3px solid var(--border-medium);
+  color: var(--text-muted);
+}
+
+#case-content.caselaw-html .citation a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+#case-content.caselaw-html .citation a:hover {
+  text-decoration: underline;
+}
+
+#case-content.caselaw-html .star-pagination {
+  display: block;
+  text-align: center;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin: 1.5rem 0;
+}
+
+#case-content.caselaw-html .footnote {
+  color: var(--link);
+  text-decoration: none;
+  font-size: 0.75rem;
+  vertical-align: super;
+}
+
+#case-content.caselaw-html .footnote:hover {
+  text-decoration: underline;
+}
+
+#case-content.caselaw-html em {
+  font-style: italic;
+}
+
+#case-content .caselaw-text-raw {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+/* Highlight marks in case content */
+.case-highlight {
+  cursor: pointer;
+  border-radius: 2px;
+  padding: 0 2px;
+  margin: 0 -2px;
+  transition: all 0.15s ease;
+}
+
+.case-highlight.hl-yellow {
+  background: var(--yellow-200);
+}
+
+.case-highlight.hl-green {
+  background: var(--lime-200);
+}
+
+.case-highlight.hl-blue {
+  background: var(--blue-200);
+}
+
+.case-highlight.hl-orange {
+  background: var(--orange-200);
+}
+
+.case-highlight.hl-red {
+  background: var(--red-200);
+}
+
+.case-highlight.hl-purple {
+  background: var(--violet-200);
+}
+
+/* Active highlight state */
+.case-highlight.active {
+  outline: 2px solid var(--stone-500);
+  outline-offset: 1px;
+}
+
+.case-highlight.hl-yellow.active {
+  background: var(--yellow-300);
+}
+
+.case-highlight.hl-green.active {
+  background: var(--lime-300);
+}
+
+.case-highlight.hl-blue.active {
+  background: var(--blue-300);
+}
+
+.case-highlight.hl-orange.active {
+  background: var(--orange-300);
+}
+
+.case-highlight.hl-red.active {
+  background: var(--red-300);
+}
+
+.case-highlight.hl-purple.active {
+  background: var(--violet-300);
+}
+
+/* Selection styling in case content */
+#case-content ::selection {
+  background: var(--yellow-200);
+}

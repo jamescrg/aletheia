@@ -33,9 +33,12 @@ def get_highlights_data(request, matter, matter_id):
     document_id = get_filter_value("document")
 
     if matter:
-        highlights = Highlight.objects.filter(document__matter=matter).select_related(
-            "document", "document__matter", "created_by"
-        )
+        # Include both document and case law highlights
+        from django.db.models import Q
+
+        highlights = Highlight.objects.filter(
+            Q(document__matter=matter) | Q(caselaw__matter=matter)
+        ).select_related("document", "document__matter", "caselaw", "created_by")
         documents = Document.objects.filter(matter=matter).order_by("name")
 
         # Apply filters using HighlightsFilter
@@ -50,21 +53,21 @@ def get_highlights_data(request, matter, matter_id):
 
         # Handle custom ordering with secondary sorts
         if order_by == "date":
-            highlights = highlights.order_by("document__date", "slug", "page_number")
+            highlights = highlights.order_by("created_at", "slug")
         elif order_by == "-date":
-            highlights = highlights.order_by("-document__date", "slug", "page_number")
+            highlights = highlights.order_by("-created_at", "slug")
         elif order_by == "slug":
-            highlights = highlights.order_by("slug", "document__date", "page_number")
+            highlights = highlights.order_by("slug", "created_at")
         elif order_by == "-slug":
-            highlights = highlights.order_by("-slug", "document__date", "page_number")
+            highlights = highlights.order_by("-slug", "created_at")
         elif order_by == "created":
             highlights = highlights.order_by("created_at", "id")
         elif order_by == "-created":
             highlights = highlights.order_by("-created_at", "-id")
         elif order_by == "importance":
-            highlights = highlights.order_by("importance", "document__date", "slug")
+            highlights = highlights.order_by("importance", "created_at", "slug")
         elif order_by == "-importance":
-            highlights = highlights.order_by("-importance", "document__date", "slug")
+            highlights = highlights.order_by("-importance", "created_at", "slug")
         elif not order_by:
             # Default: order by created date desc, id desc
             highlights = highlights.order_by("-created_at", "-id")
@@ -221,8 +224,10 @@ def highlights_filter(request, matter_id):
     # GET - show filter modal
     filter_data = request.session.get(filter_session_key, {})
 
+    from django.db.models import Q
+
     queryset = (
-        Highlight.objects.filter(document__matter=matter)
+        Highlight.objects.filter(Q(document__matter=matter) | Q(caselaw__matter=matter))
         if matter
         else Highlight.objects.none()
     )
@@ -277,7 +282,13 @@ def highlight_importance(request, highlight_id, importance):
     highlight = get_object_or_404(Highlight, id=highlight_id)
     highlight.importance = importance
     highlight.save()
-    return redirect("case:highlights-list", matter_id=highlight.document.matter_id)
+    # Get matter_id from either document or caselaw
+    matter_id = (
+        highlight.document.matter_id
+        if highlight.document
+        else highlight.caselaw.matter_id
+    )
+    return redirect("case:highlights-list", matter_id=matter_id)
 
 
 @login_required
@@ -343,21 +354,31 @@ def delete_highlight(request, highlight_id):
 def highlight_detail(request, highlight_id):
     """Display highlight details in a modal."""
     highlight = get_object_or_404(
-        Highlight.objects.select_related("document").prefetch_related("labels"),
+        Highlight.objects.select_related("document", "caselaw").prefetch_related(
+            "labels"
+        ),
         id=highlight_id,
+    )
+    matter = (
+        highlight.document.matter if highlight.document else highlight.caselaw.matter
     )
     return render(
         request,
         "case/highlights/detail.html",
-        {"highlight": highlight, "matter": highlight.document.matter},
+        {"highlight": highlight, "matter": matter},
     )
 
 
 @login_required
 def edit_highlight(request, highlight_id):
     """Edit a highlight's slug, color, importance, and text."""
-    highlight = get_object_or_404(Highlight, id=highlight_id)
+    highlight = get_object_or_404(
+        Highlight.objects.select_related("document", "caselaw"), id=highlight_id
+    )
     is_viewer_context = request.GET.get("context") == "viewer"
+    matter = (
+        highlight.document.matter if highlight.document else highlight.caselaw.matter
+    )
 
     if request.method == "POST":
         form = HighlightForm(request.POST, instance=highlight)
@@ -388,7 +409,7 @@ def edit_highlight(request, highlight_id):
         {
             "highlight": highlight,
             "form": form,
-            "matter": highlight.document.matter,
+            "matter": matter,
             "is_viewer_context": is_viewer_context,
         },
     )
@@ -397,11 +418,20 @@ def edit_highlight(request, highlight_id):
 @login_required
 def highlight_link(request, highlight_id):
     """Redirect to viewer at specific highlight location."""
-    highlight = get_object_or_404(Highlight, id=highlight_id)
+    highlight = get_object_or_404(
+        Highlight.objects.select_related("document", "caselaw"), id=highlight_id
+    )
 
     from django.urls import reverse
 
-    viewer_url = reverse("case:viewer", args=[highlight.document_id])
-    return redirect(
-        f"{viewer_url}?page={highlight.page_number}&highlight={highlight.id}"
-    )
+    if highlight.document:
+        viewer_url = reverse("case:viewer", args=[highlight.document_id])
+        return redirect(
+            f"{viewer_url}?page={highlight.page_number}&highlight={highlight.id}"
+        )
+    elif highlight.caselaw:
+        viewer_url = reverse("case:caselaw-viewer", args=[highlight.caselaw_id])
+        return redirect(f"{viewer_url}?highlight={highlight.id}")
+
+    # Fallback (shouldn't happen due to constraint)
+    return redirect("case:highlights-index")

@@ -503,6 +503,16 @@ urlpatterns = [
         caselaws.caselaw_importance,
         name="caselaw-importance",
     ),
+    path(
+        "case/caselaws/<int:caselaw_id>/view/",
+        caselaws.caselaw_viewer,
+        name="caselaw-viewer",
+    ),
+    path(
+        "case/caselaws/<int:caselaw_id>/highlights/add/",
+        caselaws.caselaw_add_highlight,
+        name="caselaw-add-highlight",
+    ),
     # Fact operations
     path("case/facts/<int:fact_id>/edit/", facts.facts_edit, name="facts-edit"),
     path("case/facts/<int:fact_id>/delete/", facts.facts_delete, name="facts-delete"),

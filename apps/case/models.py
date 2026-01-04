@@ -142,17 +142,36 @@ class Document(AuditMixin, models.Model):
 
 
 class Highlight(AuditMixin, models.Model):
-    """Text highlight/annotation on a document."""
+    """Text highlight/annotation on a document or case law."""
 
+    # Source - one of document or caselaw must be set
     document = models.ForeignKey(
-        "Document", on_delete=models.CASCADE, related_name="highlights"
+        "Document",
+        on_delete=models.CASCADE,
+        related_name="highlights",
+        null=True,
+        blank=True,
     )
+    caselaw = models.ForeignKey(
+        "CaseLaw",
+        on_delete=models.CASCADE,
+        related_name="highlights",
+        null=True,
+        blank=True,
+    )
+
     slug = models.CharField(max_length=255)
     text = models.TextField()  # Captured highlight text for search
-    page_number = models.PositiveIntegerField()
+    page_number = models.PositiveIntegerField(null=True, blank=True)
     paragraph_number = models.CharField(max_length=20, blank=True, null=True)
+
+    # PDF coordinates (for document highlights only)
     # {"rects": [{"x1": float, "y1": float, "x2": float, "y2": float}, ...]}
-    coordinates = models.JSONField()
+    coordinates = models.JSONField(null=True, blank=True)
+
+    # Text locator for case law highlights (character offset from start)
+    char_offset = models.PositiveIntegerField(null=True, blank=True)
+
     COLOR_CHOICES = [
         ("yellow", "Yellow"),
         ("green", "Green"),
@@ -174,27 +193,58 @@ class Highlight(AuditMixin, models.Model):
 
     class Meta:
         db_table = "app_document_highlight"
-        ordering = ["document", "page_number", "created_at"]
+        ordering = ["created_at"]
         indexes = [
             GinIndex(fields=["search_vector"]),
             models.Index(fields=["document", "page_number"]),
+            models.Index(fields=["caselaw", "char_offset"]),
+        ]
+        constraints = [
+            models.CheckConstraint(
+                check=(
+                    models.Q(document__isnull=False, caselaw__isnull=True)
+                    | models.Q(document__isnull=True, caselaw__isnull=False)
+                ),
+                name="highlight_has_one_source",
+            )
         ]
 
     def __str__(self):
-        return f"{self.slug} - Page {self.page_number}"
+        if self.document:
+            return f"{self.slug} - Page {self.page_number}"
+        elif self.caselaw:
+            return f"{self.slug} - {self.caselaw.citation}"
+        return self.slug
+
+    @property
+    def source(self):
+        """Return the source object (document or caselaw)."""
+        return self.document or self.caselaw
+
+    @property
+    def source_type(self):
+        """Return 'document' or 'caselaw'."""
+        if self.document:
+            return "document"
+        return "caselaw"
 
     @property
     def citation(self):
-        """Return citation with document abbreviation and page/paragraph number."""
-        doc_citation = self.document.citation
-        # Remove closing ")" to insert location, keeping the period
-        # Format with paragraph: (Abbrev. ¶ 5.)
-        # Format with page: (Abbrev. at 5.)
-        base = doc_citation[:-1]  # Remove closing ")" only
-        if self.paragraph_number:
-            para = self.paragraph_number.rstrip(".")
-            return f"{base} ¶ {para}.)"
-        return f"{base} at {self.page_number}.)"
+        """Return citation for either document or case law source."""
+        if self.document:
+            doc_citation = self.document.citation
+            # Remove closing ")" to insert location, keeping the period
+            # Format with paragraph: (Abbrev. ¶ 5.)
+            # Format with page: (Abbrev. at 5.)
+            base = doc_citation[:-1]  # Remove closing ")" only
+            if self.paragraph_number:
+                para = self.paragraph_number.rstrip(".")
+                return f"{base} ¶ {para}.)"
+            return f"{base} at {self.page_number}.)"
+        elif self.caselaw:
+            # Case law citation format
+            return f"{self.caselaw.citation}"
+        return ""
 
 
 class Fact(AuditMixin, models.Model):

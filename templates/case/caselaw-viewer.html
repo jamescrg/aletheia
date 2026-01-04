@@ -1,0 +1,632 @@
+{% load static %}
+{% load cache_buster %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="description"
+          content="Case law viewer for {{ caselaw.case_name }}">
+    <meta name="keywords" content="case law, legal, viewer">
+    <title>{{ caselaw.case_name }} - Case Viewer</title>
+    <link rel="icon"
+          type="image/svg+xml"
+          href="{% static 'images/viewer-favicon.svg' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet"
+          href="https://unpkg.com/lucide-static@latest/font/lucide.css">
+    <link rel="stylesheet" href="{% static_v 'css/palette.css' %}">
+    <link rel="stylesheet" href="{% static_v 'css/colors.css' %}">
+    <link rel="stylesheet" href="{% static_v 'css/buttons.css' %}">
+    <link rel="stylesheet" href="{% static_v 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static_v 'css/layout.css' %}">
+    <link rel="stylesheet" href="{% static_v 'css/modals.css' %}">
+    <link rel="stylesheet" href="{% static_v 'css/badges.css' %}">
+    <link rel="stylesheet" href="{% static_v 'css/interface.css' %}">
+    <link rel="stylesheet" href="{% static_v 'css/viewer.css' %}">
+    <link rel="stylesheet" href="{% static_v 'css/caselaw-viewer.css' %}">
+    <script defer
+            src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
+    <script src="{% static_v 'js/alpine-components.js' %}"></script>
+  </head>
+  <body>
+    <div id="main-container">
+      <div id="case-content-container">
+        <div id="case-header">
+          <a href="{% url 'case:caselaw-view' caselaw.id %}"
+             class="btn-icon"
+             title="Back to case">
+            <i class="icon-arrow-left"></i>
+          </a>
+          <div class="case-header-info">
+            <h1 class="case-title">{{ caselaw.case_name }}</h1>
+            <span class="case-citation">{{ caselaw.citation }}</span>
+          </div>
+        </div>
+        <div id="case-content" class="caselaw-html">
+          {% if caselaw.html %}
+            {{ caselaw.html|safe }}
+          {% else %}
+            <pre class="caselaw-text-raw">{{ caselaw.text }}</pre>
+          {% endif %}
+        </div>
+      </div>
+      <div id="highlights-sidebar">
+        <div id="highlights-header">
+          <div class="highlights-left">
+            <button id="createHighlightBtn"
+                    class="btn-icon"
+                    title="Create highlight from selected text">
+              <i class="icon-highlighter"></i>
+            </button>
+            <span id="highlights-count">{{ highlights|length }}</span>
+          </div>
+          <button id="toggle-condensed" class="btn-icon" title="Toggle condensed view">
+            <i class="icon-chevrons-down-up"></i>
+          </button>
+        </div>
+        <div id="highlights-list">
+          {% for highlight in highlights %}
+            <div class="highlight-item hl-{{ highlight.color }} unselected"
+                 data-highlight-id="{{ highlight.id }}"
+                 data-char-offset="{{ highlight.char_offset|default:0 }}"
+                 data-color="{{ highlight.color }}">
+              <div class="highlight-content">
+                <div class="highlight-slug">{{ highlight.slug }}</div>
+                <div class="highlight-citation">{{ highlight.citation }}</div>
+              </div>
+              <div class="highlight-importance">
+                <i class="icon-flag"></i> {{ highlight.importance }}
+              </div>
+              <a href="#"
+                 class="highlight-edit-btn edit-highlight"
+                 data-highlight-id="{{ highlight.id }}">
+                <i class="icon-pencil"></i>
+              </a>
+            </div>
+          {% empty %}
+            <div class="no-highlights">No highlights yet. Select text and click the Highlight button to create one.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div id="highlight-modal" class="modal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title">Create Highlight</h1>
+            <div>
+              <a href="#" onclick="closeModal('highlight-modal'); return false;">
+                <i class="icon-x"></i>
+              </a>
+            </div>
+          </div>
+          <div class="modal-body">
+            <form id="highlight-form" class="form-compact col3" onsubmit="return false">
+              <input type="hidden" id="highlight-char-offset" name="char_offset">
+              <div class="form-group">
+                <label for="highlight-importance">Importance</label>
+                <div>
+                  <select id="highlight-importance" name="importance">
+                    <option value="1">Importance 1</option>
+                    <option value="2">Importance 2</option>
+                    <option value="3">Importance 3</option>
+                    <option value="4">Importance 4</option>
+                    <option value="5" selected>Importance 5</option>
+                    <option value="6">Importance 6</option>
+                    <option value="7">Importance 7</option>
+                    <option value="8">Importance 8</option>
+                    <option value="9">Importance 9</option>
+                    <option value="10">Importance 10</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="highlight-color">Color</label>
+                <div>
+                  <select id="highlight-color" name="color">
+                    <option value="yellow">Yellow</option>
+                    <option value="green">Green</option>
+                    <option value="blue">Blue</option>
+                    <option value="orange">Orange</option>
+                    <option value="red">Red</option>
+                    <option value="purple">Purple</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="highlight-paragraph">Paragraph number</label>
+                <div>
+                  <input type="text" id="highlight-paragraph" name="paragraph_number">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="highlight-slug">Slug</label>
+                <div>
+                  <input type="text"
+                         class="span3"
+                         id="highlight-slug"
+                         name="slug"
+                         autofocus
+                         required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="highlight-text">Text</label>
+                <div>
+                  <textarea class="span3" id="highlight-text" name="text" rows="8"></textarea>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="save-highlight" class="btn submit">Save</button>
+            <button type="button"
+                    class="btn btn-secondary"
+                    onclick="closeModal('highlight-modal')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="edit-highlight-modal" class="modal" tabindex="-1">
+      <div id="edit-highlight-modal-content"></div>
+    </div>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script>
+    // Modal functions
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (!modal) return;
+      modal.classList.add('show');
+      modal.style.display = 'block';
+      document.body.classList.add('modal-open');
+
+      let backdrop = document.querySelector('.modal-backdrop');
+      if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.className = 'modal-backdrop show';
+        backdrop.addEventListener('click', () => closeModal(modalId));
+        document.body.appendChild(backdrop);
+      }
+
+      modal._escHandler = (e) => {
+        if (e.key === 'Escape') closeModal(modalId);
+      };
+      document.addEventListener('keydown', modal._escHandler);
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (!modal) return;
+      modal.classList.remove('show');
+      modal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+
+      const backdrop = document.querySelector('.modal-backdrop');
+      if (backdrop) backdrop.remove();
+
+      if (modal._escHandler) {
+        document.removeEventListener('keydown', modal._escHandler);
+        delete modal._escHandler;
+      }
+    }
+
+    window.addEventListener('close-modal', () => {
+      closeModal('highlight-modal');
+      closeModal('edit-highlight-modal');
+    });
+
+    // Color mapping for highlight marks
+    const colorMap = {
+      yellow: 'var(--yellow-200)',
+      green: 'var(--lime-200)',
+      blue: 'var(--blue-200)',
+      orange: 'var(--orange-200)',
+      red: 'var(--red-200)',
+      purple: 'var(--violet-200)'
+    };
+
+    // Configuration
+    const config = {
+      caselawId: {{ caselaw.id }},
+      csrfToken: "{{ csrf_token }}",
+      existingHighlights: {{ highlights_json|safe }},
+      initialHighlight: {{ initial_highlight|default:"null" }}
+    };
+
+    let currentSelection = null;
+    let selectedHighlightId = null;
+
+    // Get selection info from case content
+    function getSelectionInfo() {
+      const selection = window.getSelection();
+      if (!selection.rangeCount || selection.isCollapsed) return null;
+
+      const range = selection.getRangeAt(0);
+      const text = selection.toString().trim();
+      if (!text) return null;
+
+      // Ensure selection is within case content
+      const container = document.getElementById('case-content');
+      if (!container.contains(range.commonAncestorContainer)) return null;
+
+      // Calculate character offset from start of text content
+      const preRange = document.createRange();
+      preRange.setStart(container, 0);
+      preRange.setEnd(range.startContainer, range.startOffset);
+      const charOffset = preRange.toString().length;
+
+      return { text, charOffset, range };
+    }
+
+    // Listen for selection changes
+    document.addEventListener('selectionchange', () => {
+      currentSelection = getSelectionInfo();
+    });
+
+    // Create highlight button
+    document.getElementById('createHighlightBtn').addEventListener('click', function() {
+      if (currentSelection) {
+        showHighlightModal();
+      }
+    });
+
+    // Condensed view toggle
+    document.getElementById('toggle-condensed').addEventListener('click', function() {
+      const list = document.getElementById('highlights-list');
+      const icon = this.querySelector('i');
+      list.classList.toggle('condensed');
+
+      if (list.classList.contains('condensed')) {
+        icon.className = 'icon-chevrons-up-down';
+      } else {
+        icon.className = 'icon-chevrons-down-up';
+      }
+    });
+
+    function showHighlightModal() {
+      if (!currentSelection) return;
+
+      document.getElementById('highlight-char-offset').value = currentSelection.charOffset;
+      document.getElementById('highlight-slug').value = '';
+      document.getElementById('highlight-paragraph').value = '';
+      document.getElementById('highlight-text').value = currentSelection.text;
+
+      openModal('highlight-modal');
+      setTimeout(() => {
+        document.getElementById('highlight-slug').focus();
+      }, 100);
+    }
+
+    // Save highlight
+    document.getElementById('save-highlight').addEventListener('click', async function() {
+      const form = document.getElementById('highlight-form');
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch(`/case/caselaws/${config.caselawId}/highlights/add/`, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-CSRFToken': config.csrfToken
+          }
+        });
+
+        if (response.ok) {
+          const highlight = await response.json();
+          config.existingHighlights.push(highlight);
+
+          closeModal('highlight-modal');
+          window.getSelection().removeAllRanges();
+          currentSelection = null;
+
+          addHighlightToSidebar(highlight);
+          renderHighlightsInContent();
+          selectHighlight(highlight.id);
+        } else {
+          const error = await response.json();
+          alert('Error saving highlight: ' + (error.error || 'Unknown error'));
+        }
+      } catch (error) {
+        console.error('Error saving highlight:', error);
+        alert('Error saving highlight');
+      }
+    });
+
+    function updateHighlightCount() {
+      const count = document.querySelectorAll('.highlight-item').length;
+      document.getElementById('highlights-count').textContent = count;
+    }
+
+    function addHighlightToSidebar(highlight) {
+      const list = document.getElementById('highlights-list');
+      const noHighlights = list.querySelector('.no-highlights');
+      if (noHighlights) noHighlights.remove();
+
+      const item = document.createElement('div');
+      item.className = `highlight-item hl-${highlight.color} unselected`;
+      item.dataset.highlightId = highlight.id;
+      item.dataset.charOffset = highlight.char_offset || 0;
+      item.dataset.color = highlight.color;
+      item.innerHTML = `
+        <div class="highlight-content">
+          <div class="highlight-slug">${escapeHtml(highlight.slug)}</div>
+          <div class="highlight-citation">${escapeHtml(highlight.citation || '')}</div>
+        </div>
+        <div class="highlight-importance"><i class="icon-flag"></i> ${highlight.importance}</div>
+        <a href="#" class="highlight-edit-btn edit-highlight" data-highlight-id="${highlight.id}">
+          <i class="icon-pencil"></i>
+        </a>
+      `;
+      list.appendChild(item);
+      updateHighlightCount();
+    }
+
+    function selectHighlight(highlightId) {
+      // Update visual state
+      document.querySelectorAll('.highlight-item').forEach(el => {
+        el.classList.remove('active');
+        el.classList.add('unselected');
+      });
+
+      // Update marks in content
+      document.querySelectorAll('.case-highlight').forEach(el => {
+        el.classList.remove('active');
+      });
+
+      if (highlightId !== null) {
+        const item = document.querySelector(`.highlight-item[data-highlight-id="${highlightId}"]`);
+        if (item) {
+          item.classList.add('active');
+          item.classList.remove('unselected');
+          item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        const mark = document.querySelector(`.case-highlight[data-highlight-id="${highlightId}"]`);
+        if (mark) {
+          mark.classList.add('active');
+          mark.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+
+      selectedHighlightId = highlightId;
+    }
+
+    // Render highlights in content by wrapping matching text
+    function renderHighlightsInContent() {
+      const container = document.getElementById('case-content');
+
+      // Remove existing highlight marks
+      container.querySelectorAll('.case-highlight').forEach(mark => {
+        const text = document.createTextNode(mark.textContent);
+        mark.parentNode.replaceChild(text, mark);
+      });
+
+      // Normalize to merge adjacent text nodes
+      container.normalize();
+
+      // Sort by offset descending to preserve offsets during replacement
+      const sortedHighlights = [...config.existingHighlights].sort(
+        (a, b) => (b.char_offset || 0) - (a.char_offset || 0)
+      );
+
+      for (const h of sortedHighlights) {
+        if (h.char_offset === null || h.char_offset === undefined) continue;
+        wrapTextAtOffset(container, h.char_offset, h.text, h.id, h.color);
+      }
+    }
+
+    function wrapTextAtOffset(container, offset, text, highlightId, color) {
+      // Walk through text nodes to find the one at the offset
+      const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+      let currentOffset = 0;
+      let node;
+
+      while ((node = walker.nextNode())) {
+        const nodeLength = node.textContent.length;
+        if (currentOffset + nodeLength > offset) {
+          // Found the starting node
+          const localOffset = offset - currentOffset;
+          const nodeText = node.textContent;
+
+          // Check if the text matches at this position
+          if (nodeText.substring(localOffset, localOffset + text.length) === text) {
+            // Split and wrap
+            const before = nodeText.substring(0, localOffset);
+            const match = nodeText.substring(localOffset, localOffset + text.length);
+            const after = nodeText.substring(localOffset + text.length);
+
+            const mark = document.createElement('mark');
+            mark.className = `case-highlight hl-${color}`;
+            mark.dataset.highlightId = highlightId;
+            mark.textContent = match;
+            mark.addEventListener('click', () => {
+              if (selectedHighlightId === highlightId) {
+                selectHighlight(null);
+              } else {
+                selectHighlight(highlightId);
+              }
+            });
+
+            const parent = node.parentNode;
+            if (before) {
+              parent.insertBefore(document.createTextNode(before), node);
+            }
+            parent.insertBefore(mark, node);
+            if (after) {
+              parent.insertBefore(document.createTextNode(after), node);
+            }
+            parent.removeChild(node);
+            return true;
+          }
+        }
+        currentOffset += nodeLength;
+      }
+      return false;
+    }
+
+    // Sidebar click handlers
+    document.getElementById('highlights-list').addEventListener('click', function(e) {
+      const item = e.target.closest('.highlight-item');
+      if (item && !e.target.closest('.edit-highlight')) {
+        const highlightId = parseInt(item.dataset.highlightId);
+
+        if (selectedHighlightId === highlightId) {
+          selectHighlight(null);
+        } else {
+          selectHighlight(highlightId);
+        }
+      }
+
+      const editBtn = e.target.closest('.edit-highlight');
+      if (editBtn) {
+        const highlightId = parseInt(editBtn.dataset.highlightId);
+        openEditModal(highlightId);
+      }
+    });
+
+    let editingHighlightId = null;
+
+    async function openEditModal(highlightId) {
+      editingHighlightId = highlightId;
+      try {
+        const response = await fetch(`/case/highlights/${highlightId}/edit/?context=viewer`, {
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        });
+        if (response.ok) {
+          const html = await response.text();
+          document.getElementById('edit-highlight-modal-content').innerHTML = html;
+          openModal('edit-highlight-modal');
+
+          const form = document.querySelector('#edit-highlight-modal form');
+          if (form) {
+            form.addEventListener('submit', handleEditFormSubmit);
+          }
+
+          const deleteLink = document.querySelector('#edit-highlight-modal .delete-link');
+          if (deleteLink) {
+            deleteLink.addEventListener('click', function(e) {
+              e.preventDefault();
+              if (confirm('Are you sure you want to delete this highlight?')) {
+                closeModal('edit-highlight-modal');
+                deleteHighlight(editingHighlightId);
+              }
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error loading edit form:', error);
+        alert('Error loading edit form');
+      }
+    }
+
+    async function handleEditFormSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const postUrl = form.getAttribute('hx-post') || form.action;
+
+      try {
+        const response = await fetch(postUrl + '?context=viewer', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-CSRFToken': config.csrfToken
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          updateSidebarCard(editingHighlightId, data);
+
+          const idx = config.existingHighlights.findIndex(h => h.id === editingHighlightId);
+          if (idx !== -1) {
+            config.existingHighlights[idx] = { ...config.existingHighlights[idx], ...data };
+          }
+
+          closeModal('edit-highlight-modal');
+          renderHighlightsInContent();
+        } else {
+          const error = await response.json();
+          alert('Error saving highlight: ' + (error.error || 'Unknown error'));
+        }
+      } catch (error) {
+        console.error('Error saving highlight:', error);
+        alert('Error saving highlight');
+      }
+    }
+
+    async function deleteHighlight(highlightId) {
+      try {
+        const response = await fetch(`/case/highlights/${highlightId}/delete/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': config.csrfToken
+          }
+        });
+
+        if (response.ok) {
+          if (selectedHighlightId === highlightId) {
+            selectedHighlightId = null;
+          }
+
+          config.existingHighlights = config.existingHighlights.filter(h => h.id !== highlightId);
+
+          const item = document.querySelector(`.highlight-item[data-highlight-id="${highlightId}"]`);
+          if (item) item.remove();
+
+          updateHighlightCount();
+          renderHighlightsInContent();
+
+          if (config.existingHighlights.length === 0) {
+            document.getElementById('highlights-list').innerHTML =
+              '<div class="no-highlights">No highlights yet. Select text and click the Highlight button to create one.</div>';
+          }
+        } else {
+          const error = await response.json();
+          alert('Error deleting highlight: ' + (error.error || 'Unknown error'));
+        }
+      } catch (error) {
+        console.error('Error deleting highlight:', error);
+        alert('Error deleting highlight');
+      }
+    }
+
+    function updateSidebarCard(highlightId, data) {
+      const item = document.querySelector(`.highlight-item[data-highlight-id="${highlightId}"]`);
+      if (!item) return;
+
+      item.className = item.className.replace(/hl-\w+/, `hl-${data.color}`);
+      item.dataset.color = data.color;
+
+      const slugEl = item.querySelector('.highlight-slug');
+      if (slugEl) slugEl.textContent = data.slug;
+
+      const citationEl = item.querySelector('.highlight-citation');
+      if (citationEl) citationEl.textContent = data.citation || '';
+
+      const impEl = item.querySelector('.highlight-importance');
+      if (impEl) impEl.innerHTML = `<i class="icon-flag"></i> ${data.importance}`;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      renderHighlightsInContent();
+
+      // Handle initial highlight from URL
+      if (config.initialHighlight) {
+        selectHighlight(config.initialHighlight);
+      }
+    });
+    </script>
+  </body>
+</html>

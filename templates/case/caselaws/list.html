@@ -67,7 +67,8 @@
                 <ul class="dropdown-menu" x-ref="menu" x-show="open">
                   <li>
                     <a class="dropdown-item"
-                       href="{% url 'case:caselaw-view' case_law.id %}"><i class="icon-eye"></i> View Case</a>
+                       href="{% url 'case:caselaw-viewer' case_law.id %}"
+                       target="_blank"><i class="icon-eye"></i> View Case</a>
                   </li>
                   <li>
                     <a class="dropdown-item"

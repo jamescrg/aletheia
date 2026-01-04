@@ -4,15 +4,16 @@ Views for case law management.
 Allows users to look up case citations via CourtListener and save them to matters.
 """
 
+import json
 import logging
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from apps.case.courtlistener import fetch_case_by_citation
-from apps.case.models import CaseLaw
+from apps.case.models import CaseLaw, Highlight
 from apps.case.views import get_matter_from_url, get_session_key, set_last_tab
 from apps.matters.models import Matter
 
@@ -312,3 +313,93 @@ def caselaw_importance(request, caselaw_id, value):
         case_law.save(update_fields=["importance", "updated_by", "updated_at"])
 
     return redirect("case:caselaws-list", matter_id=case_law.matter_id)
+
+
+@login_required
+def caselaw_viewer(request, caselaw_id):
+    """Case law viewer with highlight support."""
+    case_law = get_object_or_404(
+        CaseLaw, pk=caselaw_id, matter__in=get_accessible_matters()
+    )
+    highlights = case_law.highlights.all().order_by("char_offset", "created_at")
+
+    initial_highlight = request.GET.get("highlight")
+    try:
+        initial_highlight = int(initial_highlight) if initial_highlight else None
+    except (TypeError, ValueError):
+        initial_highlight = None
+
+    # Serialize highlights for JavaScript
+    highlights_json = json.dumps(
+        [
+            {
+                "id": h.id,
+                "slug": h.slug,
+                "text": h.text,
+                "char_offset": h.char_offset,
+                "color": h.color,
+                "importance": h.importance,
+                "citation": h.citation,
+            }
+            for h in highlights
+        ]
+    )
+
+    return render(
+        request,
+        "case/caselaw-viewer.html",
+        {
+            "caselaw": case_law,
+            "matter": case_law.matter,
+            "highlights": highlights,
+            "highlights_json": highlights_json,
+            "initial_highlight": initial_highlight,
+        },
+    )
+
+
+@login_required
+@require_POST
+def caselaw_add_highlight(request, caselaw_id):
+    """Add highlight to case law."""
+    case_law = get_object_or_404(
+        CaseLaw, pk=caselaw_id, matter__in=get_accessible_matters()
+    )
+
+    slug = request.POST.get("slug", "").strip()
+    if not slug:
+        return JsonResponse({"error": "Slug is required"}, status=400)
+
+    try:
+        char_offset = request.POST.get("char_offset")
+        char_offset = int(char_offset) if char_offset else None
+
+        paragraph_number = request.POST.get("paragraph_number", "").strip() or None
+
+        highlight = Highlight.objects.create(
+            caselaw=case_law,
+            slug=slug,
+            text=request.POST.get("text", ""),
+            char_offset=char_offset,
+            paragraph_number=paragraph_number,
+            color=request.POST.get("color", "yellow"),
+            importance=int(request.POST.get("importance", 5)),
+            created_by=request.user,
+            updated_by=request.user,
+        )
+
+        return JsonResponse(
+            {
+                "id": highlight.id,
+                "slug": highlight.slug,
+                "text": highlight.text,
+                "char_offset": highlight.char_offset,
+                "paragraph_number": highlight.paragraph_number,
+                "citation": highlight.citation,
+                "color": highlight.color,
+                "importance": highlight.importance,
+            }
+        )
+    except Exception as e:
+        logger.exception("Error creating case law highlight")
+        return JsonResponse({"error": str(e)}, status=400)

@@ -23,7 +23,11 @@
       <div class="highlight-detail-header">
         <div class="highlight-detail-meta">
           <span class="highlight-detail-swatch hl-{{ highlight.color }}"></span>
-          <span class="highlight-detail-date">{{ highlight.document.date|date:'F j, Y'|default:"No date" }}</span>
+          {% if highlight.document %}
+            <span class="highlight-detail-date">{{ highlight.document.date|date:'F j, Y'|default:"No date" }}</span>
+          {% elif highlight.caselaw %}
+            <span class="highlight-detail-date">{{ highlight.caselaw.date_filed|date:'F j, Y'|default:"No date" }}</span>
+          {% endif %}
         </div>
         <span class="highlight-detail-importance">
           <i class="icon-flag"></i> {{ highlight.importance }}

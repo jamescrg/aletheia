@@ -56,7 +56,13 @@
     </div>
   </td>
   <td class="date">
-    <span>{{ highlight.document.date|date:'Y-m-d'|default:"No date" }}</span>
+    {% if highlight.document %}
+      <span>{{ highlight.document.date|date:'Y-m-d'|default:"—" }}</span>
+    {% elif highlight.caselaw %}
+      <span>{{ highlight.caselaw.date_filed|date:'Y-m-d'|default:"—" }}</span>
+    {% else %}
+      <span>—</span>
+    {% endif %}
   </td>
   <td class="importance">
     <div class="dropdown" x-data="dropdown()">
