@@ -179,7 +179,13 @@ def new_conversation_view(request, matter_id):
 
     # Get LLM from query parameter
     llm = request.GET.get("llm", "gemini-3-pro")
-    if llm not in ["claude", "gemini-flash", "gemini-pro", "gemini-3-pro"]:
+    if llm not in [
+        "claude",
+        "claude-opus",
+        "gemini-flash",
+        "gemini-pro",
+        "gemini-3-pro",
+    ]:
         llm = "gemini-3-pro"
 
     # Create a dummy conversation object for template (not saved)
@@ -244,7 +250,13 @@ def send_message(request, matter_id):
         return HttpResponse(status=400)
 
     # Validate llm
-    if llm not in ["claude", "gemini-flash", "gemini-pro", "gemini-3-pro"]:
+    if llm not in [
+        "claude",
+        "claude-opus",
+        "gemini-flash",
+        "gemini-pro",
+        "gemini-3-pro",
+    ]:
         llm = "gemini-3-pro"
 
     # Get or create conversation

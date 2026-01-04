@@ -6,13 +6,18 @@ import anthropic
 from django.conf import settings
 
 
-def send_to_claude(system_context: str, messages: list[dict]) -> tuple[str, int, int]:
+def send_to_claude(
+    system_context: str,
+    messages: list[dict],
+    model: str = "claude-sonnet-4-20250514",
+) -> tuple[str, int, int]:
     """
     Send a conversation to Claude and get a response.
 
     Args:
         system_context: The system prompt with matter context
         messages: List of {"role": "user"|"assistant", "content": str}
+        model: Claude model to use (claude-sonnet-4-20250514 or claude-opus-4-5-20251101)
 
     Returns:
         tuple of (response_text, input_tokens, output_tokens)
@@ -28,7 +33,7 @@ def send_to_claude(system_context: str, messages: list[dict]) -> tuple[str, int,
     ]
 
     response = client.messages.create(
-        model="claude-sonnet-4-20250514",
+        model=model,
         max_tokens=4096,
         system=system_context,
         messages=formatted_messages,

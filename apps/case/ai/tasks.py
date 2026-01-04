@@ -90,8 +90,15 @@ def process_ai_request(
             # Claude - show elapsed time updates
             update_status("generating", "Generating response...")
 
+            # Map llm choice to model ID
+            claude_model = (
+                "claude-opus-4-5-20251101"
+                if llm == "claude-opus"
+                else "claude-sonnet-4-20250514"
+            )
+
             response_text, input_tokens, output_tokens = send_to_claude(
-                context_text, chat_history
+                context_text, chat_history, model=claude_model
             )
 
         # Verify citations in the response
