@@ -31,7 +31,12 @@ def get_caselaws_data(request, matter, matter_id):
 
     case_laws = []
     if matter:
-        queryset = CaseLaw.objects.filter(matter=matter).order_by("-date_filed")
+        # Get sort order
+        current_order = filter_data.get("order_by", "-created_at")
+        if isinstance(current_order, list):
+            current_order = current_order[0] if current_order else "-created_at"
+
+        queryset = CaseLaw.objects.filter(matter=matter).order_by(current_order)
 
         # Apply keyword filter if present
         keyword = filter_data.get("keyword", "")
@@ -43,11 +48,8 @@ def get_caselaws_data(request, matter, matter_id):
             )
 
         case_laws = queryset
-
-    # Get current sort order
-    current_order = filter_data.get("order_by", "-date_filed")
-    if isinstance(current_order, list):
-        current_order = current_order[0] if current_order else "-date_filed"
+    else:
+        current_order = "-created_at"
 
     # Get keyword value
     keyword = filter_data.get("keyword", "")
@@ -87,6 +89,28 @@ def caselaws_list(request, matter_id):
     } | get_caselaws_data(request, matter, matter_id)
 
     return render(request, "case/caselaws/list.html", context)
+
+
+@login_required
+def caselaws_sort(request, matter_id, order):
+    """Sort case laws by a field."""
+    filter_session_key = get_session_key("caselaws_filter", matter_id)
+    filter_data = request.session.get(filter_session_key, {})
+
+    current_order = filter_data.get("order_by", "")
+
+    # Toggle sort direction if clicking the same column
+    if current_order == order:
+        new_order = f"-{order}" if not current_order.startswith("-") else order
+    elif current_order == f"-{order}":
+        new_order = order
+    else:
+        new_order = f"-{order}"  # Default to descending for new column
+
+    filter_data["order_by"] = new_order
+    request.session[filter_session_key] = filter_data
+
+    return redirect("case:caselaws-list", matter_id=matter_id)
 
 
 @login_required
@@ -272,3 +296,19 @@ def caselaw_delete(request, caselaw_id):
     response = HttpResponse(status=204)
     response["HX-Redirect"] = f"/case/{matter_id}/caselaws/"
     return response
+
+
+@login_required
+def caselaw_importance(request, caselaw_id, value):
+    """Update case law importance."""
+    case_law = get_object_or_404(
+        CaseLaw, pk=caselaw_id, matter__in=get_accessible_matters()
+    )
+
+    # Validate value is 1-10
+    if 1 <= value <= 10:
+        case_law.importance = value
+        case_law.updated_by = request.user
+        case_law.save(update_fields=["importance", "updated_by", "updated_at"])
+
+    return redirect("case:caselaws-list", matter_id=case_law.matter_id)

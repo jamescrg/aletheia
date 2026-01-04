@@ -196,6 +196,11 @@ urlpatterns = [
         caselaws.caselaws_save,
         name="caselaws-save",
     ),
+    path(
+        "case/<int:matter_id>/caselaws/sort/<str:order>/",
+        caselaws.caselaws_sort,
+        name="caselaws-sort",
+    ),
     # Witnesses (matter-scoped)
     path(
         "case/<int:matter_id>/witnesses/",
@@ -492,6 +497,11 @@ urlpatterns = [
         "case/caselaws/<int:caselaw_id>/delete/",
         caselaws.caselaw_delete,
         name="caselaw-delete",
+    ),
+    path(
+        "case/caselaws/<int:caselaw_id>/importance/<int:value>/",
+        caselaws.caselaw_importance,
+        name="caselaw-importance",
     ),
     # Fact operations
     path("case/facts/<int:fact_id>/edit/", facts.facts_edit, name="facts-edit"),

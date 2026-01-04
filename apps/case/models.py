@@ -302,8 +302,9 @@ class CaseLaw(AuditMixin, models.Model):
     text = models.TextField()  # Plain text version
     html = models.TextField(blank=True)  # HTML with citations (optional)
 
-    # User notes
+    # User notes and importance
     notes = models.TextField(blank=True)
+    importance = models.IntegerField(default=5)  # 1-10, like documents
 
     # Labels (like other case app models)
     labels = models.ManyToManyField(Label, blank=True, related_name="case_laws")

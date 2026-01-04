@@ -231,25 +231,25 @@
   min-width: 50rem;
 }
 
-#caselaws-table .col-citation {
-  width: 12rem;
-}
-
 #caselaws-table .col-case-name {
   /* Variable width - takes remaining space */
 }
 
-#caselaws-table .col-court {
-  width: 14rem;
+#caselaws-table .col-citation {
+  width: 12rem;
 }
 
 #caselaws-table .col-date {
   width: 8rem;
 }
 
-#caselaws-table .col-actions {
-  width: 6rem;
-  text-align: right;
+#caselaws-table .col-added {
+  width: 8rem;
+}
+
+#caselaws-table .col-importance {
+  width: 4rem;
+  text-align: center;
 }
 
 #caselaws-table td {
@@ -257,6 +257,34 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   vertical-align: top;
+}
+
+/* Dropdown cells */
+#caselaws-table .dropdown-cell .dropdown {
+  display: inline;
+}
+
+#caselaws-table .dropdown-cell .button-link {
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--link);
+  cursor: pointer;
+  text-align: left;
+}
+
+#caselaws-table .dropdown-cell .button-link:hover {
+  color: var(--link-hover);
+}
+
+#caselaws-table .caselaw-name-link {
+  color: var(--link);
+  text-decoration: none;
+}
+
+#caselaws-table .caselaw-name-link:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
 }
 
 /* Case Law View Page */
@@ -336,7 +364,7 @@
 }
 
 .caselaw-text-content {
-  font-size: 0.9375rem;
+  font-size: 1rem;
   line-height: 1.6;
   font-family: var(--font-body);
 }
@@ -364,6 +392,57 @@
   white-space: pre-wrap;
   margin: 0;
   overflow-x: auto;
+}
+
+/* CourtListener HTML Styles */
+.caselaw-html opinion {
+  display: block;
+}
+
+.caselaw-html author {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.caselaw-html blockquote {
+  margin: 1rem 0 1rem 1.5rem;
+  padding-left: 1rem;
+  border-left: 3px solid var(--border-medium);
+  color: var(--text-muted);
+}
+
+.caselaw-html .citation a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+.caselaw-html .citation a:hover {
+  text-decoration: underline;
+}
+
+.caselaw-html .star-pagination {
+  display: block;
+  text-align: center;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin: 1.5rem 0;
+}
+
+.caselaw-html .footnote {
+  color: var(--link);
+  text-decoration: none;
+  font-size: 0.75rem;
+  vertical-align: super;
+}
+
+.caselaw-html .footnote:hover {
+  text-decoration: underline;
+}
+
+.caselaw-html em {
+  font-style: italic;
 }
 
 /* Lookup Result Styles */

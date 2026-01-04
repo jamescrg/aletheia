@@ -59,7 +59,11 @@
       {% endif %}
       <div class="caselaw-text">
         <label x-text="raw ? 'Raw Text' : 'Opinion Text'">Opinion Text</label>
-        <div class="caselaw-text-content" x-show="!raw">{{ case_law.text|normalize_linebreaks }}</div>
+        {% if case_law.html %}
+          <div class="caselaw-text-content caselaw-html" x-show="!raw">{{ case_law.html|safe }}</div>
+        {% else %}
+          <div class="caselaw-text-content" x-show="!raw">{{ case_law.text|normalize_linebreaks }}</div>
+        {% endif %}
         <pre class="caselaw-text-raw" x-show="raw" x-cloak>{{ case_law.text }}</pre>
       </div>
     </div>
