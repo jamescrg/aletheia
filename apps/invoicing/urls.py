@@ -52,15 +52,16 @@ from apps.invoicing.unbilled.views import unbilled_index, unbilled_list, unbille
 app_name = "invoicing"
 
 urlpatterns = [
-    # Unbilled (default)
-    path("invoicing/", unbilled_index, name="unbilled-index"),
+    # Invoices (default)
+    path("invoicing/", invoices_index, name="invoices-index"),
+    # Unbilled
+    path("invoicing/unbilled/", unbilled_index, name="unbilled-index"),
     path("invoicing/unbilled/list/", unbilled_list, name="unbilled-list"),
     path("invoicing/unbilled/sort/<str:order>/", unbilled_sort, name="unbilled-sort"),
     # Collection
     path("invoicing/collection/", collection_index, name="collection-index"),
     path("invoicing/collection/list/", collection_list, name="collection-list"),
     # Invoices
-    path("invoicing/invoices/", invoices_index, name="invoices-index"),
     path("invoicing/invoices/list/", invoices_list, name="invoices-list"),
     path(
         "invoicing/invoices-detail/<int:pk>/",

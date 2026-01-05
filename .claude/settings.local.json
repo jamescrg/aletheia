@@ -76,7 +76,8 @@
       "Bash(fuser:*)",
       "WebFetch(domain:googleapis.github.io)",
       "Bash(sudo cat:*)",
-      "Bash(git revert:*)"
+      "Bash(git revert:*)",
+      "Bash(paste - -)"
     ],
     "deny": []
   }
