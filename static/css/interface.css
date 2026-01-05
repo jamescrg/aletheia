@@ -56,16 +56,19 @@
 }
 
 .dropdown-menu li:has(.active),
+.dropdown-menu li:has(.toggle-active),
 .dropdown-menu li.active {
   border-top: solid 1px var(--selected-border);
 }
 
 .dropdown-menu li:first-child:has(.active),
+.dropdown-menu li:first-child:has(.toggle-active),
 .dropdown-menu li:first-child.active {
   border-top: none;
 }
 
 .dropdown-menu li:has(.active) + li,
+.dropdown-menu li:has(.toggle-active) + li,
 .dropdown-menu li.active + li {
   border-top: solid 1px var(--selected-border);
 }
@@ -109,6 +112,11 @@
   background: var(--selected-background);
   border: solid 1px var(--selected-border);
   color: var(--selected-color);
+}
+
+.dropdown-menu .dropdown-item.toggle-active,
+.dropdown-menu a.toggle-active {
+  border: none;
 }
 
 .toolbar .btn-icon.toggle-alert {
