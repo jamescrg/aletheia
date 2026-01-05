@@ -300,3 +300,58 @@ def citations_summary(citations_list):
         "verified": verified,
         "unverified": unverified,
     }
+
+
+# =============================================================================
+# Bluebook Citation Formatting
+# =============================================================================
+
+
+@register.filter
+def bluebook(case_law, pincite=None):
+    """
+    Format a CaseLaw object as a full Bluebook citation.
+
+    Usage:
+        {{ case_law|bluebook }}
+        {{ case_law|bluebook:"120" }}  (with pincite)
+    """
+    if hasattr(case_law, "format_bluebook"):
+        return case_law.format_bluebook(pincite)
+    return str(case_law)
+
+
+@register.filter
+def bluebook_short(case_law):
+    """
+    Format a CaseLaw object as a short Bluebook citation.
+
+    Usage: {{ case_law|bluebook_short }}
+    """
+    if hasattr(case_law, "format_short"):
+        return case_law.format_short()
+    return str(case_law)
+
+
+@register.filter
+def bluebook_italic(case_law, pincite=None):
+    """
+    Format a CaseLaw object as a Bluebook citation with italic case name.
+
+    Usage:
+        {{ case_law|bluebook_italic }}
+        {{ case_law|bluebook_italic:"120" }}
+    """
+    if not hasattr(case_law, "format_bluebook"):
+        return str(case_law)
+
+    full_cite = case_law.format_bluebook(pincite)
+
+    # Wrap the case name in <em> tags
+    if case_law.case_name and case_law.case_name in full_cite:
+        full_cite = full_cite.replace(
+            case_law.case_name, f"<em>{escape(case_law.case_name)}</em>", 1
+        )
+        return mark_safe(full_cite)
+
+    return full_cite

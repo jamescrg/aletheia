@@ -355,6 +355,19 @@ class CaseLaw(AuditMixin, models.Model):
     citation = models.CharField(max_length=255)  # e.g., "410 U.S. 113"
     case_name = models.CharField(max_length=500)  # e.g., "Roe v. Wade"
 
+    # Structured citation fields (Bluebook Rule 10)
+    volume = models.CharField(max_length=20, blank=True)  # e.g., "410"
+    reporter = models.CharField(max_length=50, blank=True)  # e.g., "U.S."
+    first_page = models.CharField(max_length=20, blank=True)  # e.g., "113"
+
+    # Parallel citation fields (for states requiring dual citations, e.g., Georgia)
+    parallel_volume = models.CharField(max_length=20, blank=True)
+    parallel_reporter = models.CharField(max_length=50, blank=True)
+    parallel_page = models.CharField(max_length=20, blank=True)
+
+    # Cached short form for subsequent citations
+    short_form = models.CharField(max_length=150, blank=True)
+
     # Court/date info
     court = models.CharField(max_length=255)  # Full court name
     court_id = models.CharField(max_length=50, blank=True)  # CourtListener court ID
@@ -395,6 +408,101 @@ class CaseLaw(AuditMixin, models.Model):
         # Count star-pagination spans: <span class="star-pagination">*123</span>
         matches = re.findall(r'class="star-pagination"', self.html)
         return len(matches) if matches else None
+
+    def parse_citation(self):
+        """Parse the citation string into structured fields (volume, reporter, page)."""
+        import re
+
+        if not self.citation:
+            return
+
+        # Common pattern: "123 F.3d 456" or "410 U.S. 113"
+        match = re.match(r"(\d+)\s+([A-Za-z0-9.\s]+?)\s+(\d+)", self.citation.strip())
+        if match:
+            self.volume = match.group(1)
+            self.reporter = match.group(2).strip()
+            self.first_page = match.group(3)
+
+    def format_bluebook(self, pincite=None):
+        """
+        Format as full Bluebook citation.
+        e.g., "Roe v. Wade, 410 U.S. 113, 120 (1973)"
+        """
+        parts = []
+
+        # Case name in italics (for display, caller handles formatting)
+        if self.case_name:
+            parts.append(self.case_name)
+
+        # Volume Reporter Page
+        if self.volume and self.reporter and self.first_page:
+            cite_part = f"{self.volume} {self.reporter} {self.first_page}"
+
+            # Add parallel citation if present (e.g., Georgia cases)
+            if self.parallel_volume and self.parallel_reporter and self.parallel_page:
+                cite_part += (
+                    f", {self.parallel_volume} {self.parallel_reporter} "
+                    f"{self.parallel_page}"
+                )
+
+            # Add pincite if provided
+            if pincite:
+                cite_part += f", {pincite}"
+
+            parts.append(cite_part)
+        elif self.citation:
+            # Fall back to raw citation field
+            cite_part = self.citation
+            if pincite:
+                cite_part += f", {pincite}"
+            parts.append(cite_part)
+
+        # Court and year in parentheses
+        year = self.date_filed.year if self.date_filed else ""
+        # Only include court abbreviation for non-Supreme Court cases
+        court_abbrev = (
+            self.court_id if self.court_id and "scotus" not in self.court_id else ""
+        )
+        parens = " ".join(filter(None, [court_abbrev, str(year) if year else ""]))
+        if parens:
+            parts.append(f"({parens})")
+
+        # Join: "Name, Citation (Court Year)"
+        if len(parts) >= 2:
+            result = ", ".join(parts[:2])
+            if len(parts) > 2:
+                result += " " + parts[2]
+            return result
+        return ", ".join(parts)
+
+    def format_short(self):
+        """
+        Format as Bluebook short citation for subsequent references.
+        e.g., "Roe, 410 U.S. at 120"
+        """
+        if self.short_form:
+            return self.short_form
+
+        # Extract first party name (before " v.")
+        first_party = ""
+        if self.case_name:
+            if " v." in self.case_name:
+                first_party = self.case_name.split(" v.")[0].strip()
+            elif " v " in self.case_name:
+                first_party = self.case_name.split(" v ")[0].strip()
+            else:
+                first_party = self.case_name
+
+        if first_party and self.volume and self.reporter:
+            return f"{first_party}, {self.volume} {self.reporter}"
+
+        return first_party or self.case_name or self.citation
+
+    def save(self, *args, **kwargs):
+        """Auto-parse citation on save if structured fields are empty."""
+        if self.citation and not self.volume:
+            self.parse_citation()
+        super().save(*args, **kwargs)
 
     class Meta:
         db_table = "app_case_law"
