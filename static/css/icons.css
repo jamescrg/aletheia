@@ -25,6 +25,13 @@
   color: var(--add);
 }
 
+.toolbar .icon-plus {
+  font-size: 1.25rem;
+  vertical-align: middle;
+  margin-top: -2.5px;
+  margin-bottom: -2.5px;
+}
+
 .icon-x {
   font-size: 1rem;
 }
