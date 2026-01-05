@@ -28,8 +28,8 @@ class TransactionForm(forms.ModelForm):
         )
 
         CONFIRMED_CHOICES = (
-            (0, "No"),
-            (1, "Yes"),
+            (False, "No"),
+            (True, "Yes"),
         )
 
         widgets = {
