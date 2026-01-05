@@ -902,6 +902,10 @@ body:has(.note-page.standalone) {
   padding-right: 0.75rem;
 }
 
+.notes-list td.importance {
+  text-align: center;
+}
+
 .notes-list th.importance .btn-sort {
   margin: 0;
 }
