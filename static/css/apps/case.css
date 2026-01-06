@@ -231,10 +231,12 @@
   min-width: 50rem;
 }
 
-#caselaws-table .col-select {
+#caselaws-table th.col-select,
+#caselaws-table td.col-select {
   width: 2.5rem;
   text-align: center;
-  padding-left: 0.5rem;
+  vertical-align: middle;
+  padding-left: 0;
   padding-right: 0;
 }
 
@@ -250,10 +252,6 @@
 #caselaws-table .col-pages {
   width: 6rem;
   text-align: left;
-}
-
-#caselaws-table .col-citation {
-  width: 18rem;
 }
 
 #caselaws-table .col-date {
@@ -276,6 +274,28 @@
 
 #caselaws-table .col-importance .dropdown-menu {
   min-width: 2rem;
+}
+
+#caselaws-table .col-labels {
+  width: 10rem;
+  text-align: left;
+  overflow: visible;
+}
+
+#caselaws-table .col-labels .label-badge {
+  margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
+  display: inline-block;
+}
+
+#caselaws-table .col-labels .add-icon {
+  color: var(--icon-muted);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+#caselaws-table tr:hover .col-labels .add-icon {
+  opacity: 1;
 }
 
 #caselaws-table .col-ai {

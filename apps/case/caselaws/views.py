@@ -62,11 +62,16 @@ def get_caselaws_data(request, matter, matter_id):
     if isinstance(keyword, list):
         keyword = keyword[0] if keyword else ""
 
+    # Check if all visible cases are selected
+    all_ids = set(case_laws.values_list("id", flat=True)) if case_laws else set()
+    all_selected = bool(all_ids) and all_ids <= set(selected_caselaws)
+
     return {
         "case_laws": case_laws,
         "current_order": current_order,
         "keyword": keyword,
         "selected_caselaws": selected_caselaws,
+        "all_selected": all_selected,
     }
 
 
@@ -440,6 +445,29 @@ def clear_caselaw_selection(request, matter_id):
     """Clear all case law selections for this matter."""
     selected_session_key = get_session_key("selected_caselaws", matter_id)
     request.session[selected_session_key] = []
+
+    return HttpResponse(status=204, headers={"HX-Trigger": "caselawsChanged"})
+
+
+@login_required
+@require_POST
+def select_all_caselaws(request, matter_id):
+    """Select or deselect all case laws for this matter."""
+    matter, _ = get_matter_from_url(request, matter_id)
+    selected_session_key = get_session_key("selected_caselaws", matter_id)
+    selected_caselaws = request.session.get(selected_session_key, [])
+
+    # Get all case law IDs for this matter (respecting current filters)
+    caselaws_data = get_caselaws_data(request, matter, matter_id)
+    all_ids = list(caselaws_data["case_laws"].values_list("id", flat=True))
+
+    # If all are already selected, deselect all; otherwise select all
+    if set(all_ids) <= set(selected_caselaws):
+        # All visible are selected, so deselect all
+        request.session[selected_session_key] = []
+    else:
+        # Select all visible
+        request.session[selected_session_key] = all_ids
 
     return HttpResponse(status=204, headers={"HX-Trigger": "caselawsChanged"})
 

@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
-from apps.case.models import Document, Fact, Highlight, Label
+from apps.case.models import CaseLaw, Document, Fact, Highlight, Label
 from apps.case.views import get_matter_from_url, get_session_key, set_last_tab
 from apps.matters.models import Matter
 from apps.notes.models import Note
@@ -200,6 +200,11 @@ def _get_object_for_labels(object_type, object_id, view=None):
         matter = obj.matter
         row_template = "case/notes/note-row.html"
         context_key = "note"
+    elif object_type == "caselaw":
+        obj = get_object_or_404(CaseLaw, id=object_id)
+        matter = obj.matter
+        row_template = "case/caselaws/row.html"
+        context_key = "case_law"
     else:
         return None, None, None, None
     return obj, matter, row_template, context_key
@@ -273,6 +278,12 @@ def add_label_to(request, object_type, object_id):
             pass
 
     context = {context_key: obj, "importance_choices": range(1, 11), "matter": matter}
+
+    # Add selected_caselaws for caselaw row template
+    if object_type == "caselaw" and matter:
+        selected_session_key = get_session_key("selected_caselaws", matter.id)
+        context["selected_caselaws"] = request.session.get(selected_session_key, [])
+
     return render(request, row_template, context)
 
 
@@ -295,6 +306,12 @@ def remove_label_from(request, object_type, object_id):
             pass
 
     context = {context_key: obj, "importance_choices": range(1, 11), "matter": matter}
+
+    # Add selected_caselaws for caselaw row template
+    if object_type == "caselaw" and matter:
+        selected_session_key = get_session_key("selected_caselaws", matter.id)
+        context["selected_caselaws"] = request.session.get(selected_session_key, [])
+
     return render(request, row_template, context)
 
 
@@ -316,4 +333,10 @@ def labels_create_and_apply(request, object_type, object_id):
         obj.labels.add(label)
 
     context = {context_key: obj, "importance_choices": range(1, 11), "matter": matter}
+
+    # Add selected_caselaws for caselaw row template
+    if object_type == "caselaw" and matter:
+        selected_session_key = get_session_key("selected_caselaws", matter.id)
+        context["selected_caselaws"] = request.session.get(selected_session_key, [])
+
     return render(request, row_template, context)

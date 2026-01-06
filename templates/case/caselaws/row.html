@@ -1,0 +1,64 @@
+<tr id="caselaw-{{ case_law.id }}">
+  <td class="col-select">
+    <input type="checkbox"
+           {% if case_law.id in selected_caselaws %}checked{% endif %}
+           hx-post="{% url 'case:caselaw-toggle-select' matter.id case_law.id %}"
+           hx-swap="none">
+  </td>
+  <td class="col-case-name dropdown-cell">
+    <div class="dropdown" x-data="dropdown()">
+      <a href="#"
+         class="caselaw-name-link"
+         x-ref="button"
+         @click.prevent="toggle()"
+         :aria-expanded="open">{{ case_law.case_name|truncatechars:60 }}</a>, {{ case_law.citation }}
+      <ul class="dropdown-menu" x-ref="menu" x-show="open" @click="close()">
+        <li>
+          <a class="dropdown-item"
+             href="{% url 'case:caselaw-viewer' case_law.id %}"
+             target="_blank"><i class="icon-eye"></i> View Case</a>
+        </li>
+        {% if case_law.courtlistener_url %}
+          <li>
+            <a class="dropdown-item"
+               href="{{ case_law.courtlistener_url }}"
+               target="_blank"><i class="icon-external-link"></i> View on CourtListener</a>
+          </li>
+        {% endif %}
+        <li>
+          <a class="dropdown-item text-danger"
+             href="#"
+             hx-post="{% url 'case:caselaw-delete' case_law.id %}"
+             hx-confirm="Delete this case law entry?"
+             hx-target="#caselaws"><i class="icon-trash-2"></i> Delete</a>
+        </li>
+      </ul>
+    </div>
+  </td>
+  <td class="col-labels">
+    {% for label in case_law.labels.all %}
+      {% include "case/labels/badge.html" with object_type="caselaw" object=case_law %}
+    {% empty %}
+      <a href="#"
+         class="add-icon"
+         hx-get="{% url 'case:labels-apply-modal' 'caselaw' case_law.id %}"
+         hx-target="#htmx-modal-container">
+        <i class="icon-tag"></i>
+      </a>
+    {% endfor %}
+  </td>
+  <td class="col-pages">{{ case_law.page_count|default:"" }}</td>
+  <td class="col-date">
+    {% if case_law.date_filed %}{{ case_law.date_filed|date:"Y-m-d" }}{% endif %}
+  </td>
+  <td class="col-added">{{ case_law.created_at|date:"Y-m-d" }}</td>
+  <td class="col-ai">
+    <button class="btn-icon-toggle {% if case_law.include_in_ai %}active{% endif %}"
+            hx-post="{% url 'case:caselaw-toggle-ai' case_law.id %}"
+            hx-swap="none"
+            title="{% if case_law.include_in_ai %}Remove from AI context{% else %}Include in AI context{% endif %}">
+      <i class="icon-bookmark{% if case_law.include_in_ai %}-check{% endif %}"></i>
+    </button>
+  </td>
+  <td class="col-importance dropdown-cell">{% include "case/caselaws/importance-display.html" %}</td>
+</tr>

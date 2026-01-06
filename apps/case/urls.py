@@ -218,6 +218,11 @@ urlpatterns = [
         name="caselaws-clear-selection",
     ),
     path(
+        "case/<int:matter_id>/caselaws/select-all/",
+        caselaws.select_all_caselaws,
+        name="caselaws-select-all",
+    ),
+    path(
         "case/<int:matter_id>/caselaws/bulk-delete/",
         caselaws.bulk_caselaws_delete,
         name="caselaws-bulk-delete",
