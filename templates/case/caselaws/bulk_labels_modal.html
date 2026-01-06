@@ -1,0 +1,46 @@
+<div class="modal-dialog modal-md">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Manage Labels ({{ selected_count }} case{{ selected_count|pluralize }})</h1>
+      <div>
+        <a href="#" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </a>
+      </div>
+    </div>
+    <div class="modal-body">
+      {% if labels %}
+        <form id="bulk-labels-form"
+              hx-post="{% url 'case:caselaws-bulk-labels-apply' matter.id %}"
+              hx-target="#htmx-modal-container">
+          {% csrf_token %}
+          <div class="bulk-labels-list">
+            {% for label in labels %}
+              <label class="bulk-label-item">
+                <input type="checkbox"
+                       name="label_{{ label.id }}"
+                       {% if label.state == 'all' %}checked{% endif %}
+                       {% if label.state == 'some' %}class="indeterminate" data-indeterminate="true"{% endif %}>
+                <input type="hidden" name="initial_{{ label.id }}" value="{{ label.state }}">
+                <span class="app-badge label-{{ label.color }}"><i class="icon-tag"></i>{{ label.name }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        </form>
+      {% else %}
+        <p class="text-muted">No labels available. Create labels in the Labels tab first.</p>
+      {% endif %}
+    </div>
+    {% if labels %}
+      <div class="modal-footer">
+        <button type="submit" form="bulk-labels-form" class="submit">Apply</button>
+      </div>
+    {% endif %}
+  </div>
+</div>
+<script>
+  // Set indeterminate state on checkboxes after HTMX swap
+  document.querySelectorAll('input[data-indeterminate="true"]').forEach(function(cb) {
+    cb.indeterminate = true;
+  });
+</script>

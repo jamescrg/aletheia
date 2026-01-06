@@ -8,12 +8,13 @@ import json
 import logging
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from apps.case.courtlistener import fetch_case_by_citation
-from apps.case.models import CaseLaw, Highlight
+from apps.case.models import CaseLaw, Highlight, Label
 from apps.case.views import get_matter_from_url, get_session_key, set_last_tab
 from apps.matters.models import Matter
 
@@ -29,6 +30,10 @@ def get_caselaws_data(request, matter, matter_id):
     """Get case law data with filters applied from session."""
     filter_session_key = get_session_key("caselaws_filter", matter_id)
     filter_data = request.session.get(filter_session_key, {})
+
+    # Get selected caselaws from session
+    selected_session_key = get_session_key("selected_caselaws", matter_id)
+    selected_caselaws = request.session.get(selected_session_key, [])
 
     case_laws = []
     if matter:
@@ -61,6 +66,7 @@ def get_caselaws_data(request, matter, matter_id):
         "case_laws": case_laws,
         "current_order": current_order,
         "keyword": keyword,
+        "selected_caselaws": selected_caselaws,
     }
 
 
@@ -399,3 +405,171 @@ def caselaw_add_highlight(request, caselaw_id):
     except Exception as e:
         logger.exception("Error creating case law highlight")
         return JsonResponse({"error": str(e)}, status=400)
+
+
+# ============================================================================
+# Bulk Selection and Actions
+# ============================================================================
+
+
+@login_required
+@require_POST
+def toggle_caselaw_select(request, matter_id, caselaw_id):
+    """Toggle selection of a case law in session."""
+    # Verify case law exists and belongs to this matter
+    get_object_or_404(
+        CaseLaw, pk=caselaw_id, matter_id=matter_id, matter__in=get_accessible_matters()
+    )
+
+    selected_session_key = get_session_key("selected_caselaws", matter_id)
+    selected_caselaws = request.session.get(selected_session_key, [])
+
+    if caselaw_id in selected_caselaws:
+        selected_caselaws.remove(caselaw_id)
+    else:
+        selected_caselaws.append(caselaw_id)
+
+    request.session[selected_session_key] = selected_caselaws
+
+    return HttpResponse(status=204, headers={"HX-Trigger": "caselawsChanged"})
+
+
+@login_required
+@require_POST
+def clear_caselaw_selection(request, matter_id):
+    """Clear all case law selections for this matter."""
+    selected_session_key = get_session_key("selected_caselaws", matter_id)
+    request.session[selected_session_key] = []
+
+    return HttpResponse(status=204, headers={"HX-Trigger": "caselawsChanged"})
+
+
+@login_required
+@require_POST
+def bulk_caselaws_delete(request, matter_id):
+    """Delete all selected case laws."""
+    matter, _ = get_matter_from_url(request, matter_id)
+    selected_session_key = get_session_key("selected_caselaws", matter_id)
+    selected_caselaws = request.session.get(selected_session_key, [])
+
+    if not selected_caselaws:
+        return HttpResponse(status=400, content="No cases selected.")
+
+    # Delete selected cases
+    CaseLaw.objects.filter(id__in=selected_caselaws, matter=matter).delete()
+
+    # Clear selection
+    request.session[selected_session_key] = []
+
+    return HttpResponse(status=204, headers={"HX-Trigger": "caselawsChanged"})
+
+
+@login_required
+@require_POST
+def bulk_caselaws_ai(request, matter_id, action):
+    """Add or remove selected cases from AI context."""
+    matter, _ = get_matter_from_url(request, matter_id)
+    selected_session_key = get_session_key("selected_caselaws", matter_id)
+    selected_caselaws = request.session.get(selected_session_key, [])
+
+    if not selected_caselaws:
+        return HttpResponse(status=400, content="No cases selected.")
+
+    if action not in ("add", "remove"):
+        return HttpResponse(status=400, content="Invalid action.")
+
+    include_in_ai = action == "add"
+    CaseLaw.objects.filter(id__in=selected_caselaws, matter=matter).update(
+        include_in_ai=include_in_ai
+    )
+
+    return HttpResponse(status=204, headers={"HX-Trigger": "caselawsChanged"})
+
+
+@login_required
+def bulk_caselaws_labels_modal(request, matter_id):
+    """Show tri-state label modal for bulk label management."""
+    matter, _ = get_matter_from_url(request, matter_id)
+    selected_session_key = get_session_key("selected_caselaws", matter_id)
+    selected_caselaws = request.session.get(selected_session_key, [])
+
+    if not selected_caselaws:
+        return HttpResponse(status=400, content="No cases selected.")
+
+    # Get all available labels (global + matter-specific)
+    labels = Label.objects.filter(Q(matter=None) | Q(matter=matter)).order_by(
+        "matter", "name"
+    )
+
+    # Get selected case laws
+    case_laws = CaseLaw.objects.filter(id__in=selected_caselaws, matter=matter)
+    case_count = case_laws.count()
+
+    # Compute tri-state for each label
+    labels_with_state = []
+    for label in labels:
+        # Count how many selected cases have this label
+        cases_with_label = case_laws.filter(labels=label).count()
+
+        if cases_with_label == 0:
+            state = "none"
+        elif cases_with_label == case_count:
+            state = "all"
+        else:
+            state = "some"
+
+        labels_with_state.append(
+            {
+                "id": label.id,
+                "name": label.name,
+                "color": label.color,
+                "state": state,
+            }
+        )
+
+    return render(
+        request,
+        "case/caselaws/bulk_labels_modal.html",
+        {
+            "matter": matter,
+            "labels": labels_with_state,
+            "selected_count": case_count,
+        },
+    )
+
+
+@login_required
+@require_POST
+def bulk_caselaws_labels_apply(request, matter_id):
+    """Apply label changes from bulk labels modal."""
+    matter, _ = get_matter_from_url(request, matter_id)
+    selected_session_key = get_session_key("selected_caselaws", matter_id)
+    selected_caselaws = request.session.get(selected_session_key, [])
+
+    if not selected_caselaws:
+        return HttpResponse(status=400, content="No cases selected.")
+
+    # Get selected case laws
+    case_laws = CaseLaw.objects.filter(id__in=selected_caselaws, matter=matter)
+
+    # Get all available labels
+    labels = Label.objects.filter(Q(matter=None) | Q(matter=matter))
+
+    # Process each label
+    for label in labels:
+        field_name = f"label_{label.id}"
+        initial_state = request.POST.get(f"initial_{label.id}", "none")
+        is_checked = field_name in request.POST
+
+        # Determine action based on state change
+        if initial_state in ("none", "some") and is_checked:
+            # Add label to all selected cases
+            for case_law in case_laws:
+                case_law.labels.add(label)
+        elif initial_state in ("all", "some") and not is_checked:
+            # Remove label from all selected cases
+            for case_law in case_laws:
+                case_law.labels.remove(label)
+        # If no change (none->unchecked or all->checked), do nothing
+
+    return HttpResponse(status=204, headers={"HX-Trigger": "caselawsChanged"})

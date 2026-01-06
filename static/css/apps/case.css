@@ -231,6 +231,18 @@
   min-width: 50rem;
 }
 
+#caselaws-table .col-select {
+  width: 2.5rem;
+  text-align: center;
+  padding-left: 0.5rem;
+  padding-right: 0;
+}
+
+#caselaws-table .col-select input[type="checkbox"] {
+  cursor: pointer;
+  margin: 0;
+}
+
 #caselaws-table .col-case-name {
   /* Variable width - takes remaining space */
 }
@@ -328,6 +340,25 @@
 #caselaws-table .caselaw-name-link:hover {
   color: var(--link-hover);
   text-decoration: underline;
+}
+
+/* Bulk Labels Modal */
+.bulk-labels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bulk-label-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.bulk-label-item input[type="checkbox"] {
+  cursor: pointer;
+  margin: 0;
 }
 
 /* Case Law View Page */

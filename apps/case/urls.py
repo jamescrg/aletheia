@@ -206,6 +206,37 @@ urlpatterns = [
         caselaws.caselaws_sort,
         name="caselaws-sort",
     ),
+    # Case laws - bulk selection and actions
+    path(
+        "case/<int:matter_id>/caselaws/toggle-select/<int:caselaw_id>/",
+        caselaws.toggle_caselaw_select,
+        name="caselaw-toggle-select",
+    ),
+    path(
+        "case/<int:matter_id>/caselaws/clear-selection/",
+        caselaws.clear_caselaw_selection,
+        name="caselaws-clear-selection",
+    ),
+    path(
+        "case/<int:matter_id>/caselaws/bulk-delete/",
+        caselaws.bulk_caselaws_delete,
+        name="caselaws-bulk-delete",
+    ),
+    path(
+        "case/<int:matter_id>/caselaws/bulk-ai/<str:action>/",
+        caselaws.bulk_caselaws_ai,
+        name="caselaws-bulk-ai",
+    ),
+    path(
+        "case/<int:matter_id>/caselaws/bulk-labels/",
+        caselaws.bulk_caselaws_labels_modal,
+        name="caselaws-bulk-labels",
+    ),
+    path(
+        "case/<int:matter_id>/caselaws/bulk-labels-apply/",
+        caselaws.bulk_caselaws_labels_apply,
+        name="caselaws-bulk-labels-apply",
+    ),
     # Witnesses (matter-scoped)
     path(
         "case/<int:matter_id>/witnesses/",
