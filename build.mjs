@@ -36,6 +36,28 @@ const alpineBuild = {
   target: ['es2020'],
 };
 
+// Dropzone bundle (IIFE for global script)
+const dropzoneBuild = {
+  entryPoints: ['src/dropzone.js'],
+  bundle: true,
+  format: 'iife',
+  outfile: 'static/js/vendor/dropzone.bundle.js',
+  minify: true,
+  sourcemap: true,
+  target: ['es2020'],
+};
+
+// Sortable.js bundle (IIFE for global script)
+const sortableBuild = {
+  entryPoints: ['src/sortable.js'],
+  bundle: true,
+  format: 'iife',
+  outfile: 'static/js/vendor/sortable.bundle.js',
+  minify: true,
+  sourcemap: true,
+  target: ['es2020'],
+};
+
 // Copy Lucide icon font files
 function copyLucideAssets() {
   const srcDir = 'node_modules/lucide-static/font';
@@ -70,7 +92,17 @@ function copyLucideAssets() {
   console.log('  static/css/lucide.css');
 }
 
-const builds = [tiptapBuild, htmxBuild, alpineBuild];
+// Copy Dropzone CSS
+function copyDropzoneAssets() {
+  copyFileSync(
+    'node_modules/dropzone/dist/min/dropzone.min.css',
+    'static/css/dropzone.css'
+  );
+  console.log('Dropzone assets copied:');
+  console.log('  static/css/dropzone.css');
+}
+
+const builds = [tiptapBuild, htmxBuild, alpineBuild, dropzoneBuild, sortableBuild];
 
 if (isWatch) {
   // Watch mode: create contexts for all builds
@@ -85,6 +117,7 @@ if (isWatch) {
   console.log('Build complete:');
   builds.forEach(b => console.log(`  ${b.outfile}`));
 
-  // Copy Lucide assets
+  // Copy static assets
   copyLucideAssets();
+  copyDropzoneAssets();
 }

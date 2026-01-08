@@ -61,14 +61,11 @@
   {% block content %}
   {% endblock content %}
   <!-- javascript -->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="{% static_v 'js/vendor/htmx.bundle.js' %}"></script>
   <script defer src="{% static_v 'js/vendor/alpine.bundle.js' %}"></script>
   <script src="{% static_v 'js/alpine-components.js' %}"></script>
-  <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
-  <link rel="stylesheet"
-        href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css"
-        type="text/css" />
+  <script src="{% static_v 'js/vendor/dropzone.bundle.js' %}"></script>
+  <link rel="stylesheet" href="{% static_v 'css/dropzone.css' %}" />
   <script src="{% static_v 'js/htmx-focus.js' %}"></script>
   <script src="{% static_v 'js/main.js' %}"></script>
   <script src="{% static_v 'js/file-upload-forms.js' %}" defer></script>
