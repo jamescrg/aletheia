@@ -82,7 +82,8 @@
       "Bash(openssl x509:*)",
       "Bash(npm install:*)",
       "Bash(npm run build:*)",
-      "Bash(npm audit:*)"
+      "Bash(npm audit:*)",
+      "Bash(du:*)"
     ],
     "deny": []
   }
