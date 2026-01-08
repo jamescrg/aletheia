@@ -29,6 +29,7 @@
     "@tiptap/pm": "^2.1.13",
     "alpinejs": "^3.14.3",
     "esbuild": "^0.27.2",
-    "htmx.org": "^1.9.12"
+    "htmx.org": "^1.9.12",
+    "lucide-static": "^0.462.0"
   }
 }
