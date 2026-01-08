@@ -27,6 +27,6 @@
     "@tiptap/extension-strike": "^2.1.13",
     "@tiptap/extension-text": "^2.1.13",
     "@tiptap/pm": "^2.1.13",
-    "esbuild": "^0.19.0"
+    "esbuild": "^0.27.2"
   }
 }
