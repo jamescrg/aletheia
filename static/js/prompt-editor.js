@@ -3,22 +3,22 @@
  * A simplified version of notes-editor.js focused on prompt composition
  */
 
-// TipTap ESM imports from jsdelivr CDN
-import { Editor } from "https://esm.run/@tiptap/core@2";
-import Document from "https://esm.run/@tiptap/extension-document@2";
-import Paragraph from "https://esm.run/@tiptap/extension-paragraph@2";
-import Text from "https://esm.run/@tiptap/extension-text@2";
-import Bold from "https://esm.run/@tiptap/extension-bold@2";
-import Italic from "https://esm.run/@tiptap/extension-italic@2";
-import Strike from "https://esm.run/@tiptap/extension-strike@2";
-import Heading from "https://esm.run/@tiptap/extension-heading@2";
-import BulletList from "https://esm.run/@tiptap/extension-bullet-list@2";
-import OrderedList from "https://esm.run/@tiptap/extension-ordered-list@2";
-import ListItem from "https://esm.run/@tiptap/extension-list-item@2";
-import Blockquote from "https://esm.run/@tiptap/extension-blockquote@2";
-import HardBreak from "https://esm.run/@tiptap/extension-hard-break@2";
-import History from "https://esm.run/@tiptap/extension-history@2";
-import Placeholder from "https://esm.run/@tiptap/extension-placeholder@2";
+// TipTap ESM imports from esm.sh CDN
+import { Editor } from "https://esm.sh/@tiptap/core@2.1.13";
+import Document from "https://esm.sh/@tiptap/extension-document@2.1.13";
+import Paragraph from "https://esm.sh/@tiptap/extension-paragraph@2.1.13";
+import Text from "https://esm.sh/@tiptap/extension-text@2.1.13";
+import Bold from "https://esm.sh/@tiptap/extension-bold@2.1.13";
+import Italic from "https://esm.sh/@tiptap/extension-italic@2.1.13";
+import Strike from "https://esm.sh/@tiptap/extension-strike@2.1.13";
+import Heading from "https://esm.sh/@tiptap/extension-heading@2.1.13";
+import BulletList from "https://esm.sh/@tiptap/extension-bullet-list@2.1.13";
+import OrderedList from "https://esm.sh/@tiptap/extension-ordered-list@2.1.13";
+import ListItem from "https://esm.sh/@tiptap/extension-list-item@2.1.13";
+import Blockquote from "https://esm.sh/@tiptap/extension-blockquote@2.1.13";
+import HardBreak from "https://esm.sh/@tiptap/extension-hard-break@2.1.13";
+import History from "https://esm.sh/@tiptap/extension-history@2.1.13";
+import Placeholder from "https://esm.sh/@tiptap/extension-placeholder@2.1.13";
 
 let promptEditor = null;
 
