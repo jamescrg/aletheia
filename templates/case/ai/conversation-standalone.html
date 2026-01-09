@@ -279,7 +279,11 @@
         url += '&text=' + encodeURIComponent(text);
         textarea.value = ''; // Clear input since we're transferring to modal
       }
-      htmx.ajax('GET', url, {target: '#htmx-modal-container'});
+      const modalContainer = document.getElementById('htmx-modal-container');
+      window.htmx.ajax('GET', url, {target: modalContainer, swap: 'innerHTML'}).then(function() {
+        // Trigger modal open after content is loaded
+        window.dispatchEvent(new CustomEvent('open-modal'));
+      });
     });
   </script>
   <script defer src="{% static_v 'js/vendor/alpine.bundle.js' %}"></script>

@@ -1096,8 +1096,8 @@
 
 .ai-upload-btn,
 .ai-expand-btn {
-  padding: 0.35rem 0.625rem;
-  font-size: 1.25rem;
+  padding: 0.5rem;
+  font-size: 1rem;
   color: var(--color-muted);
   border: 1px solid var(--border-dark);
   border-radius: var(--radius-md);
