@@ -18,10 +18,10 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="submit" form="facts-filter-form" class="submit">Apply</button>
       <a class="btn-icon"
          href="#"
          hx-post="{% url 'management:clear-filters' session_key='facts_filter' trigger='factsChanged' %}">Restore Defaults</a>
+      <button type="submit" form="facts-filter-form" class="submit">Apply</button>
     </div>
   </div>
 </div>

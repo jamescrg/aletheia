@@ -30,7 +30,6 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="submit" form="folder-form" class="submit">Submit</button>
       {% if edit %}
         <a href="#"
            class="delete-link"
@@ -38,6 +37,7 @@
            hx-target="#htmx-modal-container"
            hx-swap="innerHTML">Delete Folder</a>
       {% endif %}
+      <button type="submit" form="folder-form" class="submit">Submit</button>
     </div>
   </div>
 </div>

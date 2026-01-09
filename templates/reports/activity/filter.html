@@ -38,10 +38,10 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="submit" form="activity-report-filter-form" class="submit">Apply</button>
       <a class="btn-icon"
          href="#"
          hx-post="{% url 'management:clear-filters' session_key='activity_filter' trigger='activityChanged' %}">Restore Defaults</a>
+      <button type="submit" form="activity-report-filter-form" class="submit">Apply</button>
     </div>
   </div>
 </div>

@@ -59,10 +59,10 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="submit" form="client-statement-filter-form" class="submit">Apply</button>
       <a class="btn-icon"
          href="#"
          hx-post="{% url 'management:clear-filters' session_key='client_statement_filter' trigger='clientStatementChanged' %}">Restore Defaults</a>
+      <button type="submit" form="client-statement-filter-form" class="submit">Apply</button>
     </div>
   </div>
 </div>

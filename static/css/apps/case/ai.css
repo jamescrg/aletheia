@@ -1395,17 +1395,7 @@
   height: 0;
 }
 
-/* Prompt editor modal footer */
-.prompt-editor-footer {
-  display: flex;
-  justify-content: space-between;
-}
-
-.prompt-editor-footer-right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
+/* Prompt editor modal footer - uses default modal-footer styles */
 
 /* ==========================================================================
    Citation Verification Badges

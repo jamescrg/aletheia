@@ -56,7 +56,6 @@
       {% if not edit %}<div id="codes-reference-container"></div>{% endif %}
     </div>
     <div class="modal-footer">
-      <button type="submit" form="time-entry-form" class="submit">Submit</button>
       {% if edit %}
         <a class="delete-link"
            href="#!"
@@ -70,6 +69,7 @@
            hx-target="#codes-reference-container"
            hx-swap="innerHTML">View Abbreviation Codes</a>
       {% endif %}
+      <button type="submit" form="time-entry-form" class="submit">Submit</button>
     </div>
   </div>
 </div>

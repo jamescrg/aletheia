@@ -25,7 +25,6 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="submit" form="label-form" class="submit">Submit</button>
       {% if edit %}
         <a class="delete-link"
            href="#!"
@@ -33,6 +32,7 @@
            hx-delete="{% url 'case:delete-label' label.id %}"
            hx-target="#htmx-modal-container">Delete Label</a>
       {% endif %}
+      <button type="submit" form="label-form" class="submit">Submit</button>
     </div>
   </div>
 </div>

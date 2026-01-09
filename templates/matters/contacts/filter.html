@@ -18,13 +18,13 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="submit" form="contacts-filter-form" class="submit">Apply</button>
       <button type="button"
               class="btn-icon button-link"
               hx-target="#htmx-modal-container"
               hx-get="{% url 'management:clear-filters' session_key=session_key trigger='contactsReload' %}">
         Restore Defaults
       </button>
+      <button type="submit" form="contacts-filter-form" class="submit">Apply</button>
     </div>
   </div>
 </div>

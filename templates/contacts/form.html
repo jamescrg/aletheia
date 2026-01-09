@@ -44,7 +44,6 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="submit" form="contact-form" class="submit">Submit</button>
       {% if edit %}
         <a href="#"
            class="delete-link"
@@ -52,6 +51,7 @@
            hx-delete="{% url 'contacts:delete' id=contact.id %}"
            hx-target="#htmx-modal-container">Delete Contact</a>
       {% endif %}
+      <button type="submit" form="contact-form" class="submit">Submit</button>
     </div>
   </div>
 </div>

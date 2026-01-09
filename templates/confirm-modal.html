@@ -16,14 +16,14 @@
     </div>
     <div class="confirm-modal-actions">
       <button type="button"
-              class="btn"
+              class="btn btn-secondary confirm-modal-cancel"
+              @click="cancel()"
+              x-text="cancelText"></button>
+      <button type="button"
+              class="btn confirm-modal-confirm"
               :class="isDangerous ? 'btn-danger' : 'btn-primary'"
               @click="confirm()"
               x-text="confirmText"></button>
-      <button type="button"
-              class="btn btn-secondary"
-              @click="cancel()"
-              x-text="cancelText"></button>
     </div>
   </div>
 </div>

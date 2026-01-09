@@ -18,7 +18,6 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="submit" form="witness-form" class="submit">Submit</button>
       {% if witness %}
         <a hx-confirm='Are you sure you want to delete this witness?'
            href="#"
@@ -26,6 +25,7 @@
            hx-target="#htmx-modal-container"
            class="delete-link">Delete Witness</a>
       {% endif %}
+      <button type="submit" form="witness-form" class="submit">Submit</button>
     </div>
   </div>
 </div>

@@ -24,7 +24,6 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="submit" form="expense-entry-form" class="submit">Submit</button>
       {% if edit %}
         <a href="#!"
            class="delete-link"
@@ -32,6 +31,7 @@
            hx-post="{% url 'activity:expenses-delete' id=entry.id %}"
            hx-target="#htmx-modal-container">Delete Entry</a>
       {% endif %}
+      <button type="submit" form="expense-entry-form" class="submit">Submit</button>
     </div>
   </div>
 </div>

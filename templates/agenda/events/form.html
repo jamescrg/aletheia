@@ -33,7 +33,6 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="submit" form="event-form" class="submit">Submit</button>
       {% if edit %}
         <a href="#"
            class="delete-link"
@@ -41,6 +40,7 @@
            hx-delete="{% url 'agenda:events-delete-origin' id=event.id origin='events' %}"
            hx-target="#htmx-modal-container">Delete Event</a>
       {% endif %}
+      <button type="submit" form="event-form" class="submit">Submit</button>
     </div>
   </div>
 </div>
