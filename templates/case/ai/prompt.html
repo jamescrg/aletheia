@@ -23,9 +23,9 @@
           <a href="#" id="copyPromptBtn" title="Copy to clipboard">
             <i class="icon-copy"></i>
           </a>
-          <a href="#" onclick="window.close(); return false;" title="Close">
+          <button type="button" onclick="window.close();" title="Close">
             <i class="icon-x"></i>
-          </a>
+          </button>
         </div>
       </div>
       <div class="ai-prompt-content ai-markdown">{{ prompt_text|render_markdown }}</div>

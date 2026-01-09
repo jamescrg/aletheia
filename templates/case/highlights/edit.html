@@ -3,9 +3,9 @@
     <div class="modal-header">
       <h1 class="modal-title">Edit Highlight</h1>
       <div>
-        <a href="#" @click="$dispatch('close-modal')">
+        <button type="button" @click="$dispatch('close-modal')">
           <i class="icon-x"></i>
-        </a>
+        </button>
       </div>
     </div>
     <div class="modal-body">
@@ -24,9 +24,9 @@
                 class="btn btn-danger"
                 hx-confirm="Are you sure you want to delete this highlight?"
                 hx-post="{% url 'case:delete-highlight' highlight.id %}"
-                hx-target="#htmx-modal-container">Delete Highlight</button>
+                hx-target="#htmx-modal-container">Delete</button>
       {% else %}
-        <button type="button" class="btn btn-danger">Delete Highlight</button>
+        <button type="button" class="btn btn-danger">Delete</button>
       {% endif %}
       <button type="submit" form="edit-highlight-form" class="btn btn-success">Submit</button>
     </div>

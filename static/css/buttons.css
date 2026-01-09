@@ -31,13 +31,15 @@
   color: var(--button-secondary-color);
 }
 
-.btn-secondary,
-.btn-secondary:hover,
-.btn-secondary:focus {
+.btn-secondary {
   background: var(--button-secondary-background);
   border-color: var(--border-medium);
   box-shadow: none;
   color: var(--button-secondary-color);
+}
+
+.btn-secondary:hover {
+  background: var(--blue-50);
 }
 
 .btn-outline-primary,
@@ -51,30 +53,24 @@
 
 .btn-danger {
   background: var(--button-secondary-background);
-  border-color: var(--urgent);
+  border-color: var(--border-medium);
   box-shadow: none;
-  color: var(--urgent);
+  color: var(--button-secondary-color);
 }
 
-.btn-danger:hover,
-.btn-danger:focus {
+.btn-danger:hover {
   background: var(--red-50);
-  border-color: var(--red-700);
-  color: var(--red-700);
 }
 
 .btn-success {
   background: var(--button-secondary-background);
-  border-color: var(--lime-600);
+  border-color: var(--border-medium);
   box-shadow: none;
-  color: var(--lime-700);
+  color: var(--button-secondary-color);
 }
 
-.btn-success:hover,
-.btn-success:focus {
+.btn-success:hover {
   background: var(--lime-50);
-  border-color: var(--lime-800);
-  color: var(--lime-800);
 }
 
 .btn-success i {

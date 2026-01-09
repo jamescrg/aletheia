@@ -68,10 +68,23 @@
   font-size: 1.5rem;
 }
 
+.modal-header button {
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--stone-500);
+  cursor: pointer;
+  display: flex;
+  padding: 0.25rem;
+}
+
+.modal-header button:hover {
+  background: var(--stone-200);
+}
+
 .modal-title {
   color: var(--color-primary);
   font-size: 1.25rem;
-  font-weight: 500;
   margin: 0;
 }
 
@@ -157,7 +170,7 @@ body.modal-open .confirm-modal-overlay {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.5rem;
+  padding: 1rem;
   border-bottom: 1px solid var(--border-medium);
 }
 
@@ -175,15 +188,13 @@ body.modal-open .confirm-modal-overlay {
   padding: 0.25rem;
   background: transparent;
   border: none;
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-sm);
   color: var(--stone-500);
   cursor: pointer;
-  transition: color 0.15s, background 0.15s;
 }
 
 .confirm-modal-close:hover {
-  color: var(--stone-700);
-  background: var(--stone-100);
+  background: var(--stone-200);
 }
 
 .confirm-modal-close i {

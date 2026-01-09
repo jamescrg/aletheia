@@ -3,9 +3,9 @@
     <div class="modal-header">
       <h1 class="modal-title">Delete Matter: {{ matter.name }}</h1>
       <div>
-        <a href="#" @click="$dispatch('close-modal')">
+        <button type="button" @click="$dispatch('close-modal')">
           <i class="icon-x"></i>
-        </a>
+        </button>
       </div>
     </div>
     <div class="modal-body">
@@ -17,7 +17,7 @@
               @click="$dispatch('close-modal')">Cancel</button>
       <button type="button"
               class="btn btn-danger"
-              hx-delete="{% url 'matters:delete' id=matter.id %}">Delete Matter</button>
+              hx-delete="{% url 'matters:delete' id=matter.id %}">Delete</button>
     </div>
   </div>
 </div>
