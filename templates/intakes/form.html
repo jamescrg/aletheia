@@ -9,9 +9,9 @@
         {% endif %}
       </h1>
       <div>
-        <a href="#" @click="$dispatch('close-modal')">
+        <button type="button" @click="$dispatch('close-modal')">
           <i class="icon-x"></i>
-        </a>
+        </button>
       </div>
     </div>
     <div class="modal-body">
@@ -31,7 +31,7 @@
                 data-href="{% url 'intakes:delete' id=intake.id %}"
                 data-confirm-title="Delete Intake"
                 data-confirm-message="Are you sure you want to delete this intake?"
-                data-confirm-text="Delete">Delete Intake</button>
+                data-confirm-text="Delete">Delete</button>
       {% else %}
         <button type="button"
                 class="btn btn-secondary"

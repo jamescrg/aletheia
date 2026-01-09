@@ -46,7 +46,7 @@
      ========================================================================== */
   --button-primary-background: var(--link);
   --button-primary-color: var(--color-lighter);
-  --button-secondary-background: var(--backgrounb-body);
+  --button-secondary-background: var(--background-section);
   --button-secondary-color: var(--color-primary);
   --button-toolbar: var(--color-primary);
 

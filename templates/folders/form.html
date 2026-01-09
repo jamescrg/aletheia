@@ -9,9 +9,9 @@
         {% endif %}
       </h1>
       <div>
-        <a href="#" @click="$dispatch('close-modal')">
+        <button type="button" @click="$dispatch('close-modal')">
           <i class="icon-x"></i>
-        </a>
+        </button>
       </div>
     </div>
     <div class="modal-body">
@@ -35,7 +35,7 @@
                 class="btn btn-danger"
                 hx-get="{% url 'folders:delete-confirm' folder.id %}"
                 hx-target="#htmx-modal-container"
-                hx-swap="innerHTML">Delete Folder</button>
+                hx-swap="innerHTML">Delete</button>
       {% else %}
         <button type="button"
                 class="btn btn-secondary"
