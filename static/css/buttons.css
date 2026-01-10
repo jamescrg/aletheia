@@ -32,7 +32,7 @@
 }
 
 .btn-secondary {
-  background: var(--button-secondary-background);
+  background: var(--blue-50);
   border-color: var(--border-medium);
   box-shadow: none;
   color: var(--button-secondary-color);
@@ -52,7 +52,7 @@
 }
 
 .btn-danger {
-  background: var(--button-secondary-background);
+  background: var(--red-100);
   border-color: var(--border-medium);
   box-shadow: none;
   color: var(--button-secondary-color);
@@ -63,7 +63,7 @@
 }
 
 .btn-success {
-  background: var(--button-secondary-background);
+  background: var(--lime-100);
   border-color: var(--border-medium);
   box-shadow: none;
   color: var(--button-secondary-color);

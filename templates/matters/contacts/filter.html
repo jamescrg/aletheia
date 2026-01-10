@@ -19,7 +19,7 @@
     </div>
     <div class="modal-footer">
       <button type="button"
-              class="btn-icon button-link"
+              class="btn btn-secondary"
               hx-target="#htmx-modal-container"
               hx-get="{% url 'management:clear-filters' session_key=session_key trigger='contactsReload' %}">
         Restore Defaults

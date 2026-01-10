@@ -17,7 +17,8 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button class="btn-icon button-link"
+      <button type="button"
+              class="btn btn-secondary"
               hx-target="#htmx-modal-container"
               hx-get="{% url 'management:clear-filters' session_key='user_filter' trigger='userListReload' %}">
         Restore Defaults
