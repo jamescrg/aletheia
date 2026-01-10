@@ -822,7 +822,7 @@ function updateSaveStatus(status) {
   } else {
     btn.classList.remove("active");
     btn.title = "Saved";
-    icon.className = "icon-cloud-check";
+    icon.className = "icon-cloud";
   }
 }
 
