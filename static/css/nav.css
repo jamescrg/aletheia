@@ -85,7 +85,8 @@
   flex-direction: row;
   flex-wrap: nowrap;
   flex-shrink: 0;
-  padding-left: var(--radius-md);
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .nav-scroll-container li {

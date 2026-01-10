@@ -18,6 +18,9 @@
       </form>
     </div>
     <div class="modal-footer">
+      <button type="button"
+              class="btn btn-secondary"
+              @click="$dispatch('close-modal')">Cancel</button>
       <button type="submit" form="new-user-form" class="btn btn-success">Submit</button>
     </div>
   </div>

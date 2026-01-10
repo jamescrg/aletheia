@@ -13,20 +13,20 @@
         <div class="integrations-item">
           <span>Google Contacts</span>
           {% if contacts_token %}
-            <a class="btn btn-secondary"
+            <a class="btn btn-danger"
                href="{% url 'settings:google-logout' 'contacts' %}">Disconnect</a>
           {% else %}
-            <a class="btn btn-primary"
+            <a class="btn btn-success"
                href="{% url 'settings:google-login' 'contacts' %}">Connect</a>
           {% endif %}
         </div>
         <div class="integrations-item">
           <span>Google Calendar</span>
           {% if calendar_token %}
-            <a class="btn btn-secondary"
+            <a class="btn btn-danger"
                href="{% url 'settings:google-logout' 'calendar' %}">Disconnect</a>
           {% else %}
-            <a class="btn btn-primary"
+            <a class="btn btn-success"
                href="{% url 'settings:google-login' 'calendar' %}">Connect</a>
           {% endif %}
         </div>

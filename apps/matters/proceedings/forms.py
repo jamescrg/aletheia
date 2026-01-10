@@ -23,6 +23,11 @@ class ProceedingForm(forms.ModelForm):
             ("Dismissed", "Dismissed"),
         )
 
+        PRIMARY_CHOICES = (
+            (False, "No"),
+            (True, "Yes"),
+        )
+
         widgets = {
             "forum": forms.TextInput(
                 attrs={"autofocus": "autofocus", "onfocus": "moveFocusToEnd(this)"}
@@ -32,6 +37,7 @@ class ProceedingForm(forms.ModelForm):
             ),
             "status": forms.Select(choices=STATUSES),
             "date_filed": forms.DateInput(attrs={"type": "date"}),
+            "primary": forms.Select(choices=PRIMARY_CHOICES),
         }
 
         labels = {
