@@ -101,6 +101,12 @@
   padding: 1rem;
 }
 
+.modal-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .modal-header a.btn-icon {
   margin-right: 1.5rem;
 }

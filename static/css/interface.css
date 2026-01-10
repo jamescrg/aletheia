@@ -124,7 +124,7 @@
 }
 
 .item-selected-highlight {
-  background: var(--violet-75) !important;
+  background: var(--background-control);
 }
 
 

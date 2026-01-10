@@ -73,11 +73,12 @@
       <thead>
         <tr>
           <th class="col-select">
-            <input type="checkbox"
-                   {% if all_selected %}checked{% endif %}
-                   hx-post="{% url 'case:caselaws-select-all' matter.id %}"
-                   hx-swap="none"
-                   title="Select all">
+            <button class="btn-check"
+                    hx-post="{% url 'case:caselaws-select-all' matter.id %}"
+                    hx-swap="none"
+                    title="Select all">
+              <i class="icon-square{% if all_selected %}-check{% endif %}"></i>
+            </button>
           </th>
           <th class="col-case-name">
             Case Name

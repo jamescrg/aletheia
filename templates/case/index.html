@@ -31,7 +31,7 @@
                 </ul>
               </div>
               {% if matter %}
-                <a href="{% url 'matters:contacts' id=matter.id %}" class="accent-link">Matter Details<i class="icon-arrow-big-left ms-2"></i></a>
+                <a href="{% url 'matters:contacts' id=matter.id %}" class="accent-link">Details</a>
                 <button class="accent-link"
                         hx-get="/activity/time/add/{{ matter.id }}/case"
                         hx-target="#htmx-modal-container">+ Time</button>

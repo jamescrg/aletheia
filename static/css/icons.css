@@ -51,13 +51,6 @@
   color: var(--urgent);
 }
 
-.icon-square,
-.icon-chevron-up,
-.icon-square-check,
-.icon-triangle-alert {
-  color: var(--icon-muted);
-}
-
 .icon-calendar,
 .icon-calendar-days,
 .icon-arrow-up-right {

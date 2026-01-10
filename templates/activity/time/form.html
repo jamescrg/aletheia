@@ -63,13 +63,20 @@
                 hx-delete="{% url 'activity:time-delete' id=entry.id %}"
                 hx-target="#htmx-modal-container">Delete</button>
       {% else %}
-        <a class="button-link codes-reference-link"
-           href="#"
-           hx-get="{% url 'activity:codes-reference' %}"
-           hx-target="#codes-reference-container"
-           hx-swap="innerHTML">View Abbreviation Codes</a>
+        <button type="button"
+                class="btn btn-secondary"
+                @click="$dispatch('close-modal')">Cancel</button>
       {% endif %}
-      <button type="submit" form="time-entry-form" class="btn btn-success">Submit</button>
+      <div class="modal-footer-right">
+        {% if not edit %}
+          <a class="button-link codes-reference-link"
+             href="#"
+             hx-get="{% url 'activity:codes-reference' %}"
+             hx-target="#codes-reference-container"
+             hx-swap="innerHTML">View Abbreviation Codes</a>
+        {% endif %}
+        <button type="submit" form="time-entry-form" class="btn btn-success">Submit</button>
+      </div>
     </div>
   </div>
 </div>

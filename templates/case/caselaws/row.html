@@ -1,9 +1,10 @@
 <tr id="caselaw-{{ case_law.id }}">
   <td class="col-select">
-    <input type="checkbox"
-           {% if case_law.id in selected_caselaws %}checked{% endif %}
-           hx-post="{% url 'case:caselaw-toggle-select' matter.id case_law.id %}"
-           hx-swap="none">
+    <button class="btn-check"
+            hx-post="{% url 'case:caselaw-toggle-select' matter.id case_law.id %}"
+            hx-swap="none">
+      <i class="icon-square{% if case_law.id in selected_caselaws %}-check{% endif %}"></i>
+    </button>
   </td>
   <td class="col-case-name dropdown-cell">
     <div class="dropdown" x-data="dropdown()">
