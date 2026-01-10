@@ -65,15 +65,24 @@
           <div>{{ form.entered }}{{ form.entered.errors }}</div>
         </div>
       </form>
-      <div id="codes-reference-container"></div>
     </div>
-    <div class="modal-footer">
-      <button type="submit" form="time-entry-form" class="btn btn-success">Submit</button>
-      <a class="button-link codes-reference-link"
-         href="#"
-         hx-get="{% url 'activity:codes-reference' %}"
-         hx-target="#codes-reference-container"
-         hx-swap="innerHTML">View Abbreviation Codes</a>
+    <div class="modal-footer modal-footer-3col">
+      <div class="modal-footer-left">
+        <button type="button"
+                class="btn btn-secondary"
+                @click="$dispatch('close-modal')">Cancel</button>
+      </div>
+      <div class="modal-footer-center">
+        <a class="button-link codes-reference-link"
+           href="#"
+           hx-get="{% url 'activity:codes-reference' %}"
+           hx-target="#codes-reference-container"
+           hx-swap="innerHTML">View Abbreviation Codes</a>
+      </div>
+      <div class="modal-footer-right">
+        <button type="submit" form="time-entry-form" class="btn btn-success">Submit</button>
+      </div>
+      <div id="codes-reference-container" class="codes-reference-container"></div>
     </div>
   </div>
 </div>

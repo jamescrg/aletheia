@@ -53,21 +53,22 @@
           <div>{{ form.entered }}{{ form.entered.errors }}</div>
         </div>
       </form>
-      {% if not edit %}<div id="codes-reference-container"></div>{% endif %}
     </div>
-    <div class="modal-footer">
-      {% if edit %}
-        <button type="button"
-                class="btn btn-danger"
-                hx-confirm="Are you sure you want to delete this record?"
-                hx-delete="{% url 'activity:time-delete' id=entry.id %}"
-                hx-target="#htmx-modal-container">Delete</button>
-      {% else %}
-        <button type="button"
-                class="btn btn-secondary"
-                @click="$dispatch('close-modal')">Cancel</button>
-      {% endif %}
-      <div class="modal-footer-right">
+    <div class="modal-footer modal-footer-3col">
+      <div class="modal-footer-left">
+        {% if edit %}
+          <button type="button"
+                  class="btn btn-danger"
+                  hx-confirm="Are you sure you want to delete this record?"
+                  hx-delete="{% url 'activity:time-delete' id=entry.id %}"
+                  hx-target="#htmx-modal-container">Delete</button>
+        {% else %}
+          <button type="button"
+                  class="btn btn-secondary"
+                  @click="$dispatch('close-modal')">Cancel</button>
+        {% endif %}
+      </div>
+      <div class="modal-footer-center">
         {% if not edit %}
           <a class="button-link codes-reference-link"
              href="#"
@@ -75,8 +76,11 @@
              hx-target="#codes-reference-container"
              hx-swap="innerHTML">View Abbreviation Codes</a>
         {% endif %}
+      </div>
+      <div class="modal-footer-right">
         <button type="submit" form="time-entry-form" class="btn btn-success">Submit</button>
       </div>
+      {% if not edit %}<div id="codes-reference-container" class="codes-reference-container"></div>{% endif %}
     </div>
   </div>
 </div>
