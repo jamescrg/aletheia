@@ -58,12 +58,12 @@ def ai_index(request, matter_id):
         filter_obj = ConversationFilter(filter_data, queryset=conversations)
         conversations = filter_obj.qs
     else:
-        conversations = conversations.order_by("-updated_at")
+        conversations = conversations.order_by("-created_at", "-id")
 
     # Get current sort order
-    current_order = filter_data.get("order_by", "-updated_at")
+    current_order = filter_data.get("order_by", "-created_at")
     if isinstance(current_order, list):
-        current_order = current_order[0] if current_order else "-updated_at"
+        current_order = current_order[0] if current_order else "-created_at"
 
     # Get selected LLM from session
     selected_llm = get_selected_llm(request)
@@ -98,12 +98,12 @@ def ai_list(request, matter_id):
         filter_obj = ConversationFilter(filter_data, queryset=conversations)
         conversations = filter_obj.qs
     else:
-        conversations = conversations.order_by("-updated_at")
+        conversations = conversations.order_by("-created_at", "-id")
 
     # Get current sort order
-    current_order = filter_data.get("order_by", "-updated_at")
+    current_order = filter_data.get("order_by", "-created_at")
     if isinstance(current_order, list):
-        current_order = current_order[0] if current_order else "-updated_at"
+        current_order = current_order[0] if current_order else "-created_at"
 
     # Get selected LLM from session
     selected_llm = get_selected_llm(request)

@@ -36,7 +36,7 @@ class Conversation(AuditMixin, models.Model):
     history = HistoricalRecords()
 
     class Meta:
-        ordering = ["-updated_at"]
+        ordering = ["-created_at", "-id"]
         db_table = "matters_conversation"  # Keep same table name
 
     def save(self, *args, **kwargs):
