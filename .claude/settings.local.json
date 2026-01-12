@@ -83,7 +83,8 @@
       "Bash(npm install:*)",
       "Bash(npm run build:*)",
       "Bash(npm audit:*)",
-      "Bash(du:*)"
+      "Bash(du:*)",
+      "Bash(sudo grep:*)"
     ],
     "deny": []
   }

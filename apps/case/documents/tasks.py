@@ -63,12 +63,22 @@ def extract_existing_text(pdf_content):
             - page_count: number of pages
             - content_chars: character count of actual content (excluding headers)
     """
-    reader = PdfReader(BytesIO(pdf_content))
+    try:
+        reader = PdfReader(BytesIO(pdf_content))
+    except Exception as e:
+        logger.warning(f"Failed to read PDF: {e}")
+        return "", 0, 0
+
     text_parts = []
     content_chars = 0
 
     for page_num, page in enumerate(reader.pages, start=1):
-        text = page.extract_text() or ""
+        try:
+            text = page.extract_text() or ""
+        except Exception as e:
+            # Some PDFs have malformed fonts that cause pypdf to fail
+            logger.warning(f"Failed to extract text from page {page_num}: {e}")
+            text = ""
         content_chars += len(text.strip())
         text_parts.append(f"--- Page {page_num} ---\n{text}")
 
