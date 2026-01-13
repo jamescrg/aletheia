@@ -8,20 +8,10 @@
               hx-trigger="click">
         <i class="icon-plus"></i>
       </button>
-      <input type="text"
-             id="caselaws-keyword-input"
-             name="keyword"
-             placeholder="Search cases..."
-             value="{{ keyword }}"
-             class="filter-input keyword-input"
-             hx-get="{% url 'case:caselaws-list' matter.id %}"
-             hx-target="#caselaws"
-             hx-trigger="keyup changed delay:500ms"
-             hx-include="this">
       {% if selected_caselaws %}
         <div class="dropdown" x-data="dropdown()">
           <button type="button"
-                  class="btn-icon"
+                  class="btn-icon toggle-active"
                   x-ref="button"
                   @click="toggle()"
                   :aria-expanded="open">
@@ -47,7 +37,6 @@
                  hx-get="{% url 'case:caselaws-bulk-labels' matter.id %}"
                  hx-target="#htmx-modal-container"><i class="icon-tag"></i> Manage Labels...</a>
             </li>
-            <li class="dropdown-divider"></li>
             <li>
               <a class="dropdown-item text-danger"
                  href="#"
@@ -58,12 +47,22 @@
           </ul>
         </div>
         <button type="button"
-                class="btn-icon"
+                class="btn-icon toggle-active"
                 hx-post="{% url 'case:caselaws-clear-selection' matter.id %}"
                 hx-swap="none">
           <i class="icon-x"></i> Clear
         </button>
       {% endif %}
+      <input type="text"
+             id="caselaws-keyword-input"
+             name="keyword"
+             placeholder="Search cases..."
+             value="{{ keyword }}"
+             class="filter-input keyword-input"
+             hx-get="{% url 'case:caselaws-list' matter.id %}"
+             hx-target="#caselaws"
+             hx-trigger="keyup changed delay:500ms"
+             hx-include="this">
     </div>
   </div>
 </div>
