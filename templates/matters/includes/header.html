@@ -8,7 +8,7 @@
         <a href="{% url 'case:select-matter' matter.id %}"
            class="mode-pill {% if mode == 'case' %}active{% endif %}">Case</a>
       </div>
+      <div class="filter-tools">{% include "matters/includes/action_buttons.html" %}</div>
     </div>
-    <div class="toolbar-right">{% include "matters/includes/action_buttons.html" %}</div>
   </div>
 </div>
