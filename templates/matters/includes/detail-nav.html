@@ -1,0 +1,54 @@
+<nav id="section-nav"
+     class="section-nav"
+     {% if oob %}hx-swap-oob="true"{% endif %}>
+  <ul>
+    <li {% if subapp == 'contacts' %}class="active"{% endif %}>
+      <a href="{% url 'matters:contacts' id=matter.id %}"
+         hx-get="{% url 'matters:contacts-list' id=matter.id %}"
+         hx-target=".section-body"
+         hx-push-url="{% url 'matters:contacts' id=matter.id %}">Contacts</a>
+    </li>
+    <li {% if subapp == 'rates' %}class="active"{% endif %}>
+      <a href="{% url 'matters:rate-index' id=matter.id %}"
+         hx-get="{% url 'matters:rates' id=matter.id %}"
+         hx-target=".section-body"
+         hx-push-url="{% url 'matters:rate-index' id=matter.id %}">Rates</a>
+    </li>
+    <li {% if subapp == 'activity' %}class="active"{% endif %}>
+      <a href="{% url 'matters:activity-index' id=matter.id %}"
+         hx-get="{% url 'matters:activity' id=matter.id %}"
+         hx-target=".section-body"
+         hx-push-url="{% url 'matters:activity-index' id=matter.id %}">Activity</a>
+    </li>
+    <li {% if subapp == 'events' %}class="active"{% endif %}>
+      <a href="{% url 'matters:events-index' id=matter.id %}"
+         hx-get="{% url 'matters:events' id=matter.id %}"
+         hx-target=".section-body"
+         hx-push-url="{% url 'matters:events-index' id=matter.id %}">Events</a>
+    </li>
+    <li {% if subapp == 'tasks' %}class="active"{% endif %}>
+      <a href="{% url 'matters:tasks-index' id=matter.id %}"
+         hx-get="{% url 'matters:tasks-list' id=matter.id %}"
+         hx-target=".section-body"
+         hx-push-url="{% url 'matters:tasks-index' id=matter.id %}">Tasks</a>
+    </li>
+    <li {% if subapp == 'proceedings' %}class="active"{% endif %}>
+      <a href="{% url 'matters:proceedings-index' id=matter.id %}"
+         hx-get="{% url 'matters:proceedings' id=matter.id %}"
+         hx-target=".section-body"
+         hx-push-url="{% url 'matters:proceedings-index' id=matter.id %}">Proceedings</a>
+    </li>
+    <li {% if subapp == 'settlement' %}class="active"{% endif %}>
+      <a href="{% url 'matters:settlement-index' id=matter.id %}"
+         hx-get="{% url 'matters:settlement' id=matter.id %}"
+         hx-target=".section-body"
+         hx-push-url="{% url 'matters:settlement-index' id=matter.id %}">Settlement</a>
+    </li>
+    <li {% if subapp == 'ledger' %}class="active"{% endif %}>
+      <a href="{% url 'matters:ledger' id=matter.id %}"
+         hx-get="{% url 'matters:ledger-list' id=matter.id %}"
+         hx-target=".section-body"
+         hx-push-url="{% url 'matters:ledger' id=matter.id %}">Ledger</a>
+    </li>
+  </ul>
+</nav>
