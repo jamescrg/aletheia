@@ -113,3 +113,52 @@ Matter Details
 .matter-data table {
   margin-right: 1.25rem;
 }
+
+
+/* ==========================================================================
+Mode Pills (Detail/Case toggle)
+========================================================================== */
+
+.mode-pills {
+  display: inline-flex;
+  gap: 0;
+  margin-left: 1rem;
+}
+
+.toolbar .mode-pill {
+  background: var(--background-control);
+  border: 1px solid var(--border-medium);
+  color: var(--color-muted);
+  cursor: pointer;
+  min-width: 4rem;
+  padding: 0.5rem 0.75rem;
+  text-align: center;
+}
+
+.toolbar .mode-pill:first-child {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  border-right: none;
+}
+
+.toolbar .mode-pill:last-child {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.toolbar .mode-pill.active {
+  background: var(--selected-background);
+  border: 1px solid var(--selected-border);
+  color: var(--selected-color);
+}
+
+.toolbar .mode-pill.active:first-child {
+  border-right: none;
+}
+
+.toolbar .mode-pill:hover:not(.active) {
+  background: var(--background-light);
+  color: var(--color-nav);
+}
+
+.mode-pills + .filter-tools {
+  margin-left: 1.25rem;
+}

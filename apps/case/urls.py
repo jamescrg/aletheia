@@ -23,6 +23,16 @@ urlpatterns = [
         views.select_matter,
         name="select-matter",
     ),
+    path(
+        "case/<int:matter_id>/mode-content/",
+        views.mode_content,
+        name="mode-content",
+    ),
+    path(
+        "case/<int:matter_id>/tab/<str:tab>/",
+        views.tab_content,
+        name="tab-content",
+    ),
     # ==========================================================================
     # MATTER-SCOPED ROUTES (list, filter, add operations)
     # ==========================================================================

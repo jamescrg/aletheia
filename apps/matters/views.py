@@ -15,6 +15,36 @@ from apps.matters.models import Matter
 from apps.matters.proceedings.models import Proceeding
 from apps.matters.settlement.models import SettlementEntry
 
+# Valid detail tabs for the matter detail view
+VALID_DETAIL_TABS = [
+    "contacts",
+    "rates",
+    "activity",
+    "events",
+    "tasks",
+    "proceedings",
+    "settlement",
+    "ledger",
+]
+DEFAULT_DETAIL_TAB = "contacts"
+
+
+def get_detail_tab_session_key(matter_id):
+    """Get the session key for storing the active detail tab for a matter."""
+    return f"matter_detail_tab_{matter_id}"
+
+
+def get_last_detail_tab(request, matter_id):
+    """Get the last active detail tab for a matter, or default to contacts."""
+    tab = request.session.get(get_detail_tab_session_key(matter_id), DEFAULT_DETAIL_TAB)
+    return tab if tab in VALID_DETAIL_TABS else DEFAULT_DETAIL_TAB
+
+
+def set_last_detail_tab(request, matter_id, tab):
+    """Save the active detail tab for a matter."""
+    if tab in VALID_DETAIL_TABS:
+        request.session[get_detail_tab_session_key(matter_id)] = tab
+
 
 @login_required
 def matter_index(request):
@@ -114,7 +144,138 @@ def order_by(request, order):
 @login_required
 def detail(request, id):
     request.session["matters-view"] = "detail"
-    return redirect(f"/matters/{id}/contacts")
+    tab = get_last_detail_tab(request, id)
+    return redirect(f"/matters/{id}/{tab}")
+
+
+@login_required
+def mode_content(request, id):
+    """Return detail mode content partial for HTMX, or redirect for regular request."""
+    matter = get_object_or_404(Matter, pk=id)
+    tab = get_last_detail_tab(request, id)
+
+    if not request.headers.get("HX-Request"):
+        return redirect(f"/matters/{id}/{tab}")
+
+    context = {
+        "matter": matter,
+        "matters": Matter.objects.filter(status="Open").order_by("name"),
+        "mode": "detail",
+        "subapp": tab,
+    }
+
+    # Fetch tab data directly for single-request loading
+    tab_data = _get_detail_tab_data(request, matter, tab)
+    context.update(tab_data)
+
+    return render(request, "matters/includes/detail-content.html", context)
+
+
+@login_required
+def tab_content(request, id, tab):
+    """Return tab content with wrapper for HTMX tab switching."""
+    matter = get_object_or_404(Matter, pk=id)
+
+    # Update last viewed tab
+    set_last_detail_tab(request, id, tab)
+
+    context = {
+        "matter": matter,
+        "subapp": tab,
+    }
+
+    tab_data = _get_detail_tab_data(request, matter, tab)
+    context.update(tab_data)
+
+    return render(request, "matters/includes/detail-tab-content.html", context)
+
+
+def _get_detail_tab_data(request, matter, tab):
+    """Fetch data for the specified detail tab."""
+    from apps.activity.time.models import TimeEntry
+    from apps.activity.time.summary import calculate_summary
+    from apps.management.pagination import CustomPaginator
+    from apps.matters.contacts.views import get_contact_list
+    from apps.matters.events.get_event_data import get_event_data
+    from apps.matters.ledger.get_ledger_data import get_ledger_data
+    from apps.matters.rates.models import Rate
+    from apps.matters.tasks.views import get_matter_tasks_data
+    from apps.trust.trust import get_confirmed_client_balance
+
+    if tab == "contacts":
+        return {
+            "tab_template": "matters/contacts/contact-table.html",
+            **get_contact_list(request, matter),
+        }
+
+    elif tab == "rates":
+        return {
+            "tab_template": "matters/rates/list.html",
+            "rates": Rate.objects.filter(matter=matter).order_by("user__username"),
+        }
+
+    elif tab == "activity":
+        sort_order = request.session.get("matter_activity_sort", "-id")
+        entries = TimeEntry.objects.filter(matter=matter.id).order_by(sort_order)
+        pagination = CustomPaginator(
+            entries, per_page=10, request=request, session_key="activity_pagination"
+        )
+        return {
+            "tab_template": "matters/activity/list.html",
+            "entries": pagination.get_object_list(),
+            "pagination": pagination,
+            "session_key": "activity_pagination",
+            "trigger_key": "matterActivityChanged",
+            "summary": calculate_summary(entries),
+        }
+
+    elif tab == "events":
+        return {
+            "tab_template": "matters/events/list.html",
+            **get_event_data(request, matter),
+        }
+
+    elif tab == "tasks":
+        return {
+            "tab_template": "matters/tasks/list.html",
+            **get_matter_tasks_data(request, matter.id),
+        }
+
+    elif tab == "proceedings":
+        return {
+            "tab_template": "matters/proceedings/list.html",
+            "proceedings": Proceeding.objects.filter(matter=matter.id).order_by("-id"),
+        }
+
+    elif tab == "settlement":
+        return {
+            "tab_template": "matters/settlement/list.html",
+            "entries": SettlementEntry.objects.filter(matter=matter.id).order_by(
+                "date"
+            ),
+        }
+
+    elif tab == "ledger":
+        ledger_data = get_ledger_data(matter)
+        client_trust_balance = 0
+        if matter.client:
+            client_trust_balance = get_confirmed_client_balance(matter.client.id)
+
+        total_cost = (
+            matter.value["invoices"]["payment_sum"]
+            + ledger_data["balance_due"]
+            + matter.value["unbilled"]["net_fees_and_expenses"]
+        )
+
+        return {
+            "tab_template": "matters/ledger/list.html",
+            "client_trust_balance": client_trust_balance,
+            "total_cost": total_cost,
+            **ledger_data,
+        }
+
+    # Fallback
+    return {"tab_template": "matters/contacts/contact-table.html"}
 
 
 @login_required

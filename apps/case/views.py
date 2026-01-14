@@ -84,6 +84,158 @@ def select_matter(request, matter_id):
     return redirect_to_tab(matter.id, tab)
 
 
+@login_required
+def mode_content(request, matter_id):
+    """Return case mode content partial for HTMX, or redirect for regular request."""
+    from django.shortcuts import render
+
+    matter = get_object_or_404(Matter, pk=matter_id)
+    tab = get_last_tab(request, matter_id)
+
+    # Store as last viewed matter
+    request.session["last_viewed_matter"] = matter.id
+
+    if not request.headers.get("HX-Request"):
+        return redirect_to_tab(matter_id, tab)
+
+    matters = Matter.objects.filter(status="Open").order_by("name")
+
+    context = {
+        "matter": matter,
+        "matters": matters,
+        "mode": "case",
+        "subapp": tab,
+    }
+
+    # Fetch tab data directly for single-request loading
+    tab_data = _get_case_tab_data(request, matter, matters, matter_id, tab)
+    context.update(tab_data)
+
+    return render(request, "case/includes/case-content.html", context)
+
+
+@login_required
+def tab_content(request, matter_id, tab):
+    """Return tab content with wrapper for HTMX tab switching."""
+    from django.shortcuts import render
+
+    matter = get_object_or_404(Matter, pk=matter_id)
+    matters = Matter.objects.filter(status="Open").order_by("name")
+
+    # Update last viewed tab
+    set_last_tab(request, matter_id, tab)
+
+    context = {
+        "matter": matter,
+        "matters": matters,
+        "subapp": tab,
+    }
+
+    tab_data = _get_case_tab_data(request, matter, matters, matter_id, tab)
+    context.update(tab_data)
+
+    return render(request, "case/includes/case-tab-content.html", context)
+
+
+def _get_case_tab_data(request, matter, matters, matter_id, tab):
+    """Fetch data for the specified case tab."""
+    from apps.case.ai.filters import ConversationFilter
+    from apps.case.ai.models import Conversation
+    from apps.case.caselaws.views import get_caselaws_data
+    from apps.case.documents.views import get_document_data
+    from apps.case.facts.views import get_facts_data
+    from apps.case.highlights.views import get_highlights_data
+    from apps.case.labels.views import get_label_data
+    from apps.case.notes.views import get_notes_data
+    from apps.case.search.views import get_search_data
+    from apps.case.witnesses.views import get_witnesses_data
+
+    if tab == "documents":
+        return {
+            "tab_template": "case/documents/list.html",
+            **get_document_data(request, matter_id),
+        }
+
+    elif tab == "caselaws":
+        return {
+            "tab_template": "case/caselaws/list.html",
+            **get_caselaws_data(request, matter, matter_id),
+        }
+
+    elif tab == "highlights":
+        return {
+            "tab_template": "case/highlights/list.html",
+            **get_highlights_data(request, matter, matter_id),
+        }
+
+    elif tab == "facts":
+        return {
+            "tab_template": "case/facts/list.html",
+            **get_facts_data(request, matter, matter_id),
+        }
+
+    elif tab == "witnesses":
+        return {
+            "tab_template": "case/witnesses/list.html",
+            **get_witnesses_data(request, matter, matter_id),
+        }
+
+    elif tab == "notes":
+        return {
+            "tab_template": "case/notes/list.html",
+            **get_notes_data(request, matter, matter_id),
+        }
+
+    elif tab == "labels":
+        return {
+            "tab_template": "case/labels/list.html",
+            **get_label_data(request, matter_id),
+        }
+
+    elif tab == "search":
+        return {
+            "tab_template": "case/search/list.html",
+            **get_search_data(request, matter, matter_id),
+        }
+
+    elif tab == "ai":
+        # AI tab has custom logic
+        filter_session_key = get_session_key("ai_filter", matter_id)
+        filter_data = request.session.get(filter_session_key, {})
+
+        conversations = Conversation.objects.filter(matter=matter)
+        if filter_data:
+            filter_obj = ConversationFilter(filter_data, queryset=conversations)
+            conversations = filter_obj.qs
+        else:
+            conversations = conversations.order_by("-created_at", "-id")
+
+        current_order = filter_data.get("order_by", "-created_at")
+        if isinstance(current_order, list):
+            current_order = current_order[0] if current_order else "-created_at"
+
+        # Get LLM choices
+        llm_session_key = get_session_key("ai_llm", matter_id)
+        selected_llm = request.session.get(llm_session_key, "claude")
+        llm_choices = [("claude", "Claude"), ("gpt4", "GPT-4"), ("gemini", "Gemini")]
+        selected_llm_display = dict(llm_choices).get(selected_llm, "Claude")
+
+        return {
+            "tab_template": "case/ai/list.html",
+            "conversations": conversations,
+            "current_order": current_order,
+            "llm_choices": llm_choices,
+            "selected_llm": selected_llm,
+            "selected_llm_display": selected_llm_display,
+        }
+
+    # Fallback
+    return {
+        "tab_template": "case/documents/list.html",
+        **get_document_data(request, matter_id),
+    }
+
+
 def get_matter_from_url(request, matter_id):
     """
     Get matter from URL parameter and update last_viewed_matter in session.

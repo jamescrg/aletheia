@@ -1,0 +1,58 @@
+{% include "matters/includes/detail-nav.html" %}
+<div class="section-body">
+  {% if subapp == "contacts" %}
+    <div id="contacts"
+         hx-trigger="contactsReload from:body"
+         hx-get="{% url 'matters:contacts-list' id=matter.id %}"
+         hx-target="this">{% include tab_template %}</div>
+  {% elif subapp == "rates" %}
+    <div id="rates"
+         hx-trigger="matterRateChanged from:body"
+         hx-get="{% url 'matters:rates' matter.id %}"
+         hx-target="this">{% include tab_template %}</div>
+  {% elif subapp == "activity" %}
+    <div id="matterActivity"
+         hx-trigger="matterActivityChanged from:body, timeChanged from:body"
+         hx-get="{% url 'matters:activity' matter.id %}"
+         hx-target="this">{% include tab_template %}</div>
+  {% elif subapp == "events" %}
+    <div id="matterEvents"
+         hx-trigger="matterEventChanged from:body"
+         hx-get="{% url 'matters:events' matter.id %}"
+         hx-target="this">{% include tab_template %}</div>
+  {% elif subapp == "tasks" %}
+    <div id="matterTasks"
+         hx-trigger="tasksListChanged from:body"
+         hx-get="{% url 'matters:tasks-list' matter.id %}"
+         hx-target="this">{% include tab_template %}</div>
+  {% elif subapp == "proceedings" %}
+    <div id="proceedings"
+         hx-trigger="matterProceedingChanged from:body"
+         hx-get="{% url 'matters:proceedings' matter.id %}"
+         hx-target="this">{% include tab_template %}</div>
+  {% elif subapp == "settlement" %}
+    <div id="settlement"
+         hx-trigger="matterSettlementChanged from:body"
+         hx-get="{% url 'matters:settlement' matter.id %}"
+         hx-target="this">{% include tab_template %}</div>
+  {% elif subapp == "ledger" %}
+    <div id="ledger"
+         hx-trigger="matterLedgerChanged from:body"
+         hx-get="{% url 'matters:ledger-list' matter.id %}"
+         hx-target="this">{% include tab_template %}</div>
+  {% else %}
+    {% include tab_template %}
+  {% endif %}
+</div>
+<div id="mode-pills" class="mode-pills" hx-swap-oob="true">
+  <a href="{% url 'matters:detail' id=matter.id %}"
+     hx-get="{% url 'matters:mode-content' id=matter.id %}"
+     hx-target="#mode-content"
+     hx-push-url="{% url 'matters:detail' id=matter.id %}"
+     class="mode-pill active">Detail</a>
+  <a href="{% url 'case:select-matter' matter.id %}"
+     hx-get="{% url 'case:mode-content' matter_id=matter.id %}"
+     hx-target="#mode-content"
+     hx-push-url="{% url 'case:select-matter' matter.id %}"
+     class="mode-pill">Case</a>
+</div>
