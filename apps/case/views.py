@@ -114,6 +114,29 @@ def mode_content(request, matter_id):
     return render(request, "case/includes/case-content.html", context)
 
 
+@login_required
+def tab_content(request, matter_id, tab):
+    """Return tab content with wrapper for HTMX tab switching."""
+    from django.shortcuts import render
+
+    matter = get_object_or_404(Matter, pk=matter_id)
+    matters = Matter.objects.filter(status="Open").order_by("name")
+
+    # Update last viewed tab
+    set_last_tab(request, matter_id, tab)
+
+    context = {
+        "matter": matter,
+        "matters": matters,
+        "subapp": tab,
+    }
+
+    tab_data = _get_case_tab_data(request, matter, matters, matter_id, tab)
+    context.update(tab_data)
+
+    return render(request, "case/includes/case-tab-content.html", context)
+
+
 def _get_case_tab_data(request, matter, matters, matter_id, tab):
     """Fetch data for the specified case tab."""
     from apps.case.ai.filters import ConversationFilter

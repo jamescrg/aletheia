@@ -171,6 +171,25 @@ def mode_content(request, id):
     return render(request, "matters/includes/detail-content.html", context)
 
 
+@login_required
+def tab_content(request, id, tab):
+    """Return tab content with wrapper for HTMX tab switching."""
+    matter = get_object_or_404(Matter, pk=id)
+
+    # Update last viewed tab
+    set_last_detail_tab(request, id, tab)
+
+    context = {
+        "matter": matter,
+        "subapp": tab,
+    }
+
+    tab_data = _get_detail_tab_data(request, matter, tab)
+    context.update(tab_data)
+
+    return render(request, "matters/includes/detail-tab-content.html", context)
+
+
 def _get_detail_tab_data(request, matter, tab):
     """Fetch data for the specified detail tab."""
     from apps.activity.time.models import TimeEntry

@@ -1,0 +1,49 @@
+{% if subapp == "documents" %}
+  <div id="documents"
+       hx-trigger="documentsChanged from:body"
+       hx-get="{% url 'case:documents-list' matter.id %}"
+       hx-target="this">{% include tab_template %}</div>
+{% elif subapp == "caselaws" %}
+  <div id="caselaws"
+       hx-trigger="caselawsChanged from:body"
+       hx-get="{% url 'case:caselaws-list' matter.id %}"
+       hx-target="this">{% include tab_template %}</div>
+{% elif subapp == "highlights" %}
+  <div id="highlights"
+       hx-trigger="highlightsChanged from:body"
+       hx-get="{% url 'case:highlights-list' matter.id %}"
+       hx-target="this">{% include tab_template %}</div>
+{% elif subapp == "facts" %}
+  <div id="facts"
+       hx-trigger="factsChanged from:body"
+       hx-get="{% url 'case:facts-list' matter.id %}"
+       hx-target="this">{% include tab_template %}</div>
+{% elif subapp == "witnesses" %}
+  <div id="witnesses"
+       hx-trigger="witnessesChanged from:body"
+       hx-get="{% url 'case:witnesses-list' matter.id %}"
+       hx-target="this">{% include tab_template %}</div>
+{% elif subapp == "notes" %}
+  <div id="notes"
+       hx-trigger="notesChanged from:body"
+       hx-get="{% url 'case:notes-list' matter.id %}"
+       hx-target="this">{% include tab_template %}</div>
+{% elif subapp == "labels" %}
+  <div id="labels"
+       hx-trigger="labelsChanged from:body"
+       hx-get="{% url 'case:labels-list' matter.id %}"
+       hx-target="this">{% include tab_template %}</div>
+{% elif subapp == "search" %}
+  <div id="search"
+       hx-trigger="searchChanged from:body"
+       hx-get="{% url 'case:search-list' matter.id %}"
+       hx-target="this">{% include tab_template %}</div>
+{% elif subapp == "ai" %}
+  <div id="ai-conversations"
+       hx-trigger="conversationsChanged from:body"
+       hx-get="{% url 'case:ai-list' matter.id %}"
+       hx-target="this">{% include tab_template %}</div>
+{% else %}
+  {% include tab_template %}
+{% endif %}
+{% include "case/includes/case-nav.html" with oob=True %}

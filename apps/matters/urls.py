@@ -23,6 +23,7 @@ from .views import (
     mode_content,
     order_by,
     print,
+    tab_content,
     update_work_status,
 )
 
@@ -34,6 +35,7 @@ urlpatterns = [
     path("matters/list/", matter_list, name="list"),
     path("matters/<int:id>", detail, name="detail"),
     path("matters/<int:id>/mode-content/", mode_content, name="mode-content"),
+    path("matters/<int:id>/tab/<str:tab>/", tab_content, name="tab-content"),
     path("matters/add", add, name="add"),
     path("matters/<int:id>/edit", edit, name="edit"),
     path("matters/<int:id>/delete", delete, name="delete"),
