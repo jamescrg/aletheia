@@ -154,11 +154,6 @@ Mode Pills (Detail/Case toggle)
   border-right: none;
 }
 
-.toolbar .mode-pill:hover:not(.active) {
-  background: var(--background-light);
-  color: var(--color-nav);
-}
-
 .mode-pills + .filter-tools {
   margin-left: 1.25rem;
 }
