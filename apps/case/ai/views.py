@@ -11,6 +11,8 @@ from pathlib import Path
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
+from django.db.models import Max
+from django.db.models.functions import Coalesce
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -42,6 +44,13 @@ def get_llm_display(llm_key):
     return llm_dict.get(llm_key, llm_key)
 
 
+def annotate_last_activity(queryset):
+    """Annotate conversations with last message timestamp, falling back to created_at."""
+    return queryset.annotate(
+        last_activity=Coalesce(Max("messages__created_at"), "created_at")
+    )
+
+
 @login_required
 def ai_index(request, matter_id):
     """Main AI view - list of conversations."""
@@ -52,8 +61,8 @@ def ai_index(request, matter_id):
     filter_session_key = get_session_key("ai_filter", matter_id)
     filter_data = request.session.get(filter_session_key, {})
 
-    # Get conversations and apply filter
-    conversations = Conversation.objects.filter(matter=matter)
+    # Get conversations and apply filter with last_activity annotation
+    conversations = annotate_last_activity(Conversation.objects.filter(matter=matter))
     if filter_data:
         filter_obj = ConversationFilter(filter_data, queryset=conversations)
         conversations = filter_obj.qs
@@ -92,8 +101,8 @@ def ai_list(request, matter_id):
     filter_session_key = get_session_key("ai_filter", matter_id)
     filter_data = request.session.get(filter_session_key, {})
 
-    # Get conversations and apply filter
-    conversations = Conversation.objects.filter(matter=matter)
+    # Get conversations and apply filter with last_activity annotation
+    conversations = annotate_last_activity(Conversation.objects.filter(matter=matter))
     if filter_data:
         filter_obj = ConversationFilter(filter_data, queryset=conversations)
         conversations = filter_obj.qs
