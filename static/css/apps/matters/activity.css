@@ -15,6 +15,9 @@
 
 .matter-activity .actions {
   min-width: 18rem;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
 }
 
 .matter-activity .hours {
