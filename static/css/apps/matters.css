@@ -135,6 +135,10 @@ Mode Pills (Detail/Case toggle)
   text-align: center;
 }
 
+.toolbar .mode-pill > i {
+  margin-right: 0.5rem;
+}
+
 .toolbar .mode-pill:first-child {
   border-radius: var(--radius-md) 0 0 var(--radius-md);
   border-right: none;
