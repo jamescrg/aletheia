@@ -63,9 +63,9 @@
       <th class="messages">Messages</th>
       <th class="participants">Participants</th>
       <th class="updated">
-        Last Updated
-        <button class="btn-sort {% if 'updated_at' in current_order %}active{% endif %}"
-                hx-get="{% url 'case:ai-sort' matter.id 'updated_at' %}"
+        Last Activity
+        <button class="btn-sort {% if 'last_activity' in current_order %}active{% endif %}"
+                hx-get="{% url 'case:ai-sort' matter.id 'last_activity' %}"
                 hx-target="#ai-conversations">
           <i class="icon-chevrons-up-down"></i>
         </button>
@@ -126,7 +126,7 @@
         {% if participants.count > 3 %}<span class="participant-more">+{{ participants.count|add:"-3" }}</span>{% endif %}
       {% endwith %}
     </td>
-    <td class="updated">{{ conv.updated_at|naturaltime }}</td>
+    <td class="updated">{{ conv.last_activity|naturaltime }}</td>
     <td class="reference">
       <label class="toggle-switch"
              title="{% if conv.is_reference %}Remove from reference{% else %}Add as reference for other conversations{% endif %}">
