@@ -49,15 +49,6 @@
     {% include tab_template %}
   {% endif %}
 </div>
-<div id="mode-pills" class="mode-pills" hx-swap-oob="true">
-  <a href="{% url 'matters:detail' id=matter.id %}"
-     hx-get="{% url 'matters:mode-content' id=matter.id %}"
-     hx-target="#mode-content"
-     hx-push-url="{% url 'matters:detail' id=matter.id %}"
-     class="mode-pill"><i class="icon-file-clock"></i> Detail</a>
-  <a href="{% url 'case:select-matter' matter.id %}"
-     hx-get="{% url 'case:mode-content' matter_id=matter.id %}"
-     hx-target="#mode-content"
-     hx-push-url="{% url 'case:select-matter' matter.id %}"
-     class="mode-pill active"><i class="icon-briefcase-business"></i> Case</a>
-</div>
+{% with oob=True mode="case" %}
+  {% include "matters/includes/mode-pills.html" %}
+{% endwith %}
