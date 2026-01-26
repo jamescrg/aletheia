@@ -776,6 +776,11 @@ urlpatterns = [
         name="ai-delete-conversation",
     ),
     path(
+        "case/ai/conversations/<int:conv_id>/clone/",
+        ai.clone_conversation,
+        name="ai-clone-conversation",
+    ),
+    path(
         "case/ai/conversations/<int:conv_id>/toggle-reference/",
         ai.toggle_reference,
         name="ai-toggle-reference",

@@ -95,6 +95,12 @@
                    hx-target="#htmx-modal-container"><i class="icon-pencil"></i> Rename</a>
               </li>
               <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-post="{% url 'case:ai-clone-conversation' conv.id %}"
+                   hx-swap="none"><i class="icon-copy"></i> Clone</a>
+              </li>
+              <li>
               <a class="dropdown-item"
                  href="#"
                  hx-post="{% url 'case:ai-toggle-reference' conv.id %}"
