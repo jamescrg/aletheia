@@ -147,10 +147,6 @@
       scrollMessagesToBottom();
     });
 
-    // Handle messages updated (e.g., after delete)
-    document.body.addEventListener('messagesUpdated', function() {
-      updatePromptList();
-    });
 
     function updatePromptList() {
       const messages = document.querySelectorAll('.ai-message-user');
@@ -214,10 +210,11 @@
       }
     });
 
-    // Scroll to bottom when status indicator swaps content
+    // Update UI when message container swaps content
     document.body.addEventListener('htmx:afterSwap', function(e) {
       if (e.target.id === 'messageContainer' || e.target.closest('#messageContainer')) {
         scrollMessagesToBottom();
+        updatePromptList();
       }
     });
 

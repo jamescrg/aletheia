@@ -479,7 +479,7 @@ def cancel_request(request, conv_id):
 
 @login_required
 def delete_message(request, message_id):
-    """Delete the most recent message pair (user question + assistant response)."""
+    """Delete a message pair (user question + assistant response)."""
     message = get_object_or_404(
         Message, pk=message_id, conversation__matter__in=get_accessible_matters()
     )
@@ -488,13 +488,8 @@ def delete_message(request, message_id):
     if request.method != "POST":
         return HttpResponse(status=405)
 
-    # Only allow deletion of the most recent user message
-    last_user_message = (
-        conversation.messages.filter(role="user").order_by("-created_at").first()
-    )
-
-    if message.role != "user" or message.id != last_user_message.id:
-        return HttpResponse("Can only delete the most recent exchange", status=403)
+    if message.role != "user":
+        return HttpResponse("Can only delete user messages", status=403)
 
     # Delete the following assistant message if it exists
     next_message = (
