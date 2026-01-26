@@ -564,6 +564,39 @@ def delete_conversation(request, conv_id):
 
 
 @login_required
+def clone_conversation(request, conv_id):
+    """Clone a conversation with all its messages."""
+    conversation = get_object_or_404(
+        Conversation, pk=conv_id, matter__in=get_accessible_matters()
+    )
+
+    # Create new conversation
+    new_conversation = Conversation.objects.create(
+        matter=conversation.matter,
+        user=request.user,
+        title=f"{conversation.title} (Copy)",
+        llm=conversation.llm,
+    )
+
+    # Clone all messages
+    for message in conversation.messages.all():
+        Message.objects.create(
+            conversation=new_conversation,
+            role=message.role,
+            content=message.content,
+            user=message.user,
+            input_tokens=message.input_tokens,
+            output_tokens=message.output_tokens,
+            verified_citations=message.verified_citations,
+        )
+
+    # Trigger refresh of conversation list
+    response = HttpResponse(status=204)
+    response["HX-Trigger"] = "conversationsChanged"
+    return response
+
+
+@login_required
 def toggle_reference(request, conv_id):
     """Toggle the is_reference flag on a conversation."""
     conversation = get_object_or_404(
