@@ -11,7 +11,7 @@ from pathlib import Path
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
-from django.db.models import Max
+from django.db.models import F, Max
 from django.db.models.functions import Coalesce
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -47,7 +47,7 @@ def get_llm_display(llm_key):
 def annotate_last_activity(queryset):
     """Annotate conversations with last message timestamp, falling back to created_at."""
     return queryset.annotate(
-        last_activity=Coalesce(Max("messages__created_at"), "created_at")
+        last_activity=Coalesce(Max("messages__created_at"), F("created_at"))
     )
 
 

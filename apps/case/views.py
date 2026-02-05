@@ -200,10 +200,14 @@ def _get_case_tab_data(request, matter, matters, matter_id, tab):
 
     elif tab == "ai":
         # AI tab has custom logic
+        from apps.case.ai.views import annotate_last_activity
+
         filter_session_key = get_session_key("ai_filter", matter_id)
         filter_data = request.session.get(filter_session_key, {})
 
-        conversations = Conversation.objects.filter(matter=matter)
+        conversations = annotate_last_activity(
+            Conversation.objects.filter(matter=matter)
+        )
         if filter_data:
             filter_obj = ConversationFilter(filter_data, queryset=conversations)
             conversations = filter_obj.qs
