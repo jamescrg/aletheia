@@ -13,7 +13,10 @@
       <i class="icon-chevron-down"></i>
     </small>
   </button>
-  <ul class="dropdown-menu" x-ref="menu" x-show="open">
+  <ul class="dropdown-menu"
+      x-ref="menu"
+      x-show="open"
+      hx-disinherit="hx-target">
     <li>
       <a class="dropdown-item {% if not events_filter_status %}active{% endif %}"
          href="#"

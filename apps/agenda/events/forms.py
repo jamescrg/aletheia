@@ -20,6 +20,7 @@ class EventForm(forms.ModelForm):
             "start_time",
             "end_time",
             "location",
+            "assigned_to",
         )
         PARTIES = (
             ("Client", "Client"),
@@ -56,6 +57,7 @@ class EventForm(forms.ModelForm):
             is_active=True
         ).order_by("first_name", "last_name")
         self.fields["assigned_to"].label_from_instance = lambda u: u.full_name
+        self.fields["assigned_to"].empty_label = "Firm"
 
     def clean_description(self):
         description = self.cleaned_data["description"]

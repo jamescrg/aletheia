@@ -11,6 +11,7 @@
           <i class="icon-list-filter"></i>Filter
         </button>
         {% include "agenda/events/status-dropdown.html" %}
+        {% include "agenda/events/assigned-dropdown.html" %}
         <div class="view-toggle">
           <button type="button"
                   class="{% if view_mode == 'list' %}toggle-active{% endif %}"

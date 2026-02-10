@@ -43,6 +43,8 @@ def events_index(request):
 @login_required
 def events_list(request):
     """Returns the appropriate view (list or calendar) based on session."""
+    from apps.accounts.models import CustomUser
+
     today = date.today()
     third_day = today + timedelta(days=3)
 
@@ -50,12 +52,30 @@ def events_list(request):
     events_filter = request.session.get("events_filter", {})
     events_filter_status = events_filter.get("status", "")
 
+    # Get assigned_to filter display value
+    assigned_to_value = events_filter.get("assigned_to", "")
+    if assigned_to_value == "unassigned":
+        events_filter_assigned = "Firm"
+    elif assigned_to_value:
+        try:
+            user = CustomUser.objects.get(pk=int(assigned_to_value))
+            events_filter_assigned = user.get_short_name() or user.username
+        except (ValueError, CustomUser.DoesNotExist):
+            events_filter_assigned = ""
+    else:
+        events_filter_assigned = ""
+
     context = {
         "app": "agenda",
         "subapp": "events",
         "third_day": third_day,
         "view_mode": view_mode,
         "events_filter_status": events_filter_status,
+        "events_filter_assigned": events_filter_assigned,
+        "events_filter_assigned_value": assigned_to_value,
+        "users": CustomUser.objects.filter(is_active=True).order_by(
+            "first_name", "last_name"
+        ),
     }
 
     if view_mode == "calendar":
@@ -104,6 +124,45 @@ def events_filter_status(request, status):
         request,
         "agenda/events/status-dropdown.html",
         {"events_filter_status": status, "oob_swap": True},
+    )
+    response["HX-Trigger"] = "eventsChanged"
+    return response
+
+
+@login_required
+def events_filter_assigned(request, assigned):
+    """Filter events by assigned_to value."""
+    from apps.accounts.models import CustomUser
+
+    events_filter = request.session.get("events_filter", {})
+    events_filter["assigned_to"] = assigned if assigned else ""
+    request.session["events_filter"] = events_filter
+    request.session.modified = True
+
+    # Get display value for the dropdown
+    if assigned == "unassigned":
+        display_value = "Firm"
+    elif assigned:
+        try:
+            user = CustomUser.objects.get(pk=int(assigned))
+            display_value = user.get_short_name() or user.username
+        except (ValueError, CustomUser.DoesNotExist):
+            display_value = ""
+    else:
+        display_value = ""
+
+    # Return updated dropdown with OOB swap, plus trigger refresh
+    response = render(
+        request,
+        "agenda/events/assigned-dropdown.html",
+        {
+            "events_filter_assigned": display_value,
+            "events_filter_assigned_value": assigned,
+            "users": CustomUser.objects.filter(is_active=True).order_by(
+                "first_name", "last_name"
+            ),
+            "oob_swap": True,
+        },
     )
     response["HX-Trigger"] = "eventsChanged"
     return response
