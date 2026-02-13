@@ -22,9 +22,8 @@
     {% if status != "cancelled" %}
       <button type="button"
               class="ai-cancel-btn"
-              hx-post="{% url 'case:ai-cancel' conversation.id %}"
-              hx-target="#ai-status-indicator"
-              hx-swap="outerHTML"
+              data-cancel-url="{% url 'case:ai-cancel' conversation.id %}"
+              onclick="var u=this.dataset.cancelUrl; var el=document.getElementById('ai-status-indicator'); if(el){htmx.trigger(el,'htmx:abort'); el.outerHTML='<div id=&quot;ai-status-indicator&quot;></div>';} htmx.ajax('POST',u,{target:'#ai-status-indicator',swap:'outerHTML'});"
               title="Cancel request">
         <i class="icon-x"></i>
       </button>

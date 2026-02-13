@@ -408,10 +408,9 @@ def ai_status(request, conv_id):
         )
 
     if status_data["status"] == "cancelled":
-        # Clear the cache
-        cache.delete(cache_key)
-
-        # Return empty div to remove the status indicator
+        # Return empty div to remove the status indicator.
+        # Keep cache entry (don't delete) so background thread's
+        # is_cancelled() check continues to see "cancelled" status.
         return HttpResponse('<div id="ai-status-indicator"></div>')
 
     # Calculate elapsed time if available
@@ -465,15 +464,10 @@ def cancel_request(request, conv_id):
         if last_message and last_message.role == "user":
             last_message.delete()
 
-    # Return updated status immediately so UI reflects cancellation
-    return render(
-        request,
-        "case/ai/status.html",
-        {
-            "conversation": conversation,
-            "status": "cancelled",
-            "message": "Request cancelled",
-        },
+    # Return empty indicator (no polling) and trigger message list refresh
+    return HttpResponse(
+        '<div id="ai-status-indicator"></div>',
+        headers={"HX-Trigger": "messagesUpdated"},
     )
 
 

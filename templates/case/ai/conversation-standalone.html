@@ -208,8 +208,13 @@
           document.getElementById('aiMessageInput').value = '';
           lastEscapeTime = 0;
         } else {
-          // Single escape - cancel request
-          htmx.trigger(document.getElementById('chatForm'), 'htmx:abort');
+          // Single escape - cancel AI request or abort form submission
+          const cancelBtn = document.querySelector('.ai-cancel-btn');
+          if (cancelBtn) {
+            cancelBtn.click();
+          } else {
+            htmx.trigger(document.getElementById('chatForm'), 'htmx:abort');
+          }
           lastEscapeTime = now;
         }
       }
