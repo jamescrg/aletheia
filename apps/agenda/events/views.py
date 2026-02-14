@@ -119,11 +119,10 @@ def events_filter_status(request, status):
     request.session["events_filter"] = events_filter
     request.session.modified = True
 
-    # Return updated dropdown with OOB swap, plus trigger refresh
     response = render(
         request,
         "agenda/events/status-dropdown.html",
-        {"events_filter_status": status, "oob_swap": True},
+        {"events_filter_status": status},
     )
     response["HX-Trigger"] = "eventsChanged"
     return response
@@ -151,7 +150,6 @@ def events_filter_assigned(request, assigned):
     else:
         display_value = ""
 
-    # Return updated dropdown with OOB swap, plus trigger refresh
     response = render(
         request,
         "agenda/events/assigned-dropdown.html",
@@ -161,7 +159,6 @@ def events_filter_assigned(request, assigned):
             "users": CustomUser.objects.filter(is_active=True).order_by(
                 "first_name", "last_name"
             ),
-            "oob_swap": True,
         },
     )
     response["HX-Trigger"] = "eventsChanged"

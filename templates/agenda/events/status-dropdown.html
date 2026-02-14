@@ -1,7 +1,4 @@
-<div class="dropdown"
-     id="events-status-dropdown"
-     x-data="dropdown()"
-     {% if oob_swap %}hx-swap-oob="true"{% endif %}>
+<div class="dropdown" id="events-status-dropdown" x-data="dropdown()">
   <button type="button"
           id="events-status-filter"
           class="select-btn filter-dropdown-button {% if events_filter_status %}toggle-active{% endif %}"
@@ -16,30 +13,27 @@
   <ul class="dropdown-menu"
       x-ref="menu"
       x-show="open"
-      hx-disinherit="hx-target">
+      hx-target="#events-status-dropdown"
+      hx-swap="outerHTML">
     <li>
       <a class="dropdown-item {% if not events_filter_status %}active{% endif %}"
          href="#"
-         hx-post="{% url 'agenda:events-filter-status-all' %}"
-         hx-swap="none">All Statuses</a>
+         hx-post="{% url 'agenda:events-filter-status-all' %}">All Statuses</a>
     </li>
     <li>
       <a class="dropdown-item {% if events_filter_status == 'Pending' %}active{% endif %}"
          href="#"
-         hx-post="{% url 'agenda:events-filter-status' 'Pending' %}"
-         hx-swap="none">Pending</a>
+         hx-post="{% url 'agenda:events-filter-status' 'Pending' %}">Pending</a>
     </li>
     <li>
       <a class="dropdown-item {% if events_filter_status == 'Complete' %}active{% endif %}"
          href="#"
-         hx-post="{% url 'agenda:events-filter-status' 'Complete' %}"
-         hx-swap="none">Complete</a>
+         hx-post="{% url 'agenda:events-filter-status' 'Complete' %}">Complete</a>
     </li>
     <li>
       <a class="dropdown-item {% if events_filter_status == 'Missed' %}active{% endif %}"
          href="#"
-         hx-post="{% url 'agenda:events-filter-status' 'Missed' %}"
-         hx-swap="none">Missed</a>
+         hx-post="{% url 'agenda:events-filter-status' 'Missed' %}">Missed</a>
     </li>
   </ul>
 </div>

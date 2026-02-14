@@ -1,7 +1,4 @@
-<div class="dropdown"
-     id="events-assigned-dropdown"
-     x-data="dropdown()"
-     {% if oob_swap %}hx-swap-oob="true"{% endif %}>
+<div class="dropdown" id="events-assigned-dropdown" x-data="dropdown()">
   <button type="button"
           id="events-assigned-filter"
           class="select-btn filter-dropdown-button {% if events_filter_assigned %}toggle-active{% endif %}"
@@ -16,25 +13,23 @@
   <ul class="dropdown-menu"
       x-ref="menu"
       x-show="open"
-      hx-disinherit="hx-target">
+      hx-target="#events-assigned-dropdown"
+      hx-swap="outerHTML">
     <li>
       <a class="dropdown-item {% if not events_filter_assigned_value %}active{% endif %}"
          href="#"
-         hx-post="{% url 'agenda:events-filter-assigned-all' %}"
-         hx-swap="none">All Assignees</a>
+         hx-post="{% url 'agenda:events-filter-assigned-all' %}">All Assignees</a>
     </li>
     <li>
       <a class="dropdown-item {% if events_filter_assigned_value == 'unassigned' %}active{% endif %}"
          href="#"
-         hx-post="{% url 'agenda:events-filter-assigned' 'unassigned' %}"
-         hx-swap="none">Firm</a>
+         hx-post="{% url 'agenda:events-filter-assigned' 'unassigned' %}">Firm</a>
     </li>
     {% for user in users %}
       <li>
         <a class="dropdown-item {% if events_filter_assigned_value == user.id|stringformat:'d' %}active{% endif %}"
            href="#"
-           hx-post="{% url 'agenda:events-filter-assigned' user.id %}"
-           hx-swap="none">{{ user.get_short_name|default:user.username }}</a>
+           hx-post="{% url 'agenda:events-filter-assigned' user.id %}">{{ user.get_short_name|default:user.username }}</a>
       </li>
     {% endfor %}
   </ul>
