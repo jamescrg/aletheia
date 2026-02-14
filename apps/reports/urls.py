@@ -1,10 +1,14 @@
 from django.urls import path
 
 from .activity import views as activity
+from .aging import views as aging
 from .clients import views as clients
 from .intakes import views as intakes
+from .matters import views as matters
 from .revenue import views as revenue
+from .trust import views as trust
 from .views import reports_index, reports_list
+from .wip import views as wip
 
 app_name = "reports"
 
@@ -42,4 +46,17 @@ urlpatterns = [
     path("reports/intakes/list/", intakes.intakes_list, name="intakes"),
     path("reports/intakes/filter/", intakes.intakes_filter, name="intakes-filter"),
     path("reports/intakes/pdf/", intakes.intakes_pdf, name="intakes-pdf"),
+    # AR Aging
+    path("reports/aging/", aging.aging_index, name="aging-index"),
+    path("reports/aging/list/", aging.aging_list, name="aging"),
+    # Trust Balances
+    path("reports/trust/", trust.trust_index, name="trust-index"),
+    path("reports/trust/list/", trust.trust_list, name="trust"),
+    # Unbilled WIP
+    path("reports/wip/", wip.wip_index, name="wip-index"),
+    path("reports/wip/list/", wip.wip_list, name="wip"),
+    # Matter Summary
+    path("reports/matters/", matters.matters_index, name="matters-index"),
+    path("reports/matters/list/", matters.matters_list, name="matters"),
+    path("reports/matters/filter/", matters.matters_filter, name="matters-filter"),
 ]
