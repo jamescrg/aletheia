@@ -1,0 +1,147 @@
+{% load humanize %}
+<div class="toolbar">
+  <div class="toolbar-left">
+    <h2>AR Aging Report</h2>
+  </div>
+</div>
+<div class="table-container">
+  <table class="table">
+    <tr>
+      <th>
+        Client / Invoice
+        <a href="?sort=client_name&direction={% if current_sort == 'client_name' and current_direction == 'asc' %}desc{% else %}asc{% endif %}">
+          <i class="icon-chevrons-up-down"></i>
+        </a>
+      </th>
+      <th>Matter</th>
+      <th>Date Issued</th>
+      <th class="numeric">Days</th>
+      <th class="numeric">Current</th>
+      <th class="numeric">31-60</th>
+      <th class="numeric">61-90</th>
+      <th class="numeric">91-120</th>
+      <th class="numeric">120+</th>
+      <th class="numeric">
+        Total
+        <a href="?sort=total&direction={% if current_sort == 'total' and current_direction == 'desc' %}asc{% else %}desc{% endif %}">
+          <i class="icon-chevrons-up-down"></i>
+        </a>
+      </th>
+    </tr>
+    {% for client_info in client_data %}
+      {% for inv in client_info.invoices %}
+        <tr>
+          {% if forloop.first %}
+            <td rowspan="{{ client_info.invoices|length }}">
+              <strong>{{ client_info.client_name }}</strong>
+            </td>
+          {% endif %}
+          <td>
+            <a href="{% url 'matters:detail' id=inv.matter.id %}">{{ inv.matter.name }}</a>
+          </td>
+          <td>{{ inv.date_issued|date:"M j, Y" }}</td>
+          <td class="numeric">{{ inv.days_old }}</td>
+          <td class="numeric">
+            {% if inv.bucket == "current" %}
+              ${{ inv.amount|floatformat:2|intcomma }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td class="numeric">
+            {% if inv.bucket == "days_31_60" %}
+              ${{ inv.amount|floatformat:2|intcomma }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td class="numeric">
+            {% if inv.bucket == "days_61_90" %}
+              ${{ inv.amount|floatformat:2|intcomma }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td class="numeric">
+            {% if inv.bucket == "days_91_120" %}
+              ${{ inv.amount|floatformat:2|intcomma }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td class="numeric">
+            {% if inv.bucket == "days_over_120" %}
+              ${{ inv.amount|floatformat:2|intcomma }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          {% if forloop.first %}
+            <td class="numeric" rowspan="{{ client_info.invoices|length }}">
+              <strong>${{ client_info.total|floatformat:2|intcomma }}</strong>
+            </td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    {% empty %}
+      <tr>
+        <td colspan="10">No outstanding invoices.</td>
+      </tr>
+    {% endfor %}
+    {% if client_data %}
+      <tr class="table-total">
+        <td colspan="4">
+          <strong>Total</strong>
+        </td>
+        <td class="numeric">
+          <strong>
+            {% if grand_totals.current > 0 %}
+              ${{ grand_totals.current|floatformat:2|intcomma }}
+            {% else %}
+              -
+            {% endif %}
+          </strong>
+        </td>
+        <td class="numeric">
+          <strong>
+            {% if grand_totals.days_31_60 > 0 %}
+              ${{ grand_totals.days_31_60|floatformat:2|intcomma }}
+            {% else %}
+              -
+            {% endif %}
+          </strong>
+        </td>
+        <td class="numeric">
+          <strong>
+            {% if grand_totals.days_61_90 > 0 %}
+              ${{ grand_totals.days_61_90|floatformat:2|intcomma }}
+            {% else %}
+              -
+            {% endif %}
+          </strong>
+        </td>
+        <td class="numeric">
+          <strong>
+            {% if grand_totals.days_91_120 > 0 %}
+              ${{ grand_totals.days_91_120|floatformat:2|intcomma }}
+            {% else %}
+              -
+            {% endif %}
+          </strong>
+        </td>
+        <td class="numeric">
+          <strong>
+            {% if grand_totals.days_over_120 > 0 %}
+              ${{ grand_totals.days_over_120|floatformat:2|intcomma }}
+            {% else %}
+              -
+            {% endif %}
+          </strong>
+        </td>
+        <td class="numeric">
+          <strong>${{ grand_totals.total|floatformat:2|intcomma }}</strong>
+        </td>
+      </tr>
+    {% endif %}
+  </table>
+</div>
