@@ -1,0 +1,25 @@
+<h2>Company Info</h2>
+<hr />
+{% if company.logo %}
+  <div class="company-logo-preview">
+    <img src="{{ company.logo.url }}"
+         alt="Company logo"
+         width="192"
+         height="96" />
+  </div>
+{% endif %}
+<form hx-post="{% url 'settings:company-index' %}"
+      hx-target="#company-tab"
+      hx-encoding="multipart/form-data"
+      role="form"
+      class="form-responsive form-spacious company-form">
+  {% csrf_token %}
+  {{ form }}
+  <br />
+  <div class="flex-center-space">
+    <div>
+      <button type="submit" class="btn btn-success">Save Company</button>
+      {% if message %}<div class="success-msg">{{ message }}</div>{% endif %}
+    </div>
+  </div>
+</form>
