@@ -210,10 +210,8 @@ def events_add(request, matter_id=None, origin="events"):
                 event.end_time = end_datetime.time()
 
             # add to google account
-            # check for test user
-            if request.user.username != "Ollie":
-                if google.check_credentials():
-                    event.google_id = google.add_event(event)
+            if google.check_credentials():
+                event.google_id = google.add_event(event)
 
             # save event to database with google id
             event.save()
