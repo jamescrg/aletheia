@@ -8,6 +8,7 @@ from weasyprint import HTML
 
 from apps.intakes.models import Intake
 from apps.matters.models import PracticeArea
+from apps.settings.models import Company
 
 # Define intake statuses to match the choices in forms
 INTAKE_STATUSES = [
@@ -154,6 +155,7 @@ def generate_intakes_pdf(date_from_obj, date_to_obj, request):
         "date_from": date_from_str,
         "date_to": date_to_str,
         "generated_date": datetime.now().strftime("%B %d, %Y"),
+        "company": Company.objects.first(),
     }
 
     html_string = render_to_string("reports/intakes/intakes_pdf.html", context)

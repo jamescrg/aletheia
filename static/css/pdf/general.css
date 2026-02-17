@@ -26,18 +26,21 @@ Page Setup
 Header
 ========================================================================== */
 
-.cb-logo {
-  height: auto;
-  width: 6.25rem;
+.header-logo {
+  margin-bottom: 6pt;
+  text-align: center;
+  width: 100%;
 }
 
-.llc {
-  font-size: 9pt;
+.company-logo {
+  height: auto;
+  max-width: 12.5rem;
 }
 
 .header {
   align-items: flex-start;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
 }
 
@@ -49,13 +52,8 @@ Header
   width: 70%;
 }
 
-.header-left-left {
-  margin-top: 3pt;
-}
-
 .header-left-right {
   font-size: 11pt;
-  margin-left: 0.25in;
 }
 
 .header-right {

@@ -8,6 +8,7 @@ from weasyprint import HTML
 from apps.activity.expenses.models import ExpenseEntry
 from apps.activity.time.models import TimeEntry
 from apps.matters.models import Matter
+from apps.settings.models import Company
 
 
 def generate_activity_report(
@@ -36,6 +37,7 @@ def generate_activity_report(
         "total_expenses": total_expenses,
         "matter_total": matter_total,
         "current_date": date.today(),
+        "company": Company.objects.first(),
     }
 
     html_string = render_to_string("matters/activity-report.html", context)

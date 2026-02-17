@@ -1,0 +1,26 @@
+{% load phone_numbers %}
+{% if company.logo %}
+  <div class="header-logo">
+    <img class="company-logo"
+         width="200"
+         height="auto"
+         alt="{{ company.name }}"
+         src="{{ company.logo.url }}" />
+  </div>
+{% endif %}
+<div class="header-left">
+  <div class="header-left-right">
+    <p>{{ company.name }}</p>
+    {% if company.address_line_1 %}<p>{{ company.address_line_1 }}</p>{% endif %}
+    {% if company.address_line_2 %}<p>{{ company.address_line_2 }}</p>{% endif %}
+    {% if company.city or company.state or company.zip_code %}
+      <p>
+        {{ company.city }}
+        {% if company.city and company.state %},{% endif %}
+        {{ company.state }} {{ company.zip_code }}
+      </p>
+    {% endif %}
+    {% if company.phone %}<p>{{ company.phone|phone_number }}</p>{% endif %}
+    {% if company.email %}<p>{{ company.email }}</p>{% endif %}
+  </div>
+</div>

@@ -24,10 +24,6 @@ Header
   display: flex;
 }
 
-.header-left-left {
-  margin-right: 1.25rem;
-}
-
 .header-left-right p {
   font-size: 9pt;
   line-height: 1.3;
@@ -124,11 +120,6 @@ Table
 /* ==========================================================================
 Typography
 ========================================================================== */
-
-.llc {
-  font-size: 9pt;
-  vertical-align: baseline;
-}
 
 .page-break-before {
   break-before: always;

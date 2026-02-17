@@ -21,17 +21,7 @@
   <body>
     <div class="template">
       <div class="header">
-        <div class="header-left">
-          <div class="header-left-right">
-            <p>
-              Craig Legal <span class="llc">LLC</span>
-            </p>
-            <p>3408 Clairmont Rd., No. 160</p>
-            <p>Atlanta, GA 30319</p>
-            <p>(404) 470 - 4950</p>
-            <p>james@craiglegal.law</p>
-          </div>
-        </div>
+        {% include "components/pdf_header.html" %}
         <div class="header-right">
           <p class="text-right">Activity Report</p>
           <p class="text-right">{{ current_date|date:"Y-m-d" }}</p>

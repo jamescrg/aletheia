@@ -1,4 +1,3 @@
-from datetime import date
 from tempfile import NamedTemporaryFile
 
 from django.core.handlers.wsgi import WSGIRequest
@@ -8,6 +7,7 @@ from weasyprint import HTML
 from apps.activity.expenses.models import ExpenseEntry
 from apps.activity.time.models import TimeEntry
 from apps.invoicing.invoices.models import Invoice
+from apps.settings.models import Company
 from apps.trust.trust import get_confirmed_client_balance
 
 
@@ -43,16 +43,10 @@ def generate_invoice(invoice: Invoice, request: WSGIRequest) -> NamedTemporaryFi
         "time_entries": time_entries,
         "expenses": expenses,
         "confirmed_balance": confirmed_balance,
+        "company": Company.objects.first(),
     }
 
-    # Select template based on invoice issue date
-    cutoff_date = date(2025, 11, 10)
-    if invoice.date_issued <= cutoff_date:
-        template_name = "invoicing/invoices/invoice-cb.html"
-    else:
-        template_name = "invoicing/invoices/invoice-craig.html"
-
-    html_string = render_to_string(template_name, context)
+    html_string = render_to_string("invoicing/invoices/invoice-craig.html", context)
     base_url = request.build_absolute_uri("/").rstrip("/")
     html = HTML(string=html_string, base_url=base_url)
 
