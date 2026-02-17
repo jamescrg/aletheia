@@ -11,7 +11,6 @@ pytestmark = pytest.mark.django_db
 def test_form_valid_matter(matter_data):
     data = matter_data
     form = MatterForm(data)
-    print(form.errors)
     assert form.is_valid()
 
 

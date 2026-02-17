@@ -1,4 +1,5 @@
 import json
+import logging
 
 import google.oauth2.credentials
 
@@ -6,6 +7,8 @@ import google.oauth2.credentials
 from googleapiclient.discovery import build
 
 from utils.prepare_path import prepare_path
+
+logger = logging.getLogger(__name__)
 
 CONTACTS_TOKEN_PATH = "google/contact_tokens.json"
 
@@ -97,8 +100,7 @@ def delete_contact(contact):
                 service.people().deleteContact(resourceName=contact.google_id).execute()
             )
         except Exception as err:
-            print(f"Contact not found in Contacts API: {err}")
-            pass
+            logger.warning(f"Contact not found in Contacts API: {err}")
 
         if result:
             return True
