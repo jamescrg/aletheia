@@ -54,12 +54,20 @@ Company Form
   width: 100%;
 }
 
+.company-form #id_logo {
+  margin-top: 1rem;
+  max-width: 18.75rem;
+  padding: 0;
+  width: 100%;
+}
+
 .company-logo-preview {
   margin-bottom: 1.5rem;
 }
 
 .company-logo-preview img {
   border-radius: var(--radius-md);
+  height: auto;
   max-height: 6rem;
   max-width: 12rem;
 }
