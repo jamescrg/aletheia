@@ -32,6 +32,7 @@ from apps.matters.models import Relationship
 from apps.matters.proceedings.models import Proceeding
 from apps.matters.settlement.models import SettlementEntry
 from apps.notes.models import Note
+from apps.settings.models import Company
 
 from .models import Conversation
 
@@ -297,7 +298,7 @@ REQUEST_INFO_TEMPLATE = """## Request Date
 - Name: {user_name}
 - Email: {user_email}
 - Role: {role_description}
-- Law Firm: Craig Legal, LLC
+- Law Firm: {firm_name}
 """
 
 MATTER_CONTEXT_TEMPLATE = """
@@ -424,11 +425,13 @@ def assemble_matter_context(matter, user=None, conversation=None) -> str:
             role_description = (
                 f"{user.get_full_name()} is a paralegal supporting an attorney"
             )
+        company = Company.objects.first()
         request_info = REQUEST_INFO_TEMPLATE.format(
             request_date=date.today().strftime("%B %d, %Y"),
             user_name=user.get_full_name(),
             user_email=user.email,
             role_description=role_description,
+            firm_name=company.name if company else "",
         )
 
     legal_prompt = load_legal_prompt()

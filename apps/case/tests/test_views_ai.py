@@ -1,6 +1,8 @@
 import pytest
 from pytest_django.asserts import assertTemplateUsed
 
+from apps.settings.models import Company
+
 pytestmark = pytest.mark.django_db
 
 
@@ -27,7 +29,8 @@ class TestAICreatePrompt:
         response = client_with_matter.get(f"/case/{matter_id}/ai/create-prompt/")
         content = response.content.decode()
         assert user.email in content
-        assert "Craig Legal, LLC" in content
+        company = Company.objects.first()
+        assert company.name in content
 
     def test_create_prompt_contains_date(self, client_with_matter):
         matter_id = client_with_matter.matter.id

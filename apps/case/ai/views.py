@@ -19,6 +19,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from apps.case.models import Fact, Highlight
 from apps.case.views import get_matter_from_url, get_session_key, set_last_tab
 from apps.matters.models import Matter
+from apps.settings.models import Company
 
 from .context import assemble_matter_context
 from .filters import ConversationFilter
@@ -851,6 +852,8 @@ def create_prompt(request, matter_id):
         )
 
     # Build the prompt text with proper markdown formatting
+    company = Company.objects.first()
+    company_name = company.name if company else ""
     prompt_text = f"""## Request Date
 
 {date.today().strftime("%B %d, %Y")}
@@ -860,7 +863,7 @@ def create_prompt(request, matter_id):
 - Name: {user.get_full_name()}
 - Email: {user.email}
 - Role: {role_description}
-- Law Firm: Craig Legal, LLC
+- Law Firm: {company_name}
 
 ## General Guidelines for Responding
 
