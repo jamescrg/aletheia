@@ -55,46 +55,57 @@ def process_quick_task_description(description, last_matter_id=None):
             # Convert prefix to lowercase for case-insensitive matching
             prefix_lower = prefix.lower()
 
-            # Tier 1: Fuzzy match against full matter names (case-insensitive)
-            # cutoff=0.6 means 60% similarity required
-            matter_names_lower = [name.lower() for name in matter_names]
-            matches = get_close_matches(
-                prefix_lower, matter_names_lower, n=1, cutoff=0.6
-            )
+            # Tier 1: Prefix match against matter names or first words
+            prefix_matches = [
+                m
+                for name, m in matters_list
+                if name.lower().startswith(prefix_lower)
+                or (name.split() and name.split()[0].lower().startswith(prefix_lower))
+            ]
+            if len(prefix_matches) == 1:
+                matched_matter = prefix_matches[0]
+                use_smart_matching = True
 
-            if not matches:
-                # Tier 2: Fuzzy match against first word only
-                first_words = [
-                    name.split()[0].lower() if name.split() else ""
-                    for name in matter_names
-                ]
-                matches = get_close_matches(prefix_lower, first_words, n=1, cutoff=0.6)
+            # Tier 2: Fuzzy match against full matter names (case-insensitive)
+            if not matched_matter:
+                matter_names_lower = [name.lower() for name in matter_names]
+                matches = get_close_matches(
+                    prefix_lower, matter_names_lower, n=1, cutoff=0.6
+                )
 
-                if matches:
-                    # Find the matter with the matched first word
-                    matched_first_word = matches[0]
+                if not matches:
+                    # Tier 3: Fuzzy match against first word only
+                    first_words = [
+                        name.split()[0].lower() if name.split() else ""
+                        for name in matter_names
+                    ]
+                    matches = get_close_matches(
+                        prefix_lower, first_words, n=1, cutoff=0.6
+                    )
+
+                    if matches:
+                        matched_first_word = matches[0]
+                        matched_matter = next(
+                            (
+                                m
+                                for name, m in matters_list
+                                if name.split()[0].lower() == matched_first_word
+                            ),
+                            None,
+                        )
+                        use_smart_matching = True
+
+                if matches and not matched_matter:
+                    matched_name_lower = matches[0]
                     matched_matter = next(
                         (
                             m
                             for name, m in matters_list
-                            if name.split()[0].lower() == matched_first_word
+                            if name.lower() == matched_name_lower
                         ),
                         None,
                     )
                     use_smart_matching = True
-
-            if matches and not matched_matter:
-                # Tier 1 match found - find the matter with the matched full name
-                matched_name_lower = matches[0]
-                matched_matter = next(
-                    (
-                        m
-                        for name, m in matters_list
-                        if name.lower() == matched_name_lower
-                    ),
-                    None,
-                )
-                use_smart_matching = True
 
             if not matched_matter and not use_smart_matching:
                 # No match found, use last matter from session
