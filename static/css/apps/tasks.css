@@ -393,3 +393,174 @@
   top: 1px;
   margin-left: 0.25rem;
 }
+
+
+/* ==========================================================================
+ Mobile Card Layout
+========================================================================== */
+
+@media (width <= 768px) {
+  /* Disable horizontal scroll on container */
+  #tasks .table-container {
+    overflow-x: visible;
+  }
+
+  /* Reset table structure to block */
+  .tasks-table {
+    border: none;
+    display: block;
+    min-width: 0;
+  }
+
+  .tasks-table thead {
+    display: none;
+  }
+
+  .tasks-table tbody {
+    display: block;
+  }
+
+  /* Card rows */
+  .tasks-table tbody tr {
+    background: var(--background-section);
+    border: solid 1px var(--border-medium);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+    position: relative;
+  }
+
+  /* Overdue card highlight */
+  .tasks-table tbody tr:has(.hl-yellow) {
+    background: var(--hl-yellow);
+  }
+
+  /* Reset all td styles */
+  .tasks-table tbody td {
+    border: none;
+    overflow: visible;
+    padding: 0;
+    text-overflow: unset;
+    white-space: normal;
+  }
+
+  /* Remove individual cell highlights - card bg handles it */
+  .tasks-table tbody td.hl-yellow {
+    background: transparent !important;
+  }
+
+  /* Cell ordering */
+  .tasks-table td.matter { order: 1; }
+  .tasks-table td.description { order: 2; }
+  .tasks-table td.priority { order: 3; }
+  .tasks-table td.status { order: 4; }
+  .tasks-table td.user { order: 5; }
+  .tasks-table td.date { order: 6; }
+
+  /* Full-width rows */
+  .tasks-table td.matter,
+  .tasks-table td.description {
+    flex: 0 0 100%;
+  }
+
+  /* Matter: context line, de-linked */
+  .tasks-table td.matter {
+    color: var(--color-muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .tasks-table td.matter a {
+    color: inherit;
+    pointer-events: none;
+    text-decoration: none;
+  }
+
+  /* Description: prominent */
+  .tasks-table td.description {
+    margin-bottom: 0.5rem;
+  }
+
+  /* Stretched link: description's edit link covers the entire card */
+  .tasks-table td.description > a:first-child::after {
+    content: "";
+    inset: 0;
+    position: absolute;
+    z-index: 0;
+  }
+
+  /* Interactive elements sit above the stretched link */
+  .tasks-table td.priority,
+  .tasks-table td.status,
+  .tasks-table td.user,
+  .tasks-table td.date {
+    position: relative;
+    z-index: 1;
+  }
+
+  .task-notes-btn {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Metadata cells: inline row */
+  .tasks-table td.priority,
+  .tasks-table td.status,
+  .tasks-table td.user,
+  .tasks-table td.date {
+    align-items: center;
+    color: var(--color-muted);
+    display: flex;
+    margin-right: 1rem;
+  }
+
+  /* Priority label (bare number needs context) */
+  .tasks-table td.priority::before {
+    content: attr(data-label) ": ";
+    margin-right: 0.25rem;
+  }
+
+  /* Priority column width reset */
+  .tasks-table .priority {
+    text-align: left;
+    width: auto;
+  }
+
+  /* Other column width resets */
+  .tasks-table .matter,
+  .tasks-table .description,
+  .tasks-table .status,
+  .tasks-table .user,
+  .tasks-table .date {
+    min-width: 0;
+    width: auto;
+  }
+
+  .task-date {
+    width: auto;
+  }
+
+  /* Notes button always visible */
+  .task-notes-btn {
+    opacity: 1;
+  }
+
+  /* Empty date icon always visible */
+  .tasks-table .date .empty-date-icon {
+    opacity: 1;
+  }
+
+  /* Empty state */
+  .tasks-table tbody tr:has(.empty-message) {
+    cursor: default;
+    display: block;
+    text-align: center;
+  }
+
+  .tasks-table td.empty-message {
+    display: block;
+    width: 100%;
+  }
+}

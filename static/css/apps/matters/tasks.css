@@ -24,3 +24,9 @@
 .tasks-table td.description:hover .task-notes-btn {
   opacity: 1;
 }
+
+@media (width <= 768px) {
+  .task-notes-btn {
+    opacity: 1;
+  }
+}

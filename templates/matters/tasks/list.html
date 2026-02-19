@@ -1,5 +1,6 @@
 <div class="toolbar">
   <div class="toolbar-left">
+    {% include "matters/tasks/form-quick.html" %}
     <div class="filter-tools">
       {% if selected_tasks %}
         {% url 'matters:tasks-clear-selection' matter.id as clear_url %}
@@ -110,7 +111,6 @@
 </div>
 </div>
 </div>
-{% include "matters/tasks/form-quick.html" %}
 <div class="table-container">
   <table class="table tasks-table">
     <thead>
