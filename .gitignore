@@ -15,8 +15,13 @@ google/*
 !google/.gitkeep
 node_modules/
 __pycache__/
-.claude/
+media/
+
+# Local development (Nix)
 .direnv/
 .postgres-data/
 result
-media/
+
+# Claude
+CLAUDE.md
+.claude/
