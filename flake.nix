@@ -58,6 +58,7 @@
           httpie
           pre-commit
           ruff
+          nodejs
         ];
 
         libraryPath = pkgs.lib.makeLibraryPath systemDeps;

@@ -40,5 +40,9 @@
     "stylelint": "^17.0.0",
     "stylelint-config-standard": "^40.0.0",
     "stylelint-order": "^7.0.1"
+  },
+  "overrides": {
+    "ajv": "^8.18.0",
+    "markdown-it": "^14.1.1"
   }
 }
