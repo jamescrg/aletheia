@@ -30,7 +30,7 @@ def client(user):
 
 
 @pytest.fixture(autouse=True)
-def company():
+def company(db):
     return Company.objects.create(name="Test Firm LLC")
 
 
