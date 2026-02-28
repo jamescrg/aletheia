@@ -56,9 +56,6 @@ jobs:
       - name: Install Python dependencies
         run: uv sync
 
-      - name: Install Node dependencies
-        run: npm install
-
       - name: Run migrations
         run: python manage.py migrate
 

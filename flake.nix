@@ -58,7 +58,6 @@
           httpie
           pre-commit
           ruff
-          nodejs
           uv
         ];
 

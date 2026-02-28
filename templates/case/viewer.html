@@ -11,7 +11,8 @@
           type="image/svg+xml"
           href="{% static 'images/viewer-favicon.svg' %}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{% static_v 'css/lucide.css' %}">
+    <link rel="stylesheet"
+          href="https://unpkg.com/lucide-static@0.462.0/font/lucide.css">
     <!-- Custom stylesheets -->
     <link rel="stylesheet" href="{% static_v 'css/palette.css' %}">
     <link rel="stylesheet" href="{% static_v 'css/colors.css' %}">
@@ -22,7 +23,7 @@
     <link rel="stylesheet" href="{% static_v 'css/badges.css' %}">
     <link rel="stylesheet" href="{% static_v 'css/interface.css' %}">
     <link rel="stylesheet" href="{% static_v 'css/viewer.css' %}">
-    <script defer src="{% static_v 'js/vendor/alpine.bundle.js' %}"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.14.3/dist/cdn.min.js"></script>
     <script src="{% static_v 'js/alpine-components.js' %}"></script>
   </head>
   <body>
@@ -161,7 +162,8 @@
       <div id="edit-highlight-modal-content"></div>
     </div>
     {% include "confirm-modal.html" %}
-    <script src="{% static_v 'js/vendor/htmx.bundle.js' %}"></script>
+    <!-- HTMX (CDN) -->
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
     <script>
     // Simple modal functions (vanilla JS replacement for Bootstrap Modal)
     function openModal(modalId) {
