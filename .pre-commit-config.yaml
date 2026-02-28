@@ -45,12 +45,3 @@ repos:
         language_version: python3.13
         args: [ --profile, django ]
         exclude: "templates/emails/"
-
-  - repo: local
-    hooks:
-      - id: stylelint
-        name: stylelint
-        entry: ./node_modules/.bin/stylelint --fix
-        language: system
-        files: "static/css/.*\\.css$"
-        exclude: "(dropzone|lucide)\\.css$"

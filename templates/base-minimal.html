@@ -21,8 +21,8 @@
   {% endblock favicon %}
   <!-- set viewport for mobile devices -->
   <meta name="viewport" content="width = device-width, initial-scale = 1" />
-  <!-- Icons (Lucide) -->
-  <link rel="stylesheet" href="{% static_v 'css/lucide.css' %}" />
+  <link rel="stylesheet"
+        href="https://unpkg.com/lucide-static@0.462.0/font/lucide.css" />
   <!-- app stylesheets -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -61,12 +61,12 @@
   {% include "confirm-modal.html" %}
   {% block content %}
   {% endblock content %}
-  <!-- javascript -->
-  <script src="{% static_v 'js/vendor/htmx.bundle.js' %}"></script>
-  <script defer src="{% static_v 'js/vendor/alpine.bundle.js' %}"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.14.3/dist/cdn.min.js"></script>
   <script src="{% static_v 'js/alpine-components.js' %}"></script>
-  <script src="{% static_v 'js/vendor/dropzone.bundle.js' %}"></script>
-  <link rel="stylesheet" href="{% static_v 'css/dropzone.css' %}" />
+  <script src="https://unpkg.com/dropzone@5.9.3/dist/min/dropzone.min.js"></script>
+  <link rel="stylesheet"
+        href="https://unpkg.com/dropzone@5.9.3/dist/min/dropzone.min.css" />
   <script src="{% static_v 'js/htmx-focus.js' %}"></script>
   <script src="{% static_v 'js/main.js' %}"></script>
   <script src="{% static_v 'js/file-upload-forms.js' %}" defer></script>
