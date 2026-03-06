@@ -68,11 +68,12 @@
        name="keyword"
        placeholder="Keyword Search"
        value="{{ keyword }}"
-       class="filter-input keyword-input"
+       class="filter-input keyword-input {% if keyword %}toggle-active{% endif %}"
        hx-get="{% url 'case:facts-filter-keyword' matter.id %}"
        hx-target="#facts-table"
        hx-trigger="keyup changed delay:500ms"
-       hx-include="this">
+       hx-include="this"
+       oninput="this.classList.toggle('toggle-active', this.value.trim() !== '')">
 </div>
 </div>
 <div class="toolbar-right">
