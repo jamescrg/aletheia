@@ -68,11 +68,12 @@
                name="keyword"
                placeholder="Keyword Search"
                value="{{ selected_keyword|default:'' }}"
-               class="filter-input keyword-input"
+               class="filter-input keyword-input {% if selected_keyword %}toggle-active{% endif %}"
                hx-get="{% url 'case:documents-filter-keyword' matter.id %}"
                hx-target="#files-table"
                hx-trigger="keyup changed delay:500ms"
-               hx-include="this">
+               hx-include="this"
+               oninput="this.classList.toggle('toggle-active', this.value.trim() !== '')">
         <div class="dropdown" x-data="dropdown()">
           <button type="button"
                   id="files-proceeding-filter"
