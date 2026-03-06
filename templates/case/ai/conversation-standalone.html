@@ -291,14 +291,14 @@
       const text = textarea.value.trim();
       const convId = document.getElementById('conversationId').value;
       const llm = '{{ conversation.llm }}';
-      let url = '{% url "case:ai-prompt-editor" matter.id %}?conversation_id=' + convId + '&llm=' + llm;
+      const url = '{% url "case:ai-prompt-editor" matter.id %}?conversation_id=' + convId + '&llm=' + llm;
+      // Stash text for the modal to pick up (avoids URL length limits)
       if (text) {
-        url += '&text=' + encodeURIComponent(text);
-        textarea.value = ''; // Clear input since we're transferring to modal
+        window._promptEditorInitialText = text;
       }
       const modalContainer = document.getElementById('htmx-modal-container');
       window.htmx.ajax('GET', url, {target: modalContainer, swap: 'innerHTML'}).then(function() {
-        // Trigger modal open after content is loaded
+        textarea.value = ''; // Clear input after modal loads successfully
         window.dispatchEvent(new CustomEvent('open-modal'));
       });
     });

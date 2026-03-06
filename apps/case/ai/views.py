@@ -768,7 +768,6 @@ def prompt_editor_modal(request, matter_id):
     matter, _ = get_matter_from_url(request, matter_id)
     conversation_id = request.GET.get("conversation_id", "")
     llm = request.GET.get("llm", "gemini-pro-latest")
-    initial_text = request.GET.get("text", "")
 
     return render(
         request,
@@ -777,7 +776,6 @@ def prompt_editor_modal(request, matter_id):
             "matter": matter,
             "conversation_id": conversation_id,
             "llm": llm,
-            "initial_text": initial_text,
         },
     )
 

@@ -82,7 +82,8 @@
   }, 100);
 
   // Check for initial text passed from textarea
-  const initialText = '{{ initial_text|escapejs }}';
+  const initialText = window._promptEditorInitialText || '';
+  delete window._promptEditorInitialText;
 
   // Restore draft if available, or use initial text
   const savedDraft = localStorage.getItem(DRAFT_KEY);
