@@ -46,7 +46,7 @@ class TasksOrderingFilter(django_filters.OrderingFilter):
         try:
             if ordering[0] == "date_due":
                 return qs.order_by(
-                    F("date_due").asc(nulls_first=True),
+                    F("date_due").asc(nulls_last=True),
                     "priority",
                     "matter__name",
                     "description",
