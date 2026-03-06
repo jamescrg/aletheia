@@ -61,6 +61,15 @@ Activity list table
   color: inherit;
 }
 
+.activity .amount {
+  text-align: right;
+  width: 7.5rem;
+}
+
+.activity .amount a {
+  color: inherit;
+}
+
 .activity .rate {
   text-align: right;
   width: 5rem;
