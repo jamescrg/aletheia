@@ -1,7 +1,10 @@
 {% if task.date_due %}
-  <a href="#"
-     hx-get="/agenda/tasks/{{ task.id }}/task-date"
-     hx-target="closest td">{{ task.date_due|date:'Y-m-d' }}</a>
+  <span class="task-date-wrapper">
+    <a href="#"
+       hx-get="/agenda/tasks/{{ task.id }}/task-date"
+       hx-target="closest .task-date-wrapper"
+       hx-on::before-request="this.closest('.task-date-wrapper').setAttribute('data-original', this.closest('.task-date-wrapper').innerHTML)">{{ task.date_due|date:'Y-m-d' }}</a>
+  </span>
   <button class="btn-date-bump"
           hx-post="{% url 'agenda:tasks-date-bump' task.id %}"
           hx-target="#tasks"
@@ -9,10 +12,13 @@
     <i class="icon-plus"></i>
   </button>
 {% else %}
-  <a href="#"
-     class="empty-date-icon"
-     hx-get="/agenda/tasks/{{ task.id }}/task-date"
-     hx-target="closest td">
-    <i class="icon-calendar-plus"></i>
-  </a>
+  <span class="task-date-wrapper">
+    <a href="#"
+       class="empty-date-icon"
+       hx-get="/agenda/tasks/{{ task.id }}/task-date"
+       hx-target="closest .task-date-wrapper"
+       hx-on::before-request="this.closest('.task-date-wrapper').setAttribute('data-original', this.closest('.task-date-wrapper').innerHTML)">
+      <i class="icon-calendar-plus"></i>
+    </a>
+  </span>
 {% endif %}
