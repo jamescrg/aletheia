@@ -1,18 +1,13 @@
 {% if task.date_due %}
-  <span class="task-date-wrapper">
-    <a href="#"
-       hx-get="{% url 'matters:tasks-date' matter.id task.id %}"
-       hx-target="closest .task-date-wrapper"
-       hx-on::before-request="this.closest('.task-date-wrapper').setAttribute('data-original', this.closest('.task-date-wrapper').innerHTML)">{{ task.date_due|date:'Y-m-d' }}</a>
-  </span>
+  <a href="#"
+     class="task-date-link"
+     x-data
+     @click.prevent=" const input = document.createElement('input'); input.style.cssText = 'position:absolute;visibility:hidden;height:0;width:0;padding:0;'; $el.parentElement.appendChild(input); flatpickr(input, { dateFormat: 'Y-m-d', defaultDate: '{{ task.date_due|date:"Y-m-d" }}', allowInput: true, onReady: (_, __, fp) => fp.open(), onChange: (_, dateStr) => { htmx.ajax('POST', '{% url "matters:tasks-date" matter.id task.id %}', { target: '#matterTasks', swap: 'outerHTML', values: { date_due: dateStr } }); }, onClose: () => { input.remove(); } }); ">{{ task.date_due|date:'Y-m-d' }}</a>
 {% else %}
-  <span class="task-date-wrapper">
-    <a href="#"
-       class="empty-date-icon"
-       hx-get="{% url 'matters:tasks-date' matter.id task.id %}"
-       hx-target="closest .task-date-wrapper"
-       hx-on::before-request="this.closest('.task-date-wrapper').setAttribute('data-original', this.closest('.task-date-wrapper').innerHTML)">
-      <i class="icon-calendar-plus"></i>
-    </a>
-  </span>
+  <a href="#"
+     class="empty-date-icon"
+     x-data
+     @click.prevent=" const input = document.createElement('input'); input.style.cssText = 'position:absolute;visibility:hidden;height:0;width:0;padding:0;'; $el.parentElement.appendChild(input); flatpickr(input, { dateFormat: 'Y-m-d', allowInput: true, onReady: (_, __, fp) => fp.open(), onChange: (_, dateStr) => { htmx.ajax('POST', '{% url "matters:tasks-date" matter.id task.id %}', { target: '#matterTasks', swap: 'outerHTML', values: { date_due: dateStr } }); }, onClose: () => { input.remove(); } }); ">
+    <i class="icon-calendar-plus"></i>
+  </a>
 {% endif %}

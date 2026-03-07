@@ -128,9 +128,6 @@
   width: 9rem;
 }
 
-.task-date.flatpickr-input {
-  outline: none;
-}
 
 .tasks-table .menu {
   margin: 0;
