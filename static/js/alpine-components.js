@@ -55,6 +55,7 @@ document.addEventListener('alpine:init', () => {
       menu.style.left = `${rect.left}px`;
       menu.style.right = 'auto';
       menu.style.bottom = 'auto';
+      menu.style.minWidth = `${rect.width}px`;
 
       // Check if menu would overflow viewport and adjust
       this.$nextTick(() => {
@@ -95,6 +96,7 @@ document.addEventListener('alpine:init', () => {
       menu.style.left = '';
       menu.style.right = '';
       menu.style.bottom = '';
+      menu.style.minWidth = '';
       menu.style.maxHeight = '';
       menu.style.overflowY = '';
     },
