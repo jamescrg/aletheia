@@ -10,10 +10,11 @@
     </div>
     <div class="modal-body">
       <form id="expense-form"
-            action="{% url 'activity:expenses-add' id=matter_id request_app='matters' %}"
+            action="{% url 'activity:expenses-add' id=matter_id request_app=request_app|default:'matters' %}"
             class="form-compact"
             method="post"
-            role="form">
+            role="form"
+            {% if request_app == 'case' or request_app == 'matters' %}hx-post="{% url 'activity:expenses-add' id=matter_id request_app=request_app %}" hx-target="#htmx-modal-container"{% endif %}>
         {% csrf_token %}
         {{ form }}
       </form>

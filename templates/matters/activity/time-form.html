@@ -30,7 +30,7 @@
             method="post"
             class="form-compact col2 time-form"
             id="time-entry-form"
-            {% if request_app == 'case' %}hx-post="{% url 'activity:time-add' id=matter_id request_app='case' %}" hx-target="#htmx-modal-container"{% endif %}>
+            {% if request_app == 'case' or request_app == 'matters' %}hx-post="{% url 'activity:time-add' id=matter_id request_app=request_app %}" hx-target="#htmx-modal-container"{% endif %}>
         {% csrf_token %}
         <div class="form-group">
           <label for="{{ form.matter.id_for_label }}">{{ form.matter.label }}</label>

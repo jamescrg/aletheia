@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.activity.expenses.get_expenses_data import get_expenses_data
 from apps.matters.models import Matter
+from utils.toasts import toast_success
 
 from .export import write_clio_csv, write_standard_csv
 from .filter import ExpenseFilter
@@ -151,8 +152,16 @@ def expenses_add(request, id=None, request_app="activity"):
                 return HttpResponse(
                     status=204, headers={"HX-Trigger": "expensesChanged"}
                 )
-            elif request_app == "matters":
-                return redirect("/activity/expenses")
+            elif request_app in ("matters", "case"):
+                response = HttpResponse(status=204)
+                message = f"${entry.amount} expense recorded for {entry.matter.name}"
+                link = {
+                    "url": "/activity/expenses",
+                    "text": "View Expenses",
+                }
+                return toast_success(
+                    response, message, title="Expense Added", link=link
+                )
 
     # if no post data has been submitted, show the entry form
     else:
@@ -197,7 +206,8 @@ def expenses_add(request, id=None, request_app="activity"):
 
     if request_app == "activity":
         return render(request, "activity/expenses/form.html", context)
-    elif request_app == "matters":
+    elif request_app in ("matters", "case"):
+        context["request_app"] = request_app
         return render(request, "matters/activity/expense-form.html", context)
 
 
