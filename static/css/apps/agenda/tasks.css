@@ -75,6 +75,23 @@
   min-width: 2.75rem;
 }
 
+.btn-date-bump {
+  background: none;
+  border: none;
+  color: var(--stone-400);
+  cursor: pointer;
+  float: right;
+  padding: 0;
+}
+
+.btn-date-bump i {
+  color: inherit;
+}
+
+.btn-date-bump:hover {
+  color: var(--violet-500);
+}
+
 /* Fix dropdown overflow issues */
 #tasks .table-container {
   overflow-x: auto;
