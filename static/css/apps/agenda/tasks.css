@@ -136,6 +136,27 @@
   color: var(--selected-color);
 }
 
+.flatpickr-calendar {
+  background: var(--background-light);
+  border-radius: var(--radius-md);
+}
+
+.flatpickr-clear {
+  background: var(--blue-50);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin: 0.5rem auto;
+  padding: 0.25rem 0;
+  width: 30%;
+}
+
+.flatpickr-clear:hover {
+  /* opacity: 0.8; */
+}
+
 
 .tasks-table .menu {
   margin: 0;
