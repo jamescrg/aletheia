@@ -203,9 +203,7 @@ def time_add(request, id=None, request_app="activity"):
 
             if request_app == "activity":
                 return HttpResponse(status=204, headers={"HX-Trigger": "timeChanged"})
-            elif request_app == "matters":
-                return redirect("/activity")
-            elif request_app == "case":
+            elif request_app in ("matters", "case"):
                 response = HttpResponse(status=204)
                 message = f"{entry.hours} hours recorded for {entry.matter.name}"
                 link = {
@@ -265,9 +263,7 @@ def time_add(request, id=None, request_app="activity"):
 
     if request_app == "activity":
         return render(request, "activity/time/form.html", context)
-    elif request_app == "matters":
-        return render(request, "matters/activity/time-form.html", context)
-    elif request_app == "case":
+    elif request_app in ("matters", "case"):
         return render(request, "matters/activity/time-form.html", context)
 
 

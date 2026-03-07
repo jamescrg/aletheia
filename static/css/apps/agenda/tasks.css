@@ -58,21 +58,38 @@
 }
 
 .tasks-table .status {
-  width: 8rem;
+  width: 9rem;
 }
 
 .tasks-table .user {
-  width: 8rem;
+  width: 9rem;
 }
 
 .tasks-table .date {
   overflow: visible;
   white-space: nowrap;
-  width: 11rem;
+  width: 9rem;
 }
 
 .tasks-table .date .dropdown-menu {
   min-width: 2.75rem;
+}
+
+.btn-date-bump {
+  background: none;
+  border: none;
+  color: var(--stone-400);
+  cursor: pointer;
+  float: right;
+  padding: 0;
+}
+
+.btn-date-bump i {
+  color: inherit;
+}
+
+.btn-date-bump:hover {
+  color: var(--violet-500);
 }
 
 /* Fix dropdown overflow issues */
@@ -104,10 +121,37 @@
 .task-date {
   background: none;
   border: none;
+  cursor: pointer;
+  font-size: inherit;
   margin: 0;
   padding: 0;
   width: 9rem;
 }
+
+/* Flatpickr calendar overrides */
+.flatpickr-day {
+  border-radius: var(--radius-md);
+  height: 32px;
+  line-height: 30px;
+  max-width: 32px;
+}
+
+.flatpickr-day.today:not(.selected) {
+  border-color: var(--stone-300);
+}
+
+.flatpickr-day.today:not(.selected):hover {
+  background: var(--stone-100);
+  border-color: var(--stone-300);
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.selected:hover {
+  background: var(--selected-background);
+  border-color: var(--selected-border);
+  color: var(--selected-color);
+}
+
 
 .tasks-table .menu {
   margin: 0;
@@ -195,4 +239,12 @@
 
 .tasks-table td.description:hover .task-notes-btn {
   opacity: 1;
+}
+
+.task-notes-date {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  position: relative;
+  top: 1px;
+  margin-left: 0.25rem;
 }
