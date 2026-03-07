@@ -31,7 +31,6 @@ from apps.agenda.tasks.views import (
     tasks_bulk_update,
     tasks_clear_selection,
     tasks_date,
-    tasks_date_bump,
     tasks_delete,
     tasks_delete_note,
     tasks_detail,
@@ -88,9 +87,6 @@ urlpatterns = [
         name="tasks-task-matter",
     ),
     path("agenda/tasks/<int:task_id>/task-date", tasks_date, name="tasks-date"),
-    path(
-        "agenda/tasks/<int:task_id>/date-bump", tasks_date_bump, name="tasks-date-bump"
-    ),
     path("agenda/tasks/<int:id>/add-note/", tasks_add_note, name="tasks-add-note"),
     path("agenda/tasks/<int:id>/detail/", tasks_detail, name="tasks-detail"),
     path("agenda/tasks/note/<int:id>/edit/", tasks_edit_note, name="tasks-edit-note"),
