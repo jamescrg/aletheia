@@ -424,16 +424,6 @@ def tasks_date(request, task_id):
         return render(request, "agenda/tasks/date-edit.html", context)
 
 
-@require_POST
-@login_required
-def tasks_date_bump(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)
-    if task.date_due:
-        task.date_due += timedelta(days=1)
-        task.save()
-    return redirect("agenda:tasks-list")
-
-
 @login_required
 def tasks_user(request, task_id, user):
     task = get_object_or_404(Task, pk=task_id)
