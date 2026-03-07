@@ -58,17 +58,17 @@
 }
 
 .tasks-table .status {
-  width: 8rem;
+  width: 9rem;
 }
 
 .tasks-table .user {
-  width: 8rem;
+  width: 9rem;
 }
 
 .tasks-table .date {
   overflow: visible;
   white-space: nowrap;
-  width: 11rem;
+  width: 9rem;
 }
 
 .tasks-table .date .dropdown-menu {
@@ -126,6 +126,30 @@
   margin: 0;
   padding: 0;
   width: 9rem;
+}
+
+/* Flatpickr calendar overrides */
+.flatpickr-day {
+  border-radius: var(--radius-md);
+  height: 32px;
+  line-height: 30px;
+  max-width: 32px;
+}
+
+.flatpickr-day.today:not(.selected) {
+  border-color: var(--stone-300);
+}
+
+.flatpickr-day.today:not(.selected):hover {
+  background: var(--stone-100);
+  border-color: var(--stone-300);
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.selected:hover {
+  background: var(--selected-background);
+  border-color: var(--selected-border);
+  color: var(--selected-color);
 }
 
 
