@@ -65,6 +65,13 @@
   margin-top: 1rem;
 }
 
+.deadline-calculator-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
 .deadline-calculator-results {
   border: solid 1px var(--border-medium);
   border-collapse: separate;
@@ -217,7 +224,7 @@
 .fc-event,
 .fc-event.fc-daygrid-block-event,
 .fc-event.fc-daygrid-dot-event {
-  background-color: var(--violet-100) !important;
+  background-color: var(--stone-150) !important;
   border: 1px solid var(--border-medium) !important;
   border-radius: var(--radius-sm);
   color: var(--color-primary) !important;
@@ -257,7 +264,7 @@
 
 /* No-matter events: blue highlight */
 .fc-event.fc-event-no-matter {
-  background-color: var(--blue-100) !important;
+  background-color: var(--stone-50) !important;
 }
 
 /* Day cells */
@@ -283,7 +290,7 @@
 }
 
 .fc .fc-day-today .fc-daygrid-day-number {
-  background-color: var(--amber-200);
+  background-color: var(--violet-200);
   border-radius: 50%;
   font-weight: 600;
   height: 1.75rem;

@@ -17,7 +17,12 @@
     <label for="days" class="form-label">Days</label>
     <input type="text" class="form-control" placeholder="" name="days" />
   </div>
-  <div>
-    <button class="hide submit" type="submit">Submit</button>
+  <div class="deadline-calculator-actions">
+    <button type="button"
+            class="btn btn-secondary"
+            onclick="document.getElementById('deadline-calculator-inline').innerHTML=''; document.getElementById('deadline-calculator-results').innerHTML='';">
+      Cancel
+    </button>
+    <button type="submit" class="btn btn-success">Calculate</button>
   </div>
 </form>
