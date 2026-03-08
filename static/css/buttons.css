@@ -170,9 +170,12 @@ i.with-text {
   top: 0.5px;
 }
 
-/* Filter icon - always violet with right margin */
+/* Filter icon - always violet, margin only when paired with text */
 .icon-list-filter {
   color: var(--icon-violet);
+}
+
+.icon-list-filter:not(:only-child) {
   margin-right: 0.5rem;
 }
 
