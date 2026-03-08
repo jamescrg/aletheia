@@ -22,6 +22,19 @@ body.contacts-page .navbar .active::after {
   background: var(--background-subnav);
 }
 
+/* Restore section card styling on contacts page */
+body.contacts-page .section {
+  background: var(--background-section);
+  border-radius: var(--radius-md);
+  box-shadow: 0 0.0625rem 0.2rem rgb(0 0 0 / 14%);
+}
+
+/* Section header/nav need contrast against the darker page body */
+body.contacts-page .section-header,
+body.contacts-page .section-nav {
+  background: var(--stone-225);
+}
+
 /* ==========================================================================
    Contacts Layout (Bootstrap grid replacement)
    ========================================================================== */
