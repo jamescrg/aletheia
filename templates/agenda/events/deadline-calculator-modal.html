@@ -12,5 +12,11 @@
         <div id="deadline-calculator-results" class="calc-results"></div>
       </div>
     </div>
+    <div class="modal-footer">
+      <button type="button"
+              class="btn btn-secondary"
+              @click="$dispatch('close-modal')">Cancel</button>
+      <button type="submit" form="deadline-calculator-form" class="btn btn-success">Calculate</button>
+    </div>
   </div>
 </div>
