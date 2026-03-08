@@ -1,0 +1,76 @@
+<div class="modal-dialog modal-md"
+     hx-trigger="load"
+     {% if matter_id %} hx-get="{% url 'matters:tasks-list' matter_id %}" hx-target="#matterTasks" {% else %} hx-get="{% url 'tasks:list' %}" hx-target="#tasks" {% endif %}
+     hx-swap="innerHTML">
+  <div class="modal-content task-detail-modal">
+    <div class="modal-header">
+      <h1 class="modal-title">{{ task.description }}</h1>
+      <div>
+        <button type="button" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="task-detail">
+        <div class="task-detail-row">
+          <span class="task-detail-matter">{{ task.matter.name|default:"Admin" }}</span>
+          <div>
+            <a class="btn-icon btn-add-note"
+               href="#"
+               hx-get="{% url 'tasks:add-note' id=task.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
+               hx-target="#htmx-modal-container"
+               hx-trigger="click">+ Note</a>
+            {% if matter_id %}
+              {# djlint:off H037 #}
+              <a class="btn-icon"
+                 href="#"
+                 hx-get="{% url 'matters:tasks-edit' id=matter_id task_id=task.id %}"
+                 hx-target="#htmx-modal-container"
+                 hx-trigger="click">
+                <i class="icon-pencil"></i>
+              </a>
+              {# djlint:on #}
+            {% else %}
+              <a class="btn-icon"
+                 href="#"
+                 hx-get="{% url 'tasks:edit' id=task.id %}"
+                 hx-target="#htmx-modal-container"
+                 hx-trigger="click">
+                <i class="icon-pencil"></i>
+              </a>
+            {% endif %}
+          </div>
+        </div>
+        <div class="task-detail-row">
+          <div class="task-detail-meta">
+            <span class="task-detail-priority">Priority: {{ task.priority }}</span>
+            <span class="task-detail-user">{{ task.user.username|title }}</span>
+            <span class="task-detail-status">{{ task.status }}</span>
+            <span class="task-detail-date">{{ task.date_due|date:"M j, Y"|default:"" }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="task-notes">
+        {% for note in notes %}
+          <div class="task-note">
+            <div class="task-note-title">
+              <div class="task-note-title-left">
+                <a href="#"
+                   hx-get="{% url 'tasks:edit-note' id=note.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
+                   hx-target="#htmx-modal-container"
+                   hx-trigger="click">
+                  <span class="task-note-date-time">{{ note.date|date:"M j, Y" }} {{ note.time|time:"g:i A" }}</span>
+                </a>
+                <span class="task-note-username">{{ note.user.username|title }}</span>
+              </div>
+            </div>
+            <div class="task-note-details">{{ note.details|safe }}</div>
+          </div>
+        {% empty %}
+          <p class="empty-message">No notes yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>

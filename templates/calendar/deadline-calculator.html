@@ -1,0 +1,12 @@
+<div class="deadline-calculator">
+  <div class="deadline-calculator-link">
+    <a href="#"
+       hx-get="{% url 'calendar:deadline-form' %}"
+       hx-target="#deadline-calculator-inline"
+       hx-trigger="click">
+      <i class="icon-calendar with-text"></i>Deadline Calculator
+    </a>
+  </div>
+  <div id="deadline-calculator-inline">{# form to be loaded here #}</div>
+  <div id="deadline-calculator-results" class="calc-results">{# results to be loaded here #}</div>
+</div>

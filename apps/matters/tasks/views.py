@@ -7,9 +7,6 @@ from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_POST
 
 from apps.accounts.models import CustomUser
-from apps.agenda.tasks.filter import TasksFilter
-from apps.agenda.tasks.forms import BulkTasksForm, TaskForm
-from apps.agenda.tasks.models import Task, TaskNote, UserTaskNoteView
 from apps.management.pagination import CustomPaginator
 from apps.management.selection import (
     all_visible_selected,
@@ -21,6 +18,9 @@ from apps.management.selection import (
     toggle_id,
 )
 from apps.matters.models import Matter
+from apps.tasks.filter import TasksFilter
+from apps.tasks.forms import BulkTasksForm, TaskForm
+from apps.tasks.models import Task, TaskNote, UserTaskNoteView
 
 TASKS_TRIGGER = "tasksListChanged"
 

@@ -1,0 +1,22 @@
+<div class="modal-dialog modal-md">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Deadline Calculator</h1>
+      <button type="button" @click="$dispatch('close-modal')">
+        <i class="icon-x"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="deadline-calculator">
+        {% include "calendar/deadline-calculator-form.html" %}
+        <div id="deadline-calculator-results" class="calc-results"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button"
+              class="btn btn-secondary"
+              @click="$dispatch('close-modal')">Cancel</button>
+      <button type="submit" form="deadline-calculator-form" class="btn btn-success">Calculate</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,390 @@
+/* ==========================================================================
+ Tasks Table
+========================================================================== */
+
+#tasks th.col-select,
+#tasks td.col-select,
+#matterTasks th.col-select,
+#matterTasks td.col-select {
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+  vertical-align: middle;
+  width: 2.5rem;
+}
+
+/* ==========================================================================
+ Shared Styles
+========================================================================== */
+
+.filter-tools .return-to-agenda {
+  color: var(--link);
+}
+
+.filter-tools .return-to-agenda:hover {
+  color: var(--link-hover);
+}
+
+/* ==========================================================================
+ Task Notes
+========================================================================== */
+
+.task-description {
+  margin-bottom: 0.5rem;
+}
+
+.task-note {
+  border-bottom: solid 1px var(--border-medium);
+  padding: 1rem 0 1rem 0.5rem;
+}
+
+.task-note:first-child {
+  border-top: solid 1px var(--border-medium);
+}
+
+.task-note-title {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.task-note-title-left {
+  align-items: center;
+  display: flex;
+}
+
+.task-note-date-time {
+  margin-right: 1rem;
+}
+
+.task-note-username {
+  color: var(--color-muted);
+  margin-right: 1rem;
+}
+
+/* Markdown styling for task notes */
+.task-note-details h1 {
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+.task-note-details h2 {
+  font-size: 1.25em;
+  font-weight: 600;
+}
+
+.task-note-details h3 {
+  font-size: 1.125em;
+  font-weight: 600;
+}
+
+.task-note-details strong {
+  font-weight: 600;
+}
+
+.task-note-details ul {
+  list-style-type: disc;
+  margin: 0 0 0 1rem;
+}
+
+.task-note-details ol {
+  list-style-type: decimal;
+  margin: 0 0 0 1rem;
+}
+
+.task-note-details p {
+  margin: 1rem 0 0 0.5rem;
+}
+
+.task-note-details p:first-child {
+  margin-top: 0.5rem;
+}
+
+.task-note-details a {
+  color: var(--link);
+  text-decoration: underline;
+}
+
+.task-note-details a:hover {
+  color: var(--link-hover);
+}
+
+.task-notes .empty-message {
+  color: var(--color-muted);
+  font-style: italic;
+  padding: 1rem;
+  text-align: center;
+}
+
+.task-note-form .char-counter {
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  text-align: left;
+}
+
+.priority-dropdown i.with-text {
+  margin-right: 0.5rem;
+}
+
+/* ==========================================================================
+ Tasks
+========================================================================== */
+
+.tasks-add-quick-input {
+  background: var(--background-light);
+  color: var(--color-primary);
+  padding-left: 1rem;
+  width: 45.2rem;
+}
+
+
+.tasks-add-quick-input::placeholder {
+  color: var(--border-medium);
+}
+
+.tasks-btn-status {
+  color: var(--icon-muted);
+}
+
+.tasks-table .priority {
+  text-align: center;
+  width: 3rem;
+}
+
+.priority-arrow .icon-arrow-up-to-line {
+  font-size: 0.9rem;
+  left: 0.25rem;
+  position: relative;
+  top: 0;
+}
+
+.priority-text {
+  position: relative;
+  right: 1rem;
+}
+
+.tasks-table .priority i {
+  /* margin: 0; */
+}
+
+.priority .btn-sort {
+  margin: 0;
+}
+
+.tasks-table .priority .dropdown-menu {
+  min-width: 2rem;
+}
+
+.tasks-table .matter {
+  width: 16rem;
+}
+
+.tasks-table .description {
+  min-width: 31.5rem;
+  white-space: normal;
+}
+
+.tasks-table .status {
+  width: 9rem;
+}
+
+.tasks-table .user {
+  width: 9rem;
+}
+
+.tasks-table .date {
+  overflow: visible;
+  white-space: nowrap;
+  width: 9rem;
+}
+
+.tasks-table .date .dropdown-menu {
+  min-width: 2.75rem;
+}
+
+
+/* Fix dropdown overflow issues */
+#tasks .table-container {
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.tasks-table tbody {
+  overflow: visible;
+}
+
+.tasks-table {
+  min-width: 73rem;
+  overflow: visible;
+}
+
+.tasks-table .date .empty-date-icon {
+  color: var(--icon-muted);
+  display: block;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.tasks-table .date:hover .empty-date-icon {
+  opacity: 1;
+}
+
+.task-date {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: inherit;
+  margin: 0;
+  padding: 0;
+  width: 9rem;
+}
+
+/* Flatpickr calendar overrides */
+.flatpickr-day {
+  border-radius: var(--radius-md);
+}
+
+.flatpickr-day.today:not(.selected) {
+  border-color: var(--stone-300);
+}
+
+.flatpickr-day.today:not(.selected):hover {
+  background: var(--stone-100);
+  border-color: var(--stone-300);
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.selected:hover {
+  background: var(--selected-background);
+  border-color: var(--selected-border);
+  color: var(--selected-color);
+}
+
+.flatpickr-calendar {
+  background: var(--background-light);
+  border-radius: var(--radius-md);
+}
+
+.flatpickr-clear {
+  background: inherit;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin: 0.5rem auto;
+  padding: 0.25rem 0;
+  width: 30%;
+}
+
+.flatpickr-clear:hover {
+  /* opacity: 0.8; */
+}
+
+
+.tasks-table .menu {
+  margin: 0;
+  padding: 0;
+  width: 0.75rem;
+}
+
+/* .tasks-table .complete, */
+.tasks-table .complete > a,
+.tasks-table .complete .button-link {
+  color: var(--color-muted);
+  text-decoration: line-through;
+}
+
+.tasks-form #id_description,
+.tasks-form #id_matter,
+.tasks-form #id_user,
+.tasks-form #id_date {
+  width: 100%
+}
+
+.task-detail-modal .modal-title {
+  font-size: 1.1rem;
+}
+
+.task-detail {
+  padding-bottom: 1rem;
+}
+
+.task-detail-matter {
+  font-size: 1.1rem;
+}
+
+.task-detail-row {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.task-detail-description {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.task-detail-meta {
+  color: var(--color-muted);
+  display: flex;
+  gap: 1rem;
+}
+
+.task-detail-meta span {
+  align-items: center;
+  display: inline-flex;
+}
+
+.task-detail .btn-icon {
+  background: var(--background-control);
+  border: solid 1px var(--border-medium);
+  border-radius: var(--radius-md);
+  color: var(--color-muted);
+  padding: 0.375rem 0.625rem;
+}
+
+.task-detail-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.task-detail .btn-add-note {
+  color: var(--link);
+  font-size: 1rem;
+  margin-right: 0.5rem;
+}
+
+/* Task notes ghost button */
+.task-notes-btn {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.task-notes-btn.has-notes {
+  opacity: 1;
+}
+
+.tasks-table td.description:hover .task-notes-btn {
+  opacity: 1;
+}
+
+/* New task highlight animation */
+@keyframes task-highlight-fade {
+  from { background-color: var(--selected-background); }
+  to { background-color: transparent; }
+}
+
+.task-new-highlight td {
+  animation: task-highlight-fade 2s ease-out;
+}
+
+.task-notes-date {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  position: relative;
+  top: 1px;
+  margin-left: 0.25rem;
+}
