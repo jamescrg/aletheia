@@ -105,7 +105,7 @@ Section Layout (header / nav / body)
 .section-nav {
   background: var(--background-subnav);
   margin: 0;
-  padding: 0.25rem 0 0;
+  padding: 0.25rem 0 0 var(--radius-md);
 }
 
 .section-nav ul {
@@ -156,10 +156,6 @@ Section Layout (header / nav / body)
 
 .section-nav li:first-child.active {
   border-radius: var(--radius-md) var(--radius-md) 0 0;
-}
-
-.section-nav li:first-child.active::before {
-  display: none;
 }
 
 /* Section Body - main content area */

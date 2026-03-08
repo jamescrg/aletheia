@@ -44,6 +44,10 @@ body.contacts-page .section > .section-nav:first-child {
   border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
+body.contacts-page .section {
+  margin-bottom: 1.25rem;
+}
+
 /* ==========================================================================
    Contacts Layout (Bootstrap grid replacement)
    ========================================================================== */
@@ -57,22 +61,22 @@ body.contacts-page .section > .section-nav:first-child {
 @media (width >= 768px) {
   .contacts-layout {
     flex-direction: row;
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
 
   .contacts-layout > .contacts-sidebar {
-    flex: 0 0 calc(25% - 0.75rem);
-    max-width: calc(25% - 0.75rem);
+    flex: 0 0 calc(25% - 0.625rem);
+    max-width: calc(25% - 0.625rem);
   }
 
   .contacts-layout > .contacts-list {
-    flex: 0 0 calc(25% - 0.75rem);
-    max-width: calc(25% - 0.75rem);
+    flex: 0 0 calc(25% - 0.625rem);
+    max-width: calc(25% - 0.625rem);
   }
 
   .contacts-layout > .contacts-detail {
-    flex: 0 0 calc(50% - 1.5rem);
-    max-width: calc(50% - 1.5rem);
+    flex: 0 0 calc(50% - 1.25rem);
+    max-width: calc(50% - 1.25rem);
   }
 }
 
@@ -158,7 +162,7 @@ body.contacts-page .section > .section-nav:first-child {
   .contacts-form-grid {
     align-items: start;
     display: grid;
-    gap: 1.5rem;
+    gap: 1.25rem;
     grid-template-columns: 1fr 1fr;
   }
 
@@ -348,7 +352,7 @@ body.contacts-page .section > .section-nav:first-child {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
 }
 
 .action-buttons .btn {
