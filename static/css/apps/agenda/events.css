@@ -63,13 +63,13 @@
 
 .deadline-calculator-form {
   margin-top: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .deadline-calculator-actions {
   display: flex;
-  gap: 0.5rem;
-  justify-content: flex-end;
-  margin-top: 0.75rem;
+  grid-column: 1 / -1;
+  justify-content: space-between;
 }
 
 .deadline-calculator-results {
@@ -78,7 +78,6 @@
   border-radius: var(--radius-md);
   border-spacing: 0;
   margin-bottom: 1.5rem;
-  margin-top: 0.5rem;
   table-layout: fixed;
   width: 100%;
 }
