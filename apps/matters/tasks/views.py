@@ -230,7 +230,7 @@ def tasks_add_quick(request, id):
     # set task description and some property values
     task.description = request.POST["description"]
     task.status = "Pending"
-    task.priority = 3
+    task.priority = 5
     task.matter = matter  # Always assign to the current matter
 
     # get filter values to auto populate task properties

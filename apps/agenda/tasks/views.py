@@ -125,7 +125,7 @@ def tasks_add_quick(request):
     # set task description and some property values
     task.description = description
     task.status = "Pending"
-    task.priority = 1
+    task.priority = 5
 
     # get filter values to auto populate task properties
     filter_data = request.session.get("tasks_filter", {})
