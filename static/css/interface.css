@@ -89,6 +89,12 @@
   border-radius: 0 0 var(--radius-md) var(--radius-md);
 }
 
+.dropdown-menu-overflow li > a {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .dropdown-menu li > a {
   background: none;
   color: inherit;
