@@ -115,9 +115,6 @@
 /* Flatpickr calendar overrides */
 .flatpickr-day {
   border-radius: var(--radius-md);
-  height: 32px;
-  line-height: 30px;
-  max-width: 32px;
 }
 
 .flatpickr-day.today:not(.selected) {
@@ -142,7 +139,7 @@
 }
 
 .flatpickr-clear {
-  background: var(--blue-50);
+  background: inherit;
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-md);
   color: var(--color-primary);
