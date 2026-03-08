@@ -61,7 +61,9 @@ INSTALLED_APPS = [
     "django.forms",
     "apps.accounts",
     "apps.activity",
-    "apps.agenda",
+    "apps.calendar",
+    "apps.tasks",
+    "apps.dash",
     "apps.contacts",
     "apps.case",
     "apps.folders",
@@ -103,7 +105,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "apps.agenda.middleware.DailyDashCheckMiddleware",
+    "apps.dash.middleware.DailyDashCheckMiddleware",
     "utils.middleware.CurrentUserMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
 ]
@@ -217,8 +219,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "accounts.CustomUser"
 
-LOGIN_REDIRECT_URL = "agenda:tasks-index"
-LOGOUT_REDIRECT_URL = "agenda:tasks-index"
+LOGIN_REDIRECT_URL = "tasks:index"
+LOGOUT_REDIRECT_URL = "tasks:index"
 
 INTERNAL_IPS = [
     "127.0.0.1",

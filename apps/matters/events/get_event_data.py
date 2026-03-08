@@ -1,6 +1,6 @@
 from datetime import date, datetime, timedelta
 
-from apps.agenda.events.models import Event
+from apps.calendar.models import Event
 from apps.matters.proceedings.models import Proceeding
 
 

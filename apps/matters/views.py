@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
-from apps.agenda.events.models import Event
+from apps.calendar.models import Event
 from apps.case.models import Fact
 from apps.contacts.functions.load_contacts import load_contacts
 from apps.contacts.models import Contact

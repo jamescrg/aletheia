@@ -1,0 +1,29 @@
+<div class="modal-dialog modal-md">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Filter Events</h1>
+      <div>
+        <button type="button" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <form id="events-filter-form"
+            class="form-responsive form-spacious filter"
+            hx-target="#htmx-modal-container"
+            hx-post="{% url 'calendar:filter' %}">
+        {% csrf_token %}
+        {{ filter.form }}
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button"
+              class="btn btn-secondary"
+              hx-post="{% url 'management:clear-filters' session_key='events_filter' trigger='eventsChanged' %}">
+        Restore Defaults
+      </button>
+      <button type="submit" form="events-filter-form" class="btn btn-success">Apply</button>
+    </div>
+  </div>
+</div>

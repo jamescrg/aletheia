@@ -25,14 +25,14 @@ from pathlib import Path
 
 from django.conf import settings
 
-from apps.agenda.events.models import Event
-from apps.agenda.tasks.models import Task
+from apps.calendar.models import Event
 from apps.case.models import CaseLaw, Document, Fact, Highlight
 from apps.matters.models import Relationship
 from apps.matters.proceedings.models import Proceeding
 from apps.matters.settlement.models import SettlementEntry
 from apps.notes.models import Note
 from apps.settings.models import Company
+from apps.tasks.models import Task
 
 from .models import Conversation
 

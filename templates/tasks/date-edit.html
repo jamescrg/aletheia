@@ -1,0 +1,3 @@
+<div x-data="{ init() { const wrapper = this.$el.closest('.task-date-wrapper'); const original = wrapper.getAttribute('data-original'); const input = this.$refs.picker; let changed = false; flatpickr(input, { dateFormat: 'Y-m-d', defaultDate: '{{ task.date_due|date:"Y-m-d" }}' || null, allowInput: true, onReady: (_, __, fp) => fp.open(), onChange: (_, dateStr) => { changed = true; htmx.ajax('POST', '/tasks/{{ task.id }}/task-date', { target: '#tasks', values: { date_due: dateStr } }); }, onClose: () => { if (!changed) { wrapper.innerHTML = original; htmx.process(wrapper); } } }); } }">
+  <input x-ref="picker" type="text" name="date_due" class="task-date" />
+</div>

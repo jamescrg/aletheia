@@ -1,0 +1,50 @@
+<div class="modal-dialog modal-md">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">
+        {% if not edit %}
+          Add Event
+        {% else %}
+          Edit Event
+        {% endif %}
+      </h1>
+      <div>
+        <button type="button" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      {% include "calendar/deadline-calculator.html" %}
+      {% if results %}<div id="calculator-results"></div>{% endif %}
+      {% if not google_connected %}
+        <div class="warn">
+          Not connected to a Google calendar. You may still add an event, but it will not be posted to your
+          Google account. Contact an administrator to establish a connection.
+        </div>
+      {% endif %}
+      <form id="event-form"
+            hx-post="{{ action }}"
+            hx-target="#htmx-modal-container"
+            class="form-compact events-form col2"
+            role="form">
+        {% csrf_token %}
+        {{ form }}
+      </form>
+    </div>
+    <div class="modal-footer">
+      {% if edit %}
+        <button type="button"
+                class="btn btn-danger"
+                hx-confirm="Are you sure you want to delete this record?"
+                hx-delete="{% url 'calendar:delete-origin' id=event.id origin='events' %}"
+                hx-target="#htmx-modal-container">Delete</button>
+      {% else %}
+        <button type="button"
+                class="btn btn-secondary"
+                @click="$dispatch('close-modal')">Cancel</button>
+      {% endif %}
+      <button type="submit" form="event-form" class="btn btn-success">Submit</button>
+    </div>
+  </div>
+</div>

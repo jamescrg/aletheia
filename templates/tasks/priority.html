@@ -1,0 +1,17 @@
+<div class="dropdown" x-data="dropdown()">
+  <button class="button-link"
+          type="button"
+          x-ref="button"
+          @click="toggle()"
+          :aria-expanded="open">{{ task.priority }}</button>
+  <ul class="dropdown-menu" x-ref="menu" x-show="open">
+    {% for i in "1234567890"|make_list %}
+      <li>
+        <a class="dropdown-item"
+           href="#"
+           hx-get="{% url 'tasks:task-priority' task_id=task.id priority=forloop.counter %}"
+           hx-target="#tasks"><i class="icon-flag"></i> {{ forloop.counter }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>

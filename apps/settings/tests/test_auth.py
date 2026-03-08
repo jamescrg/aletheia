@@ -117,15 +117,15 @@ def test_intakes_index_requires_login(unauthenticated_client):
 
 
 # -----------------------------------------------------
-# Agenda app - unauthenticated access tests
+# Tasks & Calendar - unauthenticated access tests
 # -----------------------------------------------------
-def test_agenda_tasks_requires_login(unauthenticated_client):
-    response = unauthenticated_client.get("/agenda/tasks/list/")
+def test_tasks_requires_login(unauthenticated_client):
+    response = unauthenticated_client.get("/tasks/list/")
     assert response.status_code == 302
     assert "/accounts/login/" in response.url
 
 
-def test_agenda_events_requires_login(unauthenticated_client):
+def test_events_requires_login(unauthenticated_client):
     response = unauthenticated_client.get("/events/list/")
     assert response.status_code == 302
     assert "/accounts/login/" in response.url

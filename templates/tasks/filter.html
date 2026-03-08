@@ -1,0 +1,26 @@
+<div class="modal-dialog modal-md">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Filter Tasks</h1>
+      <div>
+        <button type="button" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <form id="tasks-filter-form"
+            class="form-responsive form-spacious filter"
+            hx-target="#htmx-modal-container"
+            hx-post="{{ request.path }}">
+        {% csrf_token %} {{ filter.form }}
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button"
+              class="btn btn-secondary"
+              data-href="{% url 'tasks:filter-default' %}">Restore Defaults</button>
+      <button type="submit" form="tasks-filter-form" class="btn btn-success">Apply</button>
+    </div>
+  </div>
+</div>

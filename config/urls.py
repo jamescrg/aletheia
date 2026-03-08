@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
 
-from apps.agenda.tasks.views import tasks_index
+from apps.tasks.views import tasks_index
 
 # Override admin login to use 2FA
 admin.site.login_url = "/accounts/login/"
@@ -18,8 +18,12 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     # Folders App
     path("", include("apps.folders.urls")),
-    # Agenda App
-    path("", include("apps.agenda.urls")),
+    # Calendar App
+    path("", include("apps.calendar.urls")),
+    # Tasks App
+    path("", include("apps.tasks.urls")),
+    # Dash App
+    path("", include("apps.dash.urls")),
     # Intakes App
     path("", include("apps.intakes.urls")),
     # Matters App

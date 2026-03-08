@@ -1,0 +1,21 @@
+<div class="dropdown" x-data="dropdown()">
+  <button class="button-link"
+          type="button"
+          x-ref="button"
+          @click="toggle()"
+          :aria-expanded="open">{{ task.status }}</button>
+  <ul class="dropdown-menu" x-ref="menu" x-show="open">
+    <li>
+      <a class="dropdown-item"
+         href="#"
+         hx-get="{% url 'tasks:set-status' task_id=task.id status='Pending' %}"
+         hx-target="#tasks">Pending</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
+         hx-get="{% url 'tasks:set-status' task_id=task.id status='Complete' %}"
+         hx-target="#tasks">Complete</a>
+    </li>
+  </ul>
+</div>

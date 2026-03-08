@@ -103,7 +103,7 @@
     {% endfor %}
   </ul>
 </div>
-<a href="{% url 'agenda:tasks-index' %}" class="return-to-agenda">
+<a href="{% url 'tasks:index' %}" class="return-to-agenda">
   Back to Agenda <i class="icon-arrow-up-left ms-2"></i>
 </a>
 {% endif %}
@@ -194,7 +194,7 @@
                hx-swap="innerHTML">{{ task.description }}</a>
             <a href="#"
                class="task-notes-btn {% if task.has_notes %}has-notes{% endif %}"
-               hx-get="{% url 'agenda:tasks-detail' id=task.id %}?matter_id={{ matter.id }}"
+               hx-get="{% url 'tasks:detail' id=task.id %}?matter_id={{ matter.id }}"
                hx-target="#htmx-modal-container">
               <i class="icon-sticky-note note-badge-icon {% if task.has_new_notes %}note-badge-new{% endif %}"></i>
             </a>

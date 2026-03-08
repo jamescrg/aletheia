@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
-from apps.agenda.tasks_digest import send_digest_for_user
+from apps.tasks.digest import send_digest_for_user
 
 
 @login_required
