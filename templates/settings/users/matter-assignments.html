@@ -1,0 +1,18 @@
+<div class="modal-dialog modal-lg">
+  <div class="modal-content matter-assignments-modal">
+    <div class="modal-header">
+      <h1 class="modal-title">Matter Access — {{ target_user.full_name }}</h1>
+      <div>
+        <button type="button" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body" id="matter-assignments-body">{% include "settings/users/matter-assignments-body.html" %}</div>
+    <div class="modal-footer modal-footer-right">
+      <button type="button"
+              class="btn btn-success"
+              @click="$dispatch('close-modal')">Accept & Close</button>
+    </div>
+  </div>
+</div>

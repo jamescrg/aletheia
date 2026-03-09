@@ -304,7 +304,6 @@ def add(request):
             matter = form.save(commit=False)
             matter.user_id = request.user.id
             matter.save()
-            form.save_m2m()
 
             return HttpResponse(status=204, headers={"HX-Trigger": "mattersChanged"})
 
@@ -337,7 +336,6 @@ def edit(request, id):
             matter = form.save(commit=False)
             matter.user_id = request.user.id
             matter.save()
-            form.save_m2m()
             return HttpResponse(status=204, headers={"HX-Trigger": "mattersChanged"})
 
     else:

@@ -1,0 +1,38 @@
+<div class="transfer-columns">
+  <div class="transfer-column">
+    <h3 class="transfer-column-title">Open Matters</h3>
+    <div class="transfer-list">
+      {% for matter in unassigned %}
+        <button class="transfer-item"
+                hx-post="{% url 'settings:toggle-matter-assignment' target_user.id matter.id %}"
+                hx-target="#matter-assignments-body"
+                hx-swap="innerHTML">
+          <span>{{ matter.name }}</span>
+          <i class="icon-plus"></i>
+        </button>
+      {% empty %}
+        <p class="transfer-empty">No unassigned matters</p>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="transfer-column">
+    <h3 class="transfer-column-title">Assigned</h3>
+    <div class="transfer-list">
+      {% for matter in assigned %}
+        <button class="transfer-item assigned"
+                hx-post="{% url 'settings:toggle-matter-assignment' target_user.id matter.id %}"
+                hx-target="#matter-assignments-body"
+                hx-swap="innerHTML">
+          <span>{{ matter.name }}</span>
+          <i class="icon-check"></i>
+        </button>
+      {% empty %}
+        <p class="transfer-empty">No matters assigned</p>
+      {% endfor %}
+    </div>
+    <div class="transfer-grant-all">
+      <button hx-post="{% url 'settings:toggle-perm' target_user.id 'perm_all_matters' %}"
+              class="btn btn-secondary">Grant All Matters</button>
+    </div>
+  </div>
+</div>

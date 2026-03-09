@@ -135,18 +135,27 @@
         <td class="permissions">
           {% if user.is_admin %}
             <span class="perm-icons">
-              <i class="icon-briefcase perm-active" title="All Matters"></i>
-              <i class="icon-dollar-sign perm-active" title="Financial"></i>
-              <i class="icon-inbox perm-active" title="Intakes"></i>
-              <i class="icon-chart-no-axes-column perm-active" title="Reports"></i>
+              <span class="btn-perm"><i class="icon-briefcase perm-active" title="All Matters"></i></span>
+              <span class="btn-perm"><i class="icon-dollar-sign perm-active" title="Financial"></i></span>
+              <span class="btn-perm"><i class="icon-inbox perm-active" title="Intakes"></i></span>
+              <span class="btn-perm"><i class="icon-chart-no-axes-column perm-active" title="Reports"></i></span>
             </span>
           {% else %}
             <span class="perm-icons">
-              <button hx-post="{% url 'settings:toggle-perm' user.id 'perm_all_matters' %}"
-                      title="All Matters"
-                      class="btn-perm">
-                <i class="icon-briefcase {% if user.perm_all_matters %}perm-active{% else %}perm-inactive{% endif %}"></i>
-              </button>
+              {% if user.perm_all_matters %}
+                <button hx-post="{% url 'settings:toggle-perm' user.id 'perm_all_matters' %}"
+                        title="All Matters (click to restrict)"
+                        class="btn-perm">
+                  <i class="icon-briefcase perm-active"></i>
+                </button>
+              {% else %}
+                <button hx-get="{% url 'settings:matter-assignments' user.id %}"
+                        hx-target="#htmx-modal-container"
+                        title="Manage Matter Access"
+                        class="btn-perm">
+                  <i class="icon-briefcase perm-inactive"></i>
+                </button>
+              {% endif %}
               <button hx-post="{% url 'settings:toggle-perm' user.id 'perm_financial' %}"
                       title="Financial"
                       class="btn-perm">

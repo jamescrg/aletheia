@@ -60,6 +60,16 @@ urlpatterns = [
         user_urls.toggle_permission,
         name="toggle-perm",
     ),
+    path(
+        "settings/users/matter-assignments/<int:user_id>/",
+        user_urls.matter_assignments,
+        name="matter-assignments",
+    ),
+    path(
+        "settings/users/toggle-matter/<int:user_id>/<int:matter_id>/",
+        user_urls.toggle_matter_assignment,
+        name="toggle-matter-assignment",
+    ),
     # Notifications
     path(
         "settings/notifications/",

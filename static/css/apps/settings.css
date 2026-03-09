@@ -211,7 +211,7 @@ Settings Contacts - Two Column Layout
 .perm-icons {
   align-items: center;
   display: flex;
-  gap: 0.25rem;
+  justify-content: space-between;
 }
 
 .perm-active {
@@ -232,6 +232,60 @@ Settings Contacts - Two Column Layout
 
 .btn-perm:hover {
   opacity: 0.7;
+}
+
+/* Transfer Columns (Matter Assignment Modal) */
+.matter-assignments-modal {
+  font-size: 1rem;
+}
+
+.transfer-columns {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+}
+
+.transfer-column-title {
+  color: var(--color-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.transfer-list {
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  max-height: 28rem;
+  overflow-y: auto;
+}
+
+.transfer-item {
+  align-items: center;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  width: 100%;
+}
+
+.transfer-item:last-child { border-bottom: none; }
+.transfer-item:hover { background: var(--hover-light); }
+.transfer-item.assigned { color: var(--success); }
+.transfer-empty { color: var(--color-muted); padding: 0.75rem; }
+
+.transfer-grant-all {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+.modal-footer-right {
+  justify-content: flex-end;
 }
 
 /* Groups table - name cell with drag handle */
