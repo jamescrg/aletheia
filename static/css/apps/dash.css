@@ -76,8 +76,7 @@
   border-bottom: none;
 }
 
-.dashboard-table .past-due,
-.dashboard-table .due-today {
+.dashboard-table .past-due {
   background: var(--hl-yellow);
 }
 
