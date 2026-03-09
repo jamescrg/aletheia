@@ -102,9 +102,28 @@
             </thead>
             <tbody>
               {% if unbilled_by_user %}
+                {% for entry in unbilled_by_user %}
+                  <tr>
+                    <td>{{ entry.user__username|title }}</td>
+                    <td class="numeric">{{ entry.total_hours|floatformat:1 }}</td>
+                    <td class="numeric">${{ entry.total_fees|floatformat:2|intcomma }}</td>
+                  </tr>
+                {% endfor %}
                 <tr class="total-row{% if unbilled_total_fees > 40000 %} hl-purple{% elif unbilled_total_fees > 30000 %} hl-green{% endif %}">
                   <td>
                     <strong>Total</strong>
+                  </td>
+                  <td class="numeric">
+                    <strong>{{ unbilled_total_hours|floatformat:1 }}</strong>
+                  </td>
+                  <td class="numeric">
+                    <strong>${{ unbilled_total_fees|floatformat:2|intcomma }}</strong>
+                  </td>
+                </tr>
+              {% elif unbilled_total_hours %}
+                <tr>
+                  <td>
+                    <strong>This Month</strong>
                   </td>
                   <td class="numeric">
                     <strong>{{ unbilled_total_hours|floatformat:1 }}</strong>

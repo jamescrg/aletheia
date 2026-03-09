@@ -13,6 +13,7 @@ from django.db.models import (
 from django.db.models.functions import Coalesce
 from django.shortcuts import render
 
+from apps.accounts.access import filter_matters_for_user
 from apps.activity.expenses.models import ExpenseEntry
 from apps.activity.time.models import TimeEntry
 from apps.calendar.models import Event
@@ -47,26 +48,48 @@ def dash_index(request):
         date_due__lte=tomorrow,
     ).order_by("date_due", "priority")
 
-    # Unbilled hours and fees by user
-    unbilled_by_user = (
-        TimeEntry.objects.filter(
-            entered=False,
-            invoice__isnull=True,
+    # Unbilled hours and fees
+    if request.user.is_admin:
+        # Admin: show all users with per-user breakdown
+        unbilled_by_user = (
+            TimeEntry.objects.filter(
+                entered=False,
+                invoice__isnull=True,
+            )
+            .exclude(comp=True)
+            .values("user__username")
+            .annotate(
+                total_hours=Coalesce(Sum("hours"), 0, output_field=DecimalField()),
+                total_fees=Coalesce(
+                    Sum(F("hours") * F("rate")), 0, output_field=DecimalField()
+                ),
+            )
+            .order_by("user__username")
         )
-        .exclude(comp=True)
-        .values("user__username")
-        .annotate(
-            total_hours=Coalesce(Sum("hours"), 0, output_field=DecimalField()),
-            total_fees=Coalesce(
-                Sum(F("hours") * F("rate")), 0, output_field=DecimalField()
-            ),
+        unbilled_total_hours = sum(entry["total_hours"] for entry in unbilled_by_user)
+        unbilled_total_fees = sum(entry["total_fees"] for entry in unbilled_by_user)
+    else:
+        # Non-admin: show only current user's unbilled hours for the month
+        month_start = today.replace(day=1)
+        user_unbilled = (
+            TimeEntry.objects.filter(
+                entered=False,
+                invoice__isnull=True,
+                user=request.user,
+                date__gte=month_start,
+                date__lte=today,
+            )
+            .exclude(comp=True)
+            .aggregate(
+                total_hours=Coalesce(Sum("hours"), 0, output_field=DecimalField()),
+                total_fees=Coalesce(
+                    Sum(F("hours") * F("rate")), 0, output_field=DecimalField()
+                ),
+            )
         )
-        .order_by("user__username")
-    )
-
-    # Calculate totals for unbilled
-    unbilled_total_hours = sum(entry["total_hours"] for entry in unbilled_by_user)
-    unbilled_total_fees = sum(entry["total_fees"] for entry in unbilled_by_user)
+        unbilled_by_user = None
+        unbilled_total_hours = user_unbilled["total_hours"]
+        unbilled_total_fees = user_unbilled["total_fees"]
 
     # Matters with low clearance (< $1000)
     # Use subqueries to calculate unbilled amounts
@@ -96,7 +119,7 @@ def dash_index(request):
 
     # Get matters with unbilled activity
     matters_with_unbilled = (
-        Matter.objects.filter(status="Open")
+        filter_matters_for_user(Matter.objects.filter(status="Open"), request.user)
         .annotate(
             unbilled_fees=Coalesce(
                 Subquery(unbilled_fees_subquery, output_field=DecimalField()),
@@ -213,7 +236,8 @@ def dash_index(request):
 
     # Annotate matters and filter for positive balance due
     balance_due_matters = list(
-        Matter.objects.annotate(
+        filter_matters_for_user(Matter.objects.all(), request.user)
+        .annotate(
             billed=Coalesce(
                 Subquery(billed_subquery, output_field=DecimalField()),
                 0,
