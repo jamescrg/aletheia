@@ -31,6 +31,11 @@ class Matter(AuditMixin, models.Model):
         Contact, related_name="client_matters", on_delete=models.SET_NULL, null=True
     )
     jurisdiction = models.CharField(max_length=100, blank=True)
+    members = models.ManyToManyField(
+        "accounts.CustomUser",
+        related_name="assigned_matters",
+        blank=True,
+    )
     history = HistoricalRecords()
 
     def __str__(self):

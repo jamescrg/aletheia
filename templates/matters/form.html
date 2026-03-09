@@ -25,7 +25,7 @@
       </form>
     </div>
     <div class="modal-footer">
-      {% if edit %}
+      {% if edit and user.is_admin %}
         <button type="button"
                 class="btn btn-danger"
                 hx-get="{% url 'matters:delete' id=matter.id %}"

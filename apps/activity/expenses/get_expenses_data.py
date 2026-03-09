@@ -14,6 +14,11 @@ from apps.management.selection import (
 
 def get_expenses_data(request):
     expenses = ExpenseEntry.objects.all()
+
+    # Filter expenses for users without perm_all_matters
+    if not request.user.is_admin and not request.user.perm_all_matters:
+        expenses = expenses.filter(matter__in=request.user.assigned_matters.all())
+
     number_expenses = expenses.count()
 
     default_filter = {

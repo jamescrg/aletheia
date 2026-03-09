@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
 
+from apps.accounts.access import matter_access_required
 from apps.management.selection import get_session_key
 from apps.matters.models import Matter
 
@@ -43,18 +44,23 @@ def redirect_to_tab(matter_id, tab):
 @login_required
 def case_index(request):
     """Redirect to the last viewed matter, or the first open matter."""
+    from apps.accounts.access import filter_matters_for_user
+
     # Check for last viewed matter in session
     last_matter_id = request.session.get("last_viewed_matter")
 
     if last_matter_id:
         # Verify the matter still exists and is open
         matter = Matter.objects.filter(id=last_matter_id, status="Open").first()
-        if matter:
+        if matter and request.user.has_matter_access(matter):
             tab = get_last_tab(request, matter.id)
             return redirect_to_tab(matter.id, tab)
 
-    # Fall back to first open matter
-    matter = Matter.objects.filter(status="Open").order_by("name").first()
+    # Fall back to first open matter (filtered by access)
+    matters = filter_matters_for_user(
+        Matter.objects.filter(status="Open").order_by("name"), request.user
+    )
+    matter = matters.first()
     if matter:
         request.session["last_viewed_matter"] = matter.id
         tab = get_last_tab(request, matter.id)
@@ -73,6 +79,7 @@ def no_matter(request):
 
 
 @login_required
+@matter_access_required
 def select_matter(request, matter_id):
     """Change the selected matter and redirect to last used tab."""
     matter = get_object_or_404(Matter, pk=matter_id)
@@ -86,6 +93,7 @@ def select_matter(request, matter_id):
 
 
 @login_required
+@matter_access_required
 def mode_content(request, matter_id):
     """Return case mode content partial for HTMX, or redirect for regular request."""
     from django.shortcuts import render

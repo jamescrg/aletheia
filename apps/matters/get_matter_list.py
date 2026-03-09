@@ -1,3 +1,4 @@
+from apps.accounts.access import filter_matters_for_user
 from apps.management.pagination import CustomPaginator
 from apps.matters.filter import MatterFilter
 
@@ -31,6 +32,8 @@ def get_matter_list(request):
         filter = MatterFilter(default_filter)
         matters = filter.qs
         order_by = ""
+
+    matters = filter_matters_for_user(matters, request.user)
 
     request.session["matter_filter"] = filter_data if filter_data else filter.data
     request.session.modified = True

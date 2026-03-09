@@ -23,13 +23,17 @@
         <li {% if app == 'notes' %}class="active"{% endif %}>
           <a id="nav-notes" href="{% url 'notes:index' %}">Notes</a>
         </li>
-        <li {% if app == 'invoicing' %}class="active"{% endif %}>
-          <a id="nav-invoicing" href="{% url 'invoicing:invoices-index' %}">Invoicing</a>
-        </li>
-        <li {% if app == 'intakes' %}class="active"{% endif %}>
-          <a id="nav-intakes" href={% url 'intakes:index' %}>Intakes</a>
-        </li>
-        {% if user.is_staff %}
+        {% if user.is_admin or user.perm_financial %}
+          <li {% if app == 'invoicing' %}class="active"{% endif %}>
+            <a id="nav-invoicing" href="{% url 'invoicing:invoices-index' %}">Invoicing</a>
+          </li>
+        {% endif %}
+        {% if user.is_admin or user.perm_intakes %}
+          <li {% if app == 'intakes' %}class="active"{% endif %}>
+            <a id="nav-intakes" href={% url 'intakes:index' %}>Intakes</a>
+          </li>
+        {% endif %}
+        {% if user.is_admin or user.perm_reports %}
           <li {% if app == 'reports' %}class="active"{% endif %}>
             <a id="nav-reports" href={% url 'reports:index' %}>Reports</a>
           </li>

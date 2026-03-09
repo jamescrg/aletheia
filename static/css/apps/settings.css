@@ -203,6 +203,37 @@ Settings Contacts - Two Column Layout
   width: 8rem;
 }
 
+/* Permissions */
+.users-table .permissions {
+  width: 10rem;
+}
+
+.perm-icons {
+  align-items: center;
+  display: flex;
+  gap: 0.25rem;
+}
+
+.perm-active {
+  color: var(--success);
+}
+
+.perm-inactive {
+  color: var(--icon-muted);
+  opacity: 0.4;
+}
+
+.btn-perm {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.125rem 0.25rem;
+}
+
+.btn-perm:hover {
+  opacity: 0.7;
+}
+
 /* Groups table - name cell with drag handle */
 .groups-table .name-cell-content {
   align-items: center;

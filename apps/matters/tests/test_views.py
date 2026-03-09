@@ -1,4 +1,5 @@
 import pytest
+from django.test import Client
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
@@ -62,8 +63,13 @@ def test_edit_post(client, user, matter):
     assert found
 
 
-def test_delete_confirmation(client, matter):
-    response = client.get(f"/matters/{matter.id}/delete")
+def test_delete_confirmation(matter, user):
+    user.role = "ADMIN"
+    user.save()
+    admin_client = Client()
+    admin_client.login(username="Ollie", password="clawboy")
+    admin_client.get("/dash/")
+    response = admin_client.get(f"/matters/{matter.id}/delete")
     assert response.status_code == 200
 
     assertTemplateUsed(response, "matters/delete_confirmation.html")
@@ -72,8 +78,18 @@ def test_delete_confirmation(client, matter):
     assert found
 
 
-def test_delete_confirm(client, matter):
-    response = client.delete(f"/matters/{matter.id}/delete")
+def test_delete_forbidden_for_non_admin(client, matter):
+    response = client.get(f"/matters/{matter.id}/delete")
+    assert response.status_code == 403
+
+
+def test_delete_confirm(matter, user):
+    user.role = "ADMIN"
+    user.save()
+    admin_client = Client()
+    admin_client.login(username="Ollie", password="clawboy")
+    admin_client.get("/dash/")
+    response = admin_client.delete(f"/matters/{matter.id}/delete")
     assert response.status_code == 204
 
     found = Matter.objects.filter(pk=matter.id).exists()
@@ -133,6 +149,11 @@ def test_edit_nonexistent(client):
     assert response.status_code == 404
 
 
-def test_delete_nonexistent(client):
-    response = client.delete("/matters/99999/delete")
+def test_delete_nonexistent(user):
+    user.role = "ADMIN"
+    user.save()
+    admin_client = Client()
+    admin_client.login(username="Ollie", password="clawboy")
+    admin_client.get("/dash/")
+    response = admin_client.delete("/matters/99999/delete")
     assert response.status_code == 404

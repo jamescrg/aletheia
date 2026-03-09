@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.shortcuts import render
 
 from apps.accounts.models import CustomUser
@@ -115,3 +115,19 @@ def edit_user(request, user_id):
     }
 
     return render(request, "settings/users/form.html", context)
+
+
+@login_required
+def toggle_permission(request, user_id, perm):
+    if not request.user.is_admin:
+        return HttpResponseForbidden()
+
+    VALID_PERMS = ["perm_all_matters", "perm_financial", "perm_intakes", "perm_reports"]
+    if perm not in VALID_PERMS:
+        return HttpResponseBadRequest()
+
+    user = CustomUser.objects.get(id=user_id)
+    setattr(user, perm, not getattr(user, perm))
+    user.save(update_fields=[perm])
+
+    return HttpResponse(status=204, headers={"HX-Trigger": "userListReload"})
