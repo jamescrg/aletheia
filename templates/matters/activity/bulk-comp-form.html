@@ -1,0 +1,46 @@
+{% load humanize %}
+<div class="modal-dialog modal-md">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Update Comp Status</h1>
+      <div>
+        <button type="button" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <p class="text-muted">
+        Update the comp (non-billable) status for {{ selected_count }} selected time
+        {% if selected_count == 1 %}
+          entry
+        {% else %}
+          entries
+        {% endif %}
+        .
+      </p>
+      <form id="bulk-comp-form"
+            hx-post="{% url 'matters:activity-bulk-update-comp' matter_id %}"
+            hx-target="#htmx-modal-container"
+            hx-swap="outerHTML"
+            role="form"
+            class="form-compact">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="comp">Comp Status</label>
+          <select name="comp" id="comp" class="form-control" required>
+            <option value="">-- Select --</option>
+            <option value="true">Yes (Non-billable)</option>
+            <option value="false">No (Billable)</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button"
+              class="btn btn-secondary"
+              @click="$dispatch('close-modal')">Cancel</button>
+      <button type="submit" form="bulk-comp-form" class="btn btn-primary">Update</button>
+    </div>
+  </div>
+</div>

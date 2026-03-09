@@ -6,6 +6,27 @@
         <button hx-get="/activity/expenses/add" hx-target="#htmx-modal-container">
           <i class="icon-plus"></i>
         </button>
+        {% if selected_expenses %}
+          <div class="dropdown" x-data="dropdown()">
+            <button type="button"
+                    class="btn-icon toggle-active"
+                    x-ref="button"
+                    @click="toggle()"
+                    :aria-expanded="open">
+              Actions ({{ selected_expenses|length }})
+              <small><i class="icon-chevron-down"></i></small>
+            </button>
+            <ul class="dropdown-menu" x-ref="menu" x-show="open" @click="close()">
+              {% include "activity/expenses/bulk-actions.html" %}
+            </ul>
+          </div>
+          <button type="button"
+                  class="btn-icon toggle-active"
+                  hx-post="{% url 'activity:expenses-clear-selection' %}"
+                  hx-swap="none">
+            <i class="icon-x"></i> Clear
+          </button>
+        {% endif %}
         <button hx-get="{% url 'activity:expenses-filter' %}"
                 hx-target="#htmx-modal-container"
                 class="{% if filter_label == "custom" %}toggle-active{% endif %}">
@@ -52,6 +73,10 @@
   <div class="table-container">
     <table class="table activity expenses-list">
       <tr>
+        <th class="col-select">
+          {% url 'activity:expenses-select-all' as select_all_url %}
+          {% include "selection/select-all-btn.html" with select_all_url=select_all_url all_selected=all_selected %}
+        </th>
         <th class="date">
           Date
           <button class="btn-sort {% if current_order == 'date' %}active{% endif %}"
@@ -81,7 +106,7 @@
         <tr id="expense-{{ expense.id }}">{% include "activity/expenses/table-row.html" %}</tr>
       {% empty %}
         <tr>
-          <td colspan="5" class="empty-message">No expense entries found.</td>
+          <td colspan="6" class="empty-message">No expense entries found.</td>
         </tr>
       {% endfor %}
     </table>

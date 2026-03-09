@@ -26,6 +26,15 @@ Activity list table
   width: 100%;
 }
 
+.activity th.col-select,
+.activity td.col-select {
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+  vertical-align: middle;
+  width: 2.5rem;
+}
+
 .activity.expenses-list {
   min-width: 52rem;
 }

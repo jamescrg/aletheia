@@ -4,9 +4,18 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 
 from apps.activity.expenses.models import ExpenseEntry
 from apps.activity.time.get_time_data import get_time_data
+from apps.management.selection import (
+    clear_selected_ids,
+    get_selected_ids,
+    get_session_key,
+    select_all_ids,
+    selection_response,
+    toggle_id,
+)
 from apps.matters.models import Matter
 from apps.matters.rates.models import Rate
 from utils.toasts import toast_success
@@ -442,6 +451,104 @@ def set_rate(request, matter_id):
         rate_value = request.user.user_rate
 
     return HttpResponse(rate_value)
+
+
+TIME_TRIGGER = "timeChanged"
+
+
+@login_required
+@require_POST
+def time_toggle_select(request, entry_id):
+    get_object_or_404(TimeEntry, pk=entry_id)
+    toggle_id(request, get_session_key("selected_time"), entry_id)
+
+    return selection_response(TIME_TRIGGER)
+
+
+@login_required
+@require_POST
+def time_select_all(request):
+    time_data = get_time_data(request)
+    visible_ids = [entry.id for entry in time_data["objects"]]
+
+    select_all_ids(request, get_session_key("selected_time"), visible_ids)
+
+    return selection_response(TIME_TRIGGER)
+
+
+@login_required
+@require_POST
+def time_clear_selection(request):
+    clear_selected_ids(request, get_session_key("selected_time"))
+
+    return selection_response(TIME_TRIGGER)
+
+
+@login_required
+def time_bulk_update_matter(request):
+    key = get_session_key("selected_time")
+    selected_time = get_selected_ids(request, key)
+
+    if not selected_time:
+        return HttpResponse(status=400, content="No time entries selected.")
+
+    if request.method == "POST":
+        matter_id = request.POST.get("matter")
+
+        if matter_id:
+            matter = get_object_or_404(Matter, pk=matter_id)
+            entries = TimeEntry.objects.filter(id__in=selected_time)
+
+            for entry in entries:
+                # Clear invoice if matter changes
+                entry.matter = matter
+                entry.invoice = None
+
+                entry.save()
+
+            clear_selected_ids(request, key)
+            return HttpResponse(status=204, headers={"HX-Trigger": TIME_TRIGGER})
+
+    matters = Matter.objects.filter(
+        status__in=["Pending", "Open", "Complete"]
+    ).order_by("name")
+
+    context = {
+        "selected_count": len(selected_time),
+        "matters": matters,
+        "entry_type": "time",
+    }
+
+    return render(request, "activity/bulk-matter-form.html", context)
+
+
+@login_required
+def time_bulk_update_comp(request):
+    key = get_session_key("selected_time")
+    selected_time = get_selected_ids(request, key)
+
+    if not selected_time:
+        return HttpResponse(status=400, content="No time entries selected.")
+
+    if request.method == "POST":
+        comp_value = request.POST.get("comp")
+        if comp_value in ["true", "false"]:
+            entries = TimeEntry.objects.filter(id__in=selected_time)
+            comp_bool = comp_value == "true"
+
+            for entry in entries:
+                entry.comp = comp_bool
+                entry.save()
+
+            clear_selected_ids(request, key)
+            return HttpResponse(status=204, headers={"HX-Trigger": TIME_TRIGGER})
+
+    context = {
+        "selected_count": len(selected_time),
+        "entry_type": "time",
+    }
+
+    return render(request, "activity/bulk-comp-form.html", context)
 
 
 # ============================================================================

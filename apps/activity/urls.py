@@ -2,6 +2,9 @@ from django.urls import path
 
 from apps.activity.expenses.views import (
     expenses_add,
+    expenses_bulk_update_comp,
+    expenses_bulk_update_matter,
+    expenses_clear_selection,
     expenses_delete,
     expenses_edit,
     expenses_export_to_csv,
@@ -10,7 +13,9 @@ from apps.activity.expenses.views import (
     expenses_filter_user,
     expenses_index,
     expenses_list,
+    expenses_select_all,
     expenses_toggle_entered,
+    expenses_toggle_select,
     order_by_expenses,
 )
 from apps.activity.time.views import (
@@ -23,6 +28,9 @@ from apps.activity.time.views import (
     order_by_time,
     set_rate,
     time_add,
+    time_bulk_update_comp,
+    time_bulk_update_matter,
+    time_clear_selection,
     time_delete,
     time_edit,
     time_export_to_csv,
@@ -32,7 +40,9 @@ from apps.activity.time.views import (
     time_filter_user,
     time_index,
     time_list,
+    time_select_all,
     time_toggle_entered,
+    time_toggle_select,
 )
 
 app_name = "activity"
@@ -69,6 +79,28 @@ urlpatterns = [
     ),
     path(
         "activity/time/filter/order_by/<str:order>", order_by_time, name="time-order-by"
+    ),
+    # Selection and bulk action URLs for time entries
+    path(
+        "activity/time/<int:entry_id>/toggle-select",
+        time_toggle_select,
+        name="time-toggle-select",
+    ),
+    path("activity/time/select-all", time_select_all, name="time-select-all"),
+    path(
+        "activity/time/clear-selection",
+        time_clear_selection,
+        name="time-clear-selection",
+    ),
+    path(
+        "activity/time/bulk/update-matter",
+        time_bulk_update_matter,
+        name="time-bulk-update-matter",
+    ),
+    path(
+        "activity/time/bulk/update-comp",
+        time_bulk_update_comp,
+        name="time-bulk-update-comp",
     ),
     # Abbreviation code management URLs
     path("activity/time/codes/", abbreviation_codes_list, name="codes-list"),
@@ -122,5 +154,29 @@ urlpatterns = [
         "activity/expenses/filter/order_by/<str:order>",
         order_by_expenses,
         name="expenses-order-by",
+    ),
+    # Selection and bulk action URLs for expense entries
+    path(
+        "activity/expenses/<int:entry_id>/toggle-select",
+        expenses_toggle_select,
+        name="expenses-toggle-select",
+    ),
+    path(
+        "activity/expenses/select-all", expenses_select_all, name="expenses-select-all"
+    ),
+    path(
+        "activity/expenses/clear-selection",
+        expenses_clear_selection,
+        name="expenses-clear-selection",
+    ),
+    path(
+        "activity/expenses/bulk/update-matter",
+        expenses_bulk_update_matter,
+        name="expenses-bulk-update-matter",
+    ),
+    path(
+        "activity/expenses/bulk/update-comp",
+        expenses_bulk_update_comp,
+        name="expenses-bulk-update-comp",
     ),
 ]

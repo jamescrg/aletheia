@@ -110,6 +110,32 @@ urlpatterns = [
     # Activity
     path("matters/<int:id>/activity/", activity.activity_index, name="activity-index"),
     path("matters/<int:id>/activity/list/", activity.activity_list, name="activity"),
+    # Activity selection and bulk actions
+    path(
+        "matters/<int:matter_id>/activity/<int:entry_id>/toggle-select",
+        activity.activity_toggle_select,
+        name="activity-toggle-select",
+    ),
+    path(
+        "matters/<int:matter_id>/activity/select-all",
+        activity.activity_select_all,
+        name="activity-select-all",
+    ),
+    path(
+        "matters/<int:matter_id>/activity/clear-selection",
+        activity.activity_clear_selection,
+        name="activity-clear-selection",
+    ),
+    path(
+        "matters/<int:matter_id>/activity/bulk/update-matter",
+        activity.activity_bulk_update_matter,
+        name="activity-bulk-update-matter",
+    ),
+    path(
+        "matters/<int:matter_id>/activity/bulk/update-comp",
+        activity.activity_bulk_update_comp,
+        name="activity-bulk-update-comp",
+    ),
     # events
     path("matters/<int:id>/events/", events.events_index, name="events-index"),
     path("matters/<int:id>/events/list/", events.events_list, name="events"),

@@ -5,6 +5,11 @@ from apps.activity.expenses.filter import ExpenseFilter
 from apps.activity.expenses.models import ExpenseEntry
 from apps.activity.expenses.summary import calculate_summary
 from apps.management.pagination import CustomPaginator
+from apps.management.selection import (
+    all_visible_selected,
+    get_selected_ids,
+    get_session_key,
+)
 
 
 def get_expenses_data(request):
@@ -70,6 +75,13 @@ def get_expenses_data(request):
     current_order = filter_data.get("order_by", "date") if filter_data else "date"
     current_order = current_order.lstrip("-")
 
+    # Get selection data
+    session_key = get_session_key("selected_expenses")
+    selected_expenses = get_selected_ids(request, session_key)
+
+    visible_ids = [expense.id for expense in pagination.get_object_list()]
+    all_selected = all_visible_selected(selected_expenses, visible_ids)
+
     context = {
         "edit": False,
         "objects": pagination.get_object_list(),
@@ -83,6 +95,8 @@ def get_expenses_data(request):
         "user_id": user_id,
         "filter_label": filter_data.get("filter_label", None),
         "current_order": current_order,
+        "selected_expenses": selected_expenses,
+        "all_selected": all_selected,
     }
 
     return context

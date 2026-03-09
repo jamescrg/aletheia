@@ -3,8 +3,17 @@ from datetime import date, datetime
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 
 from apps.activity.expenses.get_expenses_data import get_expenses_data
+from apps.management.selection import (
+    clear_selected_ids,
+    get_selected_ids,
+    get_session_key,
+    select_all_ids,
+    selection_response,
+    toggle_id,
+)
 from apps.matters.models import Matter
 from utils.toasts import toast_success
 
@@ -308,3 +317,101 @@ def expenses_export_to_csv(request, format):
         write_standard_csv(expenses, response)
 
     return response
+
+
+EXPENSES_TRIGGER = "expensesChanged"
+
+
+@login_required
+@require_POST
+def expenses_toggle_select(request, entry_id):
+    get_object_or_404(ExpenseEntry, pk=entry_id)
+    toggle_id(request, get_session_key("selected_expenses"), entry_id)
+
+    return selection_response(EXPENSES_TRIGGER)
+
+
+@login_required
+@require_POST
+def expenses_select_all(request):
+    expenses_data = get_expenses_data(request)
+    visible_ids = [expense.id for expense in expenses_data["objects"]]
+
+    select_all_ids(request, get_session_key("selected_expenses"), visible_ids)
+
+    return selection_response(EXPENSES_TRIGGER)
+
+
+@login_required
+@require_POST
+def expenses_clear_selection(request):
+    clear_selected_ids(request, get_session_key("selected_expenses"))
+
+    return selection_response(EXPENSES_TRIGGER)
+
+
+@login_required
+def expenses_bulk_update_matter(request):
+    key = get_session_key("selected_expenses")
+    selected_expenses = get_selected_ids(request, key)
+
+    if not selected_expenses:
+        return HttpResponse(status=400, content="No expense entries selected.")
+
+    if request.method == "POST":
+        matter_id = request.POST.get("matter")
+
+        if matter_id:
+            matter = get_object_or_404(Matter, pk=matter_id)
+            entries = ExpenseEntry.objects.filter(id__in=selected_expenses)
+
+            for entry in entries:
+                # Clear invoice if matter changes
+                entry.matter = matter
+                entry.invoice = None
+
+                entry.save()
+
+            clear_selected_ids(request, key)
+            return HttpResponse(status=204, headers={"HX-Trigger": EXPENSES_TRIGGER})
+
+    matters = Matter.objects.filter(
+        status__in=["Pending", "Open", "Complete"]
+    ).order_by("name")
+
+    context = {
+        "selected_count": len(selected_expenses),
+        "matters": matters,
+        "entry_type": "expense",
+    }
+
+    return render(request, "activity/bulk-matter-form.html", context)
+
+
+@login_required
+def expenses_bulk_update_comp(request):
+    key = get_session_key("selected_expenses")
+    selected_expenses = get_selected_ids(request, key)
+
+    if not selected_expenses:
+        return HttpResponse(status=400, content="No expense entries selected.")
+
+    if request.method == "POST":
+        comp_value = request.POST.get("comp")
+        if comp_value in ["true", "false"]:
+            entries = ExpenseEntry.objects.filter(id__in=selected_expenses)
+            comp_bool = comp_value == "true"
+
+            for entry in entries:
+                entry.comp = comp_bool
+                entry.save()
+
+            clear_selected_ids(request, key)
+            return HttpResponse(status=204, headers={"HX-Trigger": EXPENSES_TRIGGER})
+
+    context = {
+        "selected_count": len(selected_expenses),
+        "entry_type": "expense",
+    }
+
+    return render(request, "activity/bulk-comp-form.html", context)
