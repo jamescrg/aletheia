@@ -35,7 +35,7 @@ def get_time_data(request):
     filter_data = request.session.get("time_filter", {})
 
     if filter_data:
-        filter = TimeEntryFilter(filter_data)
+        filter = TimeEntryFilter(filter_data, queryset=entries)
 
         current_date = datetime.now().date()
         filter_label = filter.data.get("filter_label", None)
@@ -57,7 +57,7 @@ def get_time_data(request):
         user_id = filter_data.get("user")
         user_id = int(user_id) if user_id not in (None, "") else None
     else:
-        filter = TimeEntryFilter(default_filter)
+        filter = TimeEntryFilter(default_filter, queryset=entries)
         entries = filter.qs
         user_id = None
 
