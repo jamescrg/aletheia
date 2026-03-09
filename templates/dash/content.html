@@ -63,7 +63,7 @@
             <tbody>
               {% if urgent_tasks %}
                 {% for task in urgent_tasks %}
-                  <tr class="{% if task.date_due < today %}past-due{% elif task.date_due == today %}due-today{% endif %}">
+                  <tr class="{% if task.date_due < today %}past-due{% endif %}">
                     <td class="matter">
                       {% if task.matter %}
                         <a href="{% url 'matters:tasks-index' id=task.matter.id %}">{{ task.matter.name }}</a>
