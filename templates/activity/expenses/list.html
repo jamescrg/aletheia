@@ -103,7 +103,7 @@
       </tr>
       <tr id="expense-table"></tr>
       {% for expense in objects %}
-        <tr id="expense-{{ expense.id }}">{% include "activity/expenses/table-row.html" %}</tr>
+        <tr id="expense-{{ expense.id }}">{% include "activity/expenses/table-row.html" with show_select=True %}</tr>
       {% empty %}
         <tr>
           <td colspan="6" class="empty-message">No expense entries found.</td>

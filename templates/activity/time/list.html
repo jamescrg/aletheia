@@ -150,7 +150,7 @@
       </tr>
       <tr id="time-table"></tr>
       {% for entry in objects %}
-        <tr id="time-{{ entry.id }}">{% include "activity/time/table-row.html" %}</tr>
+        <tr id="time-{{ entry.id }}">{% include "activity/time/table-row.html" with show_select=True %}</tr>
       {% empty %}
         <tr>
           <td colspan="8" class="empty-message">No time entries found.</td>
