@@ -1,0 +1,16 @@
+<li>
+  <a class="dropdown-item"
+     href="#"
+     hx-get="{% url 'matters:activity-bulk-update-matter' matter.id %}"
+     hx-target="#htmx-modal-container">
+    <i class="icon-folder"></i> Move to Matter...
+  </a>
+</li>
+<li>
+  <a class="dropdown-item"
+     href="#"
+     hx-get="{% url 'matters:activity-bulk-update-comp' matter.id %}"
+     hx-target="#htmx-modal-container">
+    <i class="icon-check"></i> Update Comp Status...
+  </a>
+</li>

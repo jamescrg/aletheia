@@ -4,6 +4,15 @@
   width: 100%;
 }
 
+.matter-activity th.col-select,
+.matter-activity td.col-select {
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+  vertical-align: middle;
+  width: 2.5rem;
+}
+
 .matter-activity .date {
   padding-right: 1.25rem;
   width: 9.5rem;

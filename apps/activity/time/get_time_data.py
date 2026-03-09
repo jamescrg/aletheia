@@ -5,6 +5,11 @@ from apps.activity.time.filter import TimeEntryFilter
 from apps.activity.time.models import TimeEntry
 from apps.activity.time.summary import calculate_summary
 from apps.management.pagination import CustomPaginator
+from apps.management.selection import (
+    all_visible_selected,
+    get_selected_ids,
+    get_session_key,
+)
 
 
 def get_time_data(request):
@@ -71,6 +76,13 @@ def get_time_data(request):
     current_order = filter_data.get("order_by", "date") if filter_data else "date"
     current_order = current_order.lstrip("-")
 
+    # Get selection data
+    session_key = get_session_key("selected_time")
+    selected_time = get_selected_ids(request, session_key)
+
+    visible_ids = [entry.id for entry in pagination.get_object_list()]
+    all_selected = all_visible_selected(selected_time, visible_ids)
+
     context = {
         "edit": False,
         "objects": pagination.get_object_list(),
@@ -84,6 +96,8 @@ def get_time_data(request):
         "user_id": user_id,
         "filter_label": filter_data.get("filter_label", None) if filter_data else None,
         "current_order": current_order,
+        "selected_time": selected_time,
+        "all_selected": all_selected,
     }
 
     return context

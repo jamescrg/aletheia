@@ -1,4 +1,8 @@
 {% load humanize %}
+<td class="col-select">
+  {% url 'activity:time-toggle-select' entry.id as toggle_url %}
+  {% include "selection/checkbox.html" with toggle_url=toggle_url obj_id=entry.id selected_ids=selected_time %}
+</td>
 <td class="date">{{ entry.date|date:'Y-m-d' }}</td>
 <td class="user">{{ entry.user.initials }}</td>
 <td class="matter">

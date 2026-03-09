@@ -1,0 +1,46 @@
+{% load humanize %}
+<div class="modal-dialog modal-md">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">
+        Move {{ selected_count }} {{ entry_type }}
+        {% if selected_count == 1 %}
+          entry
+        {% else %}
+          entries
+        {% endif %}
+        to Matter
+      </h1>
+      <div>
+        <button type="button" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <p class="text-muted">
+        <i class="icon-info"></i> Moving entries to a new matter will clear any invoice associations.
+      </p>
+      <form id="bulk-matter-form"
+            hx-post="{% if entry_type == 'time' %}{% url 'activity:time-bulk-update-matter' %}{% else %}{% url 'activity:expenses-bulk-update-matter' %}{% endif %}"
+            hx-target="#htmx-modal-container"
+            role="form"
+            class="form-compact">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="matter">Matter</label>
+          <select name="matter" id="matter" class="form-control" required>
+            <option value="">-- Select Matter --</option>
+            {% for matter in matters %}<option value="{{ matter.id }}">{{ matter.name }}</option>{% endfor %}
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button"
+              class="btn btn-secondary"
+              @click="$dispatch('close-modal')">Cancel</button>
+      <button type="submit" form="bulk-matter-form" class="btn btn-primary">Move Entries</button>
+    </div>
+  </div>
+</div>

@@ -3,6 +3,29 @@
   <div class="toolbar">
     <div class="toolbar-left">
       <h2>Time Entries</h2>
+      {% if selected_entries %}
+        <div class="filter-tools">
+          <div class="dropdown" x-data="dropdown()">
+            <button type="button"
+                    class="btn-icon toggle-active"
+                    x-ref="button"
+                    @click="toggle()"
+                    :aria-expanded="open">
+              Actions ({{ selected_entries|length }})
+              <small><i class="icon-chevron-down"></i></small>
+            </button>
+            <ul class="dropdown-menu" x-ref="menu" x-show="open" @click="close()">
+              {% include "matters/activity/bulk-actions.html" %}
+            </ul>
+          </div>
+          <button type="button"
+                  class="btn-icon toggle-active"
+                  hx-post="{% url 'matters:activity-clear-selection' matter.id %}"
+                  hx-swap="none">
+            <i class="icon-x"></i> Clear
+          </button>
+        </div>
+      {% endif %}
     </div>
     <div class="toolbar-right">
       <a href="{% url 'activity:time-filter-matter' matter.id %}"
@@ -14,6 +37,14 @@
     <div class="table-container">
       <table class="table matter-activity">
         <tr>
+          <th class="col-select">
+            <button class="btn-check"
+                    hx-post="{% url 'matters:activity-select-all' matter.id %}"
+                    hx-swap="none"
+                    title="Select all">
+              <i class="icon-square{% if all_selected %}-check{% endif %}"></i>
+            </button>
+          </th>
           <th class="date">
             Date
             <a href="#"
@@ -31,6 +62,13 @@
         </tr>
         {% for entry in entries %}
           <tr id="time-{{ entry.id }}">
+            <td class="col-select">
+              <button class="btn-check"
+                      hx-post="{% url 'matters:activity-toggle-select' matter.id entry.id %}"
+                      hx-swap="none">
+                <i class="icon-square{% if entry.id in selected_entries %}-check{% endif %}"></i>
+              </button>
+            </td>
             <td class="date">{{ entry.date|date:'Y-m-d' }}</td>
             <td class="user">{{ entry.user.initials }}</td>
             <td class="actions">
@@ -63,7 +101,7 @@
           </tr>
         {% empty %}
           <tr>
-            <td colspan="6" class="empty-message">No time entries found for this matter.</td>
+            <td colspan="7" class="empty-message">No time entries found for this matter.</td>
           </tr>
         {% endfor %}
       </table>
