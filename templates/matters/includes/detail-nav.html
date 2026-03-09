@@ -8,12 +8,14 @@
          hx-target=".section-body"
          hx-push-url="{% url 'matters:contacts' id=matter.id %}">Contacts</a>
     </li>
-    <li {% if subapp == 'rates' %}class="active"{% endif %}>
-      <a href="{% url 'matters:rate-index' id=matter.id %}"
-         hx-get="{% url 'matters:tab-content' id=matter.id tab='rates' %}"
-         hx-target=".section-body"
-         hx-push-url="{% url 'matters:rate-index' id=matter.id %}">Rates</a>
-    </li>
+    {% if user.is_admin or user.perm_financial %}
+      <li {% if subapp == 'rates' %}class="active"{% endif %}>
+        <a href="{% url 'matters:rate-index' id=matter.id %}"
+           hx-get="{% url 'matters:tab-content' id=matter.id tab='rates' %}"
+           hx-target=".section-body"
+           hx-push-url="{% url 'matters:rate-index' id=matter.id %}">Rates</a>
+      </li>
+    {% endif %}
     <li {% if subapp == 'activity' %}class="active"{% endif %}>
       <a href="{% url 'matters:activity-index' id=matter.id %}"
          hx-get="{% url 'matters:tab-content' id=matter.id tab='activity' %}"
@@ -44,11 +46,13 @@
          hx-target=".section-body"
          hx-push-url="{% url 'matters:settlement-index' id=matter.id %}">Settlement</a>
     </li>
-    <li {% if subapp == 'ledger' %}class="active"{% endif %}>
-      <a href="{% url 'matters:ledger' id=matter.id %}"
-         hx-get="{% url 'matters:tab-content' id=matter.id tab='ledger' %}"
-         hx-target=".section-body"
-         hx-push-url="{% url 'matters:ledger' id=matter.id %}">Ledger</a>
-    </li>
+    {% if user.is_admin or user.perm_financial %}
+      <li {% if subapp == 'ledger' %}class="active"{% endif %}>
+        <a href="{% url 'matters:ledger' id=matter.id %}"
+           hx-get="{% url 'matters:tab-content' id=matter.id tab='ledger' %}"
+           hx-target=".section-body"
+           hx-push-url="{% url 'matters:ledger' id=matter.id %}">Ledger</a>
+      </li>
+    {% endif %}
   </ul>
 </nav>

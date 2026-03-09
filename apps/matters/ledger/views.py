@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
@@ -11,8 +12,17 @@ from apps.matters.models import Matter
 from apps.trust.trust import get_confirmed_client_balance
 
 
+def _check_financial_perm(request):
+    if not request.user.is_admin and not request.user.perm_financial:
+        return HttpResponseForbidden()
+    return None
+
+
 @login_required
 def ledger_index(request, id):
+    forbidden = _check_financial_perm(request)
+    if forbidden:
+        return forbidden
     matter = get_object_or_404(Matter, pk=id)
     ledger_data = get_ledger_data(matter)
 
@@ -40,6 +50,9 @@ def ledger_index(request, id):
 
 @login_required
 def ledger_list(request, id):
+    forbidden = _check_financial_perm(request)
+    if forbidden:
+        return forbidden
     matter = get_object_or_404(Matter, pk=id)
     ledger_data = get_ledger_data(matter)
 
@@ -60,6 +73,9 @@ def ledger_list(request, id):
 
 @login_required
 def ledger_pdf(request, pk):
+    forbidden = _check_financial_perm(request)
+    if forbidden:
+        return forbidden
     matter = get_object_or_404(Matter, pk=pk)
     file = generate_ledger(matter.id, request)
 

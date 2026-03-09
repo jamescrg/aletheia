@@ -1,9 +1,10 @@
 from datetime import date
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 
+from apps.accounts.access import matter_access_required
 from apps.calendar.models import Event
 from apps.case.models import Fact
 from apps.contacts.functions.load_contacts import load_contacts
@@ -142,6 +143,7 @@ def order_by(request, order):
 
 
 @login_required
+@matter_access_required
 def detail(request, id):
     request.session["matters-view"] = "detail"
     tab = get_last_detail_tab(request, id)
@@ -149,6 +151,7 @@ def detail(request, id):
 
 
 @login_required
+@matter_access_required
 def mode_content(request, id):
     """Return detail mode content partial for HTMX, or redirect for regular request."""
     matter = get_object_or_404(Matter, pk=id)
@@ -172,6 +175,7 @@ def mode_content(request, id):
 
 
 @login_required
+@matter_access_required
 def tab_content(request, id, tab):
     """Return tab content with wrapper for HTMX tab switching."""
     matter = get_object_or_404(Matter, pk=id)
@@ -185,6 +189,8 @@ def tab_content(request, id, tab):
     }
 
     tab_data = _get_detail_tab_data(request, matter, tab)
+    if tab_data.get("forbidden"):
+        return HttpResponseForbidden()
     context.update(tab_data)
 
     return render(request, "matters/includes/detail-tab-content.html", context)
@@ -201,6 +207,17 @@ def _get_detail_tab_data(request, matter, tab):
     from apps.matters.rates.models import Rate
     from apps.matters.tasks.views import get_matter_tasks_data
     from apps.trust.trust import get_confirmed_client_balance
+
+    # Block financial tabs for users without perm_financial
+    if (
+        tab in ("ledger", "rates")
+        and not request.user.is_admin
+        and not request.user.perm_financial
+    ):
+        return {
+            "tab_template": "matters/contacts/contact-table.html",
+            "forbidden": True,
+        }
 
     if tab == "contacts":
         return {
@@ -287,6 +304,7 @@ def add(request):
             matter = form.save(commit=False)
             matter.user_id = request.user.id
             matter.save()
+            form.save_m2m()
 
             return HttpResponse(status=204, headers={"HX-Trigger": "mattersChanged"})
 
@@ -309,6 +327,7 @@ def add(request):
 
 
 @login_required
+@matter_access_required
 def edit(request, id):
     matter = get_object_or_404(Matter, pk=id)
 
@@ -318,6 +337,7 @@ def edit(request, id):
             matter = form.save(commit=False)
             matter.user_id = request.user.id
             matter.save()
+            form.save_m2m()
             return HttpResponse(status=204, headers={"HX-Trigger": "mattersChanged"})
 
     else:
@@ -343,6 +363,8 @@ def edit(request, id):
 
 @login_required
 def delete(request, id):
+    if not request.user.is_admin:
+        return HttpResponseForbidden()
     matter = get_object_or_404(Matter, pk=id)
 
     if request.method == "GET":
@@ -359,6 +381,7 @@ def delete(request, id):
 
 
 @login_required
+@matter_access_required
 def edit_work_status(request, matter_id):
     matter = get_object_or_404(Matter, pk=matter_id)
     context = {"matter": matter}
@@ -366,6 +389,7 @@ def edit_work_status(request, matter_id):
 
 
 @login_required
+@matter_access_required
 def update_work_status(request, id):
     matter = get_object_or_404(Matter, pk=id)
     matter.work_status = request.POST.get("work_status")
@@ -381,6 +405,7 @@ def update_work_status(request, id):
 
 
 @login_required
+@matter_access_required
 def print(request, id):
     matter = get_object_or_404(Matter, pk=id)
     proceeding = Proceeding.objects.filter(matter=matter.id).order_by("-id").first()

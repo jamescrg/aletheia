@@ -1,5 +1,6 @@
 from django import forms
 
+from apps.accounts.models import CustomUser
 from config.settings import CustomFormRendererCompact
 
 from .models import Matter, PracticeArea
@@ -18,6 +19,7 @@ class MatterForm(forms.ModelForm):
             "work_status",
             "practice_area",
             "jurisdiction",
+            "members",
         )
 
         STATUSES = (
@@ -76,3 +78,15 @@ class MatterForm(forms.ModelForm):
         self.fields["practice_area"].queryset = PracticeArea.objects.filter(
             is_active=True
         )
+
+        # Members field — only show users with limited matter access
+        limited_users = CustomUser.objects.filter(
+            perm_all_matters=False, is_active=True
+        )
+        if limited_users.exists():
+            self.fields["members"].queryset = limited_users
+            self.fields["members"].widget = forms.CheckboxSelectMultiple()
+            self.fields["members"].required = False
+            self.fields["members"].label = "Assigned Users"
+        else:
+            del self.fields["members"]

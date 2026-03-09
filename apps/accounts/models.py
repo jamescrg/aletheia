@@ -21,9 +21,22 @@ class CustomUser(AbstractUser):
     last_dash_check = models.DateField(null=True, blank=True)
     digest_enabled = models.BooleanField(default=False)
     digest_include_weekends = models.BooleanField(default=False)
+    perm_all_matters = models.BooleanField(default=True)
+    perm_financial = models.BooleanField(default=True)
+    perm_intakes = models.BooleanField(default=True)
+    perm_reports = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     objects = CustomUserManager()
+
+    @property
+    def is_admin(self):
+        return self.role == "ADMIN"
+
+    def has_matter_access(self, matter):
+        if self.is_admin or self.perm_all_matters:
+            return True
+        return matter.members.filter(pk=self.pk).exists()
 
     @property
     def full_name(self):

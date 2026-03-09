@@ -50,6 +50,7 @@
           <i class="icon-chevrons-up-down"></i>
         </button>
       </th>
+      <th class="permissions">Permissions</th>
       <th class="initials">
         Initials
         <button class="btn-sort {% if current_order == 'initials' %}active{% endif %}"
@@ -131,6 +132,39 @@
             </ul>
           </div>
         </td>
+        <td class="permissions">
+          {% if user.is_admin %}
+            <span class="perm-icons">
+              <i class="icon-briefcase perm-active" title="All Matters"></i>
+              <i class="icon-dollar-sign perm-active" title="Financial"></i>
+              <i class="icon-inbox perm-active" title="Intakes"></i>
+              <i class="icon-chart-no-axes-column perm-active" title="Reports"></i>
+            </span>
+          {% else %}
+            <span class="perm-icons">
+              <button hx-post="{% url 'settings:toggle-perm' user.id 'perm_all_matters' %}"
+                      title="All Matters"
+                      class="btn-perm">
+                <i class="icon-briefcase {% if user.perm_all_matters %}perm-active{% else %}perm-inactive{% endif %}"></i>
+              </button>
+              <button hx-post="{% url 'settings:toggle-perm' user.id 'perm_financial' %}"
+                      title="Financial"
+                      class="btn-perm">
+                <i class="icon-dollar-sign {% if user.perm_financial %}perm-active{% else %}perm-inactive{% endif %}"></i>
+              </button>
+              <button hx-post="{% url 'settings:toggle-perm' user.id 'perm_intakes' %}"
+                      title="Intakes"
+                      class="btn-perm">
+                <i class="icon-inbox {% if user.perm_intakes %}perm-active{% else %}perm-inactive{% endif %}"></i>
+              </button>
+              <button hx-post="{% url 'settings:toggle-perm' user.id 'perm_reports' %}"
+                      title="Reports"
+                      class="btn-perm">
+                <i class="icon-chart-no-axes-column {% if user.perm_reports %}perm-active{% else %}perm-inactive{% endif %}"></i>
+              </button>
+            </span>
+          {% endif %}
+        </td>
         <td>{{ user.initials }}</td>
         <td>{{ user.is_attorney|yesno:"Attorney,Staff" }}</td>
         <td>${{ user.user_rate }}</td>
@@ -144,7 +178,7 @@
       </tr>
     {% empty %}
       <tr>
-        <td colspan="8" class="empty-message">No users found.</td>
+        <td colspan="9" class="empty-message">No users found.</td>
       </tr>
     {% endfor %}
   </table>

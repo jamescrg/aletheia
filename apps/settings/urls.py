@@ -55,6 +55,11 @@ urlpatterns = [
         user_urls.add_user,
         name="add-user",
     ),
+    path(
+        "settings/users/toggle-perm/<int:user_id>/<str:perm>/",
+        user_urls.toggle_permission,
+        name="toggle-perm",
+    ),
     # Notifications
     path(
         "settings/notifications/",

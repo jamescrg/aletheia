@@ -14,6 +14,11 @@ from apps.management.selection import (
 
 def get_time_data(request):
     entries = TimeEntry.objects.all()
+
+    # Filter time entries for users without perm_all_matters
+    if not request.user.is_admin and not request.user.perm_all_matters:
+        entries = entries.filter(matter__in=request.user.assigned_matters.all())
+
     number_entries = entries.count()
 
     default_filter = {
