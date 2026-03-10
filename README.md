@@ -1,8 +1,9 @@
 # Law-Admin
 
-A web-based law practice management application. Manage matters, contacts, deadlines, time entries, expenses, trust
-accounting, and intakes. Supports multiple users / time-keepers. Emphasis on a clean, simple UI and the efficient
-execution of core functionality.
+A web-based law practice management application. Manage matters, contacts,
+deadlines, time entries, expenses, trust accounting, and intakes. Supports
+multiple users / time-keepers. Emphasis on a clean, simple UI and the
+efficient execution of core functionality.
 
 ## Table of Contents
 
@@ -10,6 +11,7 @@ execution of core functionality.
   - [Setting up PostgreSQL](#setting-up-postgresql)
   - [Virtual Environment](#virtual-environment)
   - [Installing Dependencies](#installing-dependencies)
+  - [Installing Code Quality Tools](#installing-code-quality-tools)
   - [Environment Variables](#environment-variables)
   - [Running Migrations](#running-migrations)
   - [Building the Search Index](#building-the-search-index)
@@ -46,10 +48,13 @@ where the application will be running:
 sudo apt-get install -y libpangocairo-1.0-0 tesseract-ocr ghostscript poppler-utils
 ```
 
-- **Pango** (`libpangocairo-1.0-0`) - Required by WeasyPrint for PDF generation
-- **Tesseract** (`tesseract-ocr`) - OCR engine for text extraction from scanned PDFs
+- **Pango** (`libpangocairo-1.0-0`) - Required by WeasyPrint for PDF
+  generation
+- **Tesseract** (`tesseract-ocr`) - OCR engine for text extraction from
+  scanned PDFs
 - **Ghostscript** (`ghostscript`) - Required by ocrmypdf for PDF processing
-- **Poppler** (`poppler-utils`) - Required by pdf2image for PDF to image conversion
+- **Poppler** (`poppler-utils`) - Required by pdf2image for PDF to image
+  conversion
 
 ### Setting up PostgreSQL
 
@@ -65,8 +70,9 @@ GRANT ALL PRIVILEGES ON DATABASE <database_name> TO <database_user>;
 ALTER DATABASE <database_name> OWNER TO <database_user>;
 ```
 
-The upper commands will create a new database, user with an encrypted password
-and grant all privileges to the user while also making the user the owner of the database.
+The upper commands will create a new database, user with an encrypted
+password and grant all privileges to the user while also making the user
+the owner of the database.
 
 **IMPORTANT:** Remember all the values you used as variables as they will
 be needed in the next steps.
@@ -85,7 +91,7 @@ uv venv
 
 This creates a `.venv` directory with the virtual environment.
 
-______________________________________________________________________
+---
 
 After creating the virtual environment, activate it by running:
 
@@ -117,8 +123,51 @@ To install all dependencies (including dev dependencies), run:
 uv sync
 ```
 
-If any problems occur during the installation of dependencies, please refer to the
-[Troubleshooting - Troubleshoot Dependency Installation](#troubleshoot-dependency-installation) section.
+If any problems occur during the installation of dependencies, please
+refer to the [Troubleshooting - Troubleshoot Dependency Installation](#troubleshoot-dependency-installation)
+section.
+
+### Installing Code Quality Tools
+
+The project uses [Ruff](https://docs.astral.sh/ruff/) for code formatting
+and linting. Ruff should be installed system-wide (not as a project
+dependency) to ensure compatibility across different development
+environments.
+
+**Install ruff using one of the following methods:**
+
+#### Option 1: Using pipx (Recommended)
+
+```bash
+pipx install ruff
+```
+
+#### Option 2: Using Homebrew (macOS/Linux)
+
+```bash
+brew install ruff
+```
+
+#### Option 3: Using uv tool
+
+```bash
+uv tool install ruff
+```
+
+#### Option 4: Using pip
+
+```bash
+pip install ruff
+```
+
+After installation, verify ruff is available:
+
+```bash
+ruff --version
+```
+
+**Note:** On NixOS, ruff is automatically provided by the development
+shell and doesn't need separate installation.
 
 ### Environment Variables
 
@@ -137,9 +186,9 @@ their types, examples and descriptions.**
 
 ### Running Migrations
 
-Migrations in this project are versioned and stored in the `migrations` directory
-located in each Django app. To run all migrations and create the
-necessary database schema, run the following command:
+Migrations in this project are versioned and stored in the `migrations`
+directory located in each Django app. To run all migrations and create
+the necessary database schema, run the following command:
 
 **NOTE:** Make sure the virtual environment is activated.
 
@@ -148,19 +197,22 @@ python manage.py migrate
 ```
 
 If any problems occur during the migration process, please refer to the
-[Troubleshooting - Running Migrations](#troubleshoot-running-migrations) section
+[Troubleshooting - Running Migrations](#troubleshoot-running-migrations)
+section
 
 ### Building the Search Index
 
-The application uses django-watson for full-text search across documents, highlights, and facts.
-After running migrations for the first time (or after restoring a database), build the search index:
+The application uses django-watson for full-text search across documents,
+highlights, and facts. After running migrations for the first time (or
+after restoring a database), build the search index:
 
 ```bash
 python manage.py buildwatson
 ```
 
-**Note:** You only need to run this once. Watson automatically keeps the index updated as you
-create, edit, or delete records. You'll need to rebuild if you:
+**Note:** You only need to run this once. Watson automatically keeps the
+index updated as you create, edit, or delete records. You'll need to
+rebuild if you:
 
 - Restore a database from backup
 - Add new models to the search configuration
@@ -246,7 +298,8 @@ If any problems occur during the installation of dependencies, make sure
 to check the following:
 
 - Python version is 3.10 or higher
-- You are running the command inside the virtual environment created in [Virtual Environment](#virtual-environment)
+- You are running the command inside the virtual environment created in
+  [Virtual Environment](#virtual-environment)
 - The `pyproject.toml` file is located in the project root directory
 - The `uv` command is installed and working correctly (`uv --version`)
 - The `uv` command is not blocked by any firewall or antivirus software
@@ -254,11 +307,14 @@ to check the following:
 
 ### Troubleshoot Running Migrations
 
-If any problems occur during the migration process, make sure to check the following:
+If any problems occur during the migration process, make sure to check
+the following:
 
-- The database is set up correctly and the user has all the necessary privileges
+- The database is set up correctly and the user has all the necessary
+  privileges
 - The database connection is set up correctly in the `.env` file
-- Each django app has a `migrations` directory with the `__init__.py` file and the migration files
+- Each django app has a `migrations` directory with the `__init__.py` file
+  and the migration files
 - The database connection is working correctly
 - The database is running and accessible
 - The database is not blocked by any firewall or antivirus software
@@ -268,7 +324,8 @@ If any problems occur during the migration process, make sure to check the follo
 ### Steps After Squashing Migrations
 
 Squashing migration files is a process that takes all the migration
-files from all the apps and squashes them into a single migration file: `0001_initial.py`.
+files from all the apps and squashes them into a single migration file:
+`0001_initial.py`.
 
 This is usually done when there are too many migration files or
 there is an issue with the migration files that cannot be resolved
@@ -283,7 +340,7 @@ have dependencies on other migration files).
 **WARNING:** Do not proceed with the following steps without
 backing up the database and the migration files.
 
-______________________________________________________________________
+---
 
 #### Step 1: Ensure squashing was done correctly
 
@@ -353,7 +410,7 @@ faked correctly by running the following command:
 python manage.py showmigrations
 ```
 
-______________________________________________________________________
+---
 
 If all the migrations are marked as applied, the process
 was successful and the database is in a consistent state.
@@ -391,7 +448,7 @@ The variable is `CALENDAR_ID` and it should be set to the
 string value of the Google Calendar ID found in the Calendar
 settings.
 
-______________________________________________________________________
+---
 
 After finishing these steps, the Google Calendar and Contacts
 integration should be set up and working correctly.
