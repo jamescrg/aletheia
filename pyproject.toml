@@ -7,7 +7,7 @@ requires-python = ">=3.10"
 
 dependencies = [
     # Django core
-    "Django==4.2.28",
+    "Django==4.2.29",
     "psycopg2-binary==2.9.10",
     "django-environ==0.11.2",
     # Django extensions
@@ -27,13 +27,13 @@ dependencies = [
     "google-auth-oauthlib==0.4.6",
     "google-genai==1.54.0",
     # Markdown processing
-    "Markdown==3.6",
+    "Markdown==3.8.1",
     "pymdown-extensions==10.18",
     # PDF generation and processing
     "weasyprint==68.0",
     "pytesseract==0.3.13",
     "pdf2image==1.17.0",
-    "pypdf==6.7.2",
+    "pypdf==6.7.5",
     "ocrmypdf==16.12.0",
     # AI clients
     "anthropic==0.40.0",
