@@ -157,6 +157,7 @@
   width: 3rem;
 }
 
+
 .priority-arrow .icon-arrow-up-to-line {
   font-size: 0.9rem;
   left: 0.25rem;
@@ -420,17 +421,26 @@
     display: block;
   }
 
+  /* Hide multi-select checkbox */
+  .tasks-table td.col-select {
+    display: none;
+  }
+
   /* Card rows */
   .tasks-table tbody tr {
-    background: var(--background-section);
-    border: solid 1px var(--border-medium);
-    border-radius: var(--radius-md);
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    border-top: solid 1px var(--border-dark);
     cursor: pointer;
     display: flex;
     flex-wrap: wrap;
-    margin-bottom: 0.75rem;
-    padding: 0.75rem;
+    padding: 0.25rem 0;
     position: relative;
+  }
+
+  .tasks-table tbody tr:last-child {
+    border-bottom: solid 1px var(--border-dark);
   }
 
   /* Overdue card highlight */
@@ -454,22 +464,33 @@
 
   /* Cell ordering */
   .tasks-table td.matter { order: 1; }
-  .tasks-table td.description { order: 2; }
-  .tasks-table td.priority { order: 3; }
-  .tasks-table td.status { order: 4; }
-  .tasks-table td.user { order: 5; }
-  .tasks-table td.date { order: 6; }
+  .tasks-table td.date { order: 2; }
+  .tasks-table td.description { order: 3; }
+  .tasks-table td.priority { order: 4; }
+  .tasks-table td.status { order: 5; }
+  .tasks-table td.user { order: 6; }
+
+  /* Date: upper right */
+  .tasks-table td.date {
+    flex: 0 0 auto;
+    margin-left: auto;
+    margin-top: 0.5rem;
+  }
 
   /* Full-width rows */
-  .tasks-table td.matter,
+  .tasks-table td.matter {
+    flex: 1 1 0;
+  }
+
   .tasks-table td.description {
     flex: 0 0 100%;
   }
 
   /* Matter: context line, de-linked */
   .tasks-table td.matter {
-    color: var(--color-muted);
+    color: var(--color-primary);
     margin-bottom: 0.25rem;
+    margin-top: 0.5rem;
   }
 
   .tasks-table td.matter a {
@@ -511,21 +532,36 @@
   .tasks-table td.user,
   .tasks-table td.date {
     align-items: center;
-    color: var(--color-muted);
+    color: var(--color-primary);
     display: flex;
+    margin-bottom: 0.5rem;
     margin-right: 1rem;
   }
 
-  /* Priority label (bare number needs context) */
-  .tasks-table td.priority::before {
-    content: attr(data-label) ": ";
-    margin-right: 0.25rem;
-  }
 
   /* Priority column width reset */
   .tasks-table .priority {
     text-align: left;
     width: auto;
+  }
+
+  /* Disable dropdowns and date picker on mobile */
+  .tasks-table td.priority .dropdown-menu,
+  .tasks-table td.status .dropdown-menu,
+  .tasks-table td.user .dropdown-menu,
+  .tasks-table td.date .dropdown-menu {
+    display: none !important;
+  }
+
+  .tasks-table td.priority .button-link,
+  .tasks-table td.status .button-link,
+  .tasks-table td.user .button-link,
+  .tasks-table td.date a,
+  .tasks-table td.date .task-date {
+    color: inherit;
+    cursor: default;
+    pointer-events: none;
+    text-decoration: none;
   }
 
   /* Other column width resets */
@@ -542,9 +578,10 @@
     width: auto;
   }
 
-  /* Notes button always visible */
-  .task-notes-btn {
-    opacity: 1;
+  /* Hide notes icons on mobile */
+  .task-notes-btn,
+  .task-notes-date {
+    display: none;
   }
 
   /* Empty date icon always visible */
