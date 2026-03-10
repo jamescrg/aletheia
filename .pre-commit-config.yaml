@@ -8,12 +8,19 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
 
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: b969e2851312ca2b24bbec879ba4954341d1bd12  # frozen: v0.15.5
+  - repo: local
     hooks:
       - id: ruff-check
+        name: ruff check
+        entry: ruff check
         args: [--fix, --unsafe-fixes]
+        language: system
+        types: [python]
       - id: ruff-format
+        name: ruff format
+        entry: ruff format
+        language: system
+        types: [python]
 
   - repo: https://github.com/Riverside-Healthcare/djLint
     rev: 9112cb64851c95a7802358af285d21ad8b7f6437  # frozen: v1.36.4
