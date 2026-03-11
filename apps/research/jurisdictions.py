@@ -1,0 +1,361 @@
+"""State-based jurisdiction list for CourtListener search."""
+
+STATES = [
+    {
+        "id": "ala",
+        "name": "Alabama",
+        "supreme": "ala",
+        "appellate": ["alactapp", "alacrimapp"],
+        "circuit": "ca11",
+    },
+    {
+        "id": "alaska",
+        "name": "Alaska",
+        "supreme": "alaska",
+        "appellate": ["alaskactapp"],
+        "circuit": "ca9",
+    },
+    {
+        "id": "ariz",
+        "name": "Arizona",
+        "supreme": "ariz",
+        "appellate": ["arizctapp"],
+        "circuit": "ca9",
+    },
+    {
+        "id": "ark",
+        "name": "Arkansas",
+        "supreme": "ark",
+        "appellate": ["arkctapp"],
+        "circuit": "ca8",
+    },
+    {
+        "id": "cal",
+        "name": "California",
+        "supreme": "cal",
+        "appellate": ["calctapp"],
+        "circuit": "ca9",
+    },
+    {
+        "id": "colo",
+        "name": "Colorado",
+        "supreme": "colo",
+        "appellate": ["coloctapp"],
+        "circuit": "ca10",
+    },
+    {
+        "id": "conn",
+        "name": "Connecticut",
+        "supreme": "conn",
+        "appellate": ["connappct"],
+        "circuit": "ca2",
+    },
+    {
+        "id": "del",
+        "name": "Delaware",
+        "supreme": "del",
+        "appellate": [],
+        "circuit": "ca3",
+    },
+    {
+        "id": "fla",
+        "name": "Florida",
+        "supreme": "fla",
+        "appellate": ["flactapp"],
+        "circuit": "ca11",
+    },
+    {
+        "id": "ga",
+        "name": "Georgia",
+        "supreme": "ga",
+        "appellate": ["gactapp"],
+        "circuit": "ca11",
+    },
+    {
+        "id": "haw",
+        "name": "Hawaii",
+        "supreme": "haw",
+        "appellate": ["hawctapp"],
+        "circuit": "ca9",
+    },
+    {
+        "id": "idaho",
+        "name": "Idaho",
+        "supreme": "idaho",
+        "appellate": ["idahoctapp"],
+        "circuit": "ca9",
+    },
+    {
+        "id": "ill",
+        "name": "Illinois",
+        "supreme": "ill",
+        "appellate": ["illappct"],
+        "circuit": "ca7",
+    },
+    {
+        "id": "ind",
+        "name": "Indiana",
+        "supreme": "ind",
+        "appellate": ["indctapp"],
+        "circuit": "ca7",
+    },
+    {
+        "id": "iowa",
+        "name": "Iowa",
+        "supreme": "iowa",
+        "appellate": ["iowactapp"],
+        "circuit": "ca8",
+    },
+    {
+        "id": "kan",
+        "name": "Kansas",
+        "supreme": "kan",
+        "appellate": ["kanctapp"],
+        "circuit": "ca10",
+    },
+    {
+        "id": "ky",
+        "name": "Kentucky",
+        "supreme": "ky",
+        "appellate": ["kyctapp"],
+        "circuit": "ca6",
+    },
+    {
+        "id": "la",
+        "name": "Louisiana",
+        "supreme": "la",
+        "appellate": ["lactapp"],
+        "circuit": "ca5",
+    },
+    {"id": "me", "name": "Maine", "supreme": "me", "appellate": [], "circuit": "ca1"},
+    {
+        "id": "md",
+        "name": "Maryland",
+        "supreme": "md",
+        "appellate": ["mdctspecapp"],
+        "circuit": "ca4",
+    },
+    {
+        "id": "mass",
+        "name": "Massachusetts",
+        "supreme": "mass",
+        "appellate": ["massappct"],
+        "circuit": "ca1",
+    },
+    {
+        "id": "mich",
+        "name": "Michigan",
+        "supreme": "mich",
+        "appellate": ["michctapp"],
+        "circuit": "ca6",
+    },
+    {
+        "id": "minn",
+        "name": "Minnesota",
+        "supreme": "minn",
+        "appellate": ["minnctapp"],
+        "circuit": "ca6",
+    },
+    {
+        "id": "miss",
+        "name": "Mississippi",
+        "supreme": "miss",
+        "appellate": ["missctapp"],
+        "circuit": "ca5",
+    },
+    {
+        "id": "mo",
+        "name": "Missouri",
+        "supreme": "mo",
+        "appellate": ["moctapp"],
+        "circuit": "ca8",
+    },
+    {
+        "id": "mont",
+        "name": "Montana",
+        "supreme": "mont",
+        "appellate": [],
+        "circuit": "ca9",
+    },
+    {
+        "id": "neb",
+        "name": "Nebraska",
+        "supreme": "neb",
+        "appellate": [],
+        "circuit": "ca8",
+    },
+    {
+        "id": "nev",
+        "name": "Nevada",
+        "supreme": "nev",
+        "appellate": ["nevapp"],
+        "circuit": "ca9",
+    },
+    {
+        "id": "nh",
+        "name": "New Hampshire",
+        "supreme": "nh",
+        "appellate": [],
+        "circuit": "ca1",
+    },
+    {
+        "id": "nj",
+        "name": "New Jersey",
+        "supreme": "nj",
+        "appellate": ["njsuperctappdiv"],
+        "circuit": "ca3",
+    },
+    {
+        "id": "nm",
+        "name": "New Mexico",
+        "supreme": "nm",
+        "appellate": ["nmctapp"],
+        "circuit": "ca10",
+    },
+    {
+        "id": "ny",
+        "name": "New York",
+        "supreme": "ny",
+        "appellate": ["nyappdiv", "nyappterm"],
+        "circuit": "ca2",
+    },
+    {
+        "id": "nc",
+        "name": "North Carolina",
+        "supreme": "nc",
+        "appellate": ["ncctapp"],
+        "circuit": "ca4",
+    },
+    {
+        "id": "nd",
+        "name": "North Dakota",
+        "supreme": "nd",
+        "appellate": [],
+        "circuit": "ca8",
+    },
+    {
+        "id": "ohio",
+        "name": "Ohio",
+        "supreme": "ohio",
+        "appellate": ["ohioctapp"],
+        "circuit": "ca6",
+    },
+    {
+        "id": "okla",
+        "name": "Oklahoma",
+        "supreme": "okla",
+        "appellate": ["oklacivapp", "oklacrimapp"],
+        "circuit": "ca10",
+    },
+    {
+        "id": "or",
+        "name": "Oregon",
+        "supreme": "or",
+        "appellate": ["orctapp"],
+        "circuit": "ca9",
+    },
+    {
+        "id": "pa",
+        "name": "Pennsylvania",
+        "supreme": "pa",
+        "appellate": ["pasuperct", "pacommwct"],
+        "circuit": "ca3",
+    },
+    {
+        "id": "ri",
+        "name": "Rhode Island",
+        "supreme": "ri",
+        "appellate": [],
+        "circuit": "ca1",
+    },
+    {
+        "id": "sc",
+        "name": "South Carolina",
+        "supreme": "sc",
+        "appellate": ["scctapp"],
+        "circuit": "ca4",
+    },
+    {
+        "id": "sd",
+        "name": "South Dakota",
+        "supreme": "sd",
+        "appellate": [],
+        "circuit": "ca8",
+    },
+    {
+        "id": "tenn",
+        "name": "Tennessee",
+        "supreme": "tenn",
+        "appellate": ["tennctapp", "tenncrimapp"],
+        "circuit": "ca6",
+    },
+    {
+        "id": "tex",
+        "name": "Texas",
+        "supreme": "tex",
+        "appellate": ["texapp", "texcrimapp"],
+        "circuit": "ca5",
+    },
+    {
+        "id": "utah",
+        "name": "Utah",
+        "supreme": "utah",
+        "appellate": ["utahctapp"],
+        "circuit": "ca10",
+    },
+    {"id": "vt", "name": "Vermont", "supreme": "vt", "appellate": [], "circuit": "ca2"},
+    {
+        "id": "va",
+        "name": "Virginia",
+        "supreme": "va",
+        "appellate": ["vactapp"],
+        "circuit": "ca4",
+    },
+    {
+        "id": "wash",
+        "name": "Washington",
+        "supreme": "wash",
+        "appellate": ["washctapp"],
+        "circuit": "ca9",
+    },
+    {
+        "id": "wva",
+        "name": "West Virginia",
+        "supreme": "wva",
+        "appellate": [],
+        "circuit": "ca4",
+    },
+    {
+        "id": "wis",
+        "name": "Wisconsin",
+        "supreme": "wis",
+        "appellate": ["wisctapp"],
+        "circuit": "ca7",
+    },
+    {
+        "id": "wyo",
+        "name": "Wyoming",
+        "supreme": "wyo",
+        "appellate": [],
+        "circuit": "ca10",
+    },
+]
+
+_STATE_MAP = {s["id"]: s for s in STATES}
+
+
+def get_state_display(state_id):
+    """Return display name for a state ID."""
+    state = _STATE_MAP.get(state_id)
+    return state["name"] if state else state_id
+
+
+def get_court_ids(state_id, include_federal=False):
+    """Return space-separated court IDs for CourtListener API."""
+    state = _STATE_MAP.get(state_id)
+    if not state:
+        return ""
+    courts = [state["supreme"]] + state["appellate"]
+    if include_federal:
+        courts.append(state["circuit"])
+    return " ".join(courts)

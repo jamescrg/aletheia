@@ -1,0 +1,45 @@
+<form class="research-search-form"
+      hx-post="{% url 'research:search' %}"
+      hx-target="#research-results"
+      hx-swap="innerHTML">
+  <div class="research-search-row">
+    <div class="research-search-input">
+      <textarea name="query_text"
+                placeholder="Enter your legal research query..."
+                rows="2"
+                required></textarea>
+    </div>
+    <div class="research-search-controls">
+      <select name="state" id="research-state">
+        <option value="">All States</option>
+        {% for state in states %}<option value="{{ state.id }}">{{ state.name }}</option>{% endfor %}
+      </select>
+      <label class="research-federal-check">
+        <input type="checkbox" name="include_federal" id="research-federal">
+        Include federal
+      </label>
+      <button type="submit" class="btn btn-success">
+        <i class="icon-search"></i> Search
+      </button>
+    </div>
+  </div>
+</form>
+<script>
+  (function() {
+    var sel = document.getElementById('research-state');
+    var fed = document.getElementById('research-federal');
+    var saved = localStorage.getItem('research_state');
+    if (saved && sel.querySelector('option[value="' + saved + '"]')) {
+      sel.value = saved;
+    }
+    if (localStorage.getItem('research_federal') === '1') {
+      fed.checked = true;
+    }
+    sel.addEventListener('change', function() {
+      localStorage.setItem('research_state', sel.value);
+    });
+    fed.addEventListener('change', function() {
+      localStorage.setItem('research_federal', fed.checked ? '1' : '0');
+    });
+  })();
+</script>

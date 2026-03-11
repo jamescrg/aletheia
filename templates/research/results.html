@@ -1,0 +1,54 @@
+<div class="research-results-container">
+  <div class="research-results-header">
+    <div>
+      <h3>{{ query.query_text|truncatechars:80 }}</h3>
+      <span class="research-results-meta">{{ query.jurisdiction_display }} &middot; {{ query.created_at|date:"M j, Y g:i A" }}</span>
+    </div>
+    <form hx-post="{% url 'research:delete' query.id %}"
+          hx-target=".research-layout"
+          hx-swap="innerHTML"
+          hx-confirm="Delete this query and its results?">
+      <button type="submit" class="btn btn-icon" title="Delete query">
+        <i class="icon-trash-2"></i>
+      </button>
+    </form>
+  </div>
+  {% if query.structured_query %}
+    <div class="research-structured-query">
+      <code>{{ query.structured_query }}</code>
+    </div>
+  {% endif %}
+  {% if query.status == "error" %}
+    <div class="research-error">
+      <i class="icon-alert-triangle"></i>
+      {{ query.error_message }}
+    </div>
+  {% else %}
+    {% include "research/summary.html" %}
+    {% if results %}
+      <div class="research-cards">
+        {% for result in results %}
+          {% include "research/result-row.html" %}
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% if query.status != "complete" %}
+      <div class="research-loading"
+           hx-get="{% url 'research:query-status' query.id %}"
+           hx-trigger="load delay:2s"
+           hx-target="#research-results"
+           hx-swap="innerHTML">
+        <i class="icon-loader spin"></i>
+        <span>
+          {% if query.status == "pending" or query.status == "refining" %}
+            Refining query...
+          {% elif query.status == "searching" %}
+            Searching CourtListener...
+          {% else %}
+            Processing results...
+          {% endif %}
+        </span>
+      </div>
+    {% endif %}
+  {% endif %}
+</div>
