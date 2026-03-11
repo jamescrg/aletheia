@@ -86,20 +86,20 @@
 .research-search-input textarea {
   min-height: 6rem;
   width: 100%;
-  max-width: 50rem;
 }
 
 .research-search-row {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  margin: 0 auto;
+  max-width: 60rem;
 }
 
 .research-search-controls {
   align-items: center;
   display: flex;
   gap: 0.75rem;
-  max-width: 50rem;
   justify-content: space-between;
 }
 

@@ -27,13 +27,38 @@ def _refine_query(query_id):
     query = ResearchQuery.objects.get(pk=query_id)
 
     system_prompt = (
-        "You are a legal search query optimizer. Convert the user's natural language "
-        "legal research question into an optimized search query for CourtListener. "
-        "Use search syntax: AND, OR, NOT, quoted phrases for exact match, parenthetical "
-        'grouping, proximity operator ~N (e.g. "negligence duty"~5), and wildcards *. '
+        "You are a legal search query optimizer for CourtListener. Convert natural "
+        "language legal research questions into advanced search queries that maximize "
+        "relevant results.\n\n"
+        "CourtListener search syntax:\n"
+        "- AND (or &): intersection (AND is the default between terms)\n"
+        "- OR: union of alternatives\n"
+        "- NOT (or - prefix): exclude terms\n"
+        '- "quoted phrase": exact phrase match, no stemming\n'
+        "- (parentheses): group expressions, may be nested\n"
+        '- "phrase"~N: proximity — words within N words of each other\n'
+        "- term~: fuzzy match for spelling variations (e.g. negligen~)\n"
+        "- wild*: wildcard matching (* for multiple chars, ? for single)\n"
+        "- [x TO y]: range queries (numbers or dates)\n\n"
+        "Important: the ~ operator means different things depending on context:\n"
+        '- After a quoted phrase ("border fence"~50) it is a proximity operator\n'
+        "- After a single word (immigrant~) it is a fuzzy/spelling operator\n"
+        "Do NOT use ~N after a single word for proximity.\n\n"
+        "Guidelines:\n"
+        "- Use OR groups for synonyms and alternative phrasings of the same concept\n"
+        "- Use proximity operators for multi-word concepts that may appear in varied forms\n"
+        "- Group related concepts with parentheses and connect groups with AND\n"
+        "- Include legal action terms (suit, action, cause of action) when relevant\n"
+        "- Be expansive with alternatives — more OR branches improve recall\n"
+        "- Do NOT use fielded search (e.g. court_id:) — court filtering is handled separately\n\n"
+        "Example input: Can a joint tenant with right of survivorship file an "
+        "equitable partition suit?\n"
+        'Example output: (("joint tenant"~5 "right of survivorship") OR '
+        '"joint tenancy with right of survivorship") AND ("equitable partition" '
+        'OR partition) AND (suit OR "file suit" OR action OR "legal action")\n\n'
         "Return ONLY the search query string, nothing else."
     )
-    user_prompt = f"Convert this legal research question into an optimized search query:\n\n{query.query_text}"
+    user_prompt = query.query_text
 
     try:
         response_text, _, _ = send_to_gemini(
