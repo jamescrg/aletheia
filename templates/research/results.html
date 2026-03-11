@@ -22,7 +22,8 @@
     <div class="research-loading"
          hx-get="{% url 'research:query-status' query.id %}"
          hx-trigger="load delay:2s"
-         hx-swap="outerHTML">
+         hx-target="#research-results"
+         hx-swap="innerHTML">
       <i class="icon-loader spin"></i>
       <span>Refining query...</span>
     </div>
@@ -30,7 +31,8 @@
     <div class="research-loading"
          hx-get="{% url 'research:query-status' query.id %}"
          hx-trigger="load delay:2s"
-         hx-swap="outerHTML">
+         hx-target="#research-results"
+         hx-swap="innerHTML">
       <i class="icon-search spin"></i>
       <span>Searching CourtListener...</span>
     </div>
@@ -47,17 +49,15 @@
           {% include "research/result-row.html" %}
         {% endfor %}
       </div>
-    {% else %}
-      {% if query.status == "processing" %}
-        <div hx-get="{% url 'research:query-status' query.id %}"
-             hx-trigger="load delay:2s"
-             hx-swap="outerHTML">
-          <div class="research-loading">
-            <i class="icon-loader spin"></i>
-            <span>Processing results...</span>
-          </div>
-        </div>
-      {% endif %}
+    {% elif query.status == "processing" %}
+      <div class="research-loading"
+           hx-get="{% url 'research:query-status' query.id %}"
+           hx-trigger="load delay:2s"
+           hx-target="#research-results"
+           hx-swap="innerHTML">
+        <i class="icon-loader spin"></i>
+        <span>Processing results...</span>
+      </div>
     {% endif %}
   {% endif %}
 </div>

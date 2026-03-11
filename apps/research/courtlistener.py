@@ -66,8 +66,8 @@ def search_opinions(query, court="", limit=5):
                     "snippet": item.get("snippet", ""),
                     "score": item.get("score"),
                     "courtlistener_url": (
-                        f"{COURTLISTENER_BASE_URL}/opinion/{cluster_id}/"
-                        if cluster_id
+                        f"{COURTLISTENER_BASE_URL}{item['absolute_url']}"
+                        if item.get("absolute_url")
                         else ""
                     ),
                 }

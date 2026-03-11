@@ -1,7 +1,8 @@
+{% load markdown_extras %}
 {% if query.status == "complete" and query.final_summary %}
   <div class="research-final-summary">
     <h4>Research Summary</h4>
-    <p>{{ query.final_summary }}</p>
+    <div>{{ query.final_summary|render_markdown }}</div>
   </div>
 {% elif query.status == "processing" or query.status == "searching" or query.status == "refining" %}
   <div id="research-summary-poll"

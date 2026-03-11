@@ -1,37 +1,44 @@
+{% load markdown_extras %}
 <div class="research-card"
      id="result-{{ result.id }}"
      {% if result.relevance == "pending" %} hx-get="{% url 'research:result-status' result.id %}" hx-trigger="load delay:2s" hx-target="#result-{{ result.id }}" hx-swap="outerHTML" {% endif %}>
   <div class="research-card-header">
     <div class="research-card-title">
+      {{ result.case_name }}
       {% if result.courtlistener_url %}
-        <a href="{{ result.courtlistener_url }}" target="_blank" rel="noopener">{{ result.case_name }}</a>
-      {% else %}
-        {{ result.case_name }}
+        <a href="{{ result.courtlistener_url }}"
+           target="_blank"
+           rel="noopener"
+           class="btn btn-icon research-card-link"
+           title="View on CourtListener"><i class="icon-external-link"></i></a>
       {% endif %}
     </div>
     <div class="research-card-relevance">
       {% if result.relevance == "pending" %}
-        <span class="badge badge-muted">Pending</span>
+        <span class="app-badge app-badge-sm">Pending</span>
       {% elif result.relevance == "high" %}
-        <span class="badge badge-green">High</span>
+        <span class="app-badge app-badge-sm badge-green">High</span>
       {% elif result.relevance == "medium" %}
-        <span class="badge badge-yellow">Medium</span>
+        <span class="app-badge app-badge-sm badge-yellow">Medium</span>
       {% elif result.relevance == "low" %}
-        <span class="badge badge-muted">Low</span>
+        <span class="app-badge app-badge-sm">Low</span>
       {% elif result.relevance == "error" %}
-        <span class="badge badge-red">Error</span>
+        <span class="app-badge app-badge-sm badge-red">Error</span>
       {% endif %}
     </div>
   </div>
-  {% if result.citation %}<div class="research-card-citation">{{ result.citation }}</div>{% endif %}
-  <div class="research-card-meta">{{ result.court }} &middot; {{ result.date_filed }}</div>
+  <div class="research-card-citation">
+    {% if result.citation %}{{ result.citation }} &middot;{% endif %}
+    {{ result.court }}
+    {% if result.date_filed %}({{ result.date_filed }}){% endif %}
+  </div>
   {% if result.relevance == "pending" %}
     <div class="research-status-msg">
       <i class="icon-loader spin"></i>
       {{ result.status_message|default:"Waiting..." }}
     </div>
   {% elif result.relevance == "high" and result.gemini_summary %}
-    <div class="research-summary">{{ result.gemini_summary }}</div>
+    <div class="research-summary">{{ result.gemini_summary|render_markdown }}</div>
   {% endif %}
   {% if result.snippet and result.relevance != "high" %}
     <div class="research-snippet">{{ result.snippet|safe|truncatechars:200 }}</div>

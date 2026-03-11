@@ -93,7 +93,7 @@ def query_status(request, query_id):
     results = query.results.all()
     return render(
         request,
-        "research/status.html",
+        "research/results.html",
         {"query": query, "results": results},
     )
 
