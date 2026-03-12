@@ -36,11 +36,10 @@
                          cellspacing="0"
                          style="margin-bottom: 24px">
                     <tr>
-                      <td style="background-color: #ffedd5;
-                                 border-left: 4px solid #9a3412;
+                      <td style="border: 1px solid #d6d3d1;
                                  border-radius: 4px;
                                  padding: 16px">
-                        <h2 style="margin: 0 0 12px; font-size: 16px; color: #9a3412;">Overdue</h2>
+                        <h2 style="margin: 0 0 12px; font-size: 16px; color: #57534e;">Overdue</h2>
                         {% for event in overdue_events %}
                           <table role="presentation"
                                  width="100%"
@@ -49,8 +48,8 @@
                                  style="margin-bottom: 8px">
                             <tr>
                               <td style="font-size: 13px; color: #44403c; padding: 4px 0;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9a3412" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                <span style="color: #9a3412; font-weight: 600;">{{ event.date|date:"M j" }}</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#57534e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                <span style="color: #57534e; font-weight: 600;">{{ event.date|date:"M j" }}</span>
                                 {% if event.start_time %}<span style="color: #a8a29e;">{{ event.start_time|time:"g:i A" }}</span>{% endif %}
                                 &mdash; {{ event.description }}
                                 {% if event.matter %}<span style="color: #78716c; font-size: 12px;">({{ event.matter.name }})</span>{% endif %}
@@ -66,9 +65,10 @@
                                  style="margin-bottom: 8px">
                             <tr>
                               <td style="font-size: 13px; color: #44403c; padding: 4px 0;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9a3412" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
-                                <span style="color: #9a3412; font-weight: 600;">{{ task.date_due|date:"M j" }}</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#57534e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                                <span style="color: #57534e; font-weight: 600;">{{ task.date_due|date:"M j" }}</span>
                                 &mdash; {{ task.description }}
+                                {% if task.user %}<span style="color: #78716c; font-size: 12px;">[{{ task.user.initials }}]</span>{% endif %}
                                 {% if task.matter %}<span style="color: #78716c; font-size: 12px;">({{ task.matter.name }})</span>{% endif %}
                               </td>
                             </tr>
@@ -86,11 +86,10 @@
                          cellspacing="0"
                          style="margin-bottom: 24px">
                     <tr>
-                      <td style="border-left: 4px solid #5b21b6;
+                      <td style="border: 1px solid #d6d3d1;
                                  border-radius: 4px;
-                                 padding: 16px;
-                                 background-color: #ede9fe">
-                        <h2 style="margin: 0 0 12px; font-size: 16px; color: #5b21b6;">Today</h2>
+                                 padding: 16px">
+                        <h2 style="margin: 0 0 12px; font-size: 16px; color: #57534e;">Today</h2>
                         {% for event in today_events %}
                           <table role="presentation"
                                  width="100%"
@@ -99,7 +98,7 @@
                                  style="margin-bottom: 8px">
                             <tr>
                               <td style="font-size: 13px; color: #44403c; padding: 4px 0;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5b21b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#57534e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                                 {% if event.start_time %}
                                   <span style="font-weight: 600;">{{ event.start_time|time:"g:i A" }}
                                     {% if event.end_time %}&ndash; {{ event.end_time|time:"g:i A" }}{% endif %}
@@ -120,8 +119,9 @@
                                  style="margin-bottom: 8px">
                             <tr>
                               <td style="font-size: 13px; color: #44403c; padding: 4px 0;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5b21b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#57534e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
                                 {{ task.description }}
+                                {% if task.user %}<span style="color: #78716c; font-size: 12px;">[{{ task.user.initials }}]</span>{% endif %}
                                 {% if task.matter %}<span style="color: #78716c; font-size: 12px;">({{ task.matter.name }})</span>{% endif %}
                               </td>
                             </tr>
@@ -139,11 +139,10 @@
                          cellspacing="0"
                          style="margin-bottom: 24px">
                     <tr>
-                      <td style="border-left: 4px solid #3f6212;
+                      <td style="border: 1px solid #d6d3d1;
                                  border-radius: 4px;
-                                 padding: 16px;
-                                 background-color: #ecfccb">
-                        <h2 style="margin: 0 0 12px; font-size: 16px; color: #3f6212;">Next {{ lookahead_days }} Days</h2>
+                                 padding: 16px">
+                        <h2 style="margin: 0 0 12px; font-size: 16px; color: #57534e;">Next {{ lookahead_days }} Days</h2>
                         {% for event in upcoming_events %}
                           <table role="presentation"
                                  width="100%"
@@ -152,7 +151,7 @@
                                  style="margin-bottom: 8px">
                             <tr>
                               <td style="font-size: 13px; color: #44403c; padding: 4px 0;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3f6212" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#57534e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                                 <span style="font-weight: 600;">{{ event.date|date:"D, M j" }}</span>
                                 {% if event.start_time %}<span style="color: #a8a29e;">{{ event.start_time|time:"g:i A" }}</span>{% endif %}
                                 &mdash; {{ event.description }}
@@ -169,9 +168,10 @@
                                  style="margin-bottom: 8px">
                             <tr>
                               <td style="font-size: 13px; color: #44403c; padding: 4px 0;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3f6212" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#57534e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
                                 <span style="font-weight: 600;">{{ task.date_due|date:"D, M j" }}</span>
                                 &mdash; {{ task.description }}
+                                {% if task.user %}<span style="color: #78716c; font-size: 12px;">[{{ task.user.initials }}]</span>{% endif %}
                                 {% if task.matter %}<span style="color: #78716c; font-size: 12px;">({{ task.matter.name }})</span>{% endif %}
                               </td>
                             </tr>

@@ -11,7 +11,7 @@ OVERDUE
 {% for event in overdue_events %}
   {{ event.date|date:"M j" }}{% if event.start_time %} {{ event.start_time|time:"g:i A" }}{% endif %} - {{ event.description }}{% if event.matter %} ({{ event.matter.name }}){% endif %}
 {% endfor %}{% for task in overdue_tasks %}
-  {{ task.date_due|date:"M j" }} - {{ task.description }}{% if task.matter %} ({{ task.matter.name }}){% endif %}
+  {{ task.date_due|date:"M j" }} - {{ task.description }}{% if task.user %} [{{ task.user.initials }}]{% endif %}{% if task.matter %} ({{ task.matter.name }}){% endif %}
 {% endfor %}{% endif %}{% if today_events or today_tasks %}
 
 TODAY
@@ -19,7 +19,7 @@ TODAY
 {% for event in today_events %}
   {% if event.start_time %}{{ event.start_time|time:"g:i A" }}{% if event.end_time %} - {{ event.end_time|time:"g:i A" }}{% endif %} - {% endif %}{{ event.description }}{% if event.location %} ({{ event.location }}){% endif %}{% if event.matter %} | {{ event.matter.name }}{% endif %}
 {% endfor %}{% for task in today_tasks %}
-  {{ task.description }}{% if task.matter %} ({{ task.matter.name }}){% endif %}
+  {{ task.description }}{% if task.user %} [{{ task.user.initials }}]{% endif %}{% if task.matter %} ({{ task.matter.name }}){% endif %}
 {% endfor %}{% endif %}{% if upcoming_events or upcoming_tasks %}
 
 NEXT {{ lookahead_days }} DAYS
@@ -27,7 +27,7 @@ NEXT {{ lookahead_days }} DAYS
 {% for event in upcoming_events %}
   {{ event.date|date:"D, M j" }}{% if event.start_time %} {{ event.start_time|time:"g:i A" }}{% endif %} - {{ event.description }}{% if event.matter %} ({{ event.matter.name }}){% endif %}
 {% endfor %}{% for task in upcoming_tasks %}
-  {{ task.date_due|date:"D, M j" }} - {{ task.description }}{% if task.matter %} ({{ task.matter.name }}){% endif %}
+  {{ task.date_due|date:"D, M j" }} - {{ task.description }}{% if task.user %} [{{ task.user.initials }}]{% endif %}{% if task.matter %} ({{ task.matter.name }}){% endif %}
 {% endfor %}{% endif %}
 
 ---
