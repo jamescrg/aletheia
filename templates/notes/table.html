@@ -1,7 +1,6 @@
 <div class="table-container">
   <table id="notes-list" class="table notes-list">
     <tr>
-      <th class="category">Category</th>
       <th class="topic">
         Topic
         <button class="btn-sort {% if 'topic' in current_order %}active{% endif %}"
@@ -48,7 +47,7 @@
       {% include "notes/row.html" %}
     {% empty %}
       <tr>
-        <td colspan="7" class="empty-message">No notes found.</td>
+        <td colspan="6" class="empty-message">No notes found.</td>
       </tr>
     {% endfor %}
   </table>

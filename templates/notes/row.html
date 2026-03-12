@@ -1,5 +1,4 @@
 <tr id="note-{{ note.id }}">
-  <td class="category dropdown-cell">{% include "notes/category-display.html" %}</td>
   <td class="topic">{{ note.topic|default:"—" }}</td>
   <td class="title">
     <div class="dropdown" x-data="dropdown()">

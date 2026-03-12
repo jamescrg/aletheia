@@ -18,34 +18,34 @@
     <div class="modal-footer">
       {% if subfolder_count > 0 %}
         {% if note_count > 0 %}
-          <button hx-delete="{% url 'notes:folder-delete' folder.id %}"
-                  hx-target="#note-folders"
-                  class="btn btn-success">Reparent &amp; Keep Notes</button>
-          <button hx-delete="{% url 'notes:folder-delete' folder.id %}?delete_notes=true"
-                  hx-target="#note-folders"
-                  class="btn btn-secondary">Reparent &amp; Delete Notes</button>
           <button hx-delete="{% url 'notes:folder-delete' folder.id %}?delete_notes=true&delete_subfolders=true"
                   hx-target="#note-folders"
-                  class="btn-icon">Delete All</button>
-        {% else %}
+                  class="btn btn-danger">Delete Folder and Notes</button>
           <button hx-delete="{% url 'notes:folder-delete' folder.id %}"
                   hx-target="#note-folders"
-                  class="btn btn-success">Reparent Subfolders</button>
+                  class="btn btn-success">Delete Folder, Keep Notes</button>
+        {% else %}
           <button hx-delete="{% url 'notes:folder-delete' folder.id %}?delete_subfolders=true"
                   hx-target="#note-folders"
-                  class="btn-icon">Delete All</button>
+                  class="btn btn-danger">Delete Folder and Subfolders</button>
+          <button hx-delete="{% url 'notes:folder-delete' folder.id %}"
+                  hx-target="#note-folders"
+                  class="btn btn-success">Delete Folder, Keep Subfolders</button>
         {% endif %}
       {% elif note_count > 0 %}
-        <button hx-delete="{% url 'notes:folder-delete' folder.id %}?keep_notes=true"
-                hx-target="#note-folders"
-                class="btn btn-success">Keep Notes</button>
         <button hx-delete="{% url 'notes:folder-delete' folder.id %}?delete_notes=true"
                 hx-target="#note-folders"
-                class="btn-icon">Delete</button>
+                class="btn btn-danger">Delete Folder and Notes</button>
+        <button hx-delete="{% url 'notes:folder-delete' folder.id %}?keep_notes=true"
+                hx-target="#note-folders"
+                class="btn btn-success">Delete Folder, Keep Notes</button>
       {% else %}
+        <button type="button"
+                class="btn btn-secondary"
+                @click="$dispatch('close-modal')">Cancel</button>
         <button hx-delete="{% url 'notes:folder-delete' folder.id %}"
                 hx-target="#note-folders"
-                class="btn btn-success">Delete</button>
+                class="btn btn-danger">Delete</button>
       {% endif %}
     </div>
   </div>
