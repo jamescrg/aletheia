@@ -57,6 +57,7 @@ def get_list_data(request):
 
     # Force-show newly created tasks at the top regardless of filters
     new_task_ids = request.session.pop("new_task_ids", [])
+    edited_task_ids = request.session.pop("edited_task_ids", [])
 
     # Exclude new tasks from main queryset to avoid duplicates
     if new_task_ids:
@@ -144,6 +145,7 @@ def get_list_data(request):
         "selected_tasks": selected_tasks,
         "all_selected": all_selected,
         "new_task_ids": new_task_ids,
+        "edited_task_ids": edited_task_ids,
     }
 
     return list_data

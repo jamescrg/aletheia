@@ -181,6 +181,7 @@ def tasks_edit(request, id):
         if form.is_valid():
             task = form.save(commit=False)
             task.save()
+            request.session["edited_task_ids"] = [task.id]
             return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
 
     else:
@@ -418,6 +419,7 @@ def tasks_priority(request, task_id, priority):
     task = get_object_or_404(Task, pk=task_id)
     task.priority = priority
     task.save()
+    request.session["edited_task_ids"] = [task.id]
     return redirect("tasks:list")
 
 
@@ -432,6 +434,7 @@ def tasks_date(request, task_id):
             date_due = None
         task.date_due = date_due
         task.save()
+        request.session["edited_task_ids"] = [task.id]
         return redirect("tasks:list")
 
     else:
