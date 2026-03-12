@@ -15,6 +15,9 @@ class PermissionMiddleware:
 
     def __call__(self, request):
         if request.user.is_authenticated and not request.user.is_admin:
+            if request.path.startswith("/admin/"):
+                return HttpResponseForbidden()
+
             for path_prefix, perm_field in self.PERMISSION_PATHS:
                 if request.path.startswith(path_prefix) and not getattr(
                     request.user, perm_field
