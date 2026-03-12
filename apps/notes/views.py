@@ -790,6 +790,20 @@ def note_folder_toggle_expand(request, folder_id):
 
 
 @login_required
+@require_POST
+def note_folder_toggle_all(request):
+    """Expand or collapse all folders in session."""
+    expand = request.GET.get("expand") == "true"
+    if expand:
+        all_ids = list(NoteFolder.objects.values_list("pk", flat=True))
+        request.session["note_folders_expanded"] = all_ids
+    else:
+        request.session["note_folders_expanded"] = []
+    request.session.modified = True
+    return HttpResponse(status=204)
+
+
+@login_required
 def note_move(request, note_id):
     """Move a note to a different folder via modal."""
     note = get_object_or_404(Note, pk=note_id, matter__isnull=True)

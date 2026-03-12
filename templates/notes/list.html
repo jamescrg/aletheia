@@ -1,36 +1,37 @@
 <div class="section">
   <div class="toolbar notes-toolbar">
     <div class="toolbar-left">
-      <div class="filter-tools">
-        <button type="button"
-                class="btn-icon"
-                hx-get="{% url 'notes:add' %}"
-                hx-target="#htmx-modal-container"
-                hx-trigger="click">
-          <i class="icon-square-pen"></i>
-        </button>
-        <button type="button"
-                class="btn-icon"
-                hx-get="{% url 'notes:filter' %}"
-                hx-target="#htmx-modal-container"
-                hx-trigger="click">
-          <i class="icon-list-filter with-text"></i>Filter
-        </button>
-        <input type="text"
-               id="notes-keyword-input"
-               name="keyword"
-               placeholder="Keyword Search"
-               value="{{ keyword }}"
-               class="filter-input keyword-input {% if keyword %}toggle-active{% endif %}"
-               hx-get="{% url 'notes:filter-keyword' %}"
-               hx-target="#notes-table"
-               hx-trigger="keyup changed delay:500ms"
-               hx-include="this"
-               oninput="this.classList.toggle('toggle-active', this.value.trim() !== '')">
-      </div>
+      <h2>
+        {% if all_folders_selected %}
+          All Folders
+        {% elif selected_note_folder %}
+          {{ selected_note_folder.name }}
+        {% else %}
+          Inbox
+        {% endif %}
+      </h2>
+    </div>
+    <div class="toolbar-center">
+      <input type="text"
+             id="notes-keyword-input"
+             name="keyword"
+             placeholder="Keyword Search"
+             value="{{ keyword }}"
+             class="filter-input keyword-input {% if keyword %}toggle-active{% endif %}"
+             hx-get="{% url 'notes:filter-keyword' %}"
+             hx-target="#notes-table"
+             hx-trigger="keyup changed delay:500ms"
+             hx-include="this"
+             oninput="this.classList.toggle('toggle-active', this.value.trim() !== '')">
     </div>
     <div class="toolbar-right">
-      <span class="app-badge app-badge-lg">Count: {{ number_notes }}</span>
+      <button type="button"
+              class="btn-icon"
+              hx-get="{% url 'notes:add' %}"
+              hx-target="#htmx-modal-container"
+              hx-trigger="click">
+        <i class="icon-plus"></i>
+      </button>
     </div>
   </div>
   <div id="notes-table">{% include "notes/table.html" %}</div>
