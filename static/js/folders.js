@@ -97,10 +97,73 @@ function toggleNoteFolder(folderId, evt) {
       });
   }
 
+  updateToggleAllFoldersIcon();
+
   // Persist to session
   const csrfToken = document.body.getAttribute("hx-headers");
   const token = csrfToken ? JSON.parse(csrfToken)["X-CSRFToken"] : "";
   fetch(`/notes/folders/toggle/${folderId}/`, {
+    method: "POST",
+    headers: { "X-CSRFToken": token },
+  });
+}
+
+document.addEventListener("DOMContentLoaded", updateToggleAllFoldersIcon);
+
+function updateToggleAllFoldersIcon() {
+  const btn = document.getElementById("toggle-all-folders-btn");
+  if (!btn) return;
+  const icon = btn.querySelector("i");
+  if (!icon) return;
+
+  const carets = document.querySelectorAll(
+    "#note-folders .folder-caret .caret-icon"
+  );
+  const allCollapsed =
+    carets.length > 0 &&
+    Array.from(carets).every((c) =>
+      c.classList.contains("icon-chevron-right")
+    );
+  icon.className = allCollapsed
+    ? "icon-chevrons-up-down"
+    : "icon-chevrons-down-up";
+}
+
+function toggleAllNoteFolders() {
+  const carets = document.querySelectorAll(
+    "#note-folders .folder-caret .caret-icon"
+  );
+  if (!carets.length) return;
+
+  const allCollapsed = Array.from(carets).every((c) =>
+    c.classList.contains("icon-chevron-right")
+  );
+
+  if (allCollapsed) {
+    carets.forEach((caret) => {
+      caret.classList.replace("icon-chevron-right", "icon-chevron-down");
+    });
+    document
+      .querySelectorAll("#note-folders [data-parent-id]")
+      .forEach((el) => {
+        el.classList.remove("folder-hidden");
+      });
+  } else {
+    carets.forEach((caret) => {
+      caret.classList.replace("icon-chevron-down", "icon-chevron-right");
+    });
+    document
+      .querySelectorAll('#note-folders [data-parent-id]:not([data-parent-id="root"])')
+      .forEach((el) => {
+        el.classList.add("folder-hidden");
+      });
+  }
+
+  updateToggleAllFoldersIcon();
+
+  const csrfToken = document.body.getAttribute("hx-headers");
+  const token = csrfToken ? JSON.parse(csrfToken)["X-CSRFToken"] : "";
+  fetch(`/notes/folders/toggle-all/?expand=${allCollapsed}`, {
     method: "POST",
     headers: { "X-CSRFToken": token },
   });

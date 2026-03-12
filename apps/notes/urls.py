@@ -115,4 +115,9 @@ urlpatterns = [
         views.note_folder_toggle_expand,
         name="folder-toggle",
     ),
+    path(
+        "notes/folders/toggle-all/",
+        views.note_folder_toggle_all,
+        name="folder-toggle-all",
+    ),
 ]

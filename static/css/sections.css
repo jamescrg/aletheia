@@ -55,6 +55,12 @@
   padding: 0.25rem;
 }
 
+.toolbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
 .toolbar-right {
   align-items: center;
   display: flex;
