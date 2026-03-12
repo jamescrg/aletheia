@@ -58,21 +58,33 @@ def send_digest_for_user(user):
     ).order_by("date", "start_time")
 
     # Tasks (all users — firm-wide visibility)
-    overdue_tasks = Task.objects.filter(
-        date_due__lt=today,
-        status="Pending",
-    ).order_by("date_due", "priority")
+    overdue_tasks = (
+        Task.objects.select_related("user")
+        .filter(
+            date_due__lt=today,
+            status="Pending",
+        )
+        .order_by("date_due", "priority")
+    )
 
-    today_tasks = Task.objects.filter(
-        date_due=today,
-        status="Pending",
-    ).order_by("priority")
+    today_tasks = (
+        Task.objects.select_related("user")
+        .filter(
+            date_due=today,
+            status="Pending",
+        )
+        .order_by("priority")
+    )
 
-    upcoming_tasks = Task.objects.filter(
-        date_due__gt=today,
-        date_due__lte=upcoming_end,
-        status="Pending",
-    ).order_by("date_due", "priority")
+    upcoming_tasks = (
+        Task.objects.select_related("user")
+        .filter(
+            date_due__gt=today,
+            date_due__lte=upcoming_end,
+            status="Pending",
+        )
+        .order_by("date_due", "priority")
+    )
 
     has_content = (
         overdue_events.exists()
