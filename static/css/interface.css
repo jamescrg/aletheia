@@ -137,12 +137,13 @@
 .select-btn {
   align-items: center;
   display: flex;
-  justify-content: space-between;
+  gap: 0.5rem;
+  max-width: 14rem;
   overflow: hidden;
+  white-space: nowrap;
 }
 
 .select-btn > span {
-  flex: 1;
   min-width: 0;
   overflow: hidden;
   text-align: left;
@@ -152,22 +153,6 @@
 
 .select-btn > small {
   flex-shrink: 0;
-}
-
-.extra-filter-dropdown-button {
-  width: 6.25rem;
-}
-
-.filter-dropdown-button {
-  width: 9rem;
-}
-
-.medium-btn {
-  width: 12.5rem;
-}
-
-.large-btn {
-  width: 12.5rem;
 }
 
 .card {
