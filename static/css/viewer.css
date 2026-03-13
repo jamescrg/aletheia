@@ -115,7 +115,7 @@ body {
   align-items: flex-start;
   background: var(--stone-50);
   border: 1px solid var(--stone-300);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   display: flex;
   gap: 0.5rem;
@@ -244,7 +244,7 @@ body {
 #highlight-form .form-select {
   background: var(--stone-50);
   border: 1px solid var(--stone-300);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
 }
 
 #highlight-form .form-control:focus,

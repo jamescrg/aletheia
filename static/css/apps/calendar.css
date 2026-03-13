@@ -55,7 +55,7 @@
 .deadline-calculator-link a {
   background: var(--background-control);
   border: solid 1px var(--border-medium);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   color: var(--button-toolbar);
   outline: none;
   padding: 0.375rem 0.625rem;
@@ -79,7 +79,7 @@
 .deadline-calculator-results {
   border: solid 1px var(--border-medium);
   border-collapse: separate;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   border-spacing: 0;
   margin-bottom: 1.5rem;
   table-layout: fixed;
@@ -97,19 +97,19 @@
 
 /* Corner rounding */
 .deadline-calculator-results tr:first-child th:first-child {
-  border-top-left-radius: calc(var(--radius-md) - 1px);
+  border-top-left-radius: calc(var(--radius-sm) - 1px);
 }
 
 .deadline-calculator-results tr:first-child td:last-child {
-  border-top-right-radius: calc(var(--radius-md) - 1px);
+  border-top-right-radius: calc(var(--radius-sm) - 1px);
 }
 
 .deadline-calculator-results tr:last-child th:first-child {
-  border-bottom-left-radius: calc(var(--radius-md) - 1px);
+  border-bottom-left-radius: calc(var(--radius-sm) - 1px);
 }
 
 .deadline-calculator-results tr:last-child td:last-child {
-  border-bottom-right-radius: calc(var(--radius-md) - 1px);
+  border-bottom-right-radius: calc(var(--radius-sm) - 1px);
 }
 
 /* Remove outer borders on last row/column */
@@ -130,25 +130,25 @@
 /* Ensure calendar borders are visible and rounded */
 .fc .fc-scrollgrid {
   border-bottom-width: 1px !important;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   border-right-width: 1px !important;
   overflow: hidden;
 }
 
 .fc .fc-scrollgrid-section:first-child .fc-col-header-cell:first-child {
-  border-top-left-radius: var(--radius-md);
+  border-top-left-radius: var(--radius-sm);
 }
 
 .fc .fc-scrollgrid-section:first-child .fc-col-header-cell:last-child {
-  border-top-right-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-sm);
 }
 
 .fc .fc-scrollgrid-section:last-child .fc-daygrid-day:first-child {
-  border-bottom-left-radius: var(--radius-md);
+  border-bottom-left-radius: var(--radius-sm);
 }
 
 .fc .fc-scrollgrid-section:last-child .fc-daygrid-day:last-child {
-  border-bottom-right-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-sm);
 }
 
 /* Override FullCalendar default styling to match app design */
@@ -320,12 +320,12 @@
 }
 
 .view-toggle button:first-child {
-  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
   border-right: none;
 }
 
 .view-toggle button:last-child {
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
 /* Mobile responsive */

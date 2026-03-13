@@ -55,7 +55,7 @@ Detail View
 .invoices-detail-table {
   border: solid 1px var(--border-medium);
   border-collapse: separate;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   border-spacing: 0;
   height: fit-content;
   width: 30%;
@@ -63,19 +63,19 @@ Detail View
 
 /* Corner rounding for tables without thead/tbody structure */
 .invoices-detail-table tr:first-child th:first-child {
-  border-top-left-radius: calc(var(--radius-md) - 1px);
+  border-top-left-radius: calc(var(--radius-sm) - 1px);
 }
 
 .invoices-detail-table tr:first-child td:last-child {
-  border-top-right-radius: calc(var(--radius-md) - 1px);
+  border-top-right-radius: calc(var(--radius-sm) - 1px);
 }
 
 .invoices-detail-table tr:last-child th:first-child {
-  border-bottom-left-radius: calc(var(--radius-md) - 1px);
+  border-bottom-left-radius: calc(var(--radius-sm) - 1px);
 }
 
 .invoices-detail-table tr:last-child td:last-child {
-  border-bottom-right-radius: calc(var(--radius-md) - 1px);
+  border-bottom-right-radius: calc(var(--radius-sm) - 1px);
 }
 
 .invoices-detail-table tr:last-child th,

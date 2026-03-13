@@ -263,7 +263,7 @@
 .contact-notes {
   background-color: var(--background-light);
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   line-height: 1.6;
   padding: 1rem;
 }

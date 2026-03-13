@@ -248,7 +248,7 @@
 
 /* Flatpickr calendar overrides */
 .flatpickr-day {
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
 }
 
 .flatpickr-day.today:not(.selected) {
@@ -269,13 +269,13 @@
 
 .flatpickr-calendar {
   background: var(--background-light);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
 }
 
 .flatpickr-clear {
   background: inherit;
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   color: var(--color-primary);
   cursor: pointer;
   font-size: 0.9rem;
@@ -347,7 +347,7 @@
 .task-detail .btn-icon {
   background: var(--background-control);
   border: solid 1px var(--border-medium);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   color: var(--color-muted);
   padding: 0.375rem 0.625rem;
 }

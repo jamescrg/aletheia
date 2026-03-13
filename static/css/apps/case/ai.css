@@ -546,7 +546,7 @@
 /* Chat Wrapper */
 .ai-chat-wrapper {
   /* border: 1px solid var(--border-medium); */
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -640,7 +640,7 @@
 }
 
 .ai-message-content {
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   line-height: 1.5;
   padding: 0.75rem 1rem;
 }
@@ -717,7 +717,7 @@
 .ai-input-container textarea {
   background: var(--background-light);
   border: 1px solid var(--border-dark);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   box-shadow: 0 4px 6px -2px rgb(0 0 0 / 15%);
   font-family: inherit;
   font-size: 1.15rem;
@@ -736,7 +736,7 @@
   align-items: center;
   background: var(--link);
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   color: white;
   cursor: pointer;
   display: flex;
@@ -818,7 +818,7 @@
   align-items: center;
   background: var(--stone-100);
   border: 1px solid var(--violet-300);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   color: var(--stone-700);
   display: flex;
   font-size: 0.9375rem;
@@ -1134,7 +1134,7 @@
 
 .ai-prompt-canvas {
   background: var(--background-light);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   min-height: 32rem;
   padding: 2rem;
 }
@@ -1181,7 +1181,7 @@
 .ai-expand-btn {
   background: var(--background-light);
   border: 1px solid var(--border-dark);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   color: var(--color-muted);
   font-size: 1rem;
   padding: 0.5rem;
@@ -1517,7 +1517,7 @@
 .citations-summary {
   background: var(--stone-100);
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   font-size: 0.875rem;
   margin-top: 1rem;
   padding: 0.75rem;
@@ -1567,7 +1567,7 @@
 .context-cost-estimates {
   background: var(--stone-100);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   margin-bottom: 1.5rem;
   padding: 1rem;
 }
@@ -1651,14 +1651,14 @@
 .context-section {
   background: var(--stone-50);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
 }
 
 .context-section-header {
   align-items: center;
   background: var(--stone-100);
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   color: var(--stone-800);
   cursor: pointer;
   display: flex;

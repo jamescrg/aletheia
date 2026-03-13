@@ -66,7 +66,7 @@ Company Form
 }
 
 .company-logo-preview img {
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   height: auto;
   max-height: 6rem;
   max-width: 12rem;
@@ -125,7 +125,7 @@ Settings Contacts - Two Column Layout
 /* Integrations */
 .integrations-list {
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   width: 30rem;
 }
 
@@ -147,7 +147,7 @@ Settings Contacts - Two Column Layout
 /* Notifications */
 .notifications-list {
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   width: 30rem;
 }
 
@@ -256,7 +256,7 @@ Settings Contacts - Two Column Layout
 
 .transfer-list {
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   max-height: 28rem;
   overflow-y: auto;
 }

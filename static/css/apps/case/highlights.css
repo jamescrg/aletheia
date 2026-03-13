@@ -281,7 +281,7 @@ Highlight content (td)
 .highlights-list .source-citation {
   background-color: var(--label-gray);
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   display: inline-block;
   font-size: 0.8125rem;
   margin-right: 0.375rem;

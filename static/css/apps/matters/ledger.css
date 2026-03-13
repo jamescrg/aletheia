@@ -1,7 +1,7 @@
 .ledger-totals {
   border: solid 1px var(--border-medium);
   border-collapse: separate;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   border-spacing: 0;
   margin-bottom: 1.5rem;
   width: 100%;
@@ -36,19 +36,19 @@
 
 /* Corner rounding */
 .ledger-totals tr:first-child th {
-  border-top-left-radius: calc(var(--radius-md) - 1px);
+  border-top-left-radius: calc(var(--radius-sm) - 1px);
 }
 
 .ledger-totals tr:first-child td {
-  border-top-right-radius: calc(var(--radius-md) - 1px);
+  border-top-right-radius: calc(var(--radius-sm) - 1px);
 }
 
 .ledger-totals tr:last-child th {
-  border-bottom-left-radius: calc(var(--radius-md) - 1px);
+  border-bottom-left-radius: calc(var(--radius-sm) - 1px);
 }
 
 .ledger-totals tr:last-child td {
-  border-bottom-right-radius: calc(var(--radius-md) - 1px);
+  border-bottom-right-radius: calc(var(--radius-sm) - 1px);
 }
 
 .ledger {

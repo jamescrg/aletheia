@@ -7,7 +7,7 @@
 
 #toast-container .toast {
     border: 1px solid var(--border-medium);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-sm);
     min-width: 18rem;
     overflow: hidden;
 }

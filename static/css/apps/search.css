@@ -24,7 +24,7 @@
 .search .search-text {
   background: var(--input-background);
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md) 0 0 var(--radius-md) !important;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm) !important;
   flex: 1;
   padding: 0.625rem 1rem;
 }
@@ -38,7 +38,7 @@
 .search .input-group-text {
   background: var(--background-control);
   border: 1px solid var(--border-medium);
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   color: var(--color-muted);
   padding: 0.625rem 1rem;
 }
@@ -135,7 +135,7 @@
   align-items: center;
   background: var(--background-light);
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   color: inherit;
   display: flex;
   gap: 0.75rem;

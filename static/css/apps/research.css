@@ -8,7 +8,7 @@
 
 .research-search-form {
   background: var(--background-section);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   padding: 1.25rem 1rem;
 }
 
@@ -63,7 +63,7 @@
 
 .research-results-container {
   background: var(--background-section);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   padding: 1.25rem 1rem 1.5rem;
 }
 
@@ -91,7 +91,7 @@
 .research-structured-query {
   background: var(--background-control);
   border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   margin-bottom: 1.25rem;
   padding: 0.5rem 0.75rem;
 }
@@ -423,7 +423,7 @@
   align-items: center;
   background: var(--error-background);
   border: 1px solid var(--orange-200);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   color: var(--error);
   display: flex;
   gap: 0.5rem;

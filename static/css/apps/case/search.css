@@ -10,7 +10,7 @@ Search Layout - Two-column with persistent sidebar
 .search-content {
   background: transparent;
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   flex: 1;
   min-height: 24rem;
   min-width: 0;
@@ -20,7 +20,7 @@ Search Layout - Two-column with persistent sidebar
   align-self: flex-start;
   background: transparent;
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   flex-shrink: 0;
   font-size: 0.95rem;
   padding: 1rem;
@@ -50,7 +50,7 @@ Search Input
 .search-input {
   background: var(--background-light);
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
   border-right: none;
   flex: 1;
   padding: 0.5rem 0.75rem;
@@ -64,7 +64,7 @@ Search Input
   align-items: center;
   background: var(--background-subnav);
   border: 1px solid var(--border-medium);
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   color: var(--color-muted);
   display: flex;
   padding: 0 0.75rem;
@@ -165,7 +165,7 @@ Filter Panel
 .filter-panel-form select,
 .filter-panel-form input[type="date"] {
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   color: var(--stone-600);
   width: 100%;
 }
