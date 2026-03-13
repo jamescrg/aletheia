@@ -169,12 +169,12 @@ Mode Pills (Detail/Case toggle)
 }
 
 .toolbar .mode-pill:first-child {
-  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
   border-right: none;
 }
 
 .toolbar .mode-pill:last-child {
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
 .toolbar .mode-pill.active {
