@@ -127,10 +127,6 @@
    FullCalendar Integration
    ========================================================================== */
 
-#fullcalendar-container {
-  margin-top: 0.5rem;
-}
-
 /* Ensure calendar borders are visible and rounded */
 .fc .fc-scrollgrid {
   border-bottom-width: 1px !important;
@@ -175,10 +171,10 @@
 
 /* Button styling */
 .fc .fc-button {
-  border-radius: var(--radius-md);
-  font-size: 1rem;
-  line-height: 1.5;
-  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  /* font-size: 1rem; */
+  /* line-height: 1.5; */
+  /* padding: 0.5rem 0.75rem; */
   text-transform: capitalize;
 }
 
