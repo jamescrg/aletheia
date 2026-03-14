@@ -191,6 +191,20 @@
   white-space: normal;
 }
 
+.tasks-table td.description {
+  align-items: baseline;
+  display: flex;
+}
+
+.tasks-table td.description > a:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-decorators {
+  flex-shrink: 0;
+}
+
 .tasks-table .status {
   width: 9rem;
 }
@@ -387,13 +401,6 @@
   animation: task-highlight-fade 2s ease-out;
 }
 
-.task-notes-date {
-  color: var(--color-muted);
-  font-size: 0.9rem;
-  position: relative;
-  top: 1px;
-  margin-left: 0.25rem;
-}
 
 
 /* ==========================================================================
@@ -578,9 +585,8 @@
     width: auto;
   }
 
-  /* Hide notes icons on mobile */
-  .task-notes-btn,
-  .task-notes-date {
+  /* Hide notes and checklist icons on mobile */
+  .task-decorators {
     display: none;
   }
 

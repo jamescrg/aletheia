@@ -1,0 +1,56 @@
+<div class="modal-dialog modal-md">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">
+        {% if not edit %}
+          Add Folder
+        {% else %}
+          Edit Folder
+        {% endif %}
+      </h1>
+      <div>
+        <button type="button" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <form id="checklist-folder-form"
+            hx-post="{{ action }}"
+            hx-target="#checklist-folders"
+            hx-swap="innerHTML"
+            class="form-compact"
+            role="form">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="{{ form.parent.id_for_label }}">{{ form.parent.label }}</label>
+          <div>
+            {{ form.parent }}
+            {% if form.parent.errors %}<div class="text-danger">{{ form.parent.errors }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+          <div>
+            {{ form.name }}
+            {% if form.name.errors %}<div class="text-danger">{{ form.name.errors }}</div>{% endif %}
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      {% if edit %}
+        <button type="button"
+                class="btn btn-danger"
+                hx-get="{% url 'checklists:folder-delete-confirm' folder.id %}"
+                hx-target="#htmx-modal-container"
+                hx-swap="innerHTML">Delete</button>
+      {% else %}
+        <button type="button"
+                class="btn btn-secondary"
+                @click="$dispatch('close-modal')">Cancel</button>
+      {% endif %}
+      <button type="submit" form="checklist-folder-form" class="btn btn-success">Submit</button>
+    </div>
+  </div>
+</div>

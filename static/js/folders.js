@@ -219,3 +219,118 @@ function toggleMoveFolder(folderId, evt) {
       });
   }
 }
+
+
+// =========================================================================
+// Checklist Folders (Settings)
+// =========================================================================
+
+function getChecklistFolderDescendantIds(folderId) {
+  const ids = [];
+  document
+    .querySelectorAll(`#checklist-folders [data-parent-id="${folderId}"]`)
+    .forEach((child) => {
+      const childId = child.dataset.folderId;
+      ids.push(childId);
+      ids.push(...getChecklistFolderDescendantIds(childId));
+    });
+  return ids;
+}
+
+function toggleChecklistFolder(folderId, evt) {
+  evt.preventDefault();
+  evt.stopPropagation();
+
+  const folderEl = document.getElementById(`checklist-folder-${folderId}`);
+  if (!folderEl) return;
+
+  const caret = folderEl.querySelector(".caret-icon");
+  if (!caret) return;
+
+  const isExpanded = caret.classList.contains("icon-chevron-down");
+
+  if (isExpanded) {
+    caret.classList.replace("icon-chevron-down", "icon-chevron-right");
+    getChecklistFolderDescendantIds(folderId).forEach((id) => {
+      const el = document.getElementById(`checklist-folder-${id}`);
+      if (el) el.classList.add("folder-hidden");
+    });
+  } else {
+    caret.classList.replace("icon-chevron-right", "icon-chevron-down");
+    document
+      .querySelectorAll(`#checklist-folders [data-parent-id="${folderId}"]`)
+      .forEach((child) => {
+        child.classList.remove("folder-hidden");
+      });
+  }
+
+  updateToggleAllChecklistFoldersIcon();
+
+  const csrfToken = document.body.getAttribute("hx-headers");
+  const token = csrfToken ? JSON.parse(csrfToken)["X-CSRFToken"] : "";
+  fetch(`/checklists/folders/toggle/${folderId}/`, {
+    method: "POST",
+    headers: { "X-CSRFToken": token },
+  });
+}
+
+function updateToggleAllChecklistFoldersIcon() {
+  const btn = document.getElementById("toggle-all-checklist-folders-btn");
+  if (!btn) return;
+  const icon = btn.querySelector("i");
+  if (!icon) return;
+
+  const carets = document.querySelectorAll(
+    "#checklist-folders .folder-caret .caret-icon"
+  );
+  const allCollapsed =
+    carets.length > 0 &&
+    Array.from(carets).every((c) =>
+      c.classList.contains("icon-chevron-right")
+    );
+  icon.className = allCollapsed
+    ? "icon-chevrons-up-down"
+    : "icon-chevrons-down-up";
+}
+
+function toggleAllChecklistFolders() {
+  const carets = document.querySelectorAll(
+    "#checklist-folders .folder-caret .caret-icon"
+  );
+  if (!carets.length) return;
+
+  const allCollapsed = Array.from(carets).every((c) =>
+    c.classList.contains("icon-chevron-right")
+  );
+
+  if (allCollapsed) {
+    carets.forEach((caret) => {
+      caret.classList.replace("icon-chevron-right", "icon-chevron-down");
+    });
+    document
+      .querySelectorAll("#checklist-folders [data-parent-id]")
+      .forEach((el) => {
+        el.classList.remove("folder-hidden");
+      });
+  } else {
+    carets.forEach((caret) => {
+      caret.classList.replace("icon-chevron-down", "icon-chevron-right");
+    });
+    document
+      .querySelectorAll('#checklist-folders [data-parent-id]:not([data-parent-id="root"])')
+      .forEach((el) => {
+        el.classList.add("folder-hidden");
+      });
+  }
+
+  updateToggleAllChecklistFoldersIcon();
+
+  const csrfToken = document.body.getAttribute("hx-headers");
+  const token = csrfToken ? JSON.parse(csrfToken)["X-CSRFToken"] : "";
+  fetch(`/checklists/folders/toggle-all/?expand=${allCollapsed}`, {
+    method: "POST",
+    headers: { "X-CSRFToken": token },
+  });
+}
+
+document.addEventListener("DOMContentLoaded", updateToggleAllChecklistFoldersIcon);

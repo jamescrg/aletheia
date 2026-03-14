@@ -1,3 +1,4 @@
+import json
 from datetime import date
 from decimal import Decimal
 
@@ -7,6 +8,7 @@ from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_POST
 
 from apps.accounts.models import CustomUser
+from apps.checklists.models import Checklist, UserChecklistView, can_complete_task
 from apps.management.pagination import CustomPaginator
 from apps.management.selection import (
     all_visible_selected,
@@ -20,7 +22,11 @@ from apps.management.selection import (
 from apps.matters.models import Matter
 from apps.tasks.filter import TasksFilter
 from apps.tasks.forms import BulkTasksForm, TaskForm
-from apps.tasks.models import Task, TaskNote, UserTaskNoteView
+from apps.tasks.models import (
+    Task,
+    TaskNote,
+    UserTaskNoteView,
+)
 
 TASKS_TRIGGER = "tasksListChanged"
 
@@ -88,12 +94,23 @@ def get_matter_tasks_data(request, matter_id):
         task_list = new_tasks + list(pagination.get_object_list())
     else:
         task_list = pagination.get_object_list()
+
+    # Bulk-prefetch checklists to avoid N+1
+    task_ids = [t.id for t in task_list]
+    checklists = Checklist.objects.filter(task_id__in=task_ids).prefetch_related(
+        "items"
+    )
+    checklists_by_task = {cl.task_id: cl for cl in checklists}
+
+    # Checklist view tracking
+    checklist_views = UserChecklistView.objects.filter(
+        user=request.user, task_id__in=task_ids
+    ).values_list("task_id", flat=True)
+    viewed_checklist_task_ids = set(checklist_views)
+
     for task in task_list:
         task.has_notes = task.notes.exists()
         if task.has_notes:
-            task.latest_note_date = (
-                task.notes.order_by("-date").values_list("date", flat=True).first()
-            )
             last_viewed = view_times.get(task.id)
             if last_viewed:
                 # Check if there are notes created after last view by other users
@@ -111,6 +128,18 @@ def get_matter_tasks_data(request, matter_id):
                 )
         else:
             task.has_new_notes = False
+
+        cl = checklists_by_task.get(task.id)
+        if cl:
+            task.has_checklist = True
+            items = cl.items.all()
+            task.checklist_total = len(items)
+            task.checklist_done = sum(1 for i in items if i.is_complete)
+            task.checklist_complete = task.checklist_done == task.checklist_total
+            task.has_unviewed_checklist = task.id not in viewed_checklist_task_ids
+        else:
+            task.has_checklist = False
+            task.has_unviewed_checklist = False
 
     selected_user = None
     if user_id:
@@ -295,8 +324,16 @@ def tasks_edit(request, id, task_id):
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             task = form.save(commit=False)
-            task.save()
-            return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
+            if task.status == "Complete" and not can_complete_task(task):
+                form.add_error(
+                    "status",
+                    "Please complete all checklist items before marking this task as done.",
+                )
+            else:
+                task.save()
+                return HttpResponse(
+                    status=204, headers={"HX-Trigger": "tasksListChanged"}
+                )
     else:
         form = TaskForm(instance=task)
 
@@ -408,6 +445,15 @@ def tasks_status(request, id, task_id):
     if task.status == "Complete":
         task.status = "Pending"
     else:
+        if not can_complete_task(task):
+            response = HttpResponse(status=204)
+            response["HX-Toast"] = json.dumps(
+                {
+                    "type": "items incomplete",
+                    "message": "Please complete all checklist items before marking this task as done.",
+                }
+            )
+            return response
         task.status = "Complete"
     task.save()
     return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
@@ -418,6 +464,15 @@ def tasks_set_status(request, id, task_id, status):
     """Set task status for a matter"""
     matter = get_object_or_404(Matter, pk=id)
     task = get_object_or_404(Task, pk=task_id, matter=matter)
+    if status == "Complete" and not can_complete_task(task):
+        response = HttpResponse(status=204)
+        response["HX-Toast"] = json.dumps(
+            {
+                "type": "warning",
+                "message": "Please complete all checklist items before marking this task as done.",
+            }
+        )
+        return response
     task.status = status
     task.save()
     return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
@@ -679,7 +734,27 @@ def tasks_bulk_set_status(request, id):
 
     status = request.POST.get("status")
     if status:
-        Task.objects.filter(id__in=selected_tasks, matter_id=id).update(status=status)
+        tasks = Task.objects.filter(id__in=selected_tasks, matter_id=id)
+        if status == "Complete":
+            skipped = 0
+            for task in tasks:
+                if can_complete_task(task):
+                    task.status = status
+                    task.save()
+                else:
+                    skipped += 1
+            if skipped:
+                clear_selected_ids(request, key)
+                response = selection_response(TASKS_TRIGGER)
+                response["HX-Toast"] = json.dumps(
+                    {
+                        "type": "warning",
+                        "message": f"{skipped} task(s) skipped — complete their checklists first.",
+                    }
+                )
+                return response
+        else:
+            tasks.update(status=status)
         clear_selected_ids(request, key)
 
     return selection_response(TASKS_TRIGGER)

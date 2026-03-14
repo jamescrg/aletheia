@@ -1,0 +1,18 @@
+<ul class="assign-results">
+  {% for template in templates %}
+    <li>
+      <form hx-post="{% url 'checklists:attach-checklist' task.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
+            hx-target="#htmx-modal-container">
+        {% csrf_token %}
+        <input type="hidden" name="template_id" value="{{ template.id }}">
+        <button type="submit" class="checklist-picker-item">
+          <i class="icon-list-checks"></i>
+          <span>{{ template.name }}</span>
+          <span class="checklist-picker-count">{{ template.items.count }} items</span>
+        </button>
+      </form>
+    </li>
+  {% empty %}
+    <li class="empty-message">No matching checklists found.</li>
+  {% endfor %}
+</ul>

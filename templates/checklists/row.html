@@ -1,0 +1,38 @@
+<tr id="checklist-{{ template.id }}">
+  <td class="col-select">
+    {% url 'checklists:toggle-select' template.id as toggle_url %}
+    {% include "selection/checkbox.html" with toggle_url=toggle_url obj_id=template.id selected_ids=selected_checklists %}
+  </td>
+  <td class="name">
+    <div class="dropdown" x-data="dropdown()">
+      <a href="#"
+         class="checklist-name-link"
+         x-ref="button"
+         @click.prevent="toggle()">{{ template.name }}</a>
+      <ul class="dropdown-menu" x-ref="menu" x-show="open">
+        <li>
+          <a class="dropdown-item"
+             href="#"
+             hx-get="{% url 'checklists:edit-checklist-template' template.id %}"
+             hx-target="#htmx-modal-container"><i class="icon-pencil"></i> Edit</a>
+        </li>
+        <li>
+          <a class="dropdown-item"
+             href="#"
+             hx-get="{% url 'checklists:template-move' template.id %}"
+             hx-target="#htmx-modal-container"><i class="icon-arrow-right"></i> Move</a>
+        </li>
+        <li>
+          <a class="dropdown-item urgent"
+             href="#"
+             hx-confirm="Are you sure? Existing task checklists will not be affected."
+             hx-post="{% url 'checklists:delete-checklist-template' template.id %}"><i class="icon-trash-2"></i> Delete</a>
+        </li>
+      </ul>
+    </div>
+  </td>
+  <td class="items-count">{{ template.items.count }}</td>
+  <td class="user">{{ template.created_by.get_short_name|default:template.created_by.username|default:"—" }}</td>
+  <td class="created">{{ template.created_at|date:"Y-m-d" }}</td>
+  <td class="updated">{{ template.updated_at|date:"Y-m-d" }}</td>
+</tr>

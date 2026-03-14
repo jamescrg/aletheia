@@ -1,6 +1,7 @@
 from datetime import date
 
 from apps.accounts.models import CustomUser
+from apps.checklists.models import Checklist, UserChecklistView
 from apps.management.pagination import CustomPaginator
 from apps.management.selection import (
     all_visible_selected,
@@ -9,7 +10,11 @@ from apps.management.selection import (
 )
 from apps.matters.models import Matter
 from apps.tasks.filter import TasksFilter
-from apps.tasks.models import Task, TaskNote, UserTaskNoteView
+from apps.tasks.models import (
+    Task,
+    TaskNote,
+    UserTaskNoteView,
+)
 
 
 def get_list_data(request):
@@ -79,12 +84,23 @@ def get_list_data(request):
         task_list = new_tasks + list(pagination.get_object_list())
     else:
         task_list = pagination.get_object_list()
+
+    # Bulk-prefetch checklists to avoid N+1
+    task_ids = [t.id for t in task_list]
+    checklists = Checklist.objects.filter(task_id__in=task_ids).prefetch_related(
+        "items"
+    )
+    checklists_by_task = {cl.task_id: cl for cl in checklists}
+
+    # Checklist view tracking
+    checklist_views = UserChecklistView.objects.filter(
+        user=request.user, task_id__in=task_ids
+    ).values_list("task_id", flat=True)
+    viewed_checklist_task_ids = set(checklist_views)
+
     for task in task_list:
         task.has_notes = task.notes.exists()
         if task.has_notes:
-            task.latest_note_date = (
-                task.notes.order_by("-date").values_list("date", flat=True).first()
-            )
             last_viewed = view_times.get(task.id)
             if last_viewed:
                 # Check if there are notes created after last view by other users
@@ -102,6 +118,18 @@ def get_list_data(request):
                 )
         else:
             task.has_new_notes = False
+
+        cl = checklists_by_task.get(task.id)
+        if cl:
+            task.has_checklist = True
+            items = cl.items.all()
+            task.checklist_total = len(items)
+            task.checklist_done = sum(1 for i in items if i.is_complete)
+            task.checklist_complete = task.checklist_done == task.checklist_total
+            task.has_unviewed_checklist = task.id not in viewed_checklist_task_ids
+        else:
+            task.has_checklist = False
+            task.has_unviewed_checklist = False
 
     selected_matter = None
     if matter_id:

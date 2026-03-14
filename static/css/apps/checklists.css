@@ -1,0 +1,320 @@
+/* ==========================================================================
+ Checklist Icon (task list)
+========================================================================== */
+
+.task-checklist-btn {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.task-checklist-btn.has-checklist {
+  opacity: 1;
+}
+
+.tasks-table td.description:hover .task-checklist-btn {
+  opacity: 1;
+}
+
+
+
+/* ==========================================================================
+ Checklist (modal)
+========================================================================== */
+
+.checklist-modal-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.checklist-modal-name {
+  color: var(--color-primary);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.checklist-modal-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.checklist-modal-actions .btn-icon {
+  background: var(--background-control);
+  border: solid 1px var(--border-medium);
+  border-radius: var(--radius-sm);
+  color: var(--color-muted);
+  padding: 0.25rem 0.5rem;
+}
+
+.checklist-modal-actions .btn-icon i {
+  color: inherit;
+}
+
+.checklist-items {
+  list-style: none;
+  padding: 0;
+}
+
+.checklist-item:last-child {
+  border-bottom: solid 1px var(--border-medium);
+}
+
+.checklist-item {
+  align-items: center;
+  border-top: solid 1px var(--border-medium);
+  cursor: pointer;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 0.25rem;
+}
+
+.checklist-check-icon {
+  color: var(--color-muted-more);
+  flex-shrink: 0;
+  font-size: 1.1rem;
+}
+
+.checklist-item-complete .checklist-check-icon {
+  color: var(--color-muted-more);
+}
+
+.checklist-item-number {
+  color: var(--color-muted);
+  flex-shrink: 0;
+  text-align: right;
+  width: 1.25rem;
+}
+
+.checklist-item-complete .checklist-item-number {
+  color: var(--color-muted);
+}
+
+.checklist-item-complete .checklist-item-text {
+  color: var(--color-muted);
+  text-decoration: line-through;
+}
+
+/* ==========================================================================
+ Checklist Picker
+========================================================================== */
+
+.checklist-picker-item {
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  gap: 0.75rem;
+  padding: 0;
+  width: 100%;
+}
+
+.checklist-picker-count {
+  color: var(--color-muted);
+  margin-left: auto;
+}
+
+/* ==========================================================================
+ Checklist Template Items
+========================================================================== */
+
+.template-items-section {
+  margin-top: 1.5rem;
+}
+
+.template-items-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.template-item-add-form {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.template-item-add-form input {
+  flex: 1;
+}
+
+.template-item-add-btn {
+  align-self: stretch;
+  background: var(--background-control);
+  border: solid 1px var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: 0 0.5rem;
+}
+
+.template-items-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.template-item {
+  align-items: center;
+  border-bottom: solid 1px var(--border-medium);
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 0.25rem;
+}
+
+
+.template-item-handle {
+  color: var(--icon-muted);
+  cursor: grab;
+  flex-shrink: 0;
+}
+
+.template-item-handle:active {
+  cursor: grabbing;
+}
+
+.template-item-number {
+  color: var(--color-muted);
+  flex-shrink: 0;
+  text-align: right;
+  width: 1.25rem;
+}
+
+.template-item-description {
+  flex: 1;
+  min-width: 0;
+}
+
+.template-item-delete {
+  color: var(--icon-muted);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.template-item-empty {
+  color: var(--color-muted);
+  font-style: italic;
+  padding: 0.5rem 0.25rem;
+}
+
+/* ==========================================================================
+ Checklists Layout
+========================================================================== */
+
+.checklists-layout .section {
+  border: 1px solid var(--border-medium);
+  box-shadow: none;
+}
+
+.checklists-layout {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 1rem;
+}
+
+@media (width >= 768px) {
+  .checklists-layout {
+    flex-direction: row;
+    gap: 1.5rem;
+  }
+
+  .checklists-layout > .checklists-sidebar {
+    flex: 0 0 calc(25% - 0.75rem);
+    max-width: calc(25% - 0.75rem);
+  }
+
+  .checklists-layout > .checklists-content {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/* Checklists table */
+.checklists-list {
+  min-width: 40rem;
+}
+
+.checklists-list th.col-select,
+.checklists-list td.col-select {
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+  vertical-align: middle;
+  width: 2.5rem;
+}
+
+.checklists-list .name {
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+.checklists-list .items-count {
+  text-align: center;
+  width: 4rem;
+}
+
+.checklists-list .user {
+  width: 7rem;
+}
+
+.checklists-list .created {
+  width: 8rem;
+}
+
+.checklists-list .updated {
+  width: 8rem;
+}
+
+.checklists-list td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.checklists-list .name {
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+.checklists-list .checklist-name-link {
+  color: var(--link);
+  text-decoration: none;
+}
+
+.checklists-list .checklist-name-link:hover {
+  color: var(--link-hover);
+}
+
+.checklists-list .menu-icon {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.checklists-list tr:hover .menu-icon {
+  opacity: 1;
+}
+
+/* Fix dropdown overflow */
+.table-container:has(.checklists-list) {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+/* Checklist folder depth indentation */
+#checklist-folders .folder-depth-1 { padding-left: 1.125rem; }
+#checklist-folders .folder-depth-2 { padding-left: 2rem; }
+#checklist-folders .folder-depth-3 { padding-left: 2.875rem; }
+
+/* Fix dropdown overflow in checklist folders */
+#checklist-folders .list-group {
+  overflow: visible;
+}
+
+#checklist-folders .list-group-item {
+  padding-left: 0.125rem;
+}
+
+#checklist-folders .list-group-item.empty-message {
+  padding-left: 2rem;
+}

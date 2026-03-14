@@ -22,6 +22,8 @@ urlpatterns = [
     path("", include("apps.calendar.urls")),
     # Tasks App
     path("", include("apps.tasks.urls")),
+    # Checklists App
+    path("", include("apps.checklists.urls")),
     # Dash App
     path("", include("apps.dash.urls")),
     # Intakes App

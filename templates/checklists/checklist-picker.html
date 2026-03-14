@@ -1,0 +1,28 @@
+<div class="modal-dialog modal-md">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Attach Checklist</h1>
+      <div>
+        <button type="button" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="combobox-container">
+        <div class="combobox-input-wrapper">
+          <input type="search"
+                 id="checklist-search-input"
+                 name="q"
+                 hx-get="{% url 'checklists:checklist-search' task.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
+                 hx-target="#checklist-results"
+                 hx-trigger="keyup changed delay:300ms, search, load"
+                 autocomplete="off"
+                 placeholder="Search checklists..."
+                 autofocus>
+        </div>
+        <div id="checklist-results"></div>
+      </div>
+    </div>
+  </div>
+</div>

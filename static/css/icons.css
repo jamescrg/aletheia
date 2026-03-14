@@ -67,12 +67,23 @@ i.spin {
 }
 
 .note-badge-icon {
-  color: var(--icon-muted);
+  color: var(--color-muted-more);
   font-size: 1rem;
   margin-left: 0.5rem;
   vertical-align: middle;
 }
 
 .note-badge-icon.note-badge-new {
+  color: var(--icon-violet);
+}
+
+.checklist-badge-icon {
+  color: var(--color-muted-more);
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+.checklist-badge-icon.checklist-badge-new {
   color: var(--icon-violet);
 }

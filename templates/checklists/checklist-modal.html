@@ -1,0 +1,49 @@
+<div class="modal-dialog modal-md"
+     hx-trigger="load"
+     {% if matter_id %} hx-get="{% url 'matters:tasks-list' matter_id %}" hx-target="#matterTasks" {% else %} hx-get="{% url 'tasks:list' %}" hx-target="#tasks" {% endif %}
+     hx-swap="innerHTML">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">{{ task.description }}</h1>
+      <div>
+        <button type="button" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="checklist-modal-header">
+        <p class="checklist-modal-name">{{ checklist.name }}</p>
+        <div class="checklist-modal-actions">
+          {% if checklist.template %}
+            <button class="btn-icon btn-success"
+                    hx-post="{% url 'checklists:refresh-checklist' task.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
+                    hx-target="#task-checklist"
+                    hx-swap="outerHTML"
+                    hx-confirm="Reload checklist from template? Completed status will be reset."
+                    data-confirm-text="Confirm"
+                    data-confirm-style="success">
+              <i class="icon-refresh-cw"></i>
+            </button>
+            <a class="btn-icon"
+               href="#"
+               hx-get="{% url 'checklists:edit-checklist-template' checklist.template.id %}"
+               hx-target="#htmx-modal-container">
+              <i class="icon-pencil"></i>
+            </a>
+          {% endif %}
+          <button class="btn-icon"
+                  hx-post="{% url 'checklists:remove-checklist' task.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
+                  hx-swap="none"
+                  hx-confirm="Remove this checklist from the task?"
+                  data-confirm-text="Delete"
+                  data-confirm-style="danger"
+                  hx-on::after-request="window.dispatchEvent(new CustomEvent('close-modal'))">
+            <i class="icon-trash-2"></i>
+          </button>
+        </div>
+      </div>
+      {% include "checklists/checklist.html" %}
+    </div>
+  </div>
+</div>

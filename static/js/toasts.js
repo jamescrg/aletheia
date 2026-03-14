@@ -10,6 +10,7 @@ const Toast = (function () {
     error: "icon-alert-circle",
     warning: "icon-alert-triangle",
     info: "icon-info",
+    "items incomplete": "icon-list-checks",
   };
 
   const COLORS = {
@@ -17,6 +18,7 @@ const Toast = (function () {
     error: "var(--error)",
     warning: "var(--warning)",
     info: "var(--sky-600)",
+    "items incomplete": "var(--lime-600)",
   };
 
   const DEFAULTS = {

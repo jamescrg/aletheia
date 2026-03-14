@@ -1,3 +1,4 @@
+import json
 from datetime import date, datetime, timedelta
 
 import markdown
@@ -7,6 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from apps.accounts.models import CustomUser
+from apps.checklists.models import can_complete_task
 from apps.management.selection import (
     clear_selected_ids,
     get_selected_ids,
@@ -18,7 +20,11 @@ from apps.management.selection import (
 from apps.matters.models import Matter
 from apps.tasks.filter import TasksFilter
 from apps.tasks.forms import BulkTasksForm, TaskForm, TaskNoteForm
-from apps.tasks.models import Task, TaskNote, UserTaskNoteView
+from apps.tasks.models import (
+    Task,
+    TaskNote,
+    UserTaskNoteView,
+)
 from apps.tasks.services import process_quick_task_description
 from apps.tasks.tasks import get_list_data
 
@@ -180,9 +186,17 @@ def tasks_edit(request, id):
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             task = form.save(commit=False)
-            task.save()
-            request.session["edited_task_ids"] = [task.id]
-            return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
+            if task.status == "Complete" and not can_complete_task(task):
+                form.add_error(
+                    "status",
+                    "Please complete all checklist items before marking this task as done.",
+                )
+            else:
+                task.save()
+                request.session["edited_task_ids"] = [task.id]
+                return HttpResponse(
+                    status=204, headers={"HX-Trigger": "tasksListChanged"}
+                )
 
     else:
         form = TaskForm(instance=task)
@@ -386,6 +400,15 @@ def tasks_status(request, id):
     if task.status == "Complete":
         task.status = "Pending"
     else:
+        if not can_complete_task(task):
+            response = HttpResponse(status=204)
+            response["HX-Toast"] = json.dumps(
+                {
+                    "type": "warning",
+                    "message": "Please complete all checklist items before marking this task as done.",
+                }
+            )
+            return response
         task.status = "Complete"
     task.save()
     return redirect("tasks:list")
@@ -394,6 +417,15 @@ def tasks_status(request, id):
 @login_required
 def tasks_set_status(request, task_id, status):
     task = get_object_or_404(Task, pk=task_id)
+    if status == "Complete" and not can_complete_task(task):
+        response = HttpResponse(status=204)
+        response["HX-Toast"] = json.dumps(
+            {
+                "type": "items incomplete",
+                "message": "Please complete all checklist items before marking this task as done.",
+            }
+        )
+        return response
     task.status = status
     task.save()
     return redirect("tasks:list")
@@ -736,7 +768,27 @@ def tasks_bulk_set_status(request):
 
     status = request.POST.get("status")
     if status:
-        Task.objects.filter(id__in=selected_tasks).update(status=status)
+        tasks = Task.objects.filter(id__in=selected_tasks)
+        if status == "Complete":
+            skipped = 0
+            for task in tasks:
+                if can_complete_task(task):
+                    task.status = status
+                    task.save()
+                else:
+                    skipped += 1
+            if skipped:
+                clear_selected_ids(request, key)
+                response = selection_response(TASKS_TRIGGER)
+                response["HX-Toast"] = json.dumps(
+                    {
+                        "type": "warning",
+                        "message": f"{skipped} task(s) skipped — complete their checklists first.",
+                    }
+                )
+                return response
+        else:
+            tasks.update(status=status)
         clear_selected_ids(request, key)
 
     return selection_response(TASKS_TRIGGER)

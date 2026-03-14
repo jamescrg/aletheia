@@ -16,6 +16,7 @@
   --color-primary: var(--stone-600);
   --color-darker: var(--stone-800);
   --color-muted: var(--stone-500);
+  --color-muted-more: var(--stone-400);
   --color-lighter: var(--stone-300);
 
   /* ==========================================================================

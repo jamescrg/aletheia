@@ -1,0 +1,43 @@
+<div class="table-container">
+  <table id="checklists-list" class="table checklists-list">
+    <tr>
+      <th class="col-select">
+        {% url 'checklists:select-all' as select_all_url %}
+        {% include "selection/select-all-btn.html" with select_all_url=select_all_url all_selected=all_selected %}
+      </th>
+      <th class="name">
+        Name
+        <button class="btn-sort {% if current_order == 'name' %}active{% endif %}"
+                hx-get="{% url 'checklists:order-by' 'name' %}"
+                hx-target="#checklists">
+          <i class="icon-chevrons-up-down"></i>
+        </button>
+      </th>
+      <th class="items-count">Items</th>
+      <th class="user">Author</th>
+      <th class="created">
+        Created
+        <button class="btn-sort {% if current_order == 'created_at' %}active{% endif %}"
+                hx-get="{% url 'checklists:order-by' 'created_at' %}"
+                hx-target="#checklists">
+          <i class="icon-chevrons-up-down"></i>
+        </button>
+      </th>
+      <th class="updated">
+        Updated
+        <button class="btn-sort {% if current_order == 'updated_at' %}active{% endif %}"
+                hx-get="{% url 'checklists:order-by' 'updated_at' %}"
+                hx-target="#checklists">
+          <i class="icon-chevrons-up-down"></i>
+        </button>
+      </th>
+    </tr>
+    {% for template in templates %}
+      {% include "checklists/row.html" %}
+    {% empty %}
+      <tr>
+        <td colspan="6" class="empty-message">No checklists found.</td>
+      </tr>
+    {% endfor %}
+  </table>
+</div>

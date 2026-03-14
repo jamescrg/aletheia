@@ -1,0 +1,18 @@
+<div id="task-checklist" class="task-checklist">
+  <ul class="checklist-items">
+    {% for item in checklist_items %}
+      <li class="checklist-item {% if item.is_complete %}checklist-item-complete{% endif %}"
+          hx-post="{% url 'checklists:toggle-checklist-item' item.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
+          hx-target="#task-checklist"
+          hx-swap="outerHTML">
+        {% if item.is_complete %}
+          <i class="icon-square-check-big checklist-check-icon"></i>
+        {% else %}
+          <i class="icon-square checklist-check-icon"></i>
+        {% endif %}
+        <span class="checklist-item-number">{{ forloop.counter }}.</span>
+        <span class="checklist-item-text">{{ item.description }}</span>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
