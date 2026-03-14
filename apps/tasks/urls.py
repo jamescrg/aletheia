@@ -32,6 +32,7 @@ from apps.tasks.views import (
     tasks_list,
     tasks_matter,
     tasks_priority,
+    tasks_refresh_checklist,
     tasks_remove_checklist,
     tasks_select,
     tasks_select_all,
@@ -171,5 +172,10 @@ urlpatterns = [
         "tasks/<int:task_id>/remove-checklist/",
         tasks_remove_checklist,
         name="remove-checklist",
+    ),
+    path(
+        "tasks/<int:task_id>/refresh-checklist/",
+        tasks_refresh_checklist,
+        name="refresh-checklist",
     ),
 ]
