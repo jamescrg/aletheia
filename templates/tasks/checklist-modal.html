@@ -1,10 +1,10 @@
-<div class="modal-dialog modal-sm"
+<div class="modal-dialog modal-md"
      hx-trigger="load"
      {% if matter_id %} hx-get="{% url 'matters:tasks-list' matter_id %}" hx-target="#matterTasks" {% else %} hx-get="{% url 'tasks:list' %}" hx-target="#tasks" {% endif %}
      hx-swap="innerHTML">
   <div class="modal-content">
     <div class="modal-header">
-      <h1 class="modal-title">{{ checklist.name }}</h1>
+      <h1 class="modal-title">{{ task.description }}</h1>
       <div>
         <button type="button" @click="$dispatch('close-modal')">
           <i class="icon-x"></i>
@@ -12,7 +12,26 @@
       </div>
     </div>
     <div class="modal-body">
-      <p class="checklist-modal-task-name">{{ task.description }}</p>
+      <div class="checklist-modal-header">
+        <p class="checklist-modal-name">{{ checklist.name }}</p>
+        <div class="checklist-modal-actions">
+          {% if checklist.template %}
+            <button class="btn-icon btn-success"
+                    hx-post="{% url 'tasks:refresh-checklist' task.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
+                    hx-target="#task-checklist"
+                    hx-swap="outerHTML"
+                    hx-confirm="Reload checklist from template? Completed status will be reset.">
+              <i class="icon-refresh-cw"></i> Reload
+            </button>
+            <a class="btn-icon"
+               href="#"
+               hx-get="{% url 'settings:edit-checklist-template' checklist.template.id %}"
+               hx-target="#htmx-modal-container">
+              <i class="icon-pencil"></i>
+            </a>
+          {% endif %}
+        </div>
+      </div>
       {% include "tasks/checklist.html" %}
     </div>
   </div>

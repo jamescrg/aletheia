@@ -941,3 +941,43 @@ def tasks_remove_checklist(request, task_id):
         pass
 
     return HttpResponse(status=204, headers={"HX-Trigger": TASKS_TRIGGER})
+
+
+@login_required
+@require_POST
+def tasks_refresh_checklist(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+    matter_id = request.GET.get("matter_id") or request.POST.get("matter_id")
+
+    try:
+        checklist = task.checklist
+    except Checklist.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if not checklist.template:
+        return HttpResponse(status=404)
+
+    # Delete existing items and re-copy from template
+    checklist.items.all().delete()
+    for item in checklist.template.items.all():
+        ChecklistItem.objects.create(
+            checklist=checklist,
+            description=item.description,
+            order=item.order,
+        )
+    checklist.name = checklist.template.name
+    checklist.save()
+
+    checklist_items = checklist.items.all()
+    checklist_total = checklist_items.count()
+    checklist_done = 0
+
+    context = {
+        "task": task,
+        "checklist": checklist,
+        "checklist_items": checklist_items,
+        "checklist_done": checklist_done,
+        "checklist_total": checklist_total,
+        "matter_id": matter_id,
+    }
+    return render(request, "tasks/checklist.html", context)
