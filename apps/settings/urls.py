@@ -1,6 +1,7 @@
 from django.urls import path
 
 # Import all from company.views as company_urls
+import apps.settings.checklists.views as checklist_urls
 import apps.settings.company.views as company_urls
 import apps.settings.contacts.views as contact_urls
 import apps.settings.integrations.views as integration_urls
@@ -143,6 +144,47 @@ urlpatterns = [
         "settings/contacts/groups/update-order/",
         contact_urls.update_group_order,
         name="update-group-order",
+    ),
+    # Checklists
+    path(
+        "settings/checklists/",
+        checklist_urls.checklists_index,
+        name="checklists-index",
+    ),
+    path(
+        "settings/checklists/list/",
+        checklist_urls.checklist_template_list,
+        name="checklist-template-list",
+    ),
+    path(
+        "settings/checklists/filter/<str:status>/",
+        checklist_urls.checklist_template_filter,
+        name="checklist-template-filter",
+    ),
+    path(
+        "settings/checklists/add/",
+        checklist_urls.add_checklist_template,
+        name="add-checklist-template",
+    ),
+    path(
+        "settings/checklists/<int:template_id>/edit/",
+        checklist_urls.edit_checklist_template,
+        name="edit-checklist-template",
+    ),
+    path(
+        "settings/checklists/<int:template_id>/delete/",
+        checklist_urls.delete_checklist_template,
+        name="delete-checklist-template",
+    ),
+    path(
+        "settings/checklists/<int:template_id>/items/add/",
+        checklist_urls.add_template_item,
+        name="add-template-item",
+    ),
+    path(
+        "settings/checklists/items/<int:item_id>/delete/",
+        checklist_urls.delete_template_item,
+        name="delete-template-item",
     ),
     # Matters (Practice Areas)
     path("settings/matters/", matter_urls.matters_index, name="matters-index"),

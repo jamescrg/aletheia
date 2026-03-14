@@ -1,0 +1,32 @@
+<div class="modal-dialog modal-sm">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Attach Checklist</h1>
+      <div>
+        <button type="button" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <ul class="checklist-picker-list">
+        {% for template in templates %}
+          <li>
+            <form hx-post="{% url 'tasks:attach-checklist' task.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
+                  hx-target="#htmx-modal-container">
+              {% csrf_token %}
+              <input type="hidden" name="template_id" value="{{ template.id }}">
+              <button type="submit" class="checklist-picker-item">
+                <i class="icon-list-checks"></i>
+                <span>{{ template.name }}</span>
+                <span class="checklist-picker-count">{{ template.items.count }} items</span>
+              </button>
+            </form>
+          </li>
+        {% empty %}
+          <li class="empty-message">No checklist templates available. Create one in Settings.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,9 @@
+{% extends "settings/main.html" %}
+{% block subcontent %}
+  <div class="settings-checklists-container">
+    <div id="checklist-templates"
+         hx-trigger="checklistTemplateListReload from:body"
+         hx-get="{% url 'settings:checklist-template-list' %}"
+         hx-target="this">{% include "settings/checklists/template-table.html" %}</div>
+  </div>
+{% endblock subcontent %}

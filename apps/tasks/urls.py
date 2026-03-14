@@ -5,6 +5,7 @@ from apps.tasks.views import (
     tasks_add,
     tasks_add_note,
     tasks_add_quick,
+    tasks_attach_checklist,
     tasks_bulk_clear_due_date,
     tasks_bulk_delete,
     tasks_bulk_set_due_date,
@@ -12,6 +13,7 @@ from apps.tasks.views import (
     tasks_bulk_set_status,
     tasks_bulk_set_user,
     tasks_bulk_update,
+    tasks_checklist_modal,
     tasks_clear_selection,
     tasks_date,
     tasks_delete,
@@ -30,10 +32,12 @@ from apps.tasks.views import (
     tasks_list,
     tasks_matter,
     tasks_priority,
+    tasks_remove_checklist,
     tasks_select,
     tasks_select_all,
     tasks_set_status,
     tasks_status,
+    tasks_toggle_checklist_item,
     tasks_toggle_select,
     tasks_user,
 )
@@ -148,4 +152,24 @@ urlpatterns = [
         name="bulk-clear-due-date",
     ),
     path("tasks/bulk-delete/", tasks_bulk_delete, name="bulk-delete"),
+    path(
+        "tasks/<int:task_id>/checklist/",
+        tasks_checklist_modal,
+        name="checklist-modal",
+    ),
+    path(
+        "tasks/<int:task_id>/attach-checklist/",
+        tasks_attach_checklist,
+        name="attach-checklist",
+    ),
+    path(
+        "tasks/checklist-item/<int:item_id>/toggle/",
+        tasks_toggle_checklist_item,
+        name="toggle-checklist-item",
+    ),
+    path(
+        "tasks/<int:task_id>/remove-checklist/",
+        tasks_remove_checklist,
+        name="remove-checklist",
+    ),
 ]

@@ -1,0 +1,19 @@
+<div class="modal-dialog modal-sm"
+     hx-trigger="load"
+     {% if matter_id %} hx-get="{% url 'matters:tasks-list' matter_id %}" hx-target="#matterTasks" {% else %} hx-get="{% url 'tasks:list' %}" hx-target="#tasks" {% endif %}
+     hx-swap="innerHTML">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">{{ checklist.name }}</h1>
+      <div>
+        <button type="button" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <p class="checklist-modal-task-name">{{ task.description }}</p>
+      {% include "tasks/checklist.html" %}
+    </div>
+  </div>
+</div>

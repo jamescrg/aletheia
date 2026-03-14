@@ -8,6 +8,34 @@ from apps.matters.models import Matter
 from utils.models import AuditMixin
 
 
+class ChecklistTemplate(AuditMixin, models.Model):
+    name = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
+    history = HistoricalRecords(table_name="app_checklist_template_history")
+
+    class Meta:
+        db_table = "app_checklist_template"
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class ChecklistTemplateItem(models.Model):
+    template = models.ForeignKey(
+        ChecklistTemplate, on_delete=models.CASCADE, related_name="items"
+    )
+    description = models.CharField(max_length=200)
+    order = models.IntegerField(default=0)
+
+    class Meta:
+        db_table = "app_checklist_template_item"
+        ordering = ["order", "id"]
+
+    def __str__(self):
+        return self.description
+
+
 class Task(AuditMixin, models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
     folder = models.ForeignKey(Folder, on_delete=models.SET_NULL, null=True)
@@ -94,3 +122,47 @@ class UserTaskNoteView(models.Model):
 
     def __str__(self):
         return f"{self.user.username} viewed {self.task.description} notes at {self.last_viewed_at}"
+
+
+class Checklist(AuditMixin, models.Model):
+    task = models.OneToOneField(
+        Task, on_delete=models.CASCADE, related_name="checklist"
+    )
+    template = models.ForeignKey(
+        ChecklistTemplate, on_delete=models.SET_NULL, null=True
+    )
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = "app_checklist"
+
+    def __str__(self):
+        return f"Checklist: {self.name} for {self.task}"
+
+
+class ChecklistItem(models.Model):
+    checklist = models.ForeignKey(
+        Checklist, on_delete=models.CASCADE, related_name="items"
+    )
+    description = models.CharField(max_length=200)
+    is_complete = models.BooleanField(default=False)
+    completed_by = models.ForeignKey(
+        CustomUser, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    completed_at = models.DateTimeField(null=True, blank=True)
+    order = models.IntegerField(default=0)
+
+    class Meta:
+        db_table = "app_checklist_item"
+        ordering = ["order", "id"]
+
+    def __str__(self):
+        return self.description
+
+
+def can_complete_task(task):
+    try:
+        checklist = task.checklist
+        return not checklist.items.filter(is_complete=False).exists()
+    except Checklist.DoesNotExist:
+        return True

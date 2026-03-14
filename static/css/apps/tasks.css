@@ -397,6 +397,153 @@
 
 
 /* ==========================================================================
+ Checklist Icon (task list)
+========================================================================== */
+
+.task-checklist-btn {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.task-checklist-btn.has-checklist {
+  opacity: 1;
+}
+
+.tasks-table td.description:hover .task-checklist-btn {
+  opacity: 1;
+}
+
+.task-checklist-progress {
+  color: var(--color-muted);
+  font-size: 1rem;
+  margin-left: 0.25rem;
+}
+
+/* ==========================================================================
+ Checklist (modal)
+========================================================================== */
+
+.task-checklist-progress-text {
+  color: var(--color-muted);
+  font-weight: 400;
+  margin-left: 0.5rem;
+}
+
+.checklist-modal-task-name {
+  color: var(--color-muted);
+  margin: 0 0 0.75rem;
+}
+
+.checklist-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.checklist-item {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.375rem 0.25rem;
+}
+
+.checklist-item:hover {
+  background: var(--background-light);
+}
+
+.checklist-check-icon {
+  color: var(--icon-muted);
+  flex-shrink: 0;
+  font-size: 1.1rem;
+}
+
+.checklist-item-complete .checklist-check-icon {
+  color: var(--add);
+}
+
+.checklist-item-complete .checklist-item-text {
+  color: var(--color-muted);
+  text-decoration: line-through;
+}
+
+/* ==========================================================================
+ Checklist Picker
+========================================================================== */
+
+.checklist-picker-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.checklist-picker-item {
+  align-items: center;
+  background: none;
+  border: none;
+  border-bottom: solid 1px var(--border-medium);
+  cursor: pointer;
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem 0.5rem;
+  width: 100%;
+}
+
+.checklist-picker-item:hover {
+  background: var(--background-light);
+}
+
+.checklist-picker-count {
+  color: var(--color-muted);
+  margin-left: auto;
+}
+
+/* ==========================================================================
+ Checklist Template Items (settings)
+========================================================================== */
+
+.template-items-section {
+  margin-top: 1.5rem;
+}
+
+.template-items-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.template-item-add-form {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.template-item-add-form input {
+  flex: 1;
+}
+
+.template-items-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.template-item {
+  align-items: center;
+  border-bottom: solid 1px var(--border-medium);
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0.25rem;
+}
+
+.template-item-empty {
+  color: var(--color-muted);
+  font-style: italic;
+  padding: 0.5rem 0.25rem;
+}
+
+/* ==========================================================================
  Mobile Card Layout
 ========================================================================== */
 
@@ -504,12 +651,17 @@
     margin-bottom: 0.5rem;
   }
 
-  /* Stretched link: description's edit link covers the entire card */
-  .tasks-table td.description > a:first-child::after {
+  /* Stretched link: description covers the entire card */
+  .tasks-table td.description > .dropdown > .button-link::after {
     content: "";
     inset: 0;
     position: absolute;
     z-index: 0;
+  }
+
+  /* Disable dropdown on mobile - tap goes straight to the card */
+  .tasks-table td.description .dropdown-menu {
+    display: none !important;
   }
 
   /* Interactive elements sit above the stretched link */
@@ -578,9 +730,10 @@
     width: auto;
   }
 
-  /* Hide notes icons on mobile */
+  /* Hide notes and checklist icons on mobile */
   .task-notes-btn,
-  .task-notes-date {
+  .task-notes-date,
+  .task-checklist-btn {
     display: none;
   }
 

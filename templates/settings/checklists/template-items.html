@@ -1,0 +1,31 @@
+<h2 class="template-items-heading">Items</h2>
+<form hx-post="{% url 'settings:add-template-item' template.id %}"
+      hx-target="#template-items"
+      hx-swap="innerHTML"
+      class="template-item-add-form">
+  {% csrf_token %}
+  <input type="text"
+         name="description"
+         placeholder="Add item..."
+         maxlength="200"
+         required>
+  <button type="submit" class="btn btn-sm">
+    <i class="icon-plus"></i>
+  </button>
+</form>
+<ul class="template-items-list">
+  {% for item in items %}
+    <li class="template-item">
+      <span>{{ item.description }}</span>
+      <button hx-post="{% url 'settings:delete-template-item' item.id %}"
+              hx-target="#template-items"
+              hx-swap="innerHTML"
+              hx-confirm="Remove this item?"
+              class="btn-icon">
+        <i class="icon-x"></i>
+      </button>
+    </li>
+  {% empty %}
+    <li class="template-item-empty">No items yet. Add items above.</li>
+  {% endfor %}
+</ul>

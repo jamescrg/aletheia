@@ -1,3 +1,4 @@
+import json
 from datetime import date, datetime, timedelta
 
 import markdown
@@ -18,7 +19,15 @@ from apps.management.selection import (
 from apps.matters.models import Matter
 from apps.tasks.filter import TasksFilter
 from apps.tasks.forms import BulkTasksForm, TaskForm, TaskNoteForm
-from apps.tasks.models import Task, TaskNote, UserTaskNoteView
+from apps.tasks.models import (
+    Checklist,
+    ChecklistItem,
+    ChecklistTemplate,
+    Task,
+    TaskNote,
+    UserTaskNoteView,
+    can_complete_task,
+)
 from apps.tasks.services import process_quick_task_description
 from apps.tasks.tasks import get_list_data
 
@@ -180,9 +189,17 @@ def tasks_edit(request, id):
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             task = form.save(commit=False)
-            task.save()
-            request.session["edited_task_ids"] = [task.id]
-            return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
+            if task.status == "Complete" and not can_complete_task(task):
+                form.add_error(
+                    "status",
+                    "Complete all checklist items before marking this task as done.",
+                )
+            else:
+                task.save()
+                request.session["edited_task_ids"] = [task.id]
+                return HttpResponse(
+                    status=204, headers={"HX-Trigger": "tasksListChanged"}
+                )
 
     else:
         form = TaskForm(instance=task)
@@ -386,6 +403,15 @@ def tasks_status(request, id):
     if task.status == "Complete":
         task.status = "Pending"
     else:
+        if not can_complete_task(task):
+            response = HttpResponse(status=204)
+            response["HX-Toast"] = json.dumps(
+                {
+                    "type": "warning",
+                    "message": "Complete all checklist items before marking this task as done.",
+                }
+            )
+            return response
         task.status = "Complete"
     task.save()
     return redirect("tasks:list")
@@ -394,6 +420,15 @@ def tasks_status(request, id):
 @login_required
 def tasks_set_status(request, task_id, status):
     task = get_object_or_404(Task, pk=task_id)
+    if status == "Complete" and not can_complete_task(task):
+        response = HttpResponse(status=204)
+        response["HX-Toast"] = json.dumps(
+            {
+                "type": "warning",
+                "message": "Complete all checklist items before marking this task as done.",
+            }
+        )
+        return response
     task.status = status
     task.save()
     return redirect("tasks:list")
@@ -736,7 +771,27 @@ def tasks_bulk_set_status(request):
 
     status = request.POST.get("status")
     if status:
-        Task.objects.filter(id__in=selected_tasks).update(status=status)
+        tasks = Task.objects.filter(id__in=selected_tasks)
+        if status == "Complete":
+            skipped = 0
+            for task in tasks:
+                if can_complete_task(task):
+                    task.status = status
+                    task.save()
+                else:
+                    skipped += 1
+            if skipped:
+                clear_selected_ids(request, key)
+                response = selection_response(TASKS_TRIGGER)
+                response["HX-Toast"] = json.dumps(
+                    {
+                        "type": "warning",
+                        "message": f"{skipped} task(s) skipped — complete their checklists first.",
+                    }
+                )
+                return response
+        else:
+            tasks.update(status=status)
         clear_selected_ids(request, key)
 
     return selection_response(TASKS_TRIGGER)
@@ -774,3 +829,112 @@ def tasks_bulk_delete(request):
     clear_selected_ids(request, key)
 
     return selection_response(TASKS_TRIGGER)
+
+
+@login_required
+def tasks_checklist_modal(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+    matter_id = request.GET.get("matter_id")
+
+    try:
+        checklist = task.checklist
+    except Checklist.DoesNotExist:
+        return HttpResponse(status=404)
+
+    checklist_items = checklist.items.all()
+    checklist_total = checklist_items.count()
+    checklist_done = checklist_items.filter(is_complete=True).count()
+
+    context = {
+        "task": task,
+        "checklist": checklist,
+        "checklist_items": checklist_items,
+        "checklist_done": checklist_done,
+        "checklist_total": checklist_total,
+        "matter_id": matter_id,
+    }
+    return render(request, "tasks/checklist-modal.html", context)
+
+
+@login_required
+def tasks_attach_checklist(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+    matter_id = request.GET.get("matter_id") or request.POST.get("matter_id")
+
+    if request.method == "POST":
+        template_id = request.POST.get("template_id")
+        template = get_object_or_404(ChecklistTemplate, pk=template_id)
+
+        checklist = Checklist.objects.create(
+            task=task,
+            template=template,
+            name=template.name,
+        )
+
+        for item in template.items.all():
+            ChecklistItem.objects.create(
+                checklist=checklist,
+                description=item.description,
+                order=item.order,
+            )
+
+        redirect_url = f"/tasks/{task.id}/checklist/"
+        if matter_id:
+            redirect_url += f"?matter_id={matter_id}"
+        return redirect(redirect_url)
+
+    templates = ChecklistTemplate.objects.filter(is_active=True)
+    context = {
+        "task": task,
+        "templates": templates,
+        "matter_id": matter_id,
+    }
+    return render(request, "tasks/checklist-picker.html", context)
+
+
+@login_required
+@require_POST
+def tasks_toggle_checklist_item(request, item_id):
+    item = get_object_or_404(ChecklistItem, pk=item_id)
+    matter_id = request.GET.get("matter_id") or request.POST.get("matter_id")
+    task = item.checklist.task
+
+    from django.utils import timezone as tz
+
+    if item.is_complete:
+        item.is_complete = False
+        item.completed_by = None
+        item.completed_at = None
+    else:
+        item.is_complete = True
+        item.completed_by = request.user
+        item.completed_at = tz.now()
+    item.save()
+
+    checklist = item.checklist
+    checklist_items = checklist.items.all()
+    checklist_total = checklist_items.count()
+    checklist_done = checklist_items.filter(is_complete=True).count()
+
+    context = {
+        "task": task,
+        "checklist": checklist,
+        "checklist_items": checklist_items,
+        "checklist_done": checklist_done,
+        "checklist_total": checklist_total,
+        "matter_id": matter_id,
+    }
+    return render(request, "tasks/checklist.html", context)
+
+
+@login_required
+@require_POST
+def tasks_remove_checklist(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+
+    try:
+        task.checklist.delete()
+    except Checklist.DoesNotExist:
+        pass
+
+    return HttpResponse(status=204, headers={"HX-Trigger": TASKS_TRIGGER})
