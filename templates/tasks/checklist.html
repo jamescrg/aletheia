@@ -10,6 +10,7 @@
         {% else %}
           <i class="icon-square checklist-check-icon"></i>
         {% endif %}
+        <span class="checklist-item-number">{{ forloop.counter }}.</span>
         <span class="checklist-item-text">{{ item.description }}</span>
       </li>
     {% endfor %}

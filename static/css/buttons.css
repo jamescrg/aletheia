@@ -261,7 +261,7 @@ td:hover .btn-ghost,
 .btn-check {
   background: none;
   border: none;
-  color: var(--stone-400);
+  color: var(--color-muted-more);
   cursor: pointer;
   line-height: 1;
   padding: 0;

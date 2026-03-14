@@ -20,8 +20,10 @@
                     hx-post="{% url 'tasks:refresh-checklist' task.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
                     hx-target="#task-checklist"
                     hx-swap="outerHTML"
-                    hx-confirm="Reload checklist from template? Completed status will be reset.">
-              <i class="icon-refresh-cw"></i> Reload
+                    hx-confirm="Reload checklist from template? Completed status will be reset."
+                    data-confirm-text="Confirm"
+                    data-confirm-style="success">
+              <i class="icon-refresh-cw"></i>
             </button>
             <a class="btn-icon"
                href="#"

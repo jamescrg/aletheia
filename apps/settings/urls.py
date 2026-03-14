@@ -172,11 +172,6 @@ urlpatterns = [
         name="checklists-filter-keyword",
     ),
     path(
-        "settings/checklists/filter/status/<str:status>/",
-        checklist_urls.checklists_filter_status,
-        name="checklists-filter-status",
-    ),
-    path(
         "settings/checklists/add/",
         checklist_urls.add_checklist_template,
         name="add-checklist-template",
@@ -205,6 +200,11 @@ urlpatterns = [
         "settings/checklists/items/<int:item_id>/delete/",
         checklist_urls.delete_template_item,
         name="delete-template-item",
+    ),
+    path(
+        "settings/checklists/<int:template_id>/items/reorder/",
+        checklist_urls.reorder_template_items,
+        name="reorder-template-items",
     ),
     # Checklist folders
     path(

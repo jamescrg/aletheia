@@ -84,7 +84,6 @@ class ChecklistTemplate(AuditMixin, models.Model):
         blank=True,
         related_name="templates",
     )
-    is_active = models.BooleanField(default=True)
     history = HistoricalRecords(table_name="app_checklist_template_history")
 
     class Meta:

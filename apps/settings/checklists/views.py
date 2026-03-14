@@ -1,7 +1,9 @@
+import json
+
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_http_methods, require_POST
 
 from apps.management.selection import (
     all_visible_selected,
@@ -109,13 +111,6 @@ def get_checklists_data(request):
 
     queryset = ChecklistTemplate.objects.select_related("created_by").all()
 
-    # Active/inactive filter
-    status_filter = filter_data.get("status", "all")
-    if status_filter == "active":
-        queryset = queryset.filter(is_active=True)
-    elif status_filter == "inactive":
-        queryset = queryset.filter(is_active=False)
-
     # Folder filter
     selected_folder_id = request.session.get("checklists_selected_folder_id")
     if selected_folder_id == "all":
@@ -147,7 +142,6 @@ def get_checklists_data(request):
         "templates": templates_list,
         "current_order": current_order,
         "keyword": keyword,
-        "status_filter": status_filter,
         "selected_checklists": selected_checklists,
         "all_selected": all_visible_selected(selected_checklists, visible_ids),
     }
@@ -219,17 +213,6 @@ def checklists_filter_keyword(request):
 
     context = get_checklists_data(request)
     return render(request, "settings/checklists/table.html", context)
-
-
-@login_required
-def checklists_filter_status(request, status):
-    filter_session_key = "settings_checklists_filter"
-    filter_data = request.session.get(filter_session_key, {})
-    filter_data["status"] = status
-    request.session[filter_session_key] = filter_data
-    request.session.modified = True
-
-    return redirect("settings:checklists-list")
 
 
 # ---------------------------------------------------------------------------
@@ -358,6 +341,30 @@ def delete_template_item(request, item_id):
         "settings/checklists/template-items.html",
         {"template": template, "items": items},
     )
+
+
+@login_required
+@require_http_methods(["POST"])
+def reorder_template_items(request, template_id):
+    """Update order for template items based on drag-and-drop reordering."""
+    try:
+        data = json.loads(request.body)
+        item_ids = data.get("item_ids", [])
+
+        if not item_ids:
+            return JsonResponse(
+                {"success": False, "error": "No item IDs provided"}, status=400
+            )
+
+        for index, item_id in enumerate(item_ids):
+            ChecklistTemplateItem.objects.filter(
+                id=item_id, template_id=template_id
+            ).update(order=index)
+
+        return JsonResponse({"success": True})
+
+    except json.JSONDecodeError:
+        return JsonResponse({"success": False, "error": "Invalid JSON"}, status=400)
 
 
 # ---------------------------------------------------------------------------

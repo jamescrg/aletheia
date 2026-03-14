@@ -886,7 +886,7 @@ def tasks_attach_checklist(request, task_id):
             redirect_url += f"?matter_id={matter_id}"
         return redirect(redirect_url)
 
-    templates = ChecklistTemplate.objects.filter(is_active=True)
+    templates = ChecklistTemplate.objects.all()
     context = {
         "task": task,
         "templates": templates,

@@ -67,7 +67,7 @@ i.spin {
 }
 
 .note-badge-icon {
-  color: var(--icon-muted);
+  color: var(--color-muted-more);
   font-size: 1rem;
   margin-left: 0.5rem;
   vertical-align: middle;
@@ -78,7 +78,7 @@ i.spin {
 }
 
 .checklist-badge-icon {
-  color: var(--icon-muted);
+  color: var(--color-muted-more);
   font-size: 1rem;
   margin-left: 0.5rem;
   vertical-align: middle;

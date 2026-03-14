@@ -9,19 +9,23 @@
          placeholder="Add item..."
          maxlength="200"
          required>
-  <button type="submit" class="btn btn-sm">
+  <button type="submit" class="btn-icon template-item-add-btn">
     <i class="icon-plus"></i>
   </button>
 </form>
-<ul class="template-items-list">
+<ul class="template-items-list"
+    id="template-items-sortable"
+    data-template-id="{{ template.id }}">
   {% for item in items %}
-    <li class="template-item">
-      <span>{{ item.description }}</span>
+    <li class="template-item" data-item-id="{{ item.id }}">
+      <i class="icon-grip-vertical template-item-handle"></i>
+      <span class="template-item-number">{{ forloop.counter }}.</span>
+      <span class="template-item-description">{{ item.description }}</span>
       <button hx-post="{% url 'settings:delete-template-item' item.id %}"
               hx-target="#template-items"
               hx-swap="innerHTML"
               hx-confirm="Remove this item?"
-              class="btn-icon">
+              class="btn-icon template-item-delete">
         <i class="icon-x"></i>
       </button>
     </li>
