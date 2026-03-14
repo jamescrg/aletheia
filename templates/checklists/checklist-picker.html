@@ -1,4 +1,4 @@
-<div class="modal-dialog modal-sm">
+<div class="modal-dialog modal-md">
   <div class="modal-content">
     <div class="modal-header">
       <h1 class="modal-title">Attach Checklist</h1>
@@ -9,24 +9,20 @@
       </div>
     </div>
     <div class="modal-body">
-      <ul class="checklist-picker-list">
-        {% for template in templates %}
-          <li>
-            <form hx-post="{% url 'checklists:attach-checklist' task.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
-                  hx-target="#htmx-modal-container">
-              {% csrf_token %}
-              <input type="hidden" name="template_id" value="{{ template.id }}">
-              <button type="submit" class="checklist-picker-item">
-                <i class="icon-list-checks"></i>
-                <span>{{ template.name }}</span>
-                <span class="checklist-picker-count">{{ template.items.count }} items</span>
-              </button>
-            </form>
-          </li>
-        {% empty %}
-          <li class="empty-message">No checklist templates available. Create one in Settings.</li>
-        {% endfor %}
-      </ul>
+      <div class="combobox-container">
+        <div class="combobox-input-wrapper">
+          <input type="search"
+                 id="checklist-search-input"
+                 name="q"
+                 hx-get="{% url 'checklists:checklist-search' task.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
+                 hx-target="#checklist-results"
+                 hx-trigger="keyup changed delay:300ms, search, load"
+                 autocomplete="off"
+                 placeholder="Search checklists..."
+                 autofocus>
+        </div>
+        <div id="checklist-results"></div>
+      </div>
     </div>
   </div>
 </div>

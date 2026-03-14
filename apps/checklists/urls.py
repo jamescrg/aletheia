@@ -120,6 +120,11 @@ urlpatterns = [
         name="attach-checklist",
     ),
     path(
+        "checklists/<int:task_id>/search/",
+        views.checklist_search,
+        name="checklist-search",
+    ),
+    path(
         "checklists/item/<int:item_id>/toggle/",
         views.toggle_checklist_item,
         name="toggle-checklist-item",

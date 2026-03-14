@@ -699,13 +699,29 @@ def attach_checklist(request, task_id):
             redirect_url += f"?matter_id={matter_id}"
         return redirect(redirect_url)
 
+    context = {
+        "task": task,
+        "matter_id": matter_id,
+    }
+    return render(request, "checklists/checklist-picker.html", context)
+
+
+@login_required
+def checklist_search(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+    matter_id = request.GET.get("matter_id", "")
+    query = request.GET.get("q", "").strip()
+
     templates = ChecklistTemplate.objects.all()
+    if query:
+        templates = templates.filter(name__icontains=query)
+
     context = {
         "task": task,
         "templates": templates,
         "matter_id": matter_id,
     }
-    return render(request, "checklists/checklist-picker.html", context)
+    return render(request, "checklists/checklist-picker-results.html", context)
 
 
 @login_required

@@ -32,6 +32,15 @@
               <i class="icon-pencil"></i>
             </a>
           {% endif %}
+          <button class="btn-icon"
+                  hx-post="{% url 'checklists:remove-checklist' task.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
+                  hx-swap="none"
+                  hx-confirm="Remove this checklist from the task?"
+                  data-confirm-text="Delete"
+                  data-confirm-style="danger"
+                  hx-on::after-request="window.dispatchEvent(new CustomEvent('close-modal'))">
+            <i class="icon-trash-2"></i>
+          </button>
         </div>
       </div>
       {% include "checklists/checklist.html" %}
