@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from apps.accounts.models import CustomUser
+from apps.checklists.models import can_complete_task
 from apps.management.selection import (
     clear_selected_ids,
     get_selected_ids,
@@ -20,14 +21,9 @@ from apps.matters.models import Matter
 from apps.tasks.filter import TasksFilter
 from apps.tasks.forms import BulkTasksForm, TaskForm, TaskNoteForm
 from apps.tasks.models import (
-    Checklist,
-    ChecklistItem,
-    ChecklistTemplate,
     Task,
     TaskNote,
-    UserChecklistView,
     UserTaskNoteView,
-    can_complete_task,
 )
 from apps.tasks.services import process_quick_task_description
 from apps.tasks.tasks import get_list_data
@@ -830,154 +826,3 @@ def tasks_bulk_delete(request):
     clear_selected_ids(request, key)
 
     return selection_response(TASKS_TRIGGER)
-
-
-@login_required
-def tasks_checklist_modal(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)
-    matter_id = request.GET.get("matter_id")
-
-    try:
-        checklist = task.checklist
-    except Checklist.DoesNotExist:
-        return HttpResponse(status=404)
-
-    UserChecklistView.objects.update_or_create(user=request.user, task=task)
-
-    checklist_items = checklist.items.all()
-    checklist_total = checklist_items.count()
-    checklist_done = checklist_items.filter(is_complete=True).count()
-
-    context = {
-        "task": task,
-        "checklist": checklist,
-        "checklist_items": checklist_items,
-        "checklist_done": checklist_done,
-        "checklist_total": checklist_total,
-        "matter_id": matter_id,
-    }
-    return render(request, "tasks/checklist-modal.html", context)
-
-
-@login_required
-def tasks_attach_checklist(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)
-    matter_id = request.GET.get("matter_id") or request.POST.get("matter_id")
-
-    if request.method == "POST":
-        template_id = request.POST.get("template_id")
-        template = get_object_or_404(ChecklistTemplate, pk=template_id)
-
-        checklist = Checklist.objects.create(
-            task=task,
-            template=template,
-            name=template.name,
-        )
-
-        for item in template.items.all():
-            ChecklistItem.objects.create(
-                checklist=checklist,
-                description=item.description,
-                order=item.order,
-            )
-
-        redirect_url = f"/tasks/{task.id}/checklist/"
-        if matter_id:
-            redirect_url += f"?matter_id={matter_id}"
-        return redirect(redirect_url)
-
-    templates = ChecklistTemplate.objects.all()
-    context = {
-        "task": task,
-        "templates": templates,
-        "matter_id": matter_id,
-    }
-    return render(request, "tasks/checklist-picker.html", context)
-
-
-@login_required
-@require_POST
-def tasks_toggle_checklist_item(request, item_id):
-    item = get_object_or_404(ChecklistItem, pk=item_id)
-    matter_id = request.GET.get("matter_id") or request.POST.get("matter_id")
-    task = item.checklist.task
-
-    from django.utils import timezone as tz
-
-    if item.is_complete:
-        item.is_complete = False
-        item.completed_by = None
-        item.completed_at = None
-    else:
-        item.is_complete = True
-        item.completed_by = request.user
-        item.completed_at = tz.now()
-    item.save()
-
-    checklist = item.checklist
-    checklist_items = checklist.items.all()
-    checklist_total = checklist_items.count()
-    checklist_done = checklist_items.filter(is_complete=True).count()
-
-    context = {
-        "task": task,
-        "checklist": checklist,
-        "checklist_items": checklist_items,
-        "checklist_done": checklist_done,
-        "checklist_total": checklist_total,
-        "matter_id": matter_id,
-    }
-    return render(request, "tasks/checklist.html", context)
-
-
-@login_required
-@require_POST
-def tasks_remove_checklist(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)
-
-    try:
-        task.checklist.delete()
-    except Checklist.DoesNotExist:
-        pass
-
-    return HttpResponse(status=204, headers={"HX-Trigger": TASKS_TRIGGER})
-
-
-@login_required
-@require_POST
-def tasks_refresh_checklist(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)
-    matter_id = request.GET.get("matter_id") or request.POST.get("matter_id")
-
-    try:
-        checklist = task.checklist
-    except Checklist.DoesNotExist:
-        return HttpResponse(status=404)
-
-    if not checklist.template:
-        return HttpResponse(status=404)
-
-    # Delete existing items and re-copy from template
-    checklist.items.all().delete()
-    for item in checklist.template.items.all():
-        ChecklistItem.objects.create(
-            checklist=checklist,
-            description=item.description,
-            order=item.order,
-        )
-    checklist.name = checklist.template.name
-    checklist.save()
-
-    checklist_items = checklist.items.all()
-    checklist_total = checklist_items.count()
-    checklist_done = 0
-
-    context = {
-        "task": task,
-        "checklist": checklist,
-        "checklist_items": checklist_items,
-        "checklist_done": checklist_done,
-        "checklist_total": checklist_total,
-        "matter_id": matter_id,
-    }
-    return render(request, "tasks/checklist.html", context)

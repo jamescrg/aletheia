@@ -17,7 +17,7 @@
         <div class="checklist-modal-actions">
           {% if checklist.template %}
             <button class="btn-icon btn-success"
-                    hx-post="{% url 'tasks:refresh-checklist' task.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
+                    hx-post="{% url 'checklists:refresh-checklist' task.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
                     hx-target="#task-checklist"
                     hx-swap="outerHTML"
                     hx-confirm="Reload checklist from template? Completed status will be reset."
@@ -27,14 +27,14 @@
             </button>
             <a class="btn-icon"
                href="#"
-               hx-get="{% url 'settings:edit-checklist-template' checklist.template.id %}"
+               hx-get="{% url 'checklists:edit-checklist-template' checklist.template.id %}"
                hx-target="#htmx-modal-container">
               <i class="icon-pencil"></i>
             </a>
           {% endif %}
         </div>
       </div>
-      {% include "tasks/checklist.html" %}
+      {% include "checklists/checklist.html" %}
     </div>
   </div>
 </div>

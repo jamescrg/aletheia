@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     "apps.accounts",
     "apps.activity",
     "apps.calendar",
+    "apps.checklists",
     "apps.tasks",
     "apps.dash",
     "apps.contacts",

@@ -30,7 +30,7 @@ function initializeTemplateItemsSortable() {
                 } catch (e) { /* ignore */ }
             }
 
-            fetch('/settings/checklists/' + templateId + '/items/reorder/', {
+            fetch('/checklists/' + templateId + '/items/reorder/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

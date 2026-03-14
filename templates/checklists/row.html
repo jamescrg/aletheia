@@ -1,6 +1,6 @@
 <tr id="checklist-{{ template.id }}">
   <td class="col-select">
-    {% url 'settings:checklists-toggle-select' template.id as toggle_url %}
+    {% url 'checklists:toggle-select' template.id as toggle_url %}
     {% include "selection/checkbox.html" with toggle_url=toggle_url obj_id=template.id selected_ids=selected_checklists %}
   </td>
   <td class="name">
@@ -13,20 +13,20 @@
         <li>
           <a class="dropdown-item"
              href="#"
-             hx-get="{% url 'settings:edit-checklist-template' template.id %}"
+             hx-get="{% url 'checklists:edit-checklist-template' template.id %}"
              hx-target="#htmx-modal-container"><i class="icon-pencil"></i> Edit</a>
         </li>
         <li>
           <a class="dropdown-item"
              href="#"
-             hx-get="{% url 'settings:checklist-template-move' template.id %}"
+             hx-get="{% url 'checklists:template-move' template.id %}"
              hx-target="#htmx-modal-container"><i class="icon-arrow-right"></i> Move</a>
         </li>
         <li>
           <a class="dropdown-item urgent"
              href="#"
              hx-confirm="Are you sure? Existing task checklists will not be affected."
-             hx-post="{% url 'settings:delete-checklist-template' template.id %}"><i class="icon-trash-2"></i> Delete</a>
+             hx-post="{% url 'checklists:delete-checklist-template' template.id %}"><i class="icon-trash-2"></i> Delete</a>
         </li>
       </ul>
     </div>

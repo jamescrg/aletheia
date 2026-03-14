@@ -268,7 +268,7 @@ function toggleChecklistFolder(folderId, evt) {
 
   const csrfToken = document.body.getAttribute("hx-headers");
   const token = csrfToken ? JSON.parse(csrfToken)["X-CSRFToken"] : "";
-  fetch(`/settings/checklists/folders/toggle/${folderId}/`, {
+  fetch(`/checklists/folders/toggle/${folderId}/`, {
     method: "POST",
     headers: { "X-CSRFToken": token },
   });
@@ -327,7 +327,7 @@ function toggleAllChecklistFolders() {
 
   const csrfToken = document.body.getAttribute("hx-headers");
   const token = csrfToken ? JSON.parse(csrfToken)["X-CSRFToken"] : "";
-  fetch(`/settings/checklists/folders/toggle-all/?expand=${allCollapsed}`, {
+  fetch(`/checklists/folders/toggle-all/?expand=${allCollapsed}`, {
     method: "POST",
     headers: { "X-CSRFToken": token },
   });

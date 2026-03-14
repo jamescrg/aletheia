@@ -42,7 +42,7 @@
       {% if edit %}
         <button type="button"
                 class="btn btn-danger"
-                hx-get="{% url 'settings:checklist-folder-delete-confirm' folder.id %}"
+                hx-get="{% url 'checklists:folder-delete-confirm' folder.id %}"
                 hx-target="#htmx-modal-container"
                 hx-swap="innerHTML">Delete</button>
       {% else %}

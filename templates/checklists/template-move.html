@@ -1,7 +1,7 @@
 <div class="modal-dialog modal-md move-modal">
   <div class="modal-content">
     <div class="modal-header">
-      <h1 class="modal-title">Move {{ selected_count }} checklist{{ selected_count|pluralize }}</h1>
+      <h1 class="modal-title">Move: {{ template.name }}</h1>
       <div>
         <button type="button" @click="$dispatch('close-modal')">
           <i class="icon-x"></i>
@@ -9,14 +9,17 @@
       </div>
     </div>
     <div class="modal-body">
-      <form id="checklist-bulk-move-form"
-            hx-post="{% url 'settings:checklists-bulk-move' %}"
+      <form id="checklist-template-move-form"
+            hx-post="{% url 'checklists:template-move' template.id %}"
             hx-swap="none"
             role="form">
         {% csrf_token %}
-        <input type="hidden" name="destination" id="move-destination" value="">
+        <input type="hidden"
+               name="destination"
+               id="move-destination"
+               value="{{ template.folder_id|default:'' }}">
         <ul class="list-group move-tree">
-          <li class="move-tree-item list-group-item move-selected"
+          <li class="move-tree-item list-group-item{% if not template.folder_id %} move-current move-selected{% endif %}"
               onclick="selectMoveTarget(this, '')">
             <div>
               <span class="folder-caret-placeholder"></span>
@@ -25,7 +28,7 @@
             </div>
           </li>
           {% for node in move_targets %}
-            <li class="move-tree-item list-group-item move-depth-{{ node.level }}{% if not node.is_visible %} folder-hidden{% endif %}"
+            <li class="move-tree-item list-group-item move-depth-{{ node.level }}{% if template.folder_id == node.folder.id %} move-current move-selected{% endif %}{% if not node.is_visible %} folder-hidden{% endif %}"
                 data-move-folder-id="{{ node.folder.id }}"
                 data-move-parent-id="{{ node.parent_id|default:'root' }}"
                 onclick="selectMoveTarget(this, '{{ node.folder.id }}')">
@@ -50,7 +53,9 @@
       <button type="button"
               class="btn btn-secondary"
               @click="$dispatch('close-modal')">Cancel</button>
-      <button type="submit" form="checklist-bulk-move-form" class="btn btn-success">Move</button>
+      <button type="submit"
+              form="checklist-template-move-form"
+              class="btn btn-success">Move</button>
     </div>
   </div>
 </div>

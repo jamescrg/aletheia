@@ -247,7 +247,7 @@
             <span class="task-decorators">
               <a href="#"
                  class="task-checklist-btn {% if task.has_checklist %}has-checklist{% endif %}"
-                 hx-get="{% if task.has_checklist %}{% url 'tasks:checklist-modal' task.id %}{% else %}{% url 'tasks:attach-checklist' task.id %}{% endif %}"
+                 hx-get="{% if task.has_checklist %}{% url 'checklists:checklist-modal' task.id %}{% else %}{% url 'checklists:attach-checklist' task.id %}{% endif %}"
                  hx-target="#htmx-modal-container">
                 <i class="icon-list-checks checklist-badge-icon {% if task.has_unviewed_checklist %}checklist-badge-new{% endif %}"></i>
               </a>

@@ -2,7 +2,7 @@
   <ul class="checklist-items">
     {% for item in checklist_items %}
       <li class="checklist-item {% if item.is_complete %}checklist-item-complete{% endif %}"
-          hx-post="{% url 'tasks:toggle-checklist-item' item.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
+          hx-post="{% url 'checklists:toggle-checklist-item' item.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
           hx-target="#task-checklist"
           hx-swap="outerHTML">
         {% if item.is_complete %}

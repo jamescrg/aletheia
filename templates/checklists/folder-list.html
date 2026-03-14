@@ -6,7 +6,7 @@
       </div>
       <div class="toolbar-right">
         <button class="button-link"
-                hx-get="{% url 'settings:checklist-folder-add' %}"
+                hx-get="{% url 'checklists:folder-add' %}"
                 hx-target="#htmx-modal-container"
                 data-bs-toggle="modal"
                 data-bs-target="#htmx-modal-container">
@@ -25,18 +25,18 @@
         <div>
           <span class="folder-caret-placeholder"></span>
           <i class="icon-inbox"></i>
-          <a href="{% url 'settings:checklist-folder-unsorted' %}">Inbox</a>
+          <a href="{% url 'checklists:folder-unsorted' %}">Inbox</a>
         </div>
       </li>
       <li class="folder-item-container list-group-item{% if all_folders_selected %} item-selected-highlight{% endif %}">
         <div>
           <span class="folder-caret-placeholder"></span>
           <i class="icon-folders"></i>
-          <a href="{% url 'settings:checklist-folder-all' %}">All Folders</a>
+          <a href="{% url 'checklists:folder-all' %}">All Folders</a>
         </div>
       </li>
       {% for node in checklist_folder_tree %}
-        {% include "settings/checklists/folder.html" %}
+        {% include "checklists/folder.html" %}
       {% empty %}
         <li class="list-group-item empty-message">No folders found.</li>
       {% endfor %}

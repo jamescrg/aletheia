@@ -12,7 +12,7 @@
       <span class="folder-caret-placeholder"></span>
     {% endif %}
     <i class="icon-folder"></i>
-    <a href="{% url 'settings:checklist-folder-select' folder_id=node.folder.id %}">{{ node.folder.name|truncatechars:28 }}</a>
+    <a href="{% url 'checklists:folder-select' folder_id=node.folder.id %}">{{ node.folder.name|truncatechars:28 }}</a>
   </div>
   <div class="dropdown" x-data="dropdown()">
     <button class="btn-icon menu-icon"
@@ -26,19 +26,19 @@
       <li>
         <a class="dropdown-item"
            href="#"
-           hx-get="{% url 'settings:checklist-folder-edit' folder_id=node.folder.id %}"
+           hx-get="{% url 'checklists:folder-edit' folder_id=node.folder.id %}"
            hx-target="#htmx-modal-container"><i class="icon-pencil"></i> Edit</a>
       </li>
       <li>
         <a class="dropdown-item"
            href="#"
-           hx-get="{% url 'settings:checklist-folder-move' folder_id=node.folder.id %}"
+           hx-get="{% url 'checklists:folder-move' folder_id=node.folder.id %}"
            hx-target="#htmx-modal-container"><i class="icon-arrow-right"></i> Move</a>
       </li>
       <li>
         <a class="dropdown-item"
            href="#"
-           hx-get="{% url 'settings:checklist-folder-delete-confirm' folder_id=node.folder.id %}"
+           hx-get="{% url 'checklists:folder-delete-confirm' folder_id=node.folder.id %}"
            hx-target="#htmx-modal-container"><i class="icon-trash-2"></i> Delete</a>
       </li>
     </ul>

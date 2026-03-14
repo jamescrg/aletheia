@@ -1,6 +1,7 @@
 from datetime import date
 
 from apps.accounts.models import CustomUser
+from apps.checklists.models import Checklist, UserChecklistView
 from apps.management.pagination import CustomPaginator
 from apps.management.selection import (
     all_visible_selected,
@@ -10,10 +11,8 @@ from apps.management.selection import (
 from apps.matters.models import Matter
 from apps.tasks.filter import TasksFilter
 from apps.tasks.models import (
-    Checklist,
     Task,
     TaskNote,
-    UserChecklistView,
     UserTaskNoteView,
 )
 

@@ -12,7 +12,7 @@
       <ul class="checklist-picker-list">
         {% for template in templates %}
           <li>
-            <form hx-post="{% url 'tasks:attach-checklist' task.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
+            <form hx-post="{% url 'checklists:attach-checklist' task.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
                   hx-target="#htmx-modal-container">
               {% csrf_token %}
               <input type="hidden" name="template_id" value="{{ template.id }}">

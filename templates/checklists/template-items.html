@@ -1,5 +1,5 @@
 <h2 class="template-items-heading">Items</h2>
-<form hx-post="{% url 'settings:add-template-item' template.id %}"
+<form hx-post="{% url 'checklists:add-template-item' template.id %}"
       hx-target="#template-items"
       hx-swap="innerHTML"
       class="template-item-add-form">
@@ -21,7 +21,7 @@
       <i class="icon-grip-vertical template-item-handle"></i>
       <span class="template-item-number">{{ forloop.counter }}.</span>
       <span class="template-item-description">{{ item.description }}</span>
-      <button hx-post="{% url 'settings:delete-template-item' item.id %}"
+      <button hx-post="{% url 'checklists:delete-template-item' item.id %}"
               hx-target="#template-items"
               hx-swap="innerHTML"
               hx-confirm="Remove this item?"

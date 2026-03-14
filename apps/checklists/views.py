@@ -3,8 +3,22 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone as tz
 from django.views.decorators.http import require_http_methods, require_POST
 
+from apps.checklists.forms import (
+    ChecklistFolderForm,
+    ChecklistFolderMoveForm,
+    ChecklistTemplateForm,
+)
+from apps.checklists.models import (
+    Checklist,
+    ChecklistFolder,
+    ChecklistItem,
+    ChecklistTemplate,
+    ChecklistTemplateItem,
+    UserChecklistView,
+)
 from apps.management.selection import (
     all_visible_selected,
     clear_selected_ids,
@@ -14,14 +28,10 @@ from apps.management.selection import (
     selection_response,
     toggle_id,
 )
-from apps.settings.checklists.forms import (
-    ChecklistFolderForm,
-    ChecklistFolderMoveForm,
-    ChecklistTemplateForm,
-)
-from apps.tasks.models import ChecklistFolder, ChecklistTemplate, ChecklistTemplateItem
+from apps.tasks.models import Task
 
 CHECKLISTS_TRIGGER = "checklistsChanged"
+TASKS_TRIGGER = "tasksChanged"
 
 
 # ---------------------------------------------------------------------------
@@ -155,23 +165,23 @@ def get_checklists_data(request):
 @login_required
 def checklists_index(request):
     context = (
-        {"subapp": "checklists"}
+        {"app": "checklists"}
         | get_checklists_data(request)
         | get_checklist_folders_data(request)
     )
-    return render(request, "settings/checklists/index.html", context)
+    return render(request, "checklists/index.html", context)
 
 
 @login_required
 def checklists_list(request):
     context = get_checklists_data(request) | get_checklist_folders_data(request)
-    return render(request, "settings/checklists/list.html", context)
+    return render(request, "checklists/list.html", context)
 
 
 @login_required
 def checklists_table(request):
     context = get_checklists_data(request)
-    return render(request, "settings/checklists/table.html", context)
+    return render(request, "checklists/table.html", context)
 
 
 # ---------------------------------------------------------------------------
@@ -194,7 +204,7 @@ def checklists_order_by(request, order):
     request.session[filter_session_key] = filter_data
     request.session.modified = True
 
-    return redirect("settings:checklists-list")
+    return redirect("checklists:list")
 
 
 @login_required
@@ -212,7 +222,7 @@ def checklists_filter_keyword(request):
     request.session.modified = True
 
     context = get_checklists_data(request)
-    return render(request, "settings/checklists/table.html", context)
+    return render(request, "checklists/table.html", context)
 
 
 # ---------------------------------------------------------------------------
@@ -238,7 +248,7 @@ def add_checklist_template(request):
     else:
         form = ChecklistTemplateForm()
 
-    return render(request, "settings/checklists/template-form.html", {"form": form})
+    return render(request, "checklists/template-form.html", {"form": form})
 
 
 @login_required
@@ -259,7 +269,7 @@ def edit_checklist_template(request, template_id):
         "template": template,
         "items": items,
     }
-    return render(request, "settings/checklists/template-form.html", context)
+    return render(request, "checklists/template-form.html", context)
 
 
 @login_required
@@ -294,7 +304,7 @@ def checklist_template_move(request, template_id):
         "template": template,
         "move_targets": tree,
     }
-    return render(request, "settings/checklists/template-move.html", context)
+    return render(request, "checklists/template-move.html", context)
 
 
 # ---------------------------------------------------------------------------
@@ -324,7 +334,7 @@ def add_template_item(request, template_id):
     items = template.items.all()
     return render(
         request,
-        "settings/checklists/template-items.html",
+        "checklists/template-items.html",
         {"template": template, "items": items},
     )
 
@@ -338,7 +348,7 @@ def delete_template_item(request, item_id):
     items = template.items.all()
     return render(
         request,
-        "settings/checklists/template-items.html",
+        "checklists/template-items.html",
         {"template": template, "items": items},
     )
 
@@ -379,19 +389,19 @@ def checklist_folder_select(request, folder_id):
         request.session["checklists_selected_folder_id"] = None
     else:
         request.session["checklists_selected_folder_id"] = folder_id
-    return redirect("settings:checklists-index")
+    return redirect("checklists:index")
 
 
 @login_required
 def checklist_folder_unsorted(request):
     request.session["checklists_selected_folder_id"] = None
-    return redirect("settings:checklists-index")
+    return redirect("checklists:index")
 
 
 @login_required
 def checklist_folder_all(request):
     request.session["checklists_selected_folder_id"] = "all"
-    return redirect("settings:checklists-index")
+    return redirect("checklists:index")
 
 
 @login_required
@@ -401,7 +411,7 @@ def checklist_folder_add(request):
         if form.is_valid():
             form.save()
             context = get_checklist_folders_data(request)
-            response = render(request, "settings/checklists/folder-list.html", context)
+            response = render(request, "checklists/folder-list.html", context)
             response.status_code = 202
             response["HX-Trigger-After-Swap"] = "closeModal"
             return response
@@ -418,10 +428,10 @@ def checklist_folder_add(request):
 
     context = {
         "form": form,
-        "action": "/settings/checklists/folders/add/",
+        "action": "/checklists/folders/add/",
         "edit": False,
     }
-    return render(request, "settings/checklists/folder-form.html", context)
+    return render(request, "checklists/folder-form.html", context)
 
 
 @login_required
@@ -440,7 +450,7 @@ def checklist_folder_edit(request, folder_id):
             if folder.parent_id != old_parent_id:
                 folder.update_descendant_depths()
             context = get_checklist_folders_data(request)
-            response = render(request, "settings/checklists/folder-list.html", context)
+            response = render(request, "checklists/folder-list.html", context)
             response.status_code = 202
             response["HX-Trigger-After-Swap"] = "closeModal"
             return response
@@ -449,11 +459,11 @@ def checklist_folder_edit(request, folder_id):
 
     context = {
         "form": form,
-        "action": f"/settings/checklists/folders/edit/{folder_id}",
+        "action": f"/checklists/folders/edit/{folder_id}",
         "edit": True,
         "folder": folder,
     }
-    return render(request, "settings/checklists/folder-form.html", context)
+    return render(request, "checklists/folder-form.html", context)
 
 
 @login_required
@@ -468,7 +478,7 @@ def checklist_folder_delete_confirm(request, folder_id):
         "template_count": template_count,
         "subfolder_count": subfolder_count,
     }
-    return render(request, "settings/checklists/folder-delete-confirm.html", context)
+    return render(request, "checklists/folder-delete-confirm.html", context)
 
 
 @login_required
@@ -520,7 +530,7 @@ def checklist_folder_move(request, folder_id):
             folder.update_descendant_depths()
 
             context = get_checklist_folders_data(request)
-            response = render(request, "settings/checklists/folder-list.html", context)
+            response = render(request, "checklists/folder-list.html", context)
             response.status_code = 202
             response["HX-Trigger-After-Swap"] = "closeModal"
             return response
@@ -532,7 +542,7 @@ def checklist_folder_move(request, folder_id):
         "folder": folder,
         "move_targets": tree,
     }
-    return render(request, "settings/checklists/folder-move.html", context)
+    return render(request, "checklists/folder-move.html", context)
 
 
 @login_required
@@ -613,7 +623,7 @@ def checklists_bulk_move(request):
         "selected_count": len(selected),
         "move_targets": tree,
     }
-    return render(request, "settings/checklists/bulk-move.html", context)
+    return render(request, "checklists/bulk-move.html", context)
 
 
 @login_required
@@ -628,3 +638,157 @@ def checklists_bulk_delete(request):
     clear_selected_ids(request, key)
 
     return selection_response(CHECKLISTS_TRIGGER)
+
+
+# ---------------------------------------------------------------------------
+# Task integration views
+# ---------------------------------------------------------------------------
+
+
+@login_required
+def checklist_modal(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+    matter_id = request.GET.get("matter_id")
+
+    try:
+        checklist = task.checklist
+    except Checklist.DoesNotExist:
+        return HttpResponse(status=404)
+
+    UserChecklistView.objects.update_or_create(user=request.user, task=task)
+
+    checklist_items = checklist.items.all()
+    checklist_total = checklist_items.count()
+    checklist_done = checklist_items.filter(is_complete=True).count()
+
+    context = {
+        "task": task,
+        "checklist": checklist,
+        "checklist_items": checklist_items,
+        "checklist_done": checklist_done,
+        "checklist_total": checklist_total,
+        "matter_id": matter_id,
+    }
+    return render(request, "checklists/checklist-modal.html", context)
+
+
+@login_required
+def attach_checklist(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+    matter_id = request.GET.get("matter_id") or request.POST.get("matter_id")
+
+    if request.method == "POST":
+        template_id = request.POST.get("template_id")
+        template = get_object_or_404(ChecklistTemplate, pk=template_id)
+
+        checklist = Checklist.objects.create(
+            task=task,
+            template=template,
+            name=template.name,
+        )
+
+        for item in template.items.all():
+            ChecklistItem.objects.create(
+                checklist=checklist,
+                description=item.description,
+                order=item.order,
+            )
+
+        redirect_url = f"/checklists/{task.id}/modal/"
+        if matter_id:
+            redirect_url += f"?matter_id={matter_id}"
+        return redirect(redirect_url)
+
+    templates = ChecklistTemplate.objects.all()
+    context = {
+        "task": task,
+        "templates": templates,
+        "matter_id": matter_id,
+    }
+    return render(request, "checklists/checklist-picker.html", context)
+
+
+@login_required
+@require_POST
+def toggle_checklist_item(request, item_id):
+    item = get_object_or_404(ChecklistItem, pk=item_id)
+    matter_id = request.GET.get("matter_id") or request.POST.get("matter_id")
+    task = item.checklist.task
+
+    if item.is_complete:
+        item.is_complete = False
+        item.completed_by = None
+        item.completed_at = None
+    else:
+        item.is_complete = True
+        item.completed_by = request.user
+        item.completed_at = tz.now()
+    item.save()
+
+    checklist = item.checklist
+    checklist_items = checklist.items.all()
+    checklist_total = checklist_items.count()
+    checklist_done = checklist_items.filter(is_complete=True).count()
+
+    context = {
+        "task": task,
+        "checklist": checklist,
+        "checklist_items": checklist_items,
+        "checklist_done": checklist_done,
+        "checklist_total": checklist_total,
+        "matter_id": matter_id,
+    }
+    return render(request, "checklists/checklist.html", context)
+
+
+@login_required
+@require_POST
+def remove_checklist(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+
+    try:
+        task.checklist.delete()
+    except Checklist.DoesNotExist:
+        pass
+
+    return HttpResponse(status=204, headers={"HX-Trigger": TASKS_TRIGGER})
+
+
+@login_required
+@require_POST
+def refresh_checklist(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+    matter_id = request.GET.get("matter_id") or request.POST.get("matter_id")
+
+    try:
+        checklist = task.checklist
+    except Checklist.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if not checklist.template:
+        return HttpResponse(status=404)
+
+    # Delete existing items and re-copy from template
+    checklist.items.all().delete()
+    for item in checklist.template.items.all():
+        ChecklistItem.objects.create(
+            checklist=checklist,
+            description=item.description,
+            order=item.order,
+        )
+    checklist.name = checklist.template.name
+    checklist.save()
+
+    checklist_items = checklist.items.all()
+    checklist_total = checklist_items.count()
+    checklist_done = 0
+
+    context = {
+        "task": task,
+        "checklist": checklist,
+        "checklist_items": checklist_items,
+        "checklist_done": checklist_done,
+        "checklist_total": checklist_total,
+        "matter_id": matter_id,
+    }
+    return render(request, "checklists/checklist.html", context)

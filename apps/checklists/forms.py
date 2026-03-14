@@ -1,6 +1,6 @@
 from django import forms
 
-from apps.tasks.models import ChecklistFolder, ChecklistTemplate
+from apps.checklists.models import ChecklistFolder, ChecklistTemplate
 from config.settings import CustomFormRendererCompact
 
 

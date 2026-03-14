@@ -10,7 +10,7 @@
     </div>
     <div class="modal-body">
       <form id="checklist-folder-move-form"
-            hx-post="{% url 'settings:checklist-folder-move' folder.id %}"
+            hx-post="{% url 'checklists:folder-move' folder.id %}"
             hx-target="#checklist-folders"
             hx-swap="innerHTML"
             role="form">

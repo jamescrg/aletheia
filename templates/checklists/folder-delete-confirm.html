@@ -20,32 +20,32 @@
     <div class="modal-footer">
       {% if subfolder_count > 0 %}
         {% if template_count > 0 %}
-          <button hx-delete="{% url 'settings:checklist-folder-delete' folder.id %}?delete_templates=true&delete_subfolders=true"
+          <button hx-delete="{% url 'checklists:folder-delete' folder.id %}?delete_templates=true&delete_subfolders=true"
                   hx-target="#checklist-folders"
                   class="btn btn-danger">Delete Folder and Checklists</button>
-          <button hx-delete="{% url 'settings:checklist-folder-delete' folder.id %}"
+          <button hx-delete="{% url 'checklists:folder-delete' folder.id %}"
                   hx-target="#checklist-folders"
                   class="btn btn-success">Delete Folder, Keep Checklists</button>
         {% else %}
-          <button hx-delete="{% url 'settings:checklist-folder-delete' folder.id %}?delete_subfolders=true"
+          <button hx-delete="{% url 'checklists:folder-delete' folder.id %}?delete_subfolders=true"
                   hx-target="#checklist-folders"
                   class="btn btn-danger">Delete Folder and Subfolders</button>
-          <button hx-delete="{% url 'settings:checklist-folder-delete' folder.id %}"
+          <button hx-delete="{% url 'checklists:folder-delete' folder.id %}"
                   hx-target="#checklist-folders"
                   class="btn btn-success">Delete Folder, Keep Subfolders</button>
         {% endif %}
       {% elif template_count > 0 %}
-        <button hx-delete="{% url 'settings:checklist-folder-delete' folder.id %}?delete_templates=true"
+        <button hx-delete="{% url 'checklists:folder-delete' folder.id %}?delete_templates=true"
                 hx-target="#checklist-folders"
                 class="btn btn-danger">Delete Folder and Checklists</button>
-        <button hx-delete="{% url 'settings:checklist-folder-delete' folder.id %}"
+        <button hx-delete="{% url 'checklists:folder-delete' folder.id %}"
                 hx-target="#checklist-folders"
                 class="btn btn-success">Delete Folder, Keep Checklists</button>
       {% else %}
         <button type="button"
                 class="btn btn-secondary"
                 @click="$dispatch('close-modal')">Cancel</button>
-        <button hx-delete="{% url 'settings:checklist-folder-delete' folder.id %}"
+        <button hx-delete="{% url 'checklists:folder-delete' folder.id %}"
                 hx-target="#checklist-folders"
                 class="btn btn-danger">Delete</button>
       {% endif %}

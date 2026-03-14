@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+  <div id="content" class="container content">
+    <div class="checklists-layout">
+      <div id="checklist-folders" class="checklists-sidebar">{% include "checklists/folder-list.html" %}</div>
+      <div id="checklists"
+           class="checklists-content"
+           hx-trigger="checklistsChanged from:body"
+           hx-get="{% url 'checklists:list' %}"
+           hx-target="this">{% include "checklists/list.html" %}</div>
+    </div>
+  </div>
+{% endblock content %}
