@@ -1,13 +1,11 @@
-{% extends "base.html" %}
-{% block content %}
-  <div id="content" class="container content">
-    <div class="checklists-layout">
-      <div id="checklist-folders" class="checklists-sidebar">{% include "checklists/folder-list.html" %}</div>
-      <div id="checklists"
-           class="checklists-content"
-           hx-trigger="checklistsChanged from:body"
-           hx-get="{% url 'checklists:list' %}"
-           hx-target="this">{% include "checklists/list.html" %}</div>
-    </div>
+{% extends "settings/main.html" %}
+{% block subcontent %}
+  <div class="checklists-layout">
+    <div id="checklist-folders" class="checklists-sidebar">{% include "checklists/folder-list.html" %}</div>
+    <div id="checklists"
+         class="checklists-content"
+         hx-trigger="checklistsChanged from:body"
+         hx-get="{% url 'checklists:list' %}"
+         hx-target="this">{% include "checklists/list.html" %}</div>
   </div>
-{% endblock content %}
+{% endblock subcontent %}

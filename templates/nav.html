@@ -2,9 +2,6 @@
   <div class="container">
     <div class="nav-scroll-container">
       <ul>
-        <li {% if app == 'dash' %}class="active"{% endif %}>
-          <a id="nav-dash" href={% url 'dash:index' %}>Dash</a>
-        </li>
         <li {% if app == 'matters' %}class="active"{% endif %}>
           <a id="nav-matters" href={% url 'matters:index' %}>Matters</a>
         </li>
@@ -19,9 +16,6 @@
         </li>
         <li {% if app == 'activity' %}class="active"{% endif %}>
           <a id="nav-activity" href="{% url 'activity:time-index' %}">Activity</a>
-        </li>
-        <li {% if app == 'checklists' %}class="active"{% endif %}>
-          <a id="nav-checklists" href="{% url 'checklists:index' %}">Checklists</a>
         </li>
         <li {% if app == 'notes' %}class="active"{% endif %}>
           <a id="nav-notes" href="{% url 'notes:index' %}">Notes</a>
@@ -39,11 +33,6 @@
         {% if user.is_admin or user.perm_reports %}
           <li {% if app == 'reports' %}class="active"{% endif %}>
             <a id="nav-reports" href={% url 'reports:index' %}>Reports</a>
-          </li>
-        {% endif %}
-        {% if user.is_admin or user.perm_research %}
-          <li {% if app == 'research' %}class="active"{% endif %}>
-            <a id="nav-research" href="{% url 'research:index' %}">Research</a>
           </li>
         {% endif %}
       </ul>

@@ -31,6 +31,9 @@
             <li {% if subapp == "integrations" %}class="active"{% endif %}>
               <a href="{% url 'settings:integrations-index' %}">Integrations</a>
             </li>
+            <li {% if subapp == "checklists" %}class="active"{% endif %}>
+              <a href="{% url 'checklists:index' %}">Checklists</a>
+            </li>
           {% endif %}
         </ul>
       </nav>

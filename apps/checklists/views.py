@@ -208,7 +208,7 @@ def get_checklists_data(request):
 @login_required
 def checklists_index(request):
     context = (
-        {"app": "checklists"}
+        {"app": "settings", "subapp": "checklists"}
         | get_checklists_data(request)
         | get_checklist_folders_data(request)
     )
