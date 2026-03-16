@@ -1,4 +1,4 @@
-<div class="modal-dialog modal-lg">
+<div class="modal-dialog {% if template %}modal-lg{% else %}modal-md{% endif %}">
   <div class="modal-content">
     <div class="modal-header">
       <h1 class="modal-title">
@@ -16,7 +16,7 @@
     </div>
     <div class="modal-body">
       <form id="checklist-template-form"
-            hx-post="{{ request.path }}"
+            hx-post="{{ request.get_full_path }}"
             hx-target="#htmx-modal-container"
             role="form"
             class="form-compact">

@@ -64,7 +64,14 @@
   padding: 1rem;
 }
 
-.modal-header .icon-x {
+.modal-header-actions {
+  align-items: center;
+  display: flex;
+  gap: 0.25rem;
+}
+
+.modal-header .icon-x,
+.modal-header .icon-plus {
   font-size: 1.25rem;
 }
 

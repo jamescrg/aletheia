@@ -38,7 +38,7 @@
                   hx-confirm="Remove this checklist from the task?"
                   data-confirm-text="Delete"
                   data-confirm-style="danger"
-                  hx-on::after-request="window.dispatchEvent(new CustomEvent('close-modal'))">
+                  hx-on::after-request="{% if matter_id %}htmx.ajax('GET', '{% url 'matters:tasks-list' matter_id %}', '#matterTasks');{% else %}htmx.ajax('GET', '{% url 'tasks:list' %}', '#tasks');{% endif %} window.dispatchEvent(new CustomEvent('close-modal'))">
             <i class="icon-trash-2"></i>
           </button>
         </div>

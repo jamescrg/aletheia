@@ -2,7 +2,12 @@
   <div class="modal-content">
     <div class="modal-header">
       <h1 class="modal-title">Attach Checklist</h1>
-      <div>
+      <div class="modal-header-actions">
+        <button class="btn-icon"
+                hx-get="{% url 'checklists:add-checklist-template' %}?task_id={{ task.id }}{% if matter_id %}&matter_id={{ matter_id }}{% endif %}"
+                hx-target="#htmx-modal-container">
+          <i class="icon-plus"></i>
+        </button>
         <button type="button" @click="$dispatch('close-modal')">
           <i class="icon-x"></i>
         </button>

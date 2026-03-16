@@ -275,6 +275,9 @@ def checklists_filter_keyword(request):
 
 @login_required
 def add_checklist_template(request):
+    task_id = request.GET.get("task_id") or request.POST.get("task_id")
+    matter_id = request.GET.get("matter_id") or request.POST.get("matter_id")
+
     if request.method == "POST":
         form = ChecklistTemplateForm(request.POST)
         if form.is_valid():
@@ -287,7 +290,14 @@ def add_checklist_template(request):
                 except ChecklistFolder.DoesNotExist:
                     pass
             template.save()
-            return HttpResponse(status=204, headers={"HX-Trigger": CHECKLISTS_TRIGGER})
+
+            # Redirect to edit form (with task params if from a task)
+            redirect_url = f"/checklists/{template.id}/edit/"
+            if task_id:
+                redirect_url += f"?task_id={task_id}"
+                if matter_id:
+                    redirect_url += f"&matter_id={matter_id}"
+            return redirect(redirect_url)
     else:
         form = ChecklistTemplateForm()
 
@@ -297,11 +307,35 @@ def add_checklist_template(request):
 @login_required
 def edit_checklist_template(request, template_id):
     template = get_object_or_404(ChecklistTemplate, pk=template_id)
+    task_id = request.GET.get("task_id") or request.POST.get("task_id")
+    matter_id = request.GET.get("matter_id") or request.POST.get("matter_id")
 
     if request.method == "POST":
         form = ChecklistTemplateForm(request.POST, instance=template)
         if form.is_valid():
             form.save()
+
+            # If editing from a task, attach the checklist and open it
+            if task_id:
+                task = get_object_or_404(Task, pk=task_id)
+                checklist = Checklist.objects.create(
+                    task=task,
+                    template=template,
+                    name=template.name,
+                )
+                for item in template.items.all():
+                    ChecklistItem.objects.create(
+                        checklist=checklist,
+                        description=item.description,
+                        order=item.order,
+                        item_type=item.item_type,
+                        depth=item.depth,
+                    )
+                redirect_url = f"/checklists/{task.id}/modal/"
+                if matter_id:
+                    redirect_url += f"?matter_id={matter_id}"
+                return redirect(redirect_url)
+
             return HttpResponse(status=204, headers={"HX-Trigger": CHECKLISTS_TRIGGER})
     else:
         form = ChecklistTemplateForm(instance=template)
