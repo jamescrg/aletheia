@@ -104,23 +104,9 @@ Activity summary table
 Codes Table Action Icons
 ========================================================================== */
 
-.codes-table .edit-icon-button {
-  margin-right: 1.5rem;
+.codes-table .code-column {
+  width: 7rem;
 }
-
-.codes-table .edit-icon {
-  color: var(--color-primary);
-}
-
-.codes-table .delete-icon {
-  color: var(--urgent);
-}
-
-/* .codes-table .code-column { */
-
-/*   text-align: left; */
-
-/* } */
 
 
 /* ==========================================================================

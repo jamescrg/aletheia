@@ -1,0 +1,82 @@
+<div id="codes-results">
+  <div class="table-container">
+    <table class="table codes-table">
+      <tr>
+        <th class="code-column">Code</th>
+        <th>Expansion</th>
+      </tr>
+      {% for code in codes %}
+        <tr>
+          <td class="code-column dropdown-cell">
+            {% if request.user.role == "ADMIN" %}
+              <div class="dropdown" x-data="dropdown()">
+                <button class="button-link"
+                        type="button"
+                        x-ref="button"
+                        @click="toggle()"
+                        :aria-expanded="open">{{ code.code }}</button>
+                <ul class="dropdown-menu" x-ref="menu" x-show="open">
+                  <li>
+                    <a class="dropdown-item"
+                       href="#"
+                       hx-get="{% url 'activity:codes-edit' code.id %}"
+                       hx-target="#codes-modal-dialog"
+                       hx-swap="outerHTML"><i class="icon-pencil"></i> Edit</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item"
+                       href="#"
+                       hx-post="{% url 'activity:codes-delete' code.id %}"
+                       hx-target="#codes-modal-dialog"
+                       hx-swap="outerHTML"
+                       hx-confirm="Are you sure you want to delete this code?"
+                       data-confirm-text="Delete"
+                       data-confirm-style="danger"><i class="icon-trash-2"></i> Delete</a>
+                  </li>
+                </ul>
+              </div>
+            {% else %}
+              {{ code.code }}
+            {% endif %}
+          </td>
+          <td class="expansion-column">{{ code.expansion }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="2" class="empty-message">No abbreviation codes found.</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+  {% if pagination.paginator.num_pages > 1 %}
+    <div class="pagination-row">
+      <a href="#"
+         hx-get="{% url 'activity:codes-list' %}?page=1{% if search_query %}&q={{ search_query }}{% endif %}"
+         hx-target="#codes-results"
+         hx-swap="outerHTML"
+         class="{% if not pagination.has_previous %}pagination-disabled{% endif %}">&lt;&lt;</a>
+      <a href="#"
+         {% if pagination.has_previous %}hx-get="{% url 'activity:codes-list' %}?page={{ pagination.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}
+         "
+         {% endif %}
+         hx-target="#codes-results"
+         hx-swap="outerHTML"
+         class="{% if not pagination.has_previous %}pagination-disabled{% endif %}">&lt;</a>
+      <p>Page {{ pagination.number }} of {{ pagination.paginator.num_pages }}</p>
+      <a href="#"
+         {% if pagination.has_next %}hx-get="{% url 'activity:codes-list' %}?page={{ pagination.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}
+         "
+         {% endif %}
+         hx-target="#codes-results"
+         hx-swap="outerHTML"
+         class="{% if not pagination.has_next %}pagination-disabled{% endif %}">&gt;</a>
+      <a href="#"
+         {% if pagination.has_next %}hx-get="{% url 'activity:codes-list' %}?page={{ pagination.paginator.num_pages }}{% if search_query %}&q={{ search_query }}{% endif %}
+         "
+         {% endif %}
+         hx-target="#codes-results"
+         hx-swap="outerHTML"
+         class="{% if not pagination.has_next %}pagination-disabled{% endif %}">&gt;&gt;</a>
+    </div>
+  {% endif %}
+</div>

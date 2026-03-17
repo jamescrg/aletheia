@@ -8,6 +8,7 @@ from django.views.decorators.http import require_POST
 
 from apps.activity.expenses.models import ExpenseEntry
 from apps.activity.time.get_time_data import get_time_data
+from apps.management.pagination import CustomPaginator
 from apps.management.selection import (
     clear_selected_ids,
     get_selected_ids,
@@ -567,7 +568,29 @@ def abbreviation_codes_list(request):
     """Display all abbreviation codes in a modal"""
     codes = AbbreviationCode.objects.filter(is_active=True).order_by("code")
 
-    context = {"codes": codes}
+    query = request.GET.get("q", "").strip()
+    if query:
+        codes = codes.filter(code__icontains=query) | codes.filter(
+            expansion__icontains=query
+        )
+        codes = codes.order_by("code")
+
+    # Handle pagination via query param to avoid 204 responses that close the modal
+    page = int(request.GET.get("page", 1))
+    request.session["codes_pagination"] = page
+
+    pagination = CustomPaginator(
+        codes, per_page=10, request=request, session_key="codes_pagination"
+    )
+
+    context = {
+        "codes": pagination.get_object_list(),
+        "pagination": pagination,
+        "search_query": query,
+    }
+
+    if request.GET.get("partial"):
+        return render(request, "activity/time/codes/results.html", context)
 
     return render(request, "activity/time/codes/list.html", context)
 

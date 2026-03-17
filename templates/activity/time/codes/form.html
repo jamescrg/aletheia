@@ -25,12 +25,12 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="submit" form="code-form" class="btn btn-success">Submit</button>
       <button type="button"
-              class="button-link"
+              class="btn btn-secondary"
               hx-get="{% url 'activity:codes-list' %}"
               hx-target="#codes-modal-dialog"
               hx-swap="outerHTML">Cancel</button>
+      <button type="submit" form="code-form" class="btn btn-success">Submit</button>
     </div>
   </div>
 </div>
