@@ -3,6 +3,7 @@ from datetime import date, datetime
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views.decorators.http import require_POST
 
 from apps.activity.expenses.get_expenses_data import get_expenses_data
@@ -15,7 +16,6 @@ from apps.management.selection import (
     toggle_id,
 )
 from apps.matters.models import Matter
-from utils.toasts import toast_success
 
 from .export import write_clio_csv, write_standard_csv
 from .filter import ExpenseFilter
@@ -162,15 +162,8 @@ def expenses_add(request, id=None, request_app="activity"):
                     status=204, headers={"HX-Trigger": "expensesChanged"}
                 )
             elif request_app in ("matters", "case"):
-                response = HttpResponse(status=204)
-                message = f"${entry.amount} expense recorded for {entry.matter.name}"
-                link = {
-                    "url": "/activity/expenses",
-                    "text": "View Expenses",
-                }
-                return toast_success(
-                    response, message, title="Expense Added", link=link
-                )
+                url = reverse("activity:expenses-index")
+                return HttpResponse(status=200, headers={"HX-Redirect": url})
 
     # if no post data has been submitted, show the entry form
     else:

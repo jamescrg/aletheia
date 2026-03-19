@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views.decorators.http import require_POST
 
 from apps.activity.expenses.models import ExpenseEntry
@@ -19,7 +20,6 @@ from apps.management.selection import (
 )
 from apps.matters.models import Matter
 from apps.matters.rates.models import Rate
-from utils.toasts import toast_success
 
 from .export import write_clio_csv, write_standard_csv
 from .filter import TimeEntryFilter
@@ -214,15 +214,8 @@ def time_add(request, id=None, request_app="activity"):
             if request_app == "activity":
                 return HttpResponse(status=204, headers={"HX-Trigger": "timeChanged"})
             elif request_app in ("matters", "case"):
-                response = HttpResponse(status=204)
-                message = f"{entry.hours} hours recorded for {entry.matter.name}"
-                link = {
-                    "url": "/activity/time/filter/quick/today?redirect=1",
-                    "text": "View Today",
-                }
-                return toast_success(
-                    response, message, title="Time Entry Added", link=link
-                )
+                url = reverse("activity:time-index")
+                return HttpResponse(status=200, headers={"HX-Redirect": url})
 
     # if no post data has been submitted, show the entry form
     else:
