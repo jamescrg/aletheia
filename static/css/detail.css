@@ -3,6 +3,10 @@
   margin-bottom: 1.5rem;
 }
 
+.content > .detail {
+  margin: -1.25rem -1rem 1.5rem;
+}
+
 .detail-text {
   margin-bottom: 1rem;
   padding: 0 1rem;
