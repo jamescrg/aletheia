@@ -28,11 +28,12 @@
   /* ==========================================================================
      Backgrounds
      ========================================================================== */
-  --background-nav: var(--stone-300);
-  --background-body: var(--stone-100);
-  --background-subnav: var(--stone-200);
-  --background-control: var(--stone-150);
-  --background-section: var(--stone-100);
+  --background-nav: var(--stone-350);
+  --background-body: var(--stone-150);
+  --background-subnav: var(--stone-250);
+  --background-control: var(--stone-200);
+  --background-section: var(--stone-150);
+  --background-td: var(--stone-100);
   --background-light: var(--stone-25);
 
   /* ==========================================================================
