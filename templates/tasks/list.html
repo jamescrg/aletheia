@@ -230,7 +230,7 @@
     </thead>
     <tbody>
       {% for task in objects %}
-        <tr {% if task.id in new_task_ids or task.id in edited_task_ids %}class="task-new-highlight"{% endif %}>
+        <tr class="{% if task.id in new_task_ids or task.id in edited_task_ids %}task-new-highlight{% endif %}{% if task.date_due and task.date_due < today and task.status != 'Complete' %} past-due{% endif %}">
           <td class="col-select">
             {% url 'tasks:toggle-select' task.id as toggle_url %}
             {% include "selection/checkbox.html" with toggle_url=toggle_url obj_id=task.id selected_ids=selected_tasks %}

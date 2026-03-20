@@ -76,9 +76,6 @@
   border-bottom: none;
 }
 
-.dashboard-table .past-due {
-  background: var(--hl-yellow);
-}
 
 .dashboard-table .empty-message {
   color: var(--color-muted);
