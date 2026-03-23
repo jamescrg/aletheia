@@ -140,3 +140,383 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+
+// ==========================================================================
+//  Leader Key (Space) — Vim-style two-keystroke shortcuts
+//  Press Space, then an action key within 500ms
+// ==========================================================================
+
+const leader = {
+  pending: false,
+  buffer: '',
+  timer: null,
+  TIMEOUT: 500,
+
+  activate() {
+    this.pending = true;
+    this.buffer = '';
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => { this.reset(); }, this.TIMEOUT);
+  },
+
+  feed(key) {
+    this.buffer += key;
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => { this.reset(); }, this.TIMEOUT);
+    return this.buffer;
+  },
+
+  consume() {
+    this.reset();
+  },
+
+  reset() {
+    this.pending = false;
+    this.buffer = '';
+    clearTimeout(this.timer);
+  },
+
+  isEditable(el) {
+    const tag = el.tagName;
+    return tag === 'INPUT' || tag === 'TEXTAREA' || el.isContentEditable;
+  }
+};
+
+// ==========================================================================
+//  Search Tab Switcher
+// ==========================================================================
+
+function switchSearchTab(tab) {
+  const container = tab.closest('.search-tabs');
+  container.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+
+  const scopeInput = document.getElementById('search-scope');
+  scopeInput.value = tab.dataset.scope;
+
+  // Trigger search with new scope
+  const searchInput = document.getElementById('search-text');
+  if (searchInput && searchInput.value.trim()) {
+    htmx.trigger(searchInput, 'search');
+  }
+}
+
+// ==========================================================================
+//  Command Palette — <Space>n quick-create menu
+// ==========================================================================
+
+const commandPalette = {
+  items: [
+    { label: 'Time Entry', icon: 'icon-clock', url: '/activity/time/add', matterUrl: '/activity/time/add/{id}/activity' },
+    { label: 'Task', icon: 'icon-square-check', url: '/tasks/add', matterUrl: '/matters/{id}/tasks/add' },
+    { label: 'Expense', icon: 'icon-dollar-sign', url: '/activity/expenses/add', matterUrl: '/activity/expenses/add/{id}/activity' },
+    { label: 'Event', icon: 'icon-calendar', url: '/events/add', matterUrl: '/events/add/{id}' },
+    { label: 'Contact', icon: 'icon-user', url: '/contacts/add' },
+    { label: 'Intake', icon: 'icon-inbox', url: '/intakes/add' },
+  ],
+  activeIndex: 0,
+  overlay: null,
+  pendingToast: null,
+
+  open() {
+    if (this.overlay) return;
+    this.activeIndex = 0;
+    this.pendingToast = null;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'cmd-palette-overlay';
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) this.close();
+    });
+
+    const dialog = document.createElement('div');
+    dialog.className = 'cmd-palette';
+
+    const title = document.createElement('div');
+    title.className = 'cmd-palette-title';
+    title.textContent = 'Create New';
+    dialog.appendChild(title);
+
+    const list = document.createElement('ul');
+    list.className = 'cmd-palette-list';
+    this.items.forEach((item, i) => {
+      const li = document.createElement('li');
+      li.className = 'cmd-palette-item' + (i === 0 ? ' active' : '');
+      li.innerHTML = `<i class="${item.icon}"></i><span>${item.label}</span>`;
+      li.addEventListener('click', () => this.select(i));
+      li.addEventListener('mouseenter', () => this.highlight(i));
+      list.appendChild(li);
+    });
+    dialog.appendChild(list);
+
+    const hint = document.createElement('div');
+    hint.className = 'cmd-palette-hint';
+    hint.innerHTML = '<span><kbd>j/k</kbd> navigate</span><span><kbd>enter</kbd> select</span><span><kbd>esc</kbd> close</span>';
+    dialog.appendChild(hint);
+
+    overlay.appendChild(dialog);
+    document.body.appendChild(overlay);
+    this.overlay = overlay;
+  },
+
+  close() {
+    if (!this.overlay) return;
+    this.overlay.remove();
+    this.overlay = null;
+  },
+
+  highlight(index) {
+    this.activeIndex = index;
+    const items = this.overlay.querySelectorAll('.cmd-palette-item');
+    items.forEach((el, i) => el.classList.toggle('active', i === index));
+  },
+
+  move(delta) {
+    const next = (this.activeIndex + delta + this.items.length) % this.items.length;
+    this.highlight(next);
+  },
+
+  getMatterId() {
+    const match = window.location.pathname.match(/^\/(?:matters|case)\/(\d+)/);
+    return match ? match[1] : null;
+  },
+
+  select(index) {
+    const item = this.items[index ?? this.activeIndex];
+    this.pendingToast = item.label;
+    this.close();
+
+    const matterId = this.getMatterId();
+    let url = item.url;
+    if (matterId && item.matterUrl) {
+      url = item.matterUrl.replace('{id}', matterId);
+    }
+    htmx.ajax('GET', url + '?from=palette', { target: '#htmx-modal-container' });
+  },
+
+  handleKeydown(event) {
+    if (!this.overlay) return false;
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.close();
+      return true;
+    }
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.select();
+      return true;
+    }
+    // j / k or arrow keys
+    if (event.key === 'j' || event.key === 'ArrowDown') {
+      event.preventDefault();
+      this.move(1);
+      return true;
+    }
+    if (event.key === 'k' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      this.move(-1);
+      return true;
+    }
+    return false;
+  }
+};
+
+document.addEventListener('keydown', function(event) {
+  // Let the palette handle its own keys first
+  if (commandPalette.handleKeydown(event)) return;
+
+  // Skip all leader-key handling when in editable fields or modals
+  if (leader.isEditable(event.target)) return;
+  if (document.body.classList.contains('modal-open')) return;
+
+  // Space — activate leader key
+  if (event.key === ' ' && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    event.preventDefault();
+    leader.activate();
+    return;
+  }
+
+  // Leader actions (must follow a Space press within timeout)
+  if (!leader.pending) return;
+
+  event.preventDefault();
+  const seq = leader.feed(event.key);
+
+  // Define leader sequences and their actions
+  const LEADER_ACTIONS = {
+    'n': () => commandPalette.open(),
+    'ff': () => htmx.ajax('GET', '/search/?scope=all', { target: '#htmx-modal-container' }),
+    'fm': () => htmx.ajax('GET', '/search/?scope=matters', { target: '#htmx-modal-container' }),
+    'fp': () => htmx.ajax('GET', '/search/?scope=proceedings', { target: '#htmx-modal-container' }),
+    'fc': () => htmx.ajax('GET', '/search/?scope=contacts', { target: '#htmx-modal-container' }),
+    'fi': () => htmx.ajax('GET', '/search/?scope=intakes', { target: '#htmx-modal-container' }),
+    'fn': () => htmx.ajax('GET', '/search/?scope=notes', { target: '#htmx-modal-container' }),
+  };
+
+  const action = LEADER_ACTIONS[seq];
+  if (action) {
+    leader.consume();
+    action();
+  } else {
+    // Check if seq could still become a valid sequence
+    const isPrefix = Object.keys(LEADER_ACTIONS).some(s => s.startsWith(seq) && s !== seq);
+    if (!isPrefix) {
+      leader.consume();
+    }
+  }
+});
+
+// Show toast when a command palette modal form is successfully submitted
+// (only if the backend didn't already send a custom toast via HX-Toast header)
+document.body.addEventListener('htmx:afterRequest', function(e) {
+  if (e.detail.xhr.status === 204 && commandPalette.pendingToast) {
+    const label = commandPalette.pendingToast;
+    commandPalette.pendingToast = null;
+    if (!e.detail.xhr.getResponseHeader('HX-Toast')) {
+      Toast.success(`${label} created.`);
+    }
+  }
+});
+
+// ==========================================================================
+//  Search Modal — keyboard navigation
+//  Ctrl+Shift+H/L tabs, Ctrl+Shift+J/K results, Ctrl+Shift+Enter open
+// ==========================================================================
+
+const searchNav = {
+  getModal() {
+    return document.querySelector('#htmx-modal-container .search');
+  },
+
+  getCards() {
+    const modal = this.getModal();
+    return modal ? [...modal.querySelectorAll('.search-card')] : [];
+  },
+
+  highlightCard(index) {
+    const cards = this.getCards();
+    if (!cards.length) return;
+    cards.forEach(c => c.classList.remove('active'));
+    const i = Math.max(0, Math.min(index, cards.length - 1));
+    cards[i].classList.add('active');
+    cards[i].scrollIntoView({ block: 'nearest' });
+  },
+
+  getActiveCardIndex() {
+    const cards = this.getCards();
+    return cards.findIndex(c => c.classList.contains('active'));
+  },
+
+  moveCard(delta) {
+    const cards = this.getCards();
+    if (!cards.length) return;
+    const current = this.getActiveCardIndex();
+    const next = current < 0 ? 0 : (current + delta + cards.length) % cards.length;
+    this.highlightCard(next);
+  },
+
+  selectCard() {
+    const cards = this.getCards();
+    const idx = this.getActiveCardIndex();
+    if (idx >= 0 && cards[idx]) {
+      cards[idx].click();
+    }
+  },
+
+  getTabs() {
+    const modal = this.getModal();
+    return modal ? [...modal.querySelectorAll('.search-tab')] : [];
+  },
+
+  moveTab(delta) {
+    const tabs = this.getTabs();
+    if (!tabs.length) return;
+    const current = tabs.findIndex(t => t.classList.contains('active'));
+    const next = (current + delta + tabs.length) % tabs.length;
+    tabs[next].click();
+    tabs[next].focus();
+    // Clear any highlighted cards when switching tabs
+    this.getCards().forEach(c => c.classList.remove('active'));
+  },
+
+  handleKeydown(event) {
+    if (!this.getModal()) return false;
+    const input = this.getModal().querySelector('.search-text');
+    const inInput = document.activeElement === input;
+
+    // --- Insert mode (input focused) ---
+    if (inInput) {
+      // Enter — open first result
+      if (event.key === 'Enter') {
+        const firstCard = this.getModal().querySelector('.search-card');
+        if (firstCard) {
+          event.preventDefault();
+          firstCard.click();
+          return true;
+        }
+      }
+      // Esc or Tab — enter normal mode
+      if (event.key === 'Escape' || event.key === 'Tab') {
+        event.preventDefault();
+        event.stopPropagation(); // prevent modal close
+        input.blur();
+        const activeTab = this.getModal().querySelector('.search-tab.active');
+        if (activeTab) activeTab.focus();
+        return true;
+      }
+      return false;
+    }
+
+    // --- Normal mode (input not focused) ---
+    // i — back to insert mode
+    if (event.key === 'i') {
+      event.preventDefault();
+      this.getCards().forEach(c => c.classList.remove('active'));
+      input.focus();
+      return true;
+    }
+    // j / k — navigate results (first j highlights first item)
+    if (event.key === 'j' || event.key === 'ArrowDown') {
+      event.preventDefault();
+      const current = this.getActiveCardIndex();
+      this.moveCard(current < 0 ? 0 : 1);
+      return true;
+    }
+    if (event.key === 'k' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      const current = this.getActiveCardIndex();
+      this.moveCard(current < 0 ? 0 : -1);
+      return true;
+    }
+    // h / l — switch tabs
+    if (event.key === 'h' || event.key === 'ArrowLeft') {
+      event.preventDefault();
+      this.moveTab(-1);
+      return true;
+    }
+    if (event.key === 'l' || event.key === 'ArrowRight') {
+      event.preventDefault();
+      this.moveTab(1);
+      return true;
+    }
+    // Enter — open highlighted result (or first if none highlighted)
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      if (this.getActiveCardIndex() >= 0) {
+        this.selectCard();
+      } else {
+        const firstCard = this.getModal().querySelector('.search-card');
+        if (firstCard) firstCard.click();
+      }
+      return true;
+    }
+    // Esc — close modal (second Esc)
+    // (falls through to the Alpine modal Escape handler)
+    return false;
+  }
+};
+
+document.addEventListener('keydown', function(event) {
+  if (searchNav.handleKeydown(event)) return;
+}, true);

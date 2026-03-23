@@ -76,32 +76,17 @@ def expand_search_with_synonyms(query):
     return terms
 
 
-def get_active_scopes(request):
-    """Get active search scopes from session, defaulting to all enabled."""
-    default_scopes = ["matters", "proceedings", "contacts", "intakes", "notes"]
-    stored_scopes = request.session.get("search_scopes")
-
-    if stored_scopes is None:
-        return default_scopes
-
-    # Add any new default scopes that weren't in the stored session
-    # (e.g., "proceedings" added after user's last search)
-    for scope in default_scopes:
-        if scope not in stored_scopes:
-            stored_scopes.append(scope)
-
-    return stored_scopes
-
-
 @login_required
 def index(request):
-    active_scopes = get_active_scopes(request)
+    active_scope = request.GET.get("scope") or request.session.get(
+        "search_scope", "all"
+    )
     context = {
         "app": "search",
         "action": "/search/results",
         "results": False,
         "scopes": SEARCH_SCOPES,
-        "active_scopes": active_scopes,
+        "active_scope": active_scope,
     }
     return render(request, "search/content.html", context)
 
@@ -110,38 +95,16 @@ def index(request):
 def results(request):
     text = request.POST.get("search_text", "").strip()
 
-    # Get scope filters from POST (checkboxes)
-    scope_matters = request.POST.get("scope_matters") == "on"
-    scope_proceedings = request.POST.get("scope_proceedings") == "on"
-    scope_contacts = request.POST.get("scope_contacts") == "on"
-    scope_intakes = request.POST.get("scope_intakes") == "on"
-    scope_notes = request.POST.get("scope_notes") == "on"
-
-    # If no scopes selected, enable all (first load or all unchecked)
-    all_scopes = [
-        scope_matters,
-        scope_proceedings,
-        scope_contacts,
-        scope_intakes,
-        scope_notes,
-    ]
-    if not any(all_scopes):
-        scope_matters = scope_proceedings = scope_contacts = True
-        scope_intakes = scope_notes = True
+    # Get active scope from POST (tab selection)
+    scope = request.POST.get("scope", "all")
+    scope_matters = scope in ("all", "matters")
+    scope_proceedings = scope in ("all", "proceedings")
+    scope_contacts = scope in ("all", "contacts")
+    scope_intakes = scope in ("all", "intakes")
+    scope_notes = scope in ("all", "notes")
 
     # Save to session for persistence
-    active_scopes = []
-    if scope_matters:
-        active_scopes.append("matters")
-    if scope_proceedings:
-        active_scopes.append("proceedings")
-    if scope_contacts:
-        active_scopes.append("contacts")
-    if scope_intakes:
-        active_scopes.append("intakes")
-    if scope_notes:
-        active_scopes.append("notes")
-    request.session["search_scopes"] = active_scopes
+    request.session["search_scope"] = scope
 
     if not text:
         return render(
@@ -154,7 +117,7 @@ def results(request):
                 "intakes": None,
                 "notes": None,
                 "scopes": SEARCH_SCOPES,
-                "active_scopes": active_scopes,
+                "active_scope": scope,
             },
         )
 
@@ -241,7 +204,7 @@ def results(request):
         "intakes": intakes,
         "notes": notes,
         "scopes": SEARCH_SCOPES,
-        "active_scopes": active_scopes,
+        "active_scope": scope,
     }
 
     return render(request, "search/results.html", context)

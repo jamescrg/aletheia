@@ -19,7 +19,7 @@
                  hx-post="/search/results"
                  hx-trigger="keyup changed delay:500ms, search"
                  hx-target="#search-results"
-                 hx-include=".search-scope-checkbox"
+                 hx-include="#search-scope"
                  autocomplete="off"
                  placeholder="Search..."
                  autofocus />
@@ -27,19 +27,20 @@
             <i class="icon-search"></i>
           </span>
         </div>
-        <div class="search-scopes">
+        <div class="search-tabs">
+          <input type="hidden"
+                 id="search-scope"
+                 name="scope"
+                 value="{{ active_scope|default:'all' }}" />
+          <button type="button"
+                  class="search-tab {% if active_scope == 'all' or not active_scope %}active{% endif %}"
+                  data-scope="all"
+                  onclick="switchSearchTab(this)">All</button>
           {% for key, label, model in scopes %}
-            <label class="search-scope">
-              <input type="checkbox"
-                     class="search-scope-checkbox"
-                     name="scope_{{ key }}"
-                     {% if key in active_scopes %}checked{% endif %}
-                     hx-post="/search/results"
-                     hx-trigger="change"
-                     hx-target="#search-results"
-                     hx-include="#search-text, .search-scope-checkbox" />
-              {{ label }}
-            </label>
+            <button type="button"
+                    class="search-tab {% if active_scope == key %}active{% endif %}"
+                    data-scope="{{ key }}"
+                    onclick="switchSearchTab(this)">{{ label }}</button>
           {% endfor %}
         </div>
       </div>
@@ -48,6 +49,13 @@
           <i class="icon-search"></i>
           <p>Search across your data</p>
         </div>
+      </div>
+      <div class="search-hint cmd-palette-hint">
+        <span><kbd>esc</kbd> normal mode</span>
+        <span><kbd>i</kbd> insert mode</span>
+        <span><kbd>h/l</kbd> tabs</span>
+        <span><kbd>j/k</kbd> results</span>
+        <span><kbd>enter</kbd> open</span>
       </div>
     </div>
   </div>

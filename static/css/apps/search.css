@@ -43,34 +43,40 @@
   padding: 0.625rem 1rem;
 }
 
-/* Search Scope Checkboxes */
+/* Search Scope Tabs */
 
-.search .search-scopes {
+.search .search-tabs {
   display: flex;
-  gap: 2rem;
+  gap: 0.25rem;
   justify-content: center;
   margin-top: 0.75rem;
 }
 
-.search .search-scope {
-  align-items: center;
-  color: var(--color-secondary);
+.search .search-tab {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--color-muted);
   cursor: pointer;
-  display: flex;
-  font-size: 0.875rem;
-  gap: 0.375rem;
+  font-size: 1rem;
+  padding: 0.25rem 0.75rem;
   user-select: none;
 }
 
-.search .search-scope input[type="checkbox"] {
-  accent-color: var(--icon-violet-muted);
-  cursor: pointer;
-  height: 1rem;
-  width: 1rem;
+.search .search-tab:hover {
+  color: var(--color-primary);
 }
 
-.search .search-scope:hover {
+.search .search-tab.active {
+  background: var(--background-control);
+  border-color: var(--border-medium);
   color: var(--color-primary);
+}
+
+.search .search-tab.active:focus-visible {
+  background: var(--selected-background);
+  border-color: var(--selected-border);
+  outline: none;
 }
 
 /* Search Results Container */
@@ -144,9 +150,10 @@
   transition: background-color 0.15s, border-color 0.15s;
 }
 
-.search .search-card:hover {
-  background: var(--background-section);
-  border-color: var(--border-medium);
+.search .search-card:hover,
+.search .search-card.active {
+  background: var(--selected-background);
+  border-color: var(--selected-border);
   color: inherit;
   text-decoration: none;
 }
@@ -197,4 +204,12 @@
 
 .search .search-empty p {
   margin: 0;
+}
+
+/* Keyboard Hint Bar */
+
+.search .search-hint {
+  justify-content: center;
+  margin: 0 -1.5rem -1.5rem;
+  padding: 0.5rem 1.5rem;
 }
