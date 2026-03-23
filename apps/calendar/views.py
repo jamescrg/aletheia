@@ -367,6 +367,11 @@ def events_add(request, matter_id=None, origin="events"):
         status__in=["Pending", "Open"]
     ).order_by("name")
 
+    # When no matter is pre-selected, autofocus the matter select instead of description
+    if not matter_id:
+        form.fields["description"].widget.attrs.pop("autofocus", None)
+        form.fields["matter"].widget.attrs["autofocus"] = "autofocus"
+
     google_connected = google.check_credentials()
 
     today = date.today().strftime("%Y-%m-%d")

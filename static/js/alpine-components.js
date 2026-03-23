@@ -208,6 +208,14 @@ document.addEventListener('alpine:init', () => {
       window.addEventListener('open-modal', () => this.open());
       window.addEventListener('close-modal', () => this.close());
 
+      // Escape key closes modal
+      document.addEventListener('keydown', (e) => {
+        if (this.isOpen && e.key === 'Escape') {
+          e.preventDefault();
+          this.close();
+        }
+      });
+
       // Backdrop click
       this.$el.addEventListener('click', (e) => this.handleBackdropClick(e));
     }

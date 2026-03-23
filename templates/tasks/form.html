@@ -16,7 +16,7 @@
     </div>
     <div class="modal-body">
       <form id="task-form"
-            hx-post="{{ request.path }}"
+            hx-post="{{ request.get_full_path }}"
             hx-target="#htmx-modal-container"
             role="form"
             class="form-compact col3 tasks-form">

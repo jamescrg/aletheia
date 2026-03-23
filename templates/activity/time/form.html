@@ -16,7 +16,7 @@
     </div>
     <div class="modal-body">
       <form id="time-entry-form"
-            hx-post="{{ action }}"
+            hx-post="{{ request.get_full_path }}"
             hx-target="#htmx-modal-container"
             class="form-compact col2 time-form">
         {% csrf_token %}

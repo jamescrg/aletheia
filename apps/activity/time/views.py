@@ -2,6 +2,7 @@ from datetime import date, datetime
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -20,6 +21,7 @@ from apps.management.selection import (
 )
 from apps.matters.models import Matter
 from apps.matters.rates.models import Rate
+from utils.toasts import toast_success
 
 from .export import write_clio_csv, write_standard_csv
 from .filter import TimeEntryFilter
@@ -212,7 +214,18 @@ def time_add(request, id=None, request_app="activity"):
             entry.save()
 
             if request_app == "activity":
-                return HttpResponse(status=204, headers={"HX-Trigger": "timeChanged"})
+                response = HttpResponse(
+                    status=204, headers={"HX-Trigger": "timeChanged"}
+                )
+                if request.GET.get("from") == "palette":
+                    today_total = (
+                        TimeEntry.objects.filter(
+                            user=request.user, date=date.today()
+                        ).aggregate(total=models.Sum("hours"))["total"]
+                        or 0
+                    )
+                    toast_success(response, f"Total time for today: {today_total}h")
+                return response
             elif request_app in ("matters", "case"):
                 url = reverse("activity:time-index")
                 return HttpResponse(status=200, headers={"HX-Redirect": url})
@@ -252,6 +265,11 @@ def time_add(request, id=None, request_app="activity"):
 
     # set the form fields
     form.fields["matter"].queryset = matter_list
+
+    # When no matter is pre-selected, autofocus the matter select instead of actions
+    if not id:
+        form.fields["actions"].widget.attrs.pop("autofocus", None)
+        form.fields["matter"].widget.attrs["autofocus"] = "autofocus"
 
     context = {
         "app": "activity",
