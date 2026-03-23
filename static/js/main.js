@@ -148,17 +148,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
 const leader = {
   pending: false,
+  buffer: '',
   timer: null,
   TIMEOUT: 500,
 
   activate() {
     this.pending = true;
+    this.buffer = '';
     clearTimeout(this.timer);
-    this.timer = setTimeout(() => { this.pending = false; }, this.TIMEOUT);
+    this.timer = setTimeout(() => { this.reset(); }, this.TIMEOUT);
+  },
+
+  feed(key) {
+    this.buffer += key;
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => { this.reset(); }, this.TIMEOUT);
+    return this.buffer;
   },
 
   consume() {
+    this.reset();
+  },
+
+  reset() {
     this.pending = false;
+    this.buffer = '';
     clearTimeout(this.timer);
   },
 
@@ -167,6 +181,25 @@ const leader = {
     return tag === 'INPUT' || tag === 'TEXTAREA' || el.isContentEditable;
   }
 };
+
+// ==========================================================================
+//  Search Tab Switcher
+// ==========================================================================
+
+function switchSearchTab(tab) {
+  const container = tab.closest('.search-tabs');
+  container.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+
+  const scopeInput = document.getElementById('search-scope');
+  scopeInput.value = tab.dataset.scope;
+
+  // Trigger search with new scope
+  const searchInput = document.getElementById('search-text');
+  if (searchInput && searchInput.value.trim()) {
+    htmx.trigger(searchInput, 'search');
+  }
+}
 
 // ==========================================================================
 //  Command Palette — <Space>n quick-create menu
@@ -307,11 +340,25 @@ document.addEventListener('keydown', function(event) {
   // Leader actions (must follow a Space press within timeout)
   if (!leader.pending) return;
 
-  // <Space>n — open command palette (new)
-  if (event.key === 'n') {
-    event.preventDefault();
+  event.preventDefault();
+  const seq = leader.feed(event.key);
+
+  // Define leader sequences and their actions
+  const LEADER_ACTIONS = {
+    'n': () => commandPalette.open(),
+    'ff': () => htmx.ajax('GET', '/search/', { target: '#htmx-modal-container' }),
+  };
+
+  const action = LEADER_ACTIONS[seq];
+  if (action) {
     leader.consume();
-    commandPalette.open();
+    action();
+  } else {
+    // Check if seq could still become a valid sequence
+    const isPrefix = Object.keys(LEADER_ACTIONS).some(s => s.startsWith(seq) && s !== seq);
+    if (!isPrefix) {
+      leader.consume();
+    }
   }
 });
 
@@ -326,3 +373,101 @@ document.body.addEventListener('htmx:afterRequest', function(e) {
     }
   }
 });
+
+// ==========================================================================
+//  Search Modal — keyboard navigation
+//  Ctrl+Shift+H/L tabs, Ctrl+Shift+J/K results, Ctrl+Shift+Enter open
+// ==========================================================================
+
+const searchNav = {
+  getModal() {
+    return document.querySelector('#htmx-modal-container .search');
+  },
+
+  getCards() {
+    const modal = this.getModal();
+    return modal ? [...modal.querySelectorAll('.search-card')] : [];
+  },
+
+  highlightCard(index) {
+    const cards = this.getCards();
+    if (!cards.length) return;
+    cards.forEach(c => c.classList.remove('active'));
+    const i = Math.max(0, Math.min(index, cards.length - 1));
+    cards[i].classList.add('active');
+    cards[i].scrollIntoView({ block: 'nearest' });
+  },
+
+  getActiveCardIndex() {
+    const cards = this.getCards();
+    return cards.findIndex(c => c.classList.contains('active'));
+  },
+
+  moveCard(delta) {
+    const cards = this.getCards();
+    if (!cards.length) return;
+    const current = this.getActiveCardIndex();
+    const next = current < 0 ? 0 : (current + delta + cards.length) % cards.length;
+    this.highlightCard(next);
+  },
+
+  selectCard() {
+    const cards = this.getCards();
+    const idx = this.getActiveCardIndex();
+    if (idx >= 0 && cards[idx]) {
+      cards[idx].click();
+    }
+  },
+
+  getTabs() {
+    const modal = this.getModal();
+    return modal ? [...modal.querySelectorAll('.search-tab')] : [];
+  },
+
+  moveTab(delta) {
+    const tabs = this.getTabs();
+    if (!tabs.length) return;
+    const current = tabs.findIndex(t => t.classList.contains('active'));
+    const next = (current + delta + tabs.length) % tabs.length;
+    tabs[next].click();
+  },
+
+  handleKeydown(event) {
+    if (!this.getModal()) return false;
+    if (!event.ctrlKey || !event.shiftKey) return false;
+
+    // Ctrl+Shift+J / Ctrl+Shift+K — navigate results
+    if (event.key === 'J') {
+      event.preventDefault();
+      this.moveCard(1);
+      return true;
+    }
+    if (event.key === 'K') {
+      event.preventDefault();
+      this.moveCard(-1);
+      return true;
+    }
+    // Ctrl+Shift+H / Ctrl+Shift+L — switch tabs
+    if (event.key === 'H') {
+      event.preventDefault();
+      this.moveTab(-1);
+      return true;
+    }
+    if (event.key === 'L') {
+      event.preventDefault();
+      this.moveTab(1);
+      return true;
+    }
+    // Ctrl+Shift+Enter — open highlighted result
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.selectCard();
+      return true;
+    }
+    return false;
+  }
+};
+
+document.addEventListener('keydown', function(event) {
+  if (searchNav.handleKeydown(event)) return;
+}, true);
