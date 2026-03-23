@@ -140,3 +140,189 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+
+// ==========================================================================
+//  Leader Key (Space) — Vim-style two-keystroke shortcuts
+//  Press Space, then an action key within 500ms
+// ==========================================================================
+
+const leader = {
+  pending: false,
+  timer: null,
+  TIMEOUT: 500,
+
+  activate() {
+    this.pending = true;
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => { this.pending = false; }, this.TIMEOUT);
+  },
+
+  consume() {
+    this.pending = false;
+    clearTimeout(this.timer);
+  },
+
+  isEditable(el) {
+    const tag = el.tagName;
+    return tag === 'INPUT' || tag === 'TEXTAREA' || el.isContentEditable;
+  }
+};
+
+// ==========================================================================
+//  Command Palette — <Space>n quick-create menu
+// ==========================================================================
+
+const commandPalette = {
+  items: [
+    { label: 'Time Entry', icon: 'icon-clock', url: '/activity/time/add', matterUrl: '/activity/time/add/{id}/activity' },
+    { label: 'Task', icon: 'icon-square-check', url: '/tasks/add', matterUrl: '/matters/{id}/tasks/add' },
+    { label: 'Expense', icon: 'icon-dollar-sign', url: '/activity/expenses/add', matterUrl: '/activity/expenses/add/{id}/activity' },
+    { label: 'Event', icon: 'icon-calendar', url: '/events/add', matterUrl: '/events/add/{id}' },
+    { label: 'Contact', icon: 'icon-user', url: '/contacts/add' },
+    { label: 'Intake', icon: 'icon-inbox', url: '/intakes/add' },
+  ],
+  activeIndex: 0,
+  overlay: null,
+  pendingToast: null,
+
+  open() {
+    if (this.overlay) return;
+    this.activeIndex = 0;
+    this.pendingToast = null;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'cmd-palette-overlay';
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) this.close();
+    });
+
+    const dialog = document.createElement('div');
+    dialog.className = 'cmd-palette';
+
+    const title = document.createElement('div');
+    title.className = 'cmd-palette-title';
+    title.textContent = 'Create New';
+    dialog.appendChild(title);
+
+    const list = document.createElement('ul');
+    list.className = 'cmd-palette-list';
+    this.items.forEach((item, i) => {
+      const li = document.createElement('li');
+      li.className = 'cmd-palette-item' + (i === 0 ? ' active' : '');
+      li.innerHTML = `<i class="${item.icon}"></i><span>${item.label}</span>`;
+      li.addEventListener('click', () => this.select(i));
+      li.addEventListener('mouseenter', () => this.highlight(i));
+      list.appendChild(li);
+    });
+    dialog.appendChild(list);
+
+    const hint = document.createElement('div');
+    hint.className = 'cmd-palette-hint';
+    hint.innerHTML = '<span><kbd>j/k</kbd> navigate</span><span><kbd>enter</kbd> select</span><span><kbd>esc</kbd> close</span>';
+    dialog.appendChild(hint);
+
+    overlay.appendChild(dialog);
+    document.body.appendChild(overlay);
+    this.overlay = overlay;
+  },
+
+  close() {
+    if (!this.overlay) return;
+    this.overlay.remove();
+    this.overlay = null;
+  },
+
+  highlight(index) {
+    this.activeIndex = index;
+    const items = this.overlay.querySelectorAll('.cmd-palette-item');
+    items.forEach((el, i) => el.classList.toggle('active', i === index));
+  },
+
+  move(delta) {
+    const next = (this.activeIndex + delta + this.items.length) % this.items.length;
+    this.highlight(next);
+  },
+
+  getMatterId() {
+    const match = window.location.pathname.match(/^\/(?:matters|case)\/(\d+)/);
+    return match ? match[1] : null;
+  },
+
+  select(index) {
+    const item = this.items[index ?? this.activeIndex];
+    this.pendingToast = item.label;
+    this.close();
+
+    const matterId = this.getMatterId();
+    let url = item.url;
+    if (matterId && item.matterUrl) {
+      url = item.matterUrl.replace('{id}', matterId);
+    }
+    htmx.ajax('GET', url + '?from=palette', { target: '#htmx-modal-container' });
+  },
+
+  handleKeydown(event) {
+    if (!this.overlay) return false;
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.close();
+      return true;
+    }
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.select();
+      return true;
+    }
+    // j / k or arrow keys
+    if (event.key === 'j' || event.key === 'ArrowDown') {
+      event.preventDefault();
+      this.move(1);
+      return true;
+    }
+    if (event.key === 'k' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      this.move(-1);
+      return true;
+    }
+    return false;
+  }
+};
+
+document.addEventListener('keydown', function(event) {
+  // Let the palette handle its own keys first
+  if (commandPalette.handleKeydown(event)) return;
+
+  // Skip all leader-key handling when in editable fields or modals
+  if (leader.isEditable(event.target)) return;
+  if (document.body.classList.contains('modal-open')) return;
+
+  // Space — activate leader key
+  if (event.key === ' ' && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    event.preventDefault();
+    leader.activate();
+    return;
+  }
+
+  // Leader actions (must follow a Space press within timeout)
+  if (!leader.pending) return;
+
+  // <Space>n — open command palette (new)
+  if (event.key === 'n') {
+    event.preventDefault();
+    leader.consume();
+    commandPalette.open();
+  }
+});
+
+// Show toast when a command palette modal form is successfully submitted
+// (only if the backend didn't already send a custom toast via HX-Toast header)
+document.body.addEventListener('htmx:afterRequest', function(e) {
+  if (e.detail.xhr.status === 204 && commandPalette.pendingToast) {
+    const label = commandPalette.pendingToast;
+    commandPalette.pendingToast = null;
+    if (!e.detail.xhr.getResponseHeader('HX-Toast')) {
+      Toast.success(`${label} created.`);
+    }
+  }
+});

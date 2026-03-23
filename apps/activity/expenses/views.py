@@ -196,6 +196,11 @@ def expenses_add(request, id=None, request_app="activity"):
     # set the form fields
     form.fields["matter"].queryset = matter_list
 
+    # When no matter is pre-selected, autofocus the matter select instead of description
+    if not id:
+        form.fields["description"].widget.attrs.pop("autofocus", None)
+        form.fields["matter"].widget.attrs["autofocus"] = "autofocus"
+
     context = {
         "app": "activity",
         "edit": False,

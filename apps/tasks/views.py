@@ -27,6 +27,7 @@ from apps.tasks.models import (
 )
 from apps.tasks.services import process_quick_task_description
 from apps.tasks.tasks import get_list_data
+from utils.toasts import toast_success
 
 TASKS_TRIGGER = "tasksListChanged"
 
@@ -67,7 +68,12 @@ def tasks_add(request):
 
             if task.matter:
                 request.session["tasks_matter"] = task.matter.id
-            return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
+            response = HttpResponse(
+                status=204, headers={"HX-Trigger": "tasksListChanged"}
+            )
+            if request.GET.get("from") == "palette":
+                toast_success(response, f"Task created for {task.user.full_name}.")
+            return response
 
     else:
         # get the currently filtered user if available
@@ -104,6 +110,11 @@ def tasks_add(request):
     form.fields["matter"].empty_label = "Admin"
     users = CustomUser.objects.filter(is_active=True).order_by("username")
     form.fields["user"].queryset = users
+
+    # When no matter is pre-selected, autofocus the matter select instead of description
+    if not tasks_matter:
+        form.fields["description"].widget.attrs.pop("autofocus", None)
+        form.fields["matter"].widget.attrs["autofocus"] = "autofocus"
 
     context = {
         "app": "tasks",

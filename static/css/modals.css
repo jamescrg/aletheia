@@ -272,3 +272,76 @@ body.modal-open .confirm-modal-overlay {
   justify-content: space-between;
   padding: 1rem 1.5rem;
 }
+
+/* ==========================================================================
+   Command Palette (Ctrl+N quick-create menu)
+   ========================================================================== */
+
+.cmd-palette-overlay {
+  align-items: flex-start;
+  background: rgb(0 0 0 / 40%);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding-top: 20vh;
+  position: fixed;
+  z-index: 1060;
+}
+
+.cmd-palette {
+  background: var(--background-section);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%);
+  min-width: 16rem;
+  overflow: hidden;
+}
+
+.cmd-palette-title {
+  border-bottom: 1px solid var(--border-medium);
+  font-size: 1.125rem;
+  font-weight: 500;
+  padding: 0.75rem 1rem;
+}
+
+.cmd-palette-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem 0;
+}
+
+.cmd-palette-item {
+  align-items: center;
+  color: var(--color-primary);
+  cursor: pointer;
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+}
+
+.cmd-palette-item i {
+  color: var(--color-muted);
+  font-size: 1rem;
+}
+
+.cmd-palette-item.active {
+  background: var(--selected-background);
+}
+
+.cmd-palette-hint {
+  border-top: 1px solid var(--border-medium);
+  display: flex;
+  font-size: 1rem;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+}
+
+.cmd-palette-hint kbd {
+  background: var(--background-subnav);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  color: var(--color-primary);
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0 0.25rem;
+}
