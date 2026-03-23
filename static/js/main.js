@@ -445,7 +445,7 @@ const searchNav = {
     const input = this.getModal().querySelector('.search-text');
     const inInput = document.activeElement === input;
 
-    // --- Input mode ---
+    // --- Insert mode (input focused) ---
     if (inInput) {
       // Enter — open first result
       if (event.key === 'Enter') {
@@ -456,9 +456,10 @@ const searchNav = {
           return true;
         }
       }
-      // Tab — enter navigation mode (focus active tab)
-      if (event.key === 'Tab') {
+      // Esc or Tab — enter normal mode
+      if (event.key === 'Escape' || event.key === 'Tab') {
         event.preventDefault();
+        event.stopPropagation(); // prevent modal close
         input.blur();
         const activeTab = this.getModal().querySelector('.search-tab.active');
         if (activeTab) activeTab.focus();
@@ -467,9 +468,9 @@ const searchNav = {
       return false;
     }
 
-    // --- Navigation mode (input not focused) ---
-    // Shift+Tab — back to input
-    if (event.key === 'Tab') {
+    // --- Normal mode (input not focused) ---
+    // i — back to insert mode
+    if (event.key === 'i') {
       event.preventDefault();
       this.getCards().forEach(c => c.classList.remove('active'));
       input.focus();
@@ -510,12 +511,8 @@ const searchNav = {
       }
       return true;
     }
-    // Any printable character — refocus input
-    if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
-      this.getCards().forEach(c => c.classList.remove('active'));
-      input.focus();
-      return false; // let the key pass through to input
-    }
+    // Esc — close modal (second Esc)
+    // (falls through to the Alpine modal Escape handler)
     return false;
   }
 };
