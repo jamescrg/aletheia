@@ -41,11 +41,8 @@ jobs:
       - name: Install Python dependencies
         run: uv sync
 
-      - name: Install code quality tools
-        run: uv tool install ruff
-
       - name: Lint code
-        run: pre-commit run --all-files
+        run: uv run pre-commit run --all-files
 
   test:
     name: Test (Group ${{ matrix.group }})
