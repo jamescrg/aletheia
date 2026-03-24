@@ -10,16 +10,6 @@ body.intake-detail .content {
   padding-top: 1.25rem;
 }
 
-body.intake-detail .navbar .active {
-  background: var(--background-subnav);
-}
-
-body.intake-detail .navbar .active::before,
-body.intake-detail .navbar .active::after {
-  background: var(--background-subnav);
-}
-
-
 /* ==========================================================================
    Intakes Detail Layout (Bootstrap grid replacement)
    ========================================================================== */

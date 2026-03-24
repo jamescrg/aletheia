@@ -12,38 +12,16 @@ body.contacts-page .content {
   padding-right: 1rem;
 }
 
-/* Main nav tab blends with darker body background */
-body.contacts-page .navbar .active {
-  background: var(--background-subnav);
-}
-
-body.contacts-page .navbar .active::before,
-body.contacts-page .navbar .active::after {
-  background: var(--background-subnav);
-}
-
 /* Detail header/subnav need contrast against the darker page body */
 .contacts-page .detail-header,
 .contacts-page .subnav {
-  background: var(--stone-225);
-}
-
-/* Preserve rounded top corners on contact detail cards */
-.contacts-page .detail-header {
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
-}
-
-.contacts-page .detail > .subnav:first-child {
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  background: var(--background-subnav-contrast);
 }
 
 .contacts-page .subnav {
   padding-left: 0;
 }
 
-.contacts-page .subnav li:first-child.active::before {
-  display: none;
-}
 
 /* ==========================================================================
    Contacts Layout (Bootstrap grid replacement)
