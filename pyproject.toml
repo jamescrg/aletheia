@@ -33,7 +33,7 @@ dependencies = [
     "weasyprint==68.0",
     "pytesseract==0.3.13",
     "pdf2image==1.17.0",
-    "pypdf==6.7.5",
+    "pypdf>=6.9.1",
     "ocrmypdf==16.12.0",
     # AI clients
     "anthropic==0.40.0",
