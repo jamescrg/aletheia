@@ -22,6 +22,10 @@ body.contacts-page .content {
   padding-left: 0;
 }
 
+.contacts-page .contacts-detail > .detail {
+  box-shadow: 0 0.0625rem 0.2rem rgb(0 0 0 / 14%);
+  border-radius: var(--radius-md);
+}
 
 /* ==========================================================================
    Contacts Layout (Bootstrap grid replacement)
@@ -320,7 +324,6 @@ body.contacts-page .content {
   text-align: right;
   width: 5rem;
 }
-
 
 .action-buttons {
   display: flex;
