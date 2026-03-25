@@ -3,13 +3,44 @@
    ========================================================================== */
 
 /* ==========================================================================
+   Internal Sub-tabs (History / Search / Review)
+   ========================================================================== */
+
+.research-subtabs {
+  margin-bottom: 1rem;
+}
+
+.research-internal-nav {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.research-internal-tab {
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  color: var(--color-secondary);
+  padding: 0.375rem 1rem;
+  text-decoration: none;
+}
+
+.research-internal-tab:hover {
+  background: var(--background-control);
+  color: var(--color-primary);
+}
+
+.research-internal-tab.active {
+  background: var(--selected-background);
+  border-color: var(--selected-border);
+  color: var(--selected-color);
+}
+
+/* ==========================================================================
    Search Form
    ========================================================================== */
 
 .research-search-form {
-  background: var(--background-section);
-  border-radius: var(--radius-sm);
-  padding: 1.25rem 1rem;
+  padding-bottom: 1.25rem;
 }
 
 .research-search-input textarea {
@@ -62,9 +93,7 @@
    ========================================================================== */
 
 .research-results-container {
-  background: var(--background-section);
-  border-radius: var(--radius-sm);
-  padding: 1.25rem 1rem 1.5rem;
+  padding-top: 1rem;
 }
 
 .research-results-header {

@@ -43,6 +43,11 @@
        hx-trigger="conversationsChanged from:body"
        hx-get="{% url 'case:ai-list' matter.id %}"
        hx-target="this">{% include tab_template %}</div>
+{% elif subapp == "research" %}
+  <div id="research"
+       hx-trigger="researchChanged from:body"
+       hx-get="{% url 'case:research-list' matter.id %}"
+       hx-target="this">{% include tab_template %}</div>
 {% else %}
   {% include tab_template %}
 {% endif %}

@@ -31,12 +31,12 @@
         <div class="research-verifications">
           <div class="research-verifications-header">Forward Citations</div>
         {% endif %}
-        {% include "research/citation-item.html" %}
+        {% include "case/research/citation-item.html" %}
         {% if forloop.last %}</div>{% endif %}
     {% endif %}
   {% endfor %}
   <div class="research-status-msg"
-       hx-get="{% url 'research:review-status' result.id %}"
+       hx-get="{% url 'case:research-review-status' result.id %}"
        hx-trigger="load delay:3s"
        hx-target="#review-detail"
        hx-swap="innerHTML">
@@ -48,7 +48,7 @@
     <div class="research-verifications">
       <div class="research-verifications-header">Forward Citations</div>
       {% for v in result.verifications.all %}
-        {% include "research/citation-item.html" %}
+        {% include "case/research/citation-item.html" %}
       {% endfor %}
     </div>
   {% else %}

@@ -56,5 +56,13 @@
          hx-target=".detail-body"
          hx-push-url="{% url 'case:ai-index' matter.id %}">AI</a>
     </li>
+    {% if user.is_admin or user.perm_research %}
+      <li {% if subapp == "research" %}class="active"{% endif %}>
+        <a href="{% url 'case:research-index' matter.id %}"
+           hx-get="{% url 'case:tab-content' matter_id=matter.id tab='research' %}"
+           hx-target=".detail-body"
+           hx-push-url="{% url 'case:research-index' matter.id %}">Research</a>
+      </li>
+    {% endif %}
   </ul>
 </nav>

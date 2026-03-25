@@ -15,6 +15,7 @@ VALID_TABS = [
     "labels",
     "search",
     "ai",
+    "research",
 ]
 DEFAULT_TAB = "documents"
 
@@ -242,6 +243,15 @@ def _get_case_tab_data(request, matter, matters, matter_id, tab):
             "llm_choices": llm_choices,
             "selected_llm": selected_llm,
             "selected_llm_display": selected_llm_display,
+        }
+
+    elif tab == "research":
+        from apps.case.research.views import get_research_data
+
+        return {
+            "tab_template": "case/research/list.html",
+            "research_tab": "search",
+            **get_research_data(request, matter, matter_id),
         }
 
     # Fallback

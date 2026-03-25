@@ -1,7 +1,7 @@
 {% load markdown_extras %}
 <div class="research-card"
      id="result-{{ result.id }}"
-     {% if result.relevance == "pending" %} hx-get="{% url 'research:result-status' result.id %}" hx-trigger="load delay:2s" hx-target="#result-{{ result.id }}" hx-swap="outerHTML" {% endif %}>
+     {% if result.relevance == "pending" %} hx-get="{% url 'case:research-result-status' result.id %}" hx-trigger="load delay:2s" hx-target="#result-{{ result.id }}" hx-swap="outerHTML" {% endif %}>
   <div class="research-card-header">
     <div class="research-card-title">
       {{ result.case_name }}
@@ -50,7 +50,7 @@
   {% endif %}
   {% if result.relevance != "pending" and result.verify_status == "none" and result.forward_citation_count %}
     <div class="research-verify-action">
-      <form method="post" action="{% url 'research:review' result.id %}">
+      <form method="post" action="{% url 'case:research-review' result.id %}">
         {% csrf_token %}
         <button type="submit" class="btn btn-sm">
           <i class="icon-check-circle"></i> Review
@@ -64,7 +64,7 @@
     </div>
   {% elif result.verify_status == "complete" %}
     <div class="research-verify-action">
-      <a href="{% url 'research:review-tab' %}?result={{ result.id }}"
+      <a href="{% url 'case:research-review-tab' result.query.matter.id %}?result={{ result.id }}"
          class="btn btn-sm">
         <i class="icon-check-circle"></i> View Review
       </a>
