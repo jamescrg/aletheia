@@ -19,7 +19,11 @@ from apps.case.views import get_matter_from_url, get_session_key, set_last_tab
 from apps.matters.models import Matter
 from apps.settings.models import Company
 
-from .context import assemble_matter_context, load_legal_prompt
+from .context import (
+    assemble_matter_context,
+    assemble_matter_context_with_selection,
+    load_legal_prompt,
+)
 from .filters import ConversationFilter
 from .models import ChatAttachment, Conversation, Message
 from .tasks import process_ai_request, process_chat_attachment_ocr
@@ -75,6 +79,26 @@ def ai_index(request, matter_id):
 
     # Get selected LLM from session
     selected_llm = get_selected_llm(request)
+
+    # Backfill: queue summary generation for documents missing summaries
+    from apps.case.models import Document
+
+    docs_needing_summary = Document.objects.filter(
+        matter=matter,
+        summary__isnull=True,
+        ocr_text__isnull=False,
+        ocr_status__in=["completed", "extracted"],
+    )
+    if docs_needing_summary.exists():
+        from django_q.tasks import async_task
+
+        for doc in docs_needing_summary[:20]:
+            async_task(
+                "apps.case.documents.tasks.generate_document_summary",
+                doc.id,
+                task_name=f"Summary-{doc.id}",
+                group="summary_generation",
+            )
 
     context = {
         "app": "matters",
@@ -293,9 +317,13 @@ def send_message(request, matter_id):
         conversation=conversation, role="user", content=user_message, user=request.user
     )
 
-    # Assemble context and get chat history for AI (include user for identity)
-    context_text = assemble_matter_context(
-        matter, user=request.user, conversation=conversation
+    # Assemble context with intelligent selection based on user's question
+    context_text = assemble_matter_context_with_selection(
+        matter,
+        user_message=user_message,
+        llm=llm,
+        user=request.user,
+        conversation=conversation,
     )
 
     # Build chat history with user names for multi-participant context

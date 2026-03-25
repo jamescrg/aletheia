@@ -1,0 +1,44 @@
+<div class="dropdown" x-data="dropdown()">
+  <button class="ai-context-btn ai-context-{{ case_law.ai_context }}"
+          x-ref="button"
+          @click="toggle()"
+          :aria-expanded="open"
+          title="{{ case_law.get_ai_context_display }}">
+    {% if case_law.ai_context == "always" %}
+      <i class="icon-bookmark"></i>
+    {% elif case_law.ai_context == "never" %}
+      <i class="icon-bookmark-x"></i>
+    {% else %}
+      <i class="icon-sparkles"></i>
+    {% endif %}
+  </button>
+  <ul class="dropdown-menu" x-ref="menu" x-show="open" @click="close()">
+    <li>
+      <a class="dropdown-item{% if case_law.ai_context == 'auto' %} active{% endif %}"
+         href="#"
+         hx-post="{% url 'case:caselaw-set-ai' case_law.id 'auto' %}"
+         hx-target="#caselaw-ai-{{ case_law.id }}"
+         hx-swap="innerHTML">
+        <i class="icon-sparkles"></i> Auto
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item{% if case_law.ai_context == 'always' %} active{% endif %}"
+         href="#"
+         hx-post="{% url 'case:caselaw-set-ai' case_law.id 'always' %}"
+         hx-target="#caselaw-ai-{{ case_law.id }}"
+         hx-swap="innerHTML">
+        <i class="icon-bookmark"></i> Always
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item{% if case_law.ai_context == 'never' %} active{% endif %}"
+         href="#"
+         hx-post="{% url 'case:caselaw-set-ai' case_law.id 'never' %}"
+         hx-target="#caselaw-ai-{{ case_law.id }}"
+         hx-swap="innerHTML">
+        <i class="icon-bookmark-x"></i> Never
+      </a>
+    </li>
+  </ul>
+</div>
