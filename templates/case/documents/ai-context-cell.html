@@ -1,44 +1,29 @@
 <div class="dropdown" x-data="dropdown()">
-  <button class="ai-context-btn ai-context-{{ document.ai_context }}"
+  <button class="ai-context-btn{% if document.ai_context == 'always' %} ai-context-active{% endif %}"
           x-ref="button"
           @click="toggle()"
-          :aria-expanded="open"
-          title="{{ document.get_ai_context_display }}">
-    {% if document.ai_context == "always" %}
-      <i class="icon-bookmark"></i>
-    {% elif document.ai_context == "never" %}
-      <i class="icon-bookmark-x"></i>
-    {% else %}
-      <i class="icon-sparkles"></i>
-    {% endif %}
-  </button>
+          :aria-expanded="open">{{ document.get_ai_context_display }}</button>
   <ul class="dropdown-menu" x-ref="menu" x-show="open" @click="close()">
     <li>
       <a class="dropdown-item{% if document.ai_context == 'auto' %} active{% endif %}"
          href="#"
          hx-post="{% url 'case:documents-set-ai' document.id 'auto' %}"
          hx-target="#doc-ai-{{ document.id }}"
-         hx-swap="innerHTML">
-        <i class="icon-sparkles"></i> Auto
-      </a>
+         hx-swap="innerHTML">Auto</a>
     </li>
     <li>
       <a class="dropdown-item{% if document.ai_context == 'always' %} active{% endif %}"
          href="#"
          hx-post="{% url 'case:documents-set-ai' document.id 'always' %}"
          hx-target="#doc-ai-{{ document.id }}"
-         hx-swap="innerHTML">
-        <i class="icon-bookmark"></i> Always
-      </a>
+         hx-swap="innerHTML">Always</a>
     </li>
     <li>
       <a class="dropdown-item{% if document.ai_context == 'never' %} active{% endif %}"
          href="#"
          hx-post="{% url 'case:documents-set-ai' document.id 'never' %}"
          hx-target="#doc-ai-{{ document.id }}"
-         hx-swap="innerHTML">
-        <i class="icon-bookmark-x"></i> Never
-      </a>
+         hx-swap="innerHTML">Never</a>
     </li>
   </ul>
 </div>

@@ -21,7 +21,6 @@ from apps.settings.models import Company
 
 from .context import (
     assemble_matter_context,
-    assemble_matter_context_with_selection,
     load_legal_prompt,
 )
 from .filters import ConversationFilter
@@ -317,23 +316,6 @@ def send_message(request, matter_id):
         conversation=conversation, role="user", content=user_message, user=request.user
     )
 
-    # Assemble context with intelligent selection based on user's question
-    context_text = assemble_matter_context_with_selection(
-        matter,
-        user_message=user_message,
-        llm=llm,
-        user=request.user,
-        conversation=conversation,
-    )
-
-    # Build chat history with user names for multi-participant context
-    chat_history = []
-    for msg in conversation.messages.select_related("user"):
-        entry = {"role": msg.role, "content": msg.content}
-        if msg.role == "user" and msg.user:
-            entry["user_name"] = msg.user.get_full_name() or msg.user.username
-        chat_history.append(entry)
-
     # Initialize status in cache
     cache_key = f"ai_status_{conversation.id}"
     cache.set(
@@ -342,10 +324,16 @@ def send_message(request, matter_id):
         timeout=600,
     )
 
-    # Start background thread for AI processing
+    # Start background thread — context assembly + AI processing
     thread = threading.Thread(
         target=process_ai_request,
-        args=(conversation.id, context_text, chat_history, conversation.llm),
+        args=(
+            conversation.id,
+            matter.id,
+            user_message,
+            request.user.id,
+            conversation.llm,
+        ),
         daemon=True,
     )
     thread.start()
@@ -1061,7 +1049,7 @@ def context_preview(request, matter_id):
     )
 
     sections.append({"title": "Tasks", "content": format_tasks(matter)})
-    sections.append({"title": "Upcoming Events", "content": format_events(matter)})
+    sections.append({"title": "Events", "content": format_events(matter)})
     sections.append(
         {"title": "Settlement Information", "content": format_settlement(matter)}
     )
@@ -1069,30 +1057,36 @@ def context_preview(request, matter_id):
     # --- Always-included items grouped by type ---
     all_items = collect_context_items(matter)
 
-    # Define display order and labels for item types
+    # Add timeline/facts as a flat section in case details
+    fact_items = [item for item in all_items if item.item_type == "fact"]
+    if fact_items:
+        fact_lines = [item.content.replace("**", "").strip() for item in fact_items]
+        sections.append(
+            {
+                "title": f"Timeline ({len(fact_items)} facts)",
+                "content": "\n\n".join(fact_lines),
+            }
+        )
+
+    # Define display order and labels for item types (facts handled above)
     type_config = OrderedDict(
         [
-            ("document", {"title": "Documents", "icon": "icon-file-text"}),
-            ("caselaw", {"title": "Case Law", "icon": "icon-scale"}),
-            ("highlight", {"title": "Highlights", "icon": "icon-highlighter"}),
-            ("fact", {"title": "Timeline / Facts", "icon": "icon-calendar"}),
-            ("note", {"title": "Notes", "icon": "icon-file-edit"}),
-            (
-                "conversation",
-                {"title": "Reference Conversations", "icon": "icon-message-square"},
-            ),
+            ("document", "Documents"),
+            ("caselaw", "Case Law"),
+            ("highlight", "Highlights"),
+            ("note", "Notes"),
+            ("conversation", "Reference Conversations"),
         ]
     )
 
     # Group items by type
     type_groups = []
-    for type_key, config in type_config.items():
+    for type_key, title in type_config.items():
         items = [item for item in all_items if item.item_type == type_key]
         if items:
             type_groups.append(
                 {
-                    "title": config["title"],
-                    "icon": config["icon"],
+                    "title": title,
                     "count": len(items),
                     "items": [
                         {

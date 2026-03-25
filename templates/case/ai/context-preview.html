@@ -41,126 +41,138 @@
         </div>
       </div>
       {# --- Fixed context sections --- #}
-      <div class="context-section-group">
-        <h2 class="context-group-title">
-          <i class="icon-info"></i>
-          Fixed Context
+      <div class="context-section-group" x-data="{ open: true }">
+        <button type="button"
+                class="context-group-header"
+                @click="open = !open"
+                :aria-expanded="open">
+          <i class="icon-chevron-right" :class="{ 'rotated': open }"></i>
+          <span>Case Details</span>
           <span class="context-group-meta">Always included</span>
-        </h2>
-        <div class="context-sections">
-          {% for section in sections %}
-            <div class="context-section" x-data="{ open:
-              {% if section.expanded %}
-                true
-              {% else %}
-                false
-              {% endif %}
-              }">
-              <button type="button"
-                      class="context-section-header"
-                      @click="open = !open"
-                      :aria-expanded="open">
-                <i class="icon-chevron-right" :class="{ 'rotated': open }"></i>
-                <span>{{ section.title }}</span>
-              </button>
-              <div class="context-section-body" x-show="open" x-collapse>
-                <div class="context-section-text ai-markdown">{{ section.content|render_markdown }}</div>
-              </div>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-      {# --- Always-included items by type --- #}
-      {% for group in type_groups %}
-        <div class="context-section-group">
-          <h2 class="context-group-title">
-            <i class="{{ group.icon }}"></i>
-            {{ group.title }}
-            <span class="context-group-meta">{{ group.count }} item{{ group.count|pluralize }}</span>
-          </h2>
+        </button>
+        <div x-show="open" x-collapse>
           <div class="context-sections">
-            {% for item in group.items %}
-              <div class="context-section" x-data="{ open: false }">
+            {% for section in sections %}
+              <div class="context-section" x-data="{ open:
+                {% if section.expanded %}
+                  true
+                {% else %}
+                  false
+                {% endif %}
+                }">
                 <button type="button"
                         class="context-section-header"
                         @click="open = !open"
                         :aria-expanded="open">
                   <i class="icon-chevron-right" :class="{ 'rotated': open }"></i>
-                  <span class="context-item-title">{{ item.name }}</span>
-                  <span class="importance-badge importance-{{ item.importance_label }}">{{ item.importance_label }}</span>
+                  <span>{{ section.title }}</span>
                 </button>
                 <div class="context-section-body" x-show="open" x-collapse>
-                  <div class="context-section-text ai-markdown">{{ item.content|render_markdown }}</div>
+                  <div class="context-section-text ai-markdown">{{ section.content|render_markdown }}</div>
                 </div>
               </div>
             {% endfor %}
+          </div>
+        </div>
+      </div>
+      {# --- Always-included items by type --- #}
+      {% for group in type_groups %}
+        <div class="context-section-group" x-data="{ open: true }">
+          <button type="button"
+                  class="context-group-header"
+                  @click="open = !open"
+                  :aria-expanded="open">
+            <i class="icon-chevron-right" :class="{ 'rotated': open }"></i>
+            <span>{{ group.title }}</span>
+            <span class="context-group-meta">{{ group.count }} item{{ group.count|pluralize }}</span>
+          </button>
+          <div x-show="open" x-collapse>
+            <div class="context-sections">
+              {% for item in group.items %}
+                <div class="context-section" x-data="{ open: false }">
+                  <button type="button"
+                          class="context-section-header"
+                          @click="open = !open"
+                          :aria-expanded="open">
+                    <i class="icon-chevron-right" :class="{ 'rotated': open }"></i>
+                    <span class="context-item-title">{{ item.name }}</span>
+                    <span class="importance-badge importance-{{ item.importance_label }}">{{ item.importance_label }}</span>
+                  </button>
+                  <div class="context-section-body" x-show="open" x-collapse>
+                    <div class="context-section-text ai-markdown">{{ item.content|render_markdown }}</div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
           </div>
         </div>
       {% endfor %}
       {# --- Auto selection pool --- #}
       {% if manifest_items %}
-        <div class="context-section-group">
-          <h2 class="context-group-title">
-            <i class="icon-sparkles"></i>
-            Auto Selection Pool
+        <div class="context-section-group" x-data="{ open: true }">
+          <button type="button"
+                  class="context-group-header"
+                  @click="open = !open"
+                  :aria-expanded="open">
+            <i class="icon-chevron-right" :class="{ 'rotated': open }"></i>
+            <span>Auto Selection Pool</span>
             <span class="context-group-meta">{{ manifest_count }} item{{ manifest_count|pluralize }} &middot; ~{{ auto_pool_tokens|intcomma }} tokens</span>
-          </h2>
-          <p class="context-group-description">
-            These items are available for intelligent selection. The AI selector chooses relevant items based on the user's question, staying within the model's token budget.
-          </p>
-          <div class="context-sections">
-            {% for item in manifest_items %}
-              <div class="context-section" x-data="{ open: false }">
-                <button type="button"
-                        class="context-section-header"
-                        @click="open = !open"
-                        :aria-expanded="open">
-                  <i class="icon-chevron-right" :class="{ 'rotated': open }"></i>
-                  <span class="manifest-item-name">
-                    {% if item.item_type == "document" %}
-                      &#x1F4C4;
-                    {% else %}
-                      &#x2696;&#xFE0F;
-                    {% endif %}
-                    {{ item.name }}
-                  </span>
-                  <span class="manifest-item-meta">
-                    {{ item.category }}
-                    {% if item.date %}&middot; {{ item.date }}{% endif %}
-                    &middot; ~{{ item.word_count|intcomma }} words
-                    &middot; importance {{ item.importance }}
-                  </span>
-                </button>
-                <div class="context-section-body" x-show="open" x-collapse>
-                  <div class="context-section-text ai-markdown">{{ item.description|render_markdown }}</div>
+          </button>
+          <div x-show="open" x-collapse>
+            <p class="context-group-description">
+              These items are available for intelligent selection. The AI selector chooses relevant items based on the user's question, staying within the model's token budget.
+            </p>
+            <div class="context-sections">
+              {% for item in manifest_items %}
+                <div class="context-section" x-data="{ open: false }">
+                  <button type="button"
+                          class="context-section-header"
+                          @click="open = !open"
+                          :aria-expanded="open">
+                    <i class="icon-chevron-right" :class="{ 'rotated': open }"></i>
+                    <span class="manifest-item-name">{{ item.name }}</span>
+                    <span class="manifest-item-meta">
+                      {{ item.category }}
+                      {% if item.date %}&middot; {{ item.date }}{% endif %}
+                      &middot; ~{{ item.word_count|intcomma }} words
+                      &middot; importance {{ item.importance }}
+                    </span>
+                  </button>
+                  <div class="context-section-body" x-show="open" x-collapse>
+                    <div class="context-section-text ai-markdown">{{ item.description|render_markdown }}</div>
+                  </div>
                 </div>
-              </div>
-            {% endfor %}
+              {% endfor %}
+            </div>
           </div>
         </div>
       {% endif %}
       {# --- Excluded items --- #}
       {% if excluded_items %}
-        <div class="context-section-group">
-          <h2 class="context-group-title excluded">
-            <i class="icon-eye-off"></i>
-            Excluded from AI
+        <div class="context-section-group" x-data="{ open: false }">
+          <button type="button"
+                  class="context-group-header excluded"
+                  @click="open = !open"
+                  :aria-expanded="open">
+            <i class="icon-chevron-right" :class="{ 'rotated': open }"></i>
+            <span>Excluded from AI</span>
             <span class="context-group-meta">{{ excluded_count }} item{{ excluded_count|pluralize }}</span>
-          </h2>
-          <p class="context-group-description">These items are set to "never include" and will not be seen by the AI.</p>
-          <div class="context-sections">
-            {% for item in excluded_items %}
-              <div class="context-section excluded-item">
-                <div class="context-section-header excluded">
-                  <i class="icon-x-circle"></i>
-                  <span>
-                    {{ item.type }}: {{ item.name }}
-                    {% if item.category %}({{ item.category }}){% endif %}
-                    {% if item.date %}&middot; {{ item.date }}{% endif %}
-                  </span>
+          </button>
+          <div x-show="open" x-collapse>
+            <p class="context-group-description">These items are set to "never include" and will not be seen by the AI.</p>
+            <div class="context-sections">
+              {% for item in excluded_items %}
+                <div class="context-section excluded-item">
+                  <div class="context-section-header excluded">
+                    <span>
+                      {{ item.type }}: {{ item.name }}
+                      {% if item.category %}({{ item.category }}){% endif %}
+                      {% if item.date %}&middot; {{ item.date }}{% endif %}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            {% endfor %}
+              {% endfor %}
+            </div>
           </div>
         </div>
       {% endif %}

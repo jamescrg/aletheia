@@ -1551,10 +1551,6 @@
 }
 
 /* Context Preview Button */
-.ai-context-btn i {
-  color: var(--icon-violet);
-  margin-right: 0.5rem;
-}
 
 /* Context Preview Page */
 .context-stats {
@@ -1736,21 +1732,37 @@
   margin-top: 2rem;
 }
 
-.context-group-title {
+.context-group-header {
   align-items: center;
+  background: none;
+  border: none;
   color: var(--stone-700);
+  cursor: pointer;
   display: flex;
   font-size: 1rem;
   font-weight: 600;
   gap: 0.5rem;
   margin: 0 0 0.25rem;
+  padding: 0.5rem 0;
+  text-align: left;
+  width: 100%;
 }
 
-.context-group-title > i {
-  font-size: 1.125rem;
+.context-group-header:hover {
+  color: var(--stone-900);
 }
 
-.context-group-title.excluded {
+.context-group-header > i {
+  color: var(--stone-400);
+  font-size: 1rem;
+  transition: transform 0.15s ease;
+}
+
+.context-group-header > i.rotated {
+  transform: rotate(90deg);
+}
+
+.context-group-header.excluded {
   color: var(--stone-500);
 }
 
@@ -1792,8 +1804,4 @@
 
 .excluded-item .context-section-header.excluded:hover {
   background: var(--stone-50);
-}
-
-.excluded-item .context-section-header.excluded i {
-  color: var(--stone-400);
 }

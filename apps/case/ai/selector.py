@@ -41,7 +41,7 @@ Return ONLY a JSON object with this format:
 Rules:
 - Select materials that are relevant to the user's question.
 - Stay within the token budget specified below.
-- Prioritize higher-importance items when budget is tight.
+- Prioritize higher-priority items when budget is tight.
 - When in doubt about relevance, include rather than exclude.
 - Return ONLY the JSON object, no other text."""
 
@@ -164,10 +164,13 @@ def format_manifest_for_prompt(items: list[ManifestItem], token_budget: int) -> 
     for item in items:
         type_label = "DOC" if item.item_type == "document" else "CASE"
         date_str = f", {item.date}" if item.date else ""
+        # Invert importance (DB uses 1=highest, 10=lowest) so the
+        # LLM sees a higher number for more important items.
+        priority = 11 - item.importance
         lines.append(
             f'[{type_label}-{item.item_id}] "{item.name}" '
             f"({item.category}{date_str}) - {item.description} "
-            f"[~{item.word_count:,} words, importance: {item.importance}]"
+            f"[~{item.word_count:,} words, priority: {priority}/10]"
         )
 
     return "\n".join(lines)
