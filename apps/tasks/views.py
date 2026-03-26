@@ -157,7 +157,7 @@ def tasks_add_quick(request):
     if filter_priority and int(filter_priority) != 0:
         task.priority = int(filter_priority)
     else:
-        task.priority = 5
+        task.priority = 3
 
     # auto populate the user
     user_id = filter_data.get("user", None)

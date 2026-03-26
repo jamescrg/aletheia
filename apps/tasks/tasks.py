@@ -161,7 +161,7 @@ def get_list_data(request):
         ),
         "today": today,
         "users": CustomUser.objects.filter(is_active=True).order_by("username"),
-        "priorities": list(range(1, 11)),
+        "priorities": list(range(5, 0, -1)),
         "user_id": user_id,
         "matter_id": matter_id,
         "priority_value": priority_value,

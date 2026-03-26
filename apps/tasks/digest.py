@@ -64,7 +64,7 @@ def send_digest_for_user(user):
             date_due__lt=today,
             status="Pending",
         )
-        .order_by("date_due", "priority")
+        .order_by("date_due", "-priority")
     )
 
     today_tasks = (
@@ -73,7 +73,7 @@ def send_digest_for_user(user):
             date_due=today,
             status="Pending",
         )
-        .order_by("priority")
+        .order_by("-priority")
     )
 
     upcoming_tasks = (
@@ -83,7 +83,7 @@ def send_digest_for_user(user):
             date_due__lte=upcoming_end,
             status="Pending",
         )
-        .order_by("date_due", "priority")
+        .order_by("date_due", "-priority")
     )
 
     has_content = (

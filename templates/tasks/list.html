@@ -26,8 +26,8 @@
                   :aria-expanded="open">
           <span><i class="icon-flag with-text"></i>
           {% if priority_value %}
-            {% if priority_value == 1 %}
-              1 only
+            {% if priority_value == 5 %}
+              5 only
             {% else %}
               {{ priority_value }} and above
             {% endif %}
@@ -51,8 +51,8 @@
              hx-post="{% url 'tasks:filter-priority' priority %}"
              hx-target="#tasks"
              hx-swap="#outerHTML"><i class="icon-flag"></i>
-          {% if priority == 1 %}
-            1 only
+          {% if priority == 5 %}
+            5 only
           {% else %}
             {{ priority }} and above
           {% endif %}

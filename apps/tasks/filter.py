@@ -10,7 +10,7 @@ STATUS_CHOICES = (
     ("Complete", "Complete"),
 )
 
-PRIORITY_CHOICES = tuple((i, f"Priority {i}") for i in range(1, 11))
+PRIORITY_CHOICES = tuple((i, f"Priority {i}") for i in range(1, 6))
 
 
 class DateCompletedFilter(django_filters.DateFromToRangeFilter):
@@ -47,12 +47,20 @@ class TasksOrderingFilter(django_filters.OrderingFilter):
             if ordering[0] == "date_due":
                 return qs.order_by(
                     F("date_due").asc(nulls_last=True),
-                    "priority",
+                    "-priority",
                     "matter__name",
                     "description",
                     "id",
                 )
             if ordering[0] == "priority":
+                return qs.order_by(
+                    "-status",
+                    "-priority",
+                    "matter__name",
+                    "description",
+                    "id",
+                )
+            if ordering[0] == "-priority":
                 return qs.order_by(
                     "-status",
                     "priority",
@@ -84,8 +92,8 @@ class TasksFilter(django_filters.FilterSet):
     priority = django_filters.ChoiceFilter(
         field_name="priority",
         choices=PRIORITY_CHOICES,
-        lookup_expr="lte",
-        label="Priority (≤)",
+        lookup_expr="gte",
+        label="Priority (≥)",
         empty_label="All",
     )
     has_due_date = django_filters.BooleanFilter(

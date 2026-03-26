@@ -31,7 +31,7 @@ class TaskForm(forms.ModelForm):
         }
 
         priorities = []
-        for i in range(1, 11):
+        for i in range(1, 6):
             priorities.append((i, f"Priority {i}"))
         PRIORITIES = tuple(priorities)
 
@@ -58,7 +58,7 @@ class TaskForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.renderer = CustomFormRendererCompact()
-        self.fields["priority"].initial = 5
+        self.fields["priority"].initial = 3
         # Customize user field to display title case usernames
         self.fields["user"].label_from_instance = lambda obj: obj.username.title()
 
@@ -86,7 +86,7 @@ class BulkTasksForm(forms.Form):
     ]
 
     PRIORITY_CHOICES = [("", "— No change —")] + [
-        (str(i), f"Priority {i}") for i in range(1, 11)
+        (str(i), f"Priority {i}") for i in range(1, 6)
     ]
 
     status = forms.ChoiceField(choices=STATUS_CHOICES, required=False, label="Status")
