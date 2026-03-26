@@ -55,6 +55,22 @@ def invoices_list(request):
     return render(request, "invoicing/invoices/list.html", context)
 
 
+def _get_invoice_time_context(request, invoice):
+    """Build context for the invoice time entries tab."""
+    entries = TimeEntry.objects.filter(invoice=invoice).order_by("date")
+    summary = calculate_time_summary(entries)
+    pagination = CustomPaginator(
+        entries, per_page=10, request=request, session_key="invoice_time_pagination"
+    )
+    return {
+        "objects": pagination.get_object_list(),
+        "pagination": pagination,
+        "session_key": "invoice_time_pagination",
+        "trigger_key": "timeChanged",
+        "summary": summary,
+    }
+
+
 @login_required
 def invoices_detail_index(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
@@ -65,6 +81,7 @@ def invoices_detail_index(request, pk):
         "invoice": invoice,
         "view": "detail",
     }
+    context.update(_get_invoice_time_context(request, invoice))
 
     return render(request, "invoicing/invoices/detail/detail-index.html", context)
 
@@ -79,8 +96,9 @@ def invoices_detail(request, pk):
         "invoice": invoice,
         "view": "detail",
     }
+    context.update(_get_invoice_time_context(request, invoice))
 
-    return render(request, "invoicing/invoices/time/index.html", context)
+    return render(request, "invoicing/invoices/detail/detail.html", context)
 
 
 @login_required

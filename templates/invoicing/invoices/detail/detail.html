@@ -57,6 +57,12 @@
   {% include "invoicing/invoices/detail/detail-nav.html" %}
   <div class="detail-body">
     {% block subcontent %}
+      {% if subapp == "time" %}
+        <div id="time"
+             hx-trigger="timeChanged from:body"
+             hx-get="{% url 'invoicing:invoice-time-entries' invoice.id %}"
+             hx-target="this">{% include "invoicing/invoices/time/list.html" %}</div>
+      {% endif %}
     {% endblock subcontent %}
   </div>
 {% endblock content %}

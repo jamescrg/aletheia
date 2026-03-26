@@ -21,7 +21,7 @@ def test_invoices_detail(client, invoice):
         reverse("invoicing:invoices-detail", kwargs={"pk": invoice.pk})
     )
     assert response.status_code == 200
-    assertTemplateUsed(response, "invoicing/invoices/time/index.html")
+    assertTemplateUsed(response, "invoicing/invoices/detail/detail.html")
     assert response.context["app"] == "invoicing"
 
     # Test the invoice calculation
