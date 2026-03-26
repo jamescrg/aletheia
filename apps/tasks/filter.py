@@ -10,7 +10,13 @@ STATUS_CHOICES = (
     ("Complete", "Complete"),
 )
 
-PRIORITY_CHOICES = tuple((i, f"Priority {i}") for i in range(1, 6))
+PRIORITY_CHOICES = (
+    (5, "Highest"),
+    (4, "High"),
+    (3, "Normal"),
+    (2, "Low"),
+    (1, "Lowest"),
+)
 
 
 class DateCompletedFilter(django_filters.DateFromToRangeFilter):

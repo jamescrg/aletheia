@@ -30,10 +30,13 @@ class TaskForm(forms.ModelForm):
             "description": "Task",
         }
 
-        priorities = []
-        for i in range(1, 6):
-            priorities.append((i, f"Priority {i}"))
-        PRIORITIES = tuple(priorities)
+        PRIORITIES = (
+            (5, "Highest"),
+            (4, "High"),
+            (3, "Normal"),
+            (2, "Low"),
+            (1, "Lowest"),
+        )
 
         widgets = {
             "description": forms.TextInput(
@@ -85,8 +88,13 @@ class BulkTasksForm(forms.Form):
         ("Complete", "Complete"),
     ]
 
-    PRIORITY_CHOICES = [("", "— No change —")] + [
-        (str(i), f"Priority {i}") for i in range(1, 6)
+    PRIORITY_CHOICES = [
+        ("", "— No change —"),
+        ("5", "Highest"),
+        ("4", "High"),
+        ("3", "Normal"),
+        ("2", "Low"),
+        ("1", "Lowest"),
     ]
 
     status = forms.ChoiceField(choices=STATUS_CHOICES, required=False, label="Status")
