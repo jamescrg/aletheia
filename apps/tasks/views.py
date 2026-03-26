@@ -9,6 +9,7 @@ from django.views.decorators.http import require_POST
 
 from apps.accounts.models import CustomUser
 from apps.checklists.models import can_complete_task
+from apps.management.pagination import CustomPaginator
 from apps.management.selection import (
     clear_selected_ids,
     get_selected_ids,
@@ -579,6 +580,10 @@ def tasks_detail(request, id):
     notes = task.notes.all()
     matter_id = request.GET.get("matter_id")
 
+    # Reset to page 1 unless this is a pagination request
+    if not request.headers.get("HX-Trigger-Name") == "taskNotesChanged":
+        request.session["task_notes_pagination"] = 1
+
     # Track view for badge notification system
     UserTaskNoteView.objects.update_or_create(
         user=request.user,
@@ -586,14 +591,22 @@ def tasks_detail(request, id):
         # last_viewed_at auto-updates with auto_now=True
     )
 
+    pagination = CustomPaginator(
+        notes, per_page=5, request=request, session_key="task_notes_pagination"
+    )
+    page_notes = pagination.get_object_list()
+
     # Process markdown in note details
-    for note in notes:
+    for note in page_notes:
         if note.details:
             note.details = markdown.markdown(note.details)
 
     context = {
         "task": task,
-        "notes": notes,
+        "notes": page_notes,
+        "pagination": pagination,
+        "session_key": "task_notes_pagination",
+        "trigger_key": "taskNotesChanged",
         "matter_id": matter_id,
     }
     return render(request, "tasks/detail.html", context)

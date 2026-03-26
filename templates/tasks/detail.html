@@ -51,7 +51,11 @@
           </div>
         </div>
       </div>
-      <div class="task-notes">
+      <div class="task-notes"
+           id="task-notes"
+           hx-trigger="taskNotesChanged from:body"
+           hx-get="{% url 'tasks:detail' id=task.id %}{% if matter_id %}?matter_id={{ matter_id }}{% endif %}"
+           hx-target="#htmx-modal-container">
         {% for note in notes %}
           <div class="task-note">
             <div class="task-note-title">
@@ -70,6 +74,7 @@
         {% empty %}
           <p class="empty-message">No notes yet.</p>
         {% endfor %}
+        {% include "pagination.html" %}
       </div>
     </div>
   </div>
