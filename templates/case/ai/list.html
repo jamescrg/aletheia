@@ -77,11 +77,11 @@
         <td class="created">{{ conv.created_at|date:"Y-m-d" }}</td>
         <td class="title">
           <div class="dropdown" x-data="dropdown()">
-            <button class="ai-title-btn"
-                    type="button"
-                    x-ref="button"
-                    @click="toggle()"
-                    :aria-expanded="open">{{ conv.title|truncatechars:60 }}</button>
+            <a href="#"
+               class="ai-title-link"
+               x-ref="button"
+               @click.prevent="toggle()"
+               :aria-expanded="open">{{ conv.title|truncatechars:60 }}</a>
             <ul class="dropdown-menu" x-ref="menu" x-show="open">
               <li>
                 <a class="dropdown-item"

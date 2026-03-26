@@ -446,7 +446,7 @@
 }
 
 /* Title link styled as anchor */
-.ai-title-btn {
+.ai-title-link {
   background: none;
   border: none;
   color: var(--link);
@@ -457,11 +457,11 @@
   text-decoration: none;
 }
 
-.ai-title-btn:hover {
+.ai-title-link:hover {
   color: var(--link-hover);
 }
 
-.ai-title-btn::after {
+.ai-title-link::after {
   display: none;
 }
 
