@@ -2,25 +2,25 @@
   <div class="toolbar-left tasks-toolbar-left">
     {% if selected_tasks %}
       <div class="filter-tools">
-        {% include "tasks/bulk-toolbar.html" %}
+        <button type="button"
+                class="btn-icon toggle-active"
+                hx-post="{% url 'tasks:clear-selection' %}"
+                hx-swap="none">
+          <i class="icon-square-check with-text"></i> {{ selected_tasks|length }}
+        </button>
         <button type="button"
                 class="btn-icon"
                 hx-get="{% url 'tasks:bulk-update' %}"
                 hx-target="#htmx-modal-container">
-          <i class="icon-pencil with-text"></i> Update ({{ selected_tasks|length }})
+          <i class="icon-pencil with-text"></i> Update
         </button>
+        {% include "tasks/bulk-toolbar.html" %}
         <button type="button"
                 class="btn-icon"
                 hx-post="{% url 'tasks:bulk-delete' %}"
                 hx-confirm="Delete {{ selected_tasks|length }} selected task(s)? This cannot be undone."
                 hx-swap="none">
           <i class="icon-trash-2"></i>
-        </button>
-        <button type="button"
-                class="btn-icon"
-                hx-post="{% url 'tasks:clear-selection' %}"
-                hx-swap="none">
-          <i class="icon-x"></i>
         </button>
       </div>
     {% else %}
