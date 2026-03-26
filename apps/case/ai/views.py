@@ -13,9 +13,18 @@ from django.db.models import F, Max
 from django.db.models.functions import Coalesce
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 
 from apps.case.models import Fact, Highlight
 from apps.case.views import get_matter_from_url, get_session_key, set_last_tab
+from apps.management.selection import (
+    all_visible_selected,
+    clear_selected_ids,
+    get_selected_ids,
+    select_all_ids,
+    selection_response,
+    toggle_id,
+)
 from apps.matters.models import Matter
 from apps.settings.models import Company
 
@@ -155,16 +164,24 @@ def ai_list(request, matter_id):
     # Get selected LLM from session
     selected_llm = get_selected_llm(request)
 
+    # Selection state
+    conv_list = list(conversations)
+    session_key = get_session_key("selected_conversations", matter_id)
+    selected_conversations = get_selected_ids(request, session_key)
+    visible_ids = [c.id for c in conv_list]
+
     return render(
         request,
         "case/ai/list.html",
         {
-            "conversations": conversations,
+            "conversations": conv_list,
             "matter": matter,
             "current_order": current_order,
             "selected_llm": selected_llm,
             "selected_llm_display": get_llm_display(selected_llm),
             "llm_choices": Conversation.LLM_CHOICES,
+            "selected_conversations": selected_conversations,
+            "all_selected": all_visible_selected(selected_conversations, visible_ids),
         },
     )
 
@@ -1211,3 +1228,69 @@ def context_preview(request, matter_id):
             "model_costs": model_costs,
         },
     )
+
+
+# --------------------------------------------------------------------------
+# Conversation Selection & Bulk Actions
+# --------------------------------------------------------------------------
+
+CONVERSATIONS_TRIGGER = "conversationsChanged"
+
+
+@login_required
+@require_POST
+def ai_toggle_select(request, matter_id, conv_id):
+    get_object_or_404(Conversation, pk=conv_id)
+    session_key = get_session_key("selected_conversations", matter_id)
+    toggle_id(request, session_key, conv_id)
+    return selection_response(CONVERSATIONS_TRIGGER)
+
+
+@login_required
+@require_POST
+def ai_select_all(request, matter_id):
+    matter, _ = get_matter_from_url(request, matter_id)
+    conversations = Conversation.objects.filter(matter=matter)
+    visible_ids = [c.id for c in conversations]
+    session_key = get_session_key("selected_conversations", matter_id)
+    select_all_ids(request, session_key, visible_ids)
+    return selection_response(CONVERSATIONS_TRIGGER)
+
+
+@login_required
+@require_POST
+def ai_clear_selection(request, matter_id):
+    session_key = get_session_key("selected_conversations", matter_id)
+    clear_selected_ids(request, session_key)
+    return selection_response(CONVERSATIONS_TRIGGER)
+
+
+@login_required
+@require_POST
+def ai_bulk_set_context(request, matter_id, state):
+    """Bulk set ai_context on selected conversations."""
+    if state not in ("auto", "always", "never"):
+        return HttpResponse(status=400)
+
+    session_key = get_session_key("selected_conversations", matter_id)
+    selected = get_selected_ids(request, session_key)
+    if not selected:
+        return HttpResponse(status=400)
+
+    Conversation.objects.filter(id__in=selected).update(ai_context=state)
+    clear_selected_ids(request, session_key)
+    return selection_response(CONVERSATIONS_TRIGGER)
+
+
+@login_required
+@require_POST
+def ai_bulk_delete(request, matter_id):
+    """Bulk delete selected conversations."""
+    session_key = get_session_key("selected_conversations", matter_id)
+    selected = get_selected_ids(request, session_key)
+    if not selected:
+        return HttpResponse(status=400)
+
+    Conversation.objects.filter(id__in=selected).delete()
+    clear_selected_ids(request, session_key)
+    return selection_response(CONVERSATIONS_TRIGGER)

@@ -862,6 +862,32 @@ urlpatterns = [
         ai.set_ai_context,
         name="ai-set-ai-context",
     ),
+    # AI conversation selection & bulk actions
+    path(
+        "case/<int:matter_id>/ai/toggle-select/<int:conv_id>/",
+        ai.ai_toggle_select,
+        name="ai-toggle-select",
+    ),
+    path(
+        "case/<int:matter_id>/ai/select-all/",
+        ai.ai_select_all,
+        name="ai-select-all",
+    ),
+    path(
+        "case/<int:matter_id>/ai/clear-selection/",
+        ai.ai_clear_selection,
+        name="ai-clear-selection",
+    ),
+    path(
+        "case/<int:matter_id>/ai/bulk-set-context/<str:state>/",
+        ai.ai_bulk_set_context,
+        name="ai-bulk-set-context",
+    ),
+    path(
+        "case/<int:matter_id>/ai/bulk-delete/",
+        ai.ai_bulk_delete,
+        name="ai-bulk-delete",
+    ),
     path(
         "case/ai/conversations/<int:conv_id>/rename/",
         ai.rename_conversation,

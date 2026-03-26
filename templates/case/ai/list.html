@@ -1,48 +1,99 @@
 {% load humanize %}
 <div class="toolbar ai-toolbar">
   <div class="toolbar-left">
-    <div class="filter-tools">
-      <a href="{% url 'case:ai-new-conversation-view' matter.id %}?llm={{ selected_llm }}"
-         target="_blank"
-         class="btn-icon"
-         title="New {{ selected_llm_display }} conversation">
-        <i class="icon-plus"></i>
-      </a>
-      <div class="dropdown" x-data="dropdown()">
+    {% if selected_conversations %}
+      <div class="filter-tools">
         <button type="button"
-                id="ai-llm-select"
-                class="select-btn filter-dropdown-button toggle-active"
-                x-ref="button"
-                @click="toggle()"
-                :aria-expanded="open">
-          <span>{{ selected_llm_display }}</span>
-          <small>
-            <i class="icon-chevron-down"></i>
-          </small>
+                class="btn-icon toggle-active"
+                hx-post="{% url 'case:ai-clear-selection' matter.id %}"
+                hx-swap="none">
+          {{ selected_conversations|length }} <i class="icon-x bulk-clear-icon"></i>
         </button>
-        <ul class="dropdown-menu" x-ref="menu" x-show="open">
-          {% for key, label in llm_choices %}
+        <div class="dropdown" x-data="dropdown()">
+          <button type="button"
+                  class="btn-icon"
+                  x-ref="button"
+                  @click="toggle()"
+                  :aria-expanded="open">
+            <i class="icon-sparkles with-text"></i> AI <small><i class="icon-chevron-down"></i></small>
+          </button>
+          <ul class="dropdown-menu" x-ref="menu" x-show="open" @click="close()">
             <li>
-              <a class="dropdown-item {% if key == selected_llm %}active{% endif %}"
+              <a class="dropdown-item"
                  href="#"
-                 hx-get="{% url 'case:ai-select-llm' matter.id key %}"
-                 hx-target="#ai-conversations">{{ label }}</a>
+                 hx-post="{% url 'case:ai-bulk-set-context' matter.id 'auto' %}"
+                 hx-swap="none"><i class="icon-sparkles"></i> Auto</a>
             </li>
-          {% endfor %}
-        </ul>
+            <li>
+              <a class="dropdown-item"
+                 href="#"
+                 hx-post="{% url 'case:ai-bulk-set-context' matter.id 'always' %}"
+                 hx-swap="none"><i class="icon-bookmark"></i> Always</a>
+            </li>
+            <li>
+              <a class="dropdown-item"
+                 href="#"
+                 hx-post="{% url 'case:ai-bulk-set-context' matter.id 'never' %}"
+                 hx-swap="none"><i class="icon-bookmark-x"></i> Never</a>
+            </li>
+          </ul>
+        </div>
+        <button type="button"
+                class="btn-icon"
+                hx-post="{% url 'case:ai-bulk-delete' matter.id %}"
+                hx-confirm="Delete {{ selected_conversations|length }} selected conversation(s)? This cannot be undone."
+                hx-swap="none">
+          <i class="icon-trash-2"></i>
+        </button>
       </div>
-      <a href="{% url 'case:ai-context-preview' matter.id %}"
-         target="_blank"
-         class="btn-icon ai-context-btn"
-         title="Preview AI context">
-        <i class="icon-file-text"></i> Context
-      </a>
-    </div>
+    {% else %}
+      <div class="filter-tools">
+        <a href="{% url 'case:ai-new-conversation-view' matter.id %}?llm={{ selected_llm }}"
+           target="_blank"
+           class="btn-icon"
+           title="New {{ selected_llm_display }} conversation">
+          <i class="icon-plus"></i>
+        </a>
+        <div class="dropdown" x-data="dropdown()">
+          <button type="button"
+                  id="ai-llm-select"
+                  class="select-btn filter-dropdown-button toggle-active"
+                  x-ref="button"
+                  @click="toggle()"
+                  :aria-expanded="open">
+            <span>{{ selected_llm_display }}</span>
+            <small>
+              <i class="icon-chevron-down"></i>
+            </small>
+          </button>
+          <ul class="dropdown-menu" x-ref="menu" x-show="open">
+            {% for key, label in llm_choices %}
+              <li>
+                <a class="dropdown-item {% if key == selected_llm %}active{% endif %}"
+                   href="#"
+                   hx-get="{% url 'case:ai-select-llm' matter.id key %}"
+                   hx-target="#ai-conversations">{{ label }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <a href="{% url 'case:ai-context-preview' matter.id %}"
+           target="_blank"
+           class="btn-icon ai-context-btn"
+           title="Preview AI context">
+          <i class="icon-file-text"></i> Context
+        </a>
+      </div>
+    {% endif %}
   </div>
 </div>
 <div class="table-container">
   <table class="table ai-conversations-table">
     <tr>
+      <th class="col-select">
+        {% url 'case:ai-select-all' matter.id as select_all_url %}
+        {% include "selection/select-all-btn.html" with select_all_url=select_all_url all_selected=all_selected %}
+      </th>
       <th class="created">
         Date
         <button class="btn-sort {% if 'created_at' in current_order %}active{% endif %}"
@@ -74,6 +125,10 @@
     </tr>
     {% for conv in conversations %}
       <tr class="ai-conversation-row">
+        <td class="col-select">
+          {% url 'case:ai-toggle-select' matter.id conv.id as toggle_url %}
+          {% include "selection/checkbox.html" with toggle_url=toggle_url obj_id=conv.id selected_ids=selected_conversations %}
+        </td>
         <td class="created">{{ conv.created_at|date:"Y-m-d" }}</td>
         <td class="title">
           <div class="dropdown" x-data="dropdown()">
@@ -131,7 +186,7 @@
       </tr>
     {% empty %}
       <tr>
-        <td colspan="7" class="empty-message">No conversations yet. Click a button above to start a new conversation.</td>
+        <td colspan="8" class="empty-message">No conversations yet. Click a button above to start a new conversation.</td>
       </tr>
     {% endfor %}
   </table>
