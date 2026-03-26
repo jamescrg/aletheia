@@ -232,6 +232,15 @@
   width: 8rem;
 }
 
+.ai-conversations-table th.col-select,
+.ai-conversations-table td.col-select {
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+  vertical-align: middle;
+  width: 2.5rem;
+}
+
 .ai-conversations-table th.reference,
 .ai-conversations-table td.reference {
   text-align: center;
