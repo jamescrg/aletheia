@@ -3,8 +3,60 @@
     <div class="toolbar-left">
       {% if selected_documents %}
         <div class="filter-tools">
-          {% url 'case:documents-clear-selection' matter.id as clear_url %}
-          {% include "selection/toolbar.html" with selected_ids=selected_documents clear_url=clear_url actions_template="case/documents/bulk-actions.html" %}
+          <button type="button"
+                  class="btn-icon toggle-active"
+                  hx-post="{% url 'case:documents-clear-selection' matter.id %}"
+                  hx-swap="none">
+            {{ selected_documents|length }} <i class="icon-x bulk-clear-icon"></i>
+          </button>
+          <div class="dropdown" x-data="dropdown()">
+            <button type="button"
+                    class="btn-icon"
+                    x-ref="button"
+                    @click="toggle()"
+                    :aria-expanded="open">
+              <i class="icon-sparkles with-text"></i> AI <small><i class="icon-chevron-down"></i></small>
+            </button>
+            <ul class="dropdown-menu" x-ref="menu" x-show="open" @click="close()">
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-post="{% url 'case:documents-bulk-ai' matter.id 'always' %}"
+                   hx-swap="none"><i class="icon-bookmark"></i> Always Include</a>
+              </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-post="{% url 'case:documents-bulk-ai' matter.id 'auto' %}"
+                   hx-swap="none"><i class="icon-sparkles"></i> Auto</a>
+              </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-post="{% url 'case:documents-bulk-ai' matter.id 'never' %}"
+                   hx-swap="none"><i class="icon-bookmark-x"></i> Never Include</a>
+              </li>
+            </ul>
+          </div>
+          <button type="button"
+                  class="btn-icon"
+                  hx-get="{% url 'case:documents-bulk-category' matter.id %}"
+                  hx-target="#htmx-modal-container">
+            <i class="icon-folder with-text"></i> Category
+          </button>
+          <button type="button"
+                  class="btn-icon"
+                  hx-get="{% url 'case:documents-bulk-matter' matter.id %}"
+                  hx-target="#htmx-modal-container">
+            <i class="icon-briefcase with-text"></i> Matter
+          </button>
+          <button type="button"
+                  class="btn-icon"
+                  hx-post="{% url 'case:documents-bulk-delete' matter.id %}"
+                  hx-confirm="Delete {{ selected_documents|length }} selected document(s)?"
+                  hx-swap="none">
+            <i class="icon-trash-2"></i>
+          </button>
         </div>
       {% else %}
         <div class="filter-tools">

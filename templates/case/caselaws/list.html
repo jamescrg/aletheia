@@ -2,14 +2,19 @@
   <div class="toolbar-left">
     {% if selected_caselaws %}
       <div class="filter-tools">
+        <button type="button"
+                class="btn-icon toggle-active"
+                hx-post="{% url 'case:caselaws-clear-selection' matter.id %}"
+                hx-swap="none">
+          {{ selected_caselaws|length }} <i class="icon-x bulk-clear-icon"></i>
+        </button>
         <div class="dropdown" x-data="dropdown()">
           <button type="button"
                   class="btn-icon"
                   x-ref="button"
                   @click="toggle()"
                   :aria-expanded="open">
-            Actions ({{ selected_caselaws|length }})
-            <small><i class="icon-chevron-down"></i></small>
+            <i class="icon-sparkles with-text"></i> AI <small><i class="icon-chevron-down"></i></small>
           </button>
           <ul class="dropdown-menu" x-ref="menu" x-show="open" @click="close()">
             <li>
@@ -30,26 +35,20 @@
                  hx-post="{% url 'case:caselaws-bulk-ai' matter.id 'never' %}"
                  hx-swap="none"><i class="icon-bookmark-x"></i> Never Include</a>
             </li>
-            <li>
-              <a class="dropdown-item"
-                 href="#"
-                 hx-get="{% url 'case:caselaws-bulk-labels' matter.id %}"
-                 hx-target="#htmx-modal-container"><i class="icon-tag"></i> Manage Labels...</a>
-            </li>
-            <li>
-              <a class="dropdown-item text-danger"
-                 href="#"
-                 hx-post="{% url 'case:caselaws-bulk-delete' matter.id %}"
-                 hx-confirm="Delete {{ selected_caselaws|length }} selected case(s)? This cannot be undone."
-                 hx-swap="none"><i class="icon-trash-2"></i> Delete Selected</a>
-            </li>
           </ul>
         </div>
         <button type="button"
                 class="btn-icon"
-                hx-post="{% url 'case:caselaws-clear-selection' matter.id %}"
+                hx-get="{% url 'case:caselaws-bulk-labels' matter.id %}"
+                hx-target="#htmx-modal-container">
+          <i class="icon-tag with-text"></i> Labels
+        </button>
+        <button type="button"
+                class="btn-icon"
+                hx-post="{% url 'case:caselaws-bulk-delete' matter.id %}"
+                hx-confirm="Delete {{ selected_caselaws|length }} selected case(s)? This cannot be undone."
                 hx-swap="none">
-          <i class="icon-x bulk-clear-icon"></i>
+          <i class="icon-trash-2"></i>
         </button>
       </div>
     {% else %}
