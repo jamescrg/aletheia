@@ -27,15 +27,15 @@
           <span><i class="icon-flag with-text"></i>
           {% if priority_value %}
             {% if priority_value == 5 %}
-              <i class="icon-chevrons-up"></i> Only
+              Highest
             {% elif priority_value == 4 %}
-              <i class="icon-chevron-up"></i> And above
+              High
             {% elif priority_value == 3 %}
-              <i class="icon-equal"></i> And above
+              Normal
             {% elif priority_value == 2 %}
-              <i class="icon-chevron-down"></i> And above
+              Low
             {% else %}
-              <i class="icon-chevrons-down"></i> And above
+              Lowest
             {% endif %}
           {% else %}
             Priority
@@ -55,35 +55,28 @@
              href="#"
              hx-post="{% url 'tasks:filter-priority' 5 %}"
              hx-target="#tasks"
-             hx-swap="#outerHTML"><i class="icon-chevrons-up priority-5"></i> Only</a>
+             hx-swap="#outerHTML"><i class="icon-chevrons-up priority-5"></i> Highest</a>
         </li>
         <li>
           <a class="dropdown-item {% if priority_value == 4 %}active{% endif %}"
              href="#"
              hx-post="{% url 'tasks:filter-priority' 4 %}"
              hx-target="#tasks"
-             hx-swap="#outerHTML"><i class="icon-chevron-up priority-4"></i> And above</a>
+             hx-swap="#outerHTML"><i class="icon-chevron-up priority-4"></i> High</a>
         </li>
         <li>
           <a class="dropdown-item {% if priority_value == 3 %}active{% endif %}"
              href="#"
              hx-post="{% url 'tasks:filter-priority' 3 %}"
              hx-target="#tasks"
-             hx-swap="#outerHTML"><i class="icon-equal"></i> And above</a>
+             hx-swap="#outerHTML"><i class="icon-equal"></i> Normal</a>
         </li>
         <li>
           <a class="dropdown-item {% if priority_value == 2 %}active{% endif %}"
              href="#"
              hx-post="{% url 'tasks:filter-priority' 2 %}"
              hx-target="#tasks"
-             hx-swap="#outerHTML"><i class="icon-chevron-down priority-2"></i> And above</a>
-        </li>
-        <li>
-          <a class="dropdown-item {% if priority_value == 1 %}active{% endif %}"
-             href="#"
-             hx-post="{% url 'tasks:filter-priority' 1 %}"
-             hx-target="#tasks"
-             hx-swap="#outerHTML"><i class="icon-chevrons-down priority-1"></i> And above</a>
+             hx-swap="#outerHTML"><i class="icon-chevron-down priority-2"></i> Low</a>
         </li>
         <li>
           <a class="dropdown-item {% if not priority_value %}active{% endif %}"
