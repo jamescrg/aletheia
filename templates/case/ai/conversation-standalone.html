@@ -65,18 +65,20 @@
         <span class="app-badge badge-purple">{{ matter.name }}</span>
         <h1 id="conversationTitle">{{ conversation.title }}</h1>
         <span class="app-badge badge-lg ai-llm-{{ conversation.llm }}">{{ conversation.get_llm_display }}</span>
+      </header>
+      <div class="ai-chat-scroll">
         {% if conversation.summary %}
           <div class="ai-conversation-summary">
             <h3>Conversation Summary</h3>
             <p>{{ conversation.summary }}</p>
           </div>
         {% endif %}
-      </header>
-      <div id="messageContainer"
-           class="ai-messages"
-           hx-get="{% url 'case:ai-messages' matter.id %}?conversation_id={{ conversation.id }}"
-           hx-trigger="messagesUpdated from:body"
-           hx-swap="innerHTML">{% include "case/ai/messages.html" %}</div>
+        <div id="messageContainer"
+             class="ai-messages"
+             hx-get="{% url 'case:ai-messages' matter.id %}?conversation_id={{ conversation.id }}"
+             hx-trigger="messagesUpdated from:body"
+             hx-swap="innerHTML">{% include "case/ai/messages.html" %}</div>
+      </div>
       <div class="ai-input-container">
         <div id="attachmentsList">
           {% if not is_new %}
@@ -135,7 +137,7 @@
 
     function scrollMessagesToBottom() {
       setTimeout(() => {
-        const container = document.getElementById('messageContainer');
+        const container = document.querySelector('.ai-chat-scroll');
         if (container) {
           container.scrollTop = container.scrollHeight;
         }

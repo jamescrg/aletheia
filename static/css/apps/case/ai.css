@@ -35,7 +35,7 @@
 .ai-conversation-summary {
   background: var(--background-section);
   border-radius: var(--radius-md);
-  flex-basis: 100%;
+  margin: 1rem 1rem 0;
   padding: 0.75rem 1rem;
 }
 
@@ -582,10 +582,13 @@
 }
 
 /* Messages */
-.ai-messages {
+.ai-chat-scroll {
   background: var(--stone-50);
   flex: 1;
   overflow-y: auto;
+}
+
+.ai-messages {
   padding: 1rem;
 }
 
