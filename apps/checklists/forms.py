@@ -24,7 +24,6 @@ class ChecklistFolderForm(forms.ModelForm):
                 attrs={
                     "class": "form-control",
                     "placeholder": "Folder name",
-                    "autofocus": True,
                     "onfocus": "moveFocusToEnd(this)",
                 }
             ),

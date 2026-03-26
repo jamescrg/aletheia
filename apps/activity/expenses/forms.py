@@ -44,7 +44,6 @@ class ExpenseEntryForm(forms.ModelForm):
             "date": forms.DateInput(attrs={"type": "date"}),
             "description": forms.Textarea(
                 attrs={
-                    "autofocus": "autofocus",
                     "onfocus": "moveFocusToEnd(this)",
                     "rows": "3",
                     "class": "span2",

@@ -38,7 +38,6 @@ class TransactionForm(forms.ModelForm):
             "type": forms.Select(choices=TYPE_CHOICES),
             "description": forms.Textarea(
                 attrs={
-                    "autofocus": "autofocus",
                     "onfocus": "moveFocusToEnd(this)",
                     "class": "span2",
                     "rows": 3,

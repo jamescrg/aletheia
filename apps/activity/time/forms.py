@@ -34,7 +34,6 @@ class TimeEntryForm(forms.ModelForm):
             "date": forms.DateInput(attrs={"type": "date"}),
             "actions": forms.Textarea(
                 attrs={
-                    "autofocus": "autofocus",
                     "onfocus": "moveFocusToEnd(this)",
                     "rows": "3",
                     "class": "span2",
@@ -61,7 +60,6 @@ class AbbreviationCodeForm(forms.ModelForm):
             "code": forms.TextInput(
                 attrs={
                     "placeholder": "e.g., 'conf ' or ' MSJ'",
-                    "autofocus": "autofocus",
                 }
             ),
             "expansion": forms.TextInput(

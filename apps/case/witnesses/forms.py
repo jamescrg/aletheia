@@ -32,7 +32,6 @@ class WitnessForm(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(
                 attrs={
-                    "autofocus": "autofocus",
                     "class": "span2",
                 }
             ),

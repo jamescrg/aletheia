@@ -189,7 +189,6 @@ function initEditor() {
       SearchHighlight,
     ],
     content: initialContent,
-    autofocus: true,
     onUpdate() {
       scheduleAutosave();
       scheduleOutlineUpdate();

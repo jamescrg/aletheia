@@ -53,7 +53,6 @@ export function initPromptEditor(container) {
       }),
     ],
     content: "",
-    autofocus: true,
   });
 
   // Set up toolbar buttons

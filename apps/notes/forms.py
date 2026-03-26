@@ -12,7 +12,7 @@ class NoteForm(forms.ModelForm):
         model = Note
         fields = ["title"]
         widgets = {
-            "title": forms.TextInput(attrs={"autofocus": True, "class": "span2"}),
+            "title": forms.TextInput(attrs={"class": "span2"}),
         }
 
 
@@ -26,7 +26,6 @@ class NoteFolderForm(forms.ModelForm):
                 attrs={
                     "class": "form-control",
                     "placeholder": "Folder name",
-                    "autofocus": True,
                     "onfocus": "moveFocusToEnd(this)",
                 }
             ),

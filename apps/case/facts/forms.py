@@ -31,7 +31,6 @@ class FactForm(forms.ModelForm):
             ),
             "description": forms.Textarea(
                 attrs={
-                    "autofocus": "autofocus",
                     "onfocus": "moveFocusToEnd(this)",
                     "class": "span2",
                     "rows": 3,

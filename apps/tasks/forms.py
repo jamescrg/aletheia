@@ -41,7 +41,6 @@ class TaskForm(forms.ModelForm):
         widgets = {
             "description": forms.TextInput(
                 attrs={
-                    "autofocus": "autofocus",
                     "onfocus": "moveFocusToEnd(this)",
                     "class": "span3",
                 }

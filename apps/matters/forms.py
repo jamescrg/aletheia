@@ -30,7 +30,6 @@ class MatterForm(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(
                 attrs={
-                    "autofocus": "autofocus",
                     "onfocus": "moveFocusToEnd(this)",
                     "class": "span2",
                 }

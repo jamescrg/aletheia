@@ -14,7 +14,7 @@ class NoteForm(forms.ModelForm):
         widgets = {
             "matter": forms.Select(),
             "category": forms.Select(),
-            "title": forms.TextInput(attrs={"autofocus": True, "class": "span2"}),
+            "title": forms.TextInput(attrs={"class": "span2"}),
         }
 
     def __init__(self, *args, **kwargs):
