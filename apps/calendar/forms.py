@@ -38,7 +38,6 @@ class EventForm(forms.ModelForm):
             "end_time": forms.TimeInput(attrs={"type": "time"}),
             "description": forms.TextInput(
                 attrs={
-                    "autofocus": "autofocus",
                     "onfocus": "moveFocusToEnd(this)",
                     "class": "span2",
                 }

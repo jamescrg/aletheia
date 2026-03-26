@@ -1,6 +1,5 @@
 <div>
-  <input autofocus
-         class="edit-matter-work-status-input"
+  <input class="edit-matter-work-status-input"
          type="text"
          name="work_status"
          hx-post="{% url 'matters:update-work-status' id=matter.id %}"

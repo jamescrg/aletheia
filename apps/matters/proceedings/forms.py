@@ -29,9 +29,7 @@ class ProceedingForm(forms.ModelForm):
         )
 
         widgets = {
-            "forum": forms.TextInput(
-                attrs={"autofocus": "autofocus", "onfocus": "moveFocusToEnd(this)"}
-            ),
+            "forum": forms.TextInput(attrs={"onfocus": "moveFocusToEnd(this)"}),
             "nickname": forms.TextInput(
                 attrs={"placeholder": "Main, Appeal, Garnishment, etc. . . ."}
             ),

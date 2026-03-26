@@ -9,7 +9,7 @@ class VerificationCodeForm(forms.Form):
         max_length=6,
         min_length=6,
         label="",
-        widget=forms.TextInput(attrs={"autocomplete": "off", "autofocus": True}),
+        widget=forms.TextInput(attrs={"autocomplete": "off"}),
     )
 
 

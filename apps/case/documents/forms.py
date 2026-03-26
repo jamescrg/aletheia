@@ -38,7 +38,7 @@ class FilesForm(forms.ModelForm):
         ]
         widgets = {
             "date": forms.DateInput(attrs={"type": "date"}),
-            "name": forms.TextInput(attrs={"class": "span2", "autofocus": True}),
+            "name": forms.TextInput(attrs={"class": "span2"}),
             "description": forms.Textarea(attrs={"class": "span2", "rows": 2}),
             "ai_context": forms.Select(),
         }

@@ -28,9 +28,7 @@ class HighlightForm(forms.ModelForm):
             "importance": forms.Select(choices=IMPORTANCE_CHOICES),
             "paragraph_number": forms.TextInput(),
             "page_number": forms.TextInput(),
-            "slug": forms.TextInput(
-                attrs={"class": "span3", "required": True, "autofocus": True}
-            ),
+            "slug": forms.TextInput(attrs={"class": "span3", "required": True}),
             "text": forms.Textarea(attrs={"class": "span3", "rows": 8}),
         }
 

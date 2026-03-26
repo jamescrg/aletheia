@@ -9,7 +9,7 @@ class ActivityLabelForm(forms.ModelForm):
         model = ActivityLabel
         fields = ["name", "color"]
         widgets = {
-            "name": forms.TextInput(attrs={"class": "span2", "autofocus": True}),
+            "name": forms.TextInput(attrs={"class": "span2"}),
             "color": forms.Select(attrs={"class": "span1"}),
         }
 

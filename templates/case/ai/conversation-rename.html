@@ -6,7 +6,6 @@
          name="title"
          value="{{ conversation.title }}"
          class="ai-rename-input"
-         autofocus
          onkeydown="if(event.key === 'Escape') { htmx.trigger(document.body, 'conversationRenameCancel'); }">
   <button type="submit" class="ai-rename-save" title="Save">
     <i class="icon-check"></i>

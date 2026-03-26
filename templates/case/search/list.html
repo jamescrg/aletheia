@@ -11,8 +11,7 @@
                hx-post="{% url 'case:search-query' matter.id %}"
                hx-target="#search-results"
                hx-trigger="keyup changed delay:500ms"
-               hx-include="#search-query-input, .search-scope-checkbox"
-               autofocus>
+               hx-include="#search-query-input, .search-scope-checkbox">
         <span class="search-input-icon"><i class="icon-search"></i></span>
       </div>
       <div id="search-result-count" class="search-result-count">

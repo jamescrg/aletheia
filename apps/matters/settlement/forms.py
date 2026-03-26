@@ -36,7 +36,6 @@ class SettlementEntryForm(forms.ModelForm):
             "type": forms.Select(choices=ENTRY_TYPES),
             "notes": forms.Textarea(
                 attrs={
-                    "autofocus": "autofocus",
                     "onfocus": "moveFocusToEnd(this)",
                     "class": "span2",
                     "rows": 3,

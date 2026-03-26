@@ -352,3 +352,30 @@
 #note-editor .search-match-current {
   background: var(--amber-300);
 }
+
+/* Shortcuts modal */
+
+.shortcuts-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.shortcuts-table th,
+.shortcuts-table td {
+  border: 1px solid var(--border-medium);
+  padding: 0.75rem 0.75rem;
+}
+
+.shortcuts-table th {
+  background: var(--background-subnav);
+  text-align: left;
+}
+
+.shortcuts-table kbd {
+  background: var(--background-control);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.1rem 0.35rem;
+}
