@@ -435,8 +435,18 @@ i.priority-1 {
   to { background-color: transparent; }
 }
 
+@keyframes task-highlight-fade-pastdue {
+  from { background-color: var(--selected-background); }
+  to { background-color: var(--yellow-50); }
+}
+
 .task-new-highlight td {
   animation: task-highlight-fade 2s ease-out;
+}
+
+.task-new-highlight.past-due td {
+  animation: task-highlight-fade-pastdue 2s ease-out;
+  background-color: var(--yellow-50);
 }
 
 
