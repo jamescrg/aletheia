@@ -3,8 +3,9 @@
 {% block content %}
   {% load humanize %}
   <div id="content" class="container content">
-    <div id="time"
-         hx-trigger="load, invoiceDetailChanged from:body"
+    <div class="detail"
+         id="invoice-detail"
+         hx-trigger="invoiceDetailChanged from:body"
          hx-get="{% url 'invoicing:invoices-detail' invoice.id %}"
          hx-target="this">{% include "invoicing/invoices/detail/detail.html" %}</div>
   </div>
