@@ -108,21 +108,22 @@ def ai_index(request, matter_id):
                 group="summary_generation",
             )
 
-    # Backfill: queue summary generation for conversations missing summaries
+    # Backfill: generate summaries for conversations missing them
     convos_needing_summary = Conversation.objects.filter(
         matter=matter,
         summary__isnull=True,
     ).exclude(messages=None)
     if convos_needing_summary.exists():
-        from django_q.tasks import async_task as async_task_conv
+        import threading
+
+        from .tasks import generate_conversation_summary
 
         for conv in convos_needing_summary[:20]:
-            async_task_conv(
-                "apps.case.ai.tasks.generate_conversation_summary",
-                conv.id,
-                task_name=f"ConvSummary-{conv.id}",
-                group="conversation_summary",
-            )
+            threading.Thread(
+                target=generate_conversation_summary,
+                args=(conv.id,),
+                daemon=True,
+            ).start()
 
     context = {
         "app": "matters",
@@ -423,18 +424,16 @@ def ai_status(request, conv_id):
         # Update conversation timestamp
         conversation.save()
 
-        # Generate conversation summary async
-        try:
-            from django_q.tasks import async_task
+        # Generate conversation summary in background thread
+        import threading
 
-            async_task(
-                "apps.case.ai.tasks.generate_conversation_summary",
-                conversation.id,
-                task_name=f"ConvSummary-{conversation.id}",
-                group="conversation_summary",
-            )
-        except Exception:
-            logger.warning("Failed to queue conversation summary task")
+        from .tasks import generate_conversation_summary
+
+        threading.Thread(
+            target=generate_conversation_summary,
+            args=(conversation.id,),
+            daemon=True,
+        ).start()
 
         # Clear the cache
         cache.delete(cache_key)
