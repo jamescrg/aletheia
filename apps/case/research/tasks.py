@@ -21,7 +21,7 @@ from .courtlistener import (
     search_opinions,
 )
 from .jurisdictions import get_court_ids
-from .models import CitationVerification, ResearchQuery, ResearchResult
+from .models import CaseBrief, CitationVerification, ResearchQuery, ResearchResult
 
 logger = logging.getLogger(__name__)
 
@@ -129,7 +129,8 @@ def _refine_query(query_id):
         '- Use OR groups for genuinely different terms or phrases (e.g. suit OR action OR "cause of action")\n'
         "- Use proximity operators on quoted phrases for multi-word concepts\n"
         "- Group related concepts with parentheses and connect groups with AND\n"
-        "- Keep the query under 3 levels of nesting to avoid complexity issues\n\n"
+        "- Keep the query under 3 levels of nesting to avoid complexity issues\n"
+        "- Keep the query concise — 120 characters or fewer\n\n"
         "Example input: Can a joint tenant with right of survivorship file an "
         "equitable partition suit?\n"
         'Example output: ("joint tenancy" OR "joint tenant") '
@@ -718,3 +719,89 @@ def _get_opinion_metadata(opinion_id):
     except Exception:
         logger.exception("Error fetching opinion metadata for %s", opinion_id)
         return {}
+
+
+def generate_brief(brief_id):
+    """Run case brief generation in a background daemon thread."""
+    thread = threading.Thread(target=_generate_brief, args=(brief_id,), daemon=True)
+    thread.start()
+
+
+def _get_opinion_text(cluster_id):
+    """Fetch opinion plain text from CourtListener given a cluster_id."""
+    cluster = fetch_cluster(cluster_id)
+    if not cluster:
+        return ""
+
+    sub_opinions = cluster.get("sub_opinions", [])
+    if not sub_opinions:
+        return ""
+
+    try:
+        opinion_id = int(sub_opinions[0].rstrip("/").split("/")[-1])
+    except (ValueError, IndexError):
+        return ""
+
+    opinion = fetch_opinion(opinion_id)
+    return opinion.plain_text if opinion.found else ""
+
+
+def _generate_brief(brief_id):
+    """Generate an AI case brief from the opinion text."""
+    try:
+        brief = CaseBrief.objects.get(pk=brief_id)
+    except CaseBrief.DoesNotExist:
+        return
+
+    CaseBrief.objects.filter(pk=brief_id).update(status="generating")
+
+    try:
+        # Get opinion text — try the linked result first, otherwise fetch fresh
+        opinion_text = ""
+        if brief.result and brief.result.opinion_text:
+            opinion_text = brief.result.opinion_text
+        elif brief.cluster_id:
+            opinion_text = _get_opinion_text(brief.cluster_id)
+
+        if not opinion_text:
+            CaseBrief.objects.filter(pk=brief_id).update(
+                status="error", brief="Could not retrieve opinion text."
+            )
+            return
+
+        truncated = opinion_text[:15000]
+
+        system_prompt = "You are a legal research assistant. Write clear, well-structured case briefs."
+
+        research_context = ""
+        if brief.query_text:
+            research_context = (
+                f"The user is researching: {brief.query_text}\n"
+                f"Focus the brief on the aspects of this case that are relevant to "
+                f"that research question. Frame the issue, holding, and reasoning "
+                f"in terms of how they relate to the research question.\n\n"
+            )
+
+        user_prompt = (
+            f"Write a law school-style case brief for the following case. "
+            f"Use exactly these four markdown headings: ## Facts, ## Issue, ## Holding, ## Reasoning\n\n"
+            f"{research_context}"
+            f"Keep each section concise and focused.\n\n"
+            f"Case: {brief.case_name}\n"
+            f"Citation: {brief.citation}\n"
+            f"Court: {brief.court}\n"
+            f"Date: {brief.date_filed}\n\n"
+            f"Opinion Text:\n{truncated}"
+        )
+
+        response_text, _, _ = send_to_gemini(
+            system_prompt, [{"role": "user", "content": user_prompt}]
+        )
+
+        CaseBrief.objects.filter(pk=brief_id).update(
+            brief=response_text.strip(), status="complete"
+        )
+
+    except Exception:
+        logger.exception("Error generating case brief %s", brief_id)
+        CaseBrief.objects.filter(pk=brief_id).update(status="error")

@@ -126,3 +126,42 @@ class CitationVerification(AuditMixin):
 
     def __str__(self):
         return f"Verification {self.position}: {self.case_name[:50]}"
+
+
+BRIEF_STATUS_CHOICES = [
+    ("pending", "Pending"),
+    ("generating", "Generating"),
+    ("complete", "Complete"),
+    ("error", "Error"),
+]
+
+
+class CaseBrief(AuditMixin):
+    matter = models.ForeignKey(
+        "matters.Matter",
+        on_delete=models.CASCADE,
+        related_name="case_briefs",
+    )
+    result = models.ForeignKey(
+        ResearchResult,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="case_briefs",
+    )
+    case_name = models.CharField(max_length=500, blank=True, default="")
+    citation = models.CharField(max_length=300, blank=True, default="")
+    court = models.CharField(max_length=200, blank=True, default="")
+    date_filed = models.CharField(max_length=20, blank=True, default="")
+    cluster_id = models.IntegerField(null=True, blank=True)
+    query_text = models.TextField(blank=True, default="")
+    brief = models.TextField(blank=True, default="")
+    status = models.CharField(
+        max_length=20, choices=BRIEF_STATUS_CHOICES, default="pending"
+    )
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Brief: {self.case_name[:50]}"

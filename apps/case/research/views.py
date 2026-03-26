@@ -13,9 +13,10 @@ from apps.case.views import get_matter_from_url, set_last_tab
 
 from .courtlistener import count_forward_citations
 from .jurisdictions import STATES
-from .models import CitationVerification, ResearchQuery, ResearchResult
+from .models import CaseBrief, CitationVerification, ResearchQuery, ResearchResult
 from .tasks import (
     assess_single_citation,
+    generate_brief,
     process_research_query,
     refine_research_query,
     review_more_citations,
@@ -521,4 +522,102 @@ def research_save_to_caselaws(request, result_id):
         request,
         "case/research/result-row.html",
         {"result": result, "matter": matter, "saved_to_caselaws": True},
+    )
+
+
+# ── Abstracts (Case Briefs) ──────────────────────────────────────────────
+
+
+@login_required
+def research_abstracts_tab(request, matter_id):
+    """HTMX partial for the Abstracts sub-tab content."""
+    matter, _ = get_matter_from_url(request, matter_id)
+
+    briefs = CaseBrief.objects.filter(matter=matter, created_by=request.user)
+
+    context = {
+        "matter": matter,
+        "research_tab": "abstracts",
+        "briefs": briefs,
+    }
+
+    return render(request, "case/research/list.html", context)
+
+
+@login_required
+def research_save_brief(request, result_id):
+    """POST: generate a case brief from a research result."""
+    if request.method != "POST":
+        return HttpResponse(status=405)
+
+    result = get_object_or_404(
+        ResearchResult, pk=result_id, query__created_by=request.user
+    )
+    matter = result.query.matter
+
+    # Check for duplicate by cluster_id
+    if result.cluster_id:
+        existing = CaseBrief.objects.filter(
+            matter=matter, cluster_id=result.cluster_id
+        ).first()
+        if existing:
+            return render(
+                request,
+                "case/research/result-row.html",
+                {"result": result, "matter": matter, "brief_saved": True},
+            )
+
+    brief = CaseBrief.objects.create(
+        matter=matter,
+        result=result,
+        case_name=result.case_name,
+        citation=result.citation,
+        court=result.court,
+        date_filed=result.date_filed,
+        cluster_id=result.cluster_id,
+        query_text=result.query.query_text,
+        created_by=request.user,
+        updated_by=request.user,
+    )
+
+    generate_brief(brief.id)
+
+    return render(
+        request,
+        "case/research/result-row.html",
+        {
+            "result": result,
+            "matter": matter,
+            "brief_generating": True,
+            "brief_id": brief.id,
+        },
+    )
+
+
+@login_required
+def research_brief_status(request, brief_id):
+    """Poll for brief generation status."""
+    brief = get_object_or_404(CaseBrief, pk=brief_id, created_by=request.user)
+    return render(
+        request,
+        "case/research/brief-status.html",
+        {"brief": brief},
+    )
+
+
+@login_required
+def research_delete_brief(request, brief_id):
+    """POST: delete a case brief."""
+    if request.method != "POST":
+        return HttpResponse(status=405)
+
+    brief = get_object_or_404(CaseBrief, pk=brief_id, created_by=request.user)
+    matter = brief.matter
+    brief.delete()
+
+    briefs = CaseBrief.objects.filter(matter=matter, created_by=request.user)
+    return render(
+        request,
+        "case/research/list.html",
+        {"matter": matter, "research_tab": "abstracts", "briefs": briefs},
     )

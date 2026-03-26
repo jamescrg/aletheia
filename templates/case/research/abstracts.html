@@ -1,0 +1,43 @@
+{% load markdown_extras %}
+{% if briefs %}
+  <div class="research-briefs-list">
+    {% for brief in briefs %}
+      <div class="research-card" id="brief-{{ brief.id }}">
+        <div class="research-card-header">
+          <div class="research-card-title">{{ brief.case_name }}</div>
+          <div class="research-card-actions">
+            {% if brief.status == "generating" or brief.status == "pending" %}
+              <span class="app-badge app-badge-sm"
+                    hx-get="{% url 'case:research-abstracts-tab' matter.id %}"
+                    hx-trigger="load delay:3s"
+                    hx-target="#research"
+                    hx-swap="innerHTML">
+                <i class="icon-loader spin"></i> Generating...
+              </span>
+            {% elif brief.status == "error" %}
+              <span class="app-badge app-badge-sm badge-red">Error</span>
+            {% endif %}
+            <form hx-post="{% url 'case:research-delete-brief' brief.id %}"
+                  hx-target="#research"
+                  hx-swap="innerHTML"
+                  hx-confirm="Delete this case brief?">
+              <button type="submit" class="btn btn-icon" title="Delete brief">
+                <i class="icon-trash-2"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        <div class="research-card-citation">
+          {% if brief.citation %}{{ brief.citation }} &middot;{% endif %}
+          {{ brief.court }}
+          {% if brief.date_filed %}({{ brief.date_filed }}){% endif %}
+        </div>
+        {% if brief.brief %}<div class="research-brief-content">{{ brief.brief|render_markdown }}</div>{% endif %}
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="research-empty-state">
+    No case briefs yet. Use the "Save Brief" button on search results to generate one.
+  </div>
+{% endif %}

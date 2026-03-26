@@ -64,6 +64,26 @@
           <i class="icon-plus"></i> Save to Case Law
         </button>
       {% endif %}
+      {% if brief_saved %}
+        <span class="research-saved-badge">
+          <i class="icon-check"></i> Brief Saved
+        </span>
+      {% elif brief_generating %}
+        <span class="research-status-msg"
+              hx-get="{% url 'case:research-brief-status' brief_id %}"
+              hx-trigger="load delay:3s"
+              hx-target="this"
+              hx-swap="outerHTML">
+          <i class="icon-loader spin"></i> Generating Brief...
+        </span>
+      {% elif result.cluster_id %}
+        <button class="btn"
+                hx-post="{% url 'case:research-save-brief' result.id %}"
+                hx-target="#result-{{ result.id }}"
+                hx-swap="outerHTML">
+          <i class="icon-file-text"></i> Save Brief
+        </button>
+      {% endif %}
       {% if result.verify_status == "none" and result.forward_citation_count %}
         <form hx-post="{% url 'case:research-review' result.id %}"
               hx-target="#research"

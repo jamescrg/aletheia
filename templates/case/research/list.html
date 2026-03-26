@@ -6,7 +6,7 @@
        hx-target="#research"
        hx-swap="innerHTML">History</a>
     <a href="#"
-       class="research-internal-tab{% if research_tab == 'search' %} active{% endif %}"
+       class="research-internal-tab{% if research_tab == 'search' or not research_tab %} active{% endif %}"
        hx-get="{% url 'case:research-search-tab' matter.id %}"
        hx-target="#research"
        hx-swap="innerHTML">Search</a>
@@ -16,10 +16,15 @@
        hx-target="#research"
        hx-swap="innerHTML">Validate</a>
     <a href="#"
+       class="research-internal-tab{% if research_tab == 'abstracts' %} active{% endif %}"
+       hx-get="{% url 'case:research-abstracts-tab' matter.id %}"
+       hx-target="#research"
+       hx-swap="innerHTML">Case Briefs</a>
+    <a href="#"
        class="research-internal-tab{% if research_tab == 'caselaws' %} active{% endif %}"
        hx-get="{% url 'case:research-caselaws-tab' matter.id %}"
        hx-target="#research"
-       hx-swap="innerHTML">Case Law</a>
+       hx-swap="innerHTML">Full Cases</a>
   </nav>
 </div>
 <div id="research-tab-content">
@@ -29,6 +34,8 @@
     {% include "case/research/review.html" %}
   {% elif research_tab == "caselaws" %}
     {% include "case/research/caselaws.html" %}
+  {% elif research_tab == "abstracts" %}
+    {% include "case/research/abstracts.html" %}
   {% else %}
     {% include "case/research/search.html" %}
   {% endif %}
