@@ -4,7 +4,7 @@
       <div class="filter-tools">
         <div class="dropdown" x-data="dropdown()">
           <button type="button"
-                  class="btn-icon toggle-active"
+                  class="btn-icon"
                   x-ref="button"
                   @click="toggle()"
                   :aria-expanded="open">
@@ -46,7 +46,7 @@
           </ul>
         </div>
         <button type="button"
-                class="btn-icon toggle-active"
+                class="btn-icon"
                 hx-post="{% url 'case:caselaws-clear-selection' matter.id %}"
                 hx-swap="none">
           <i class="icon-x"></i> Clear

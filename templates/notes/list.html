@@ -4,13 +4,13 @@
       <div class="filter-tools">
         {% include "notes/bulk-toolbar.html" %}
         <button type="button"
-                class="btn-icon toggle-active"
+                class="btn-icon"
                 hx-get="{% url 'notes:bulk-move' %}"
                 hx-target="#htmx-modal-container">
           <i class="icon-arrow-right with-text"></i> Move ({{ selected_notes|length }})
         </button>
         <button type="button"
-                class="btn-icon toggle-active"
+                class="btn-icon"
                 hx-post="{% url 'notes:bulk-delete' %}"
                 hx-confirm="Delete {{ selected_notes|length }} selected note(s)? This cannot be undone."
                 hx-swap="none">
