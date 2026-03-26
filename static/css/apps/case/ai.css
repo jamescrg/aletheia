@@ -33,12 +33,24 @@
 }
 
 .ai-conversation-summary {
-  color: var(--color-muted);
+  background: var(--background-section);
+  border-radius: var(--radius-md);
   flex-basis: 100%;
+  padding: 0.75rem 1rem;
+}
+
+.ai-conversation-summary h3 {
+  color: var(--color-muted);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+}
+
+.ai-conversation-summary p {
+  color: var(--color-primary);
   font-size: 1rem;
   line-height: 1.5;
   margin: 0;
-  padding: 0.25rem 0;
 }
 
 .ai-chat-sidebar {
