@@ -4,24 +4,29 @@
     <div class="toolbar-left">
       {% if selected_time %}
         <div class="filter-tools">
-          <div class="dropdown" x-data="dropdown()">
-            <button type="button"
-                    class="btn-icon"
-                    x-ref="button"
-                    @click="toggle()"
-                    :aria-expanded="open">
-              Actions ({{ selected_time|length }})
-              <small><i class="icon-chevron-down"></i></small>
-            </button>
-            <ul class="dropdown-menu" x-ref="menu" x-show="open" @click="close()">
-              {% include "activity/time/bulk-actions.html" %}
-            </ul>
-          </div>
           <button type="button"
                   class="btn-icon toggle-active"
                   hx-post="{% url 'activity:time-clear-selection' %}"
                   hx-swap="none">
-            <i class="icon-x bulk-clear-icon"></i>
+            {{ selected_time|length }} <i class="icon-x bulk-clear-icon"></i>
+          </button>
+          <button type="button"
+                  class="btn-icon"
+                  hx-get="{% url 'activity:time-bulk-update-matter' %}"
+                  hx-target="#htmx-modal-container">
+            <i class="icon-folder with-text"></i> Matter
+          </button>
+          <button type="button"
+                  class="btn-icon"
+                  hx-get="{% url 'activity:time-bulk-update-comp' %}"
+                  hx-target="#htmx-modal-container">
+            <i class="icon-check with-text"></i> Comp
+          </button>
+          <button type="button"
+                  class="btn-icon"
+                  hx-get="{% url 'activity:time-bulk-apply-labels' %}"
+                  hx-target="#htmx-modal-container">
+            <i class="icon-tag with-text"></i> Labels
           </button>
         </div>
       {% else %}
