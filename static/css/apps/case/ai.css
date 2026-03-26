@@ -41,8 +41,9 @@
 
 .ai-conversation-summary h3 {
   color: var(--color-muted);
+  font-size: 1.15rem;
   font-weight: 600;
-  margin: 0 0 0.25rem;
+  margin: 0 0 1rem;
 }
 
 .ai-conversation-summary p {
@@ -263,7 +264,7 @@
 
 .ai-conversations-table th.reference,
 .ai-conversations-table td.reference {
-  text-align: center;
+  text-align: left;
   width: 6rem;
 }
 

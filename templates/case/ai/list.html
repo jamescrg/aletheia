@@ -121,7 +121,14 @@
           <i class="icon-chevrons-up-down"></i>
         </button>
       </th>
-      <th class="reference">AI</th>
+      <th class="reference">
+        AI
+        <button class="btn-sort {% if 'ai_context' in current_order %}active{% endif %}"
+                hx-get="{% url 'case:ai-sort' matter.id 'ai_context' %}"
+                hx-target="#ai-conversations">
+          <i class="icon-chevrons-up-down"></i>
+        </button>
+      </th>
     </tr>
     {% for conv in conversations %}
       <tr class="ai-conversation-row">

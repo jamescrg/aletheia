@@ -68,6 +68,7 @@ class FilesFilter(django_filters.FilterSet):
             ("created_at", "created_at"),
             ("date", "date"),
             ("importance", "importance"),
+            ("ai_context", "ai_context"),
         ],
         label="Order By",
     )

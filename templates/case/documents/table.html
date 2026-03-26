@@ -41,7 +41,14 @@
           <i class="icon-chevrons-up-down"></i>
         </button>
       </th>
-      <th class="col-ai">AI</th>
+      <th class="col-ai">
+        AI
+        <button class="btn-sort {% if 'ai_context' in current_order %}active{% endif %}"
+                hx-get="{% url 'case:documents-sort' matter.id 'ai_context' %}"
+                hx-target="#documents">
+          <i class="icon-chevrons-up-down"></i>
+        </button>
+      </th>
       <th class="col-importance">
         <button class="btn-sort {% if 'importance' in current_order %}active{% endif %}"
                 hx-get="{% url 'case:documents-sort' matter.id '-importance' %}"

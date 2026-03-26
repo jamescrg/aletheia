@@ -36,7 +36,7 @@
 }
 
 #documents-list .col-ai {
-  text-align: center;
+  text-align: left;
   width: 6rem;
 }
 
@@ -322,7 +322,7 @@
 }
 
 #caselaws-table .col-ai {
-  text-align: center;
+  text-align: left;
   width: 6rem;
 }
 
