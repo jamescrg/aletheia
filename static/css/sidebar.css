@@ -126,7 +126,7 @@
 }
 
 .sidebar-collapsed .sidebar-header {
-  padding: 0.875rem 0;
+  padding: 1rem 0;
 }
 
 .sidebar-collapsed .sidebar-brand {
@@ -134,12 +134,12 @@
 }
 
 .sidebar-collapsed .sidebar-nav {
-  padding: 0 0.25rem;
+  padding: 0 0.5rem;
 }
 
 .sidebar-collapsed .sidebar-nav li a {
   justify-content: center;
-  padding: 0.625rem;
+  padding: 0.5rem;
 }
 
 
