@@ -52,7 +52,7 @@
      Sidebar
      ========================================================================== */
   --sidebar-width: 15rem;
-  --sidebar-width-collapsed: 3.5rem;
+  --sidebar-width-collapsed: 4rem;
   --background-sidebar: var(--stone-175);
   --background-sidebar-hover: var(--stone-225);
   --background-sidebar-active: var(--stone-250);
@@ -86,7 +86,7 @@
      ========================================================================== */
   --selected-background: var(--violet-100);
   --selected-color: var(--stone-700);
-  --selected-border: var(--stone-300);
+  --selected-border: var(--border-medium);
 
   /* ==========================================================================
      Status & Feedback
