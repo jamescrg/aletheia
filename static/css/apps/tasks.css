@@ -229,18 +229,13 @@ i.priority-1 {
   white-space: normal;
 }
 
-.tasks-table td.description {
-  align-items: baseline;
-  display: flex;
-}
-
 .tasks-table td.description > a:first-child {
   min-width: 0;
 }
 
 .task-decorators {
-  flex-shrink: 0;
-  margin-left: auto;
+  float: right;
+  margin-left: 0.5rem;
 }
 
 .tasks-table .status {

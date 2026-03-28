@@ -62,7 +62,6 @@ Labels cards layout (Labels tab)
 }
 
 .labels-cards .card {
-  background: var(--background-light);
   flex: 1;
   min-width: 20rem;
 }

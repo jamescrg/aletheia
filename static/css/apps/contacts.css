@@ -379,12 +379,13 @@ body.contacts-page .content {
 
 /* Empty State */
 .contact-empty-state {
-  background-color: var(--background-light);
-  border: 1px dashed var(--border-medium);
-  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
   color: var(--color-muted);
+  display: grid;
+  min-height: 100%;
   padding: 2.5rem 1.25rem;
-  text-align: center;
+  place-items: center;
 }
 
 .btn-delete-contacts {

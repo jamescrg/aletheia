@@ -94,13 +94,13 @@
 
 .sidebar-nav li a:hover {
   background: var(--background-sidebar-hover);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
 }
 
 .sidebar-nav li.active a {
   background: var(--selected-background);
   border: solid 1px var(--selected-border);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   color: var(--selected-color);
 }
 
@@ -158,7 +158,7 @@
 
 .sidebar-collapsed .sidebar-nav li a::after {
   background: var(--stone-700);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   color: var(--stone-100);
   content: attr(data-tooltip);
   font-size: 0.8125rem;

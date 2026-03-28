@@ -5,7 +5,7 @@
     <div class="notes-layout">
       <div id="note-folders" class="notes-sidebar">{% include "note_folders/list.html" %}</div>
       <div id="notes"
-           class="notes-content"
+           class="card"
            hx-trigger="notesChanged from:body"
            hx-get="{% url 'notes:list' %}"
            hx-target="this">{% include "notes/list.html" %}</div>

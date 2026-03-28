@@ -75,7 +75,7 @@ Detail Layout (header / subnav / body)
 .subnav .active {
   background: var(--selected-background);
   border: solid 1px var(--selected-border);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   color: var(--selected-color);
 }
 
