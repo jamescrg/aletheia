@@ -52,7 +52,7 @@
      Sidebar
      ========================================================================== */
   --sidebar-width: 15rem;
-  --sidebar-width-collapsed: 4rem;
+  --sidebar-width-collapsed: 4.5rem;
   --background-sidebar: var(--stone-175);
   --background-sidebar-hover: var(--stone-225);
   --background-sidebar-active: var(--stone-250);
