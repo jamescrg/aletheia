@@ -30,7 +30,7 @@ Detail Layout (header / subnav / body)
 /* Detail Header - title/toolbar area */
 .detail-header {
   background: var(--background-subnav);
-  padding: 1.25rem 1rem 0.5rem;
+  padding: 1rem;
 }
 
 .detail-header .toolbar {
@@ -53,13 +53,13 @@ Detail Layout (header / subnav / body)
 /* Subnav - tab navigation */
 .subnav {
   background: var(--background-subnav);
-  margin: 0;
-  padding: 0.25rem 0 0 calc(var(--radius-md) * 2.5);
+  border-bottom: solid 1px var(--border-medium);
+  border-top: solid 1px var(--border-medium);
 }
 
 .subnav ul {
-  margin: 0.25rem 0 0;
   padding: 0;
+  margin: 0.5rem 1rem;
 }
 
 .subnav li {
@@ -69,43 +69,18 @@ Detail Layout (header / subnav / body)
 
 .subnav a {
   color: var(--color-nav);
-  margin: 0;
-  padding-bottom: 0.5rem;
-  position: relative;
-  top: 0.05rem;
+  text-decoration: none;
 }
 
 .subnav .active {
-  background: var(--background-subnav-tab-active);
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
-  position: relative;
-}
-
-.subnav .active::before,
-.subnav .active::after {
-  background: var(--background-subnav-tab-active);
-  bottom: 0;
-  content: "";
-  height: var(--radius-md);
-  position: absolute;
-  width: var(--radius-md);
-}
-
-.subnav .active::before {
-  left: calc(-1 * var(--radius-md));
-  -webkit-mask-image: var(--mask-tab-left);
-  mask-image: var(--mask-tab-left);
-}
-
-.subnav .active::after {
-  -webkit-mask-image: var(--mask-tab-right);
-  mask-image: var(--mask-tab-right);
-  right: calc(-1 * var(--radius-md));
+  background: var(--selected-background);
+  border: solid 1px var(--selected-border);
+  border-radius: var(--radius-sm);
+  color: var(--selected-color);
 }
 
 /* Detail Body - main content area */
 .detail-body {
-  background: var(--background-section);
   border-radius: 0 0 var(--radius-md) var(--radius-md);
   padding: 1.25rem 1rem 1.5rem;
 }
@@ -163,7 +138,4 @@ Detail Layout (header / subnav / body)
     flex-shrink: 0;
   }
 
-  .subnav .active {
-    padding-bottom: 0;
-  }
 }
