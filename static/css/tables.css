@@ -64,6 +64,10 @@ td {
   white-space: nowrap;
 }
 
+td.col-select {
+  vertical-align: top;
+}
+
 td:last-child {
   border-right: none;
 }
