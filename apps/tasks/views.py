@@ -56,7 +56,7 @@ def tasks_select(request):
 @login_required
 def tasks_add(request):
     if request.method == "POST":
-        form = TaskForm(request.POST, use_required_attribute=False)
+        form = TaskForm(request.POST, user=request.user, use_required_attribute=False)
         if form.is_valid():
             task = form.save(commit=False)
             task.status = "Pending"
@@ -103,6 +103,7 @@ def tasks_add(request):
                 "matter": tasks_matter,
                 "date_due": date.today(),
             },
+            user=request.user,
             use_required_attribute=False,
         )
 
@@ -195,7 +196,7 @@ def tasks_edit(request, id):
     task = get_object_or_404(Task, pk=id)
 
     if request.method == "POST":
-        form = TaskForm(request.POST, instance=task)
+        form = TaskForm(request.POST, instance=task, user=request.user)
         if form.is_valid():
             task = form.save(commit=False)
             if task.status == "Complete" and not can_complete_task(task):
@@ -211,7 +212,7 @@ def tasks_edit(request, id):
                 )
 
     else:
-        form = TaskForm(instance=task)
+        form = TaskForm(instance=task, user=request.user)
 
     # pull the list of matters
     matter_list = Matter.objects.filter(status__in=["Pending", "Open"]).order_by("name")

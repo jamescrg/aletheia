@@ -1,6 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
+from apps.accounts.access import filter_matters_for_user
 from apps.accounts.models import CustomUser
 from apps.matters.models import Matter
 from apps.tasks.models import Task, TaskNote
@@ -58,11 +59,16 @@ class TaskForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
         self.renderer = CustomFormRendererCompact()
         self.fields["priority"].initial = 3
         # Customize user field to display title case usernames
         self.fields["user"].label_from_instance = lambda obj: obj.username.title()
+        if user:
+            self.fields["matter"].queryset = filter_matters_for_user(
+                self.fields["matter"].queryset, user
+            )
 
     def clean_description(self):
         description = self.cleaned_data["description"]
@@ -119,10 +125,15 @@ class BulkTasksForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
         self.renderer = CustomFormRendererCompact()
         self.fields["user"].label_from_instance = lambda obj: obj.username.title()
+        if user:
+            self.fields["matter"].queryset = filter_matters_for_user(
+                self.fields["matter"].queryset, user
+            )
 
 
 class TaskNoteForm(forms.ModelForm):

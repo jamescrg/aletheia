@@ -1,5 +1,6 @@
 from django import forms
 
+from apps.accounts.access import filter_matters_for_user
 from config.settings import CustomFormRendererCompact
 
 from .models import ExpenseEntry
@@ -55,5 +56,10 @@ class ExpenseEntryForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
         self.renderer = CustomFormRendererCompact()
+        if user:
+            self.fields["matter"].queryset = filter_matters_for_user(
+                self.fields["matter"].queryset, user
+            )

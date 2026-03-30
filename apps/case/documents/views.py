@@ -246,7 +246,9 @@ def documents_add(request, matter_id):
     matter, matters = get_matter_from_url(request, matter_id)
 
     if request.method == "POST":
-        form = FilesForm(request.POST, matter=matter, use_required_attribute=False)
+        form = FilesForm(
+            request.POST, matter=matter, user=request.user, use_required_attribute=False
+        )
         uploaded_file = request.FILES.get("file")
 
         # Validate file is uploaded and has valid extension
@@ -388,6 +390,7 @@ def documents_add(request, matter_id):
 
         form = FilesForm(
             matter=matter,
+            user=request.user,
             initial_category=selected_category,
             initial_proceeding=selected_proceeding,
             use_required_attribute=False,
@@ -413,7 +416,11 @@ def documents_edit(request, document_id):
 
     if request.method == "POST":
         form = FilesForm(
-            request.POST, instance=document, matter=matter, use_required_attribute=False
+            request.POST,
+            instance=document,
+            matter=matter,
+            user=request.user,
+            use_required_attribute=False,
         )
 
         uploaded_file = request.FILES.get("file")
@@ -488,7 +495,12 @@ def documents_edit(request, document_id):
             {"form": form, "document": document, "edit": True, "matter": matter},
         )
     else:
-        form = FilesForm(instance=document, matter=matter, use_required_attribute=False)
+        form = FilesForm(
+            instance=document,
+            matter=matter,
+            user=request.user,
+            use_required_attribute=False,
+        )
 
         return render(
             request,

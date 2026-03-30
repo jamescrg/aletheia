@@ -1,5 +1,6 @@
 from django import forms
 
+from apps.accounts.access import filter_matters_for_user
 from apps.case.models import Document
 from apps.matters.models import Matter
 from apps.matters.proceedings.models import Proceeding
@@ -47,6 +48,7 @@ class FilesForm(forms.ModelForm):
         self,
         *args,
         matter=None,
+        user=None,
         initial_category=None,
         initial_proceeding=None,
         **kwargs,
@@ -56,10 +58,11 @@ class FilesForm(forms.ModelForm):
         self.renderer = CustomFormRendererCompact()
         self.matter = matter
 
-        # Populate matter choices with all open matters
-        self.fields["matter"].queryset = Matter.objects.filter(status="Open").order_by(
-            "name"
-        )
+        # Populate matter choices with open matters, filtered by user access
+        queryset = Matter.objects.filter(status="Open").order_by("name")
+        if user:
+            queryset = filter_matters_for_user(queryset, user)
+        self.fields["matter"].queryset = queryset
 
         # If matter provided (new document), set it as initial
         if matter:

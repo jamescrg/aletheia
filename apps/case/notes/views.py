@@ -122,7 +122,7 @@ def notes_add(request, matter_id):
     matter, matters = get_matter_from_url(request, matter_id)
 
     if request.method == "POST":
-        form = NoteForm(request.POST, use_required_attribute=False)
+        form = NoteForm(request.POST, user=request.user, use_required_attribute=False)
         if form.is_valid():
             note = form.save(commit=False)
             note.author = request.user
@@ -137,7 +137,9 @@ def notes_add(request, matter_id):
                 headers={"HX-Trigger": "notesChanged"},
             )
     else:
-        form = NoteForm(initial={"matter": matter}, use_required_attribute=False)
+        form = NoteForm(
+            initial={"matter": matter}, user=request.user, use_required_attribute=False
+        )
 
     context = {
         "app": "matters",
@@ -257,12 +259,14 @@ def note_edit(request, note_id):
     matter = note.matter
 
     if request.method == "POST":
-        form = NoteForm(request.POST, instance=note, use_required_attribute=False)
+        form = NoteForm(
+            request.POST, instance=note, user=request.user, use_required_attribute=False
+        )
         if form.is_valid():
             form.save()
             return HttpResponse(status=204, headers={"HX-Trigger": "notesChanged"})
     else:
-        form = NoteForm(instance=note, use_required_attribute=False)
+        form = NoteForm(instance=note, user=request.user, use_required_attribute=False)
 
     context = {
         "app": "matters",

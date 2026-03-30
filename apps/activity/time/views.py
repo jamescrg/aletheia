@@ -201,7 +201,7 @@ def order_by_time(request, order):
 def time_add(request, id=None, request_app="activity"):
     # if applicable, process any post data submitted by user
     if request.method == "POST":
-        form = TimeEntryForm(request.POST)
+        form = TimeEntryForm(request.POST, user=request.user)
         if form.is_valid():
             entry = form.save(commit=False)
             entry.user_id = request.user.id
@@ -243,10 +243,13 @@ def time_add(request, id=None, request_app="activity"):
                     "hours": 0.2,
                     "matter": matter,
                     "rate": rate,
-                }
+                },
+                user=request.user,
             )
         else:
-            form = TimeEntryForm(initial={"date": today, "hours": 0.2})
+            form = TimeEntryForm(
+                initial={"date": today, "hours": 0.2}, user=request.user
+            )
 
     # get list of matters for activity form
     matter_list = Matter.objects.filter(
@@ -293,7 +296,7 @@ def time_edit(request, id):
     entry = get_object_or_404(TimeEntry, pk=id)
 
     if request.method == "POST":
-        form = TimeEntryForm(request.POST, instance=entry)
+        form = TimeEntryForm(request.POST, instance=entry, user=request.user)
         if form.is_valid():
             original_entry = get_object_or_404(TimeEntry, pk=id)
             entry = form.save(commit=False)
@@ -320,7 +323,7 @@ def time_edit(request, id):
             matter_list |= selected_matter
 
         # initialize form
-        form = TimeEntryForm(instance=entry)
+        form = TimeEntryForm(instance=entry, user=request.user)
 
         # set the form fields
         form.fields["matter"].queryset = matter_list

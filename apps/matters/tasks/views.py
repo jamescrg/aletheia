@@ -217,7 +217,7 @@ def tasks_add(request, id):
     matter = get_object_or_404(Matter, pk=id)
 
     if request.method == "POST":
-        form = TaskForm(request.POST, use_required_attribute=False)
+        form = TaskForm(request.POST, user=request.user, use_required_attribute=False)
         if form.is_valid():
             task = form.save(commit=False)
             task.status = "Pending"
@@ -251,6 +251,7 @@ def tasks_add(request, id):
                 "date_due": date.today(),
                 "focus": focus if focus else "Long Term",  # Default to Long Term
             },
+            user=request.user,
             use_required_attribute=False,
         )
 
@@ -327,7 +328,7 @@ def tasks_edit(request, id, task_id):
     task = get_object_or_404(Task, pk=task_id, matter=matter)
 
     if request.method == "POST":
-        form = TaskForm(request.POST, instance=task)
+        form = TaskForm(request.POST, instance=task, user=request.user)
         if form.is_valid():
             task = form.save(commit=False)
             if task.status == "Complete" and not can_complete_task(task):
@@ -341,7 +342,7 @@ def tasks_edit(request, id, task_id):
                     status=204, headers={"HX-Trigger": "tasksListChanged"}
                 )
     else:
-        form = TaskForm(instance=task)
+        form = TaskForm(instance=task, user=request.user)
 
     # Set the matter to readonly since we're in a matter context
     form.fields["matter"].widget.attrs["readonly"] = True
