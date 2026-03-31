@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_POST
 
+from apps.accounts.access import matter_access_required
 from apps.accounts.models import CustomUser
 from apps.checklists.models import Checklist, UserChecklistView, can_complete_task
 from apps.management.pagination import CustomPaginator
@@ -190,6 +191,7 @@ def get_matter_tasks_data(request, matter_id):
 
 
 @login_required
+@matter_access_required
 def tasks_index(request, id):
     """Main tasks view for a matter"""
     matter = get_object_or_404(Matter, pk=id)
@@ -205,6 +207,7 @@ def tasks_index(request, id):
 
 
 @login_required
+@matter_access_required
 def tasks_list(request, id):
     """Tasks list view for a matter"""
     task_data = get_matter_tasks_data(request, id)
@@ -212,6 +215,7 @@ def tasks_list(request, id):
 
 
 @login_required
+@matter_access_required
 def tasks_add(request, id):
     """Add task modal for a matter"""
     matter = get_object_or_404(Matter, pk=id)
@@ -274,6 +278,7 @@ def tasks_add(request, id):
 
 
 @login_required
+@matter_access_required
 def tasks_add_quick(request, id):
     matter = get_object_or_404(Matter, pk=id)
     task = Task()
@@ -322,6 +327,7 @@ def tasks_add_quick(request, id):
 
 
 @login_required
+@matter_access_required
 def tasks_edit(request, id, task_id):
     """Edit task modal for a matter"""
     matter = get_object_or_404(Matter, pk=id)
@@ -363,6 +369,7 @@ def tasks_edit(request, id, task_id):
 
 
 @login_required
+@matter_access_required
 def tasks_delete(request, id, task_id):
     """Delete task for a matter"""
     matter = get_object_or_404(Matter, pk=id)
@@ -372,6 +379,7 @@ def tasks_delete(request, id, task_id):
 
 
 @login_required
+@matter_access_required
 def tasks_filter(request, id):
     """Filter modal for matter tasks"""
     matter = get_object_or_404(Matter, pk=id)
@@ -407,6 +415,7 @@ def tasks_filter(request, id):
 
 
 @login_required
+@matter_access_required
 def tasks_filter_user(request, id, user_id):
     """Filter tasks by user for a matter"""
     filter_data = request.session.get("matter_tasks_filter", {})
@@ -418,6 +427,7 @@ def tasks_filter_user(request, id, user_id):
 
 
 @login_required
+@matter_access_required
 def tasks_filter_focus(request, id, focus):
     """Filter tasks by focus for a matter"""
     filter_data = request.session.get("matter_tasks_filter", {})
@@ -432,6 +442,7 @@ def tasks_filter_focus(request, id, focus):
 
 
 @login_required
+@matter_access_required
 def tasks_filter_priority(request, id, priority_value):
     """Filter tasks by priority for a matter"""
     filter_data = request.session.get("matter_tasks_filter", {})
@@ -444,6 +455,7 @@ def tasks_filter_priority(request, id, priority_value):
 
 
 @login_required
+@matter_access_required
 def tasks_status(request, id, task_id):
     """Toggle task status for a matter"""
     matter = get_object_or_404(Matter, pk=id)
@@ -467,6 +479,7 @@ def tasks_status(request, id, task_id):
 
 
 @login_required
+@matter_access_required
 def tasks_set_status(request, id, task_id, status):
     """Set task status for a matter"""
     matter = get_object_or_404(Matter, pk=id)
@@ -486,6 +499,7 @@ def tasks_set_status(request, id, task_id, status):
 
 
 @login_required
+@matter_access_required
 def tasks_priority(request, id, task_id, priority):
     """Change task priority for a matter"""
     matter = get_object_or_404(Matter, pk=id)
@@ -496,6 +510,7 @@ def tasks_priority(request, id, task_id, priority):
 
 
 @login_required
+@matter_access_required
 def tasks_user(request, id, task_id, user_id):
     """Change task user for a matter"""
     matter = get_object_or_404(Matter, pk=id)
@@ -507,6 +522,7 @@ def tasks_user(request, id, task_id, user_id):
 
 
 @login_required
+@matter_access_required
 def tasks_focus(request, id, task_id, focus):
     """Change task focus for a matter"""
     matter = get_object_or_404(Matter, pk=id)
@@ -517,6 +533,7 @@ def tasks_focus(request, id, task_id, focus):
 
 
 @login_required
+@matter_access_required
 def tasks_date(request, id, task_id):
     """Edit task date for a matter"""
     matter = get_object_or_404(Matter, pk=id)
@@ -541,6 +558,7 @@ def tasks_date(request, id, task_id):
 
 
 @login_required
+@matter_access_required
 def tasks_filter_sort(request, id, order):
     """Sort tasks for a matter"""
     filter_data = request.session.get("matter_tasks_filter", {})
@@ -584,6 +602,7 @@ def tasks_filter_sort(request, id, order):
 
 
 @login_required
+@matter_access_required
 @require_POST
 def tasks_toggle_select(request, id, task_id):
     """Toggle selection of a single task."""
@@ -596,6 +615,7 @@ def tasks_toggle_select(request, id, task_id):
 
 
 @login_required
+@matter_access_required
 @require_POST
 def tasks_select_all(request, id):
     """Toggle select-all for visible tasks."""
@@ -608,6 +628,7 @@ def tasks_select_all(request, id):
 
 
 @login_required
+@matter_access_required
 @require_POST
 def tasks_clear_selection(request, id):
     """Clear all task selections for this matter."""
@@ -617,6 +638,7 @@ def tasks_clear_selection(request, id):
 
 
 @login_required
+@matter_access_required
 def tasks_bulk_update(request, id):
     """Bulk update selected tasks."""
     matter = get_object_or_404(Matter, pk=id)
@@ -674,6 +696,7 @@ def tasks_bulk_update(request, id):
 
 
 @login_required
+@matter_access_required
 @require_POST
 def tasks_bulk_set_due_date(request, id):
     """Set due date on selected tasks."""
@@ -694,6 +717,7 @@ def tasks_bulk_set_due_date(request, id):
 
 
 @login_required
+@matter_access_required
 @require_POST
 def tasks_bulk_clear_due_date(request, id):
     """Clear due dates on selected tasks."""
@@ -710,6 +734,7 @@ def tasks_bulk_clear_due_date(request, id):
 
 
 @login_required
+@matter_access_required
 @require_POST
 def tasks_bulk_set_priority(request, id):
     """Set priority on selected tasks."""
@@ -730,6 +755,7 @@ def tasks_bulk_set_priority(request, id):
 
 
 @login_required
+@matter_access_required
 @require_POST
 def tasks_bulk_set_status(request, id):
     """Set status on selected tasks."""
@@ -768,6 +794,7 @@ def tasks_bulk_set_status(request, id):
 
 
 @login_required
+@matter_access_required
 @require_POST
 def tasks_bulk_set_user(request, id):
     """Set user on selected tasks."""
@@ -787,6 +814,7 @@ def tasks_bulk_set_user(request, id):
 
 
 @login_required
+@matter_access_required
 @require_POST
 def tasks_bulk_delete(request, id):
     """Bulk delete selected tasks."""

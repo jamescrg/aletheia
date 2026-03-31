@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
+from apps.accounts.access import matter_access_required
 from apps.matters.ledger.get_ledger_data import get_ledger_data
 from apps.matters.models import Matter
 from apps.matters.proceedings.forms import ProceedingForm
@@ -12,6 +13,7 @@ from apps.trust.trust import get_confirmed_client_balance
 
 
 @login_required
+@matter_access_required
 def proceeding_index(request, id):
     matter = get_object_or_404(Matter, pk=id)
 
@@ -41,6 +43,7 @@ def proceeding_index(request, id):
 
 
 @login_required
+@matter_access_required
 def proceeding_list(request, id):
     matter = get_object_or_404(Matter, pk=id)
 
@@ -61,6 +64,7 @@ def proceeding_list(request, id):
 
 
 @login_required
+@matter_access_required
 def add(request, id):
     matter = get_object_or_404(Matter, pk=id)
     proceeding = Proceeding.objects.filter(matter=matter.id).order_by("-id").first()
@@ -103,6 +107,7 @@ def add(request, id):
 
 
 @login_required
+@matter_access_required
 def edit(request, id, proceeding_id):
     matter = get_object_or_404(Matter, pk=id)
     proceeding = Proceeding.objects.filter(matter=matter.id).order_by("-id").first()
@@ -146,6 +151,7 @@ def edit(request, id, proceeding_id):
 
 
 @login_required
+@matter_access_required
 def set_primary(request, id, proceeding_id):
     proceeding = get_object_or_404(Proceeding, pk=proceeding_id, matter_id=id)
     proceeding.primary = True
@@ -155,6 +161,7 @@ def set_primary(request, id, proceeding_id):
 
 
 @login_required
+@matter_access_required
 def delete(request, matter_id, proceeding_id):
     proceeding = get_object_or_404(Proceeding, pk=proceeding_id)
     proceeding.delete()

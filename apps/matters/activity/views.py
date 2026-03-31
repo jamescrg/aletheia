@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_POST
 
+from apps.accounts.access import matter_access_required
 from apps.activity.models import ActivityLabel
 from apps.activity.time.models import TimeEntry
 from apps.activity.time.summary import calculate_summary
@@ -24,6 +25,7 @@ from apps.matters.models import Matter
 
 
 @login_required
+@matter_access_required
 def activity_index(request, id):
     matter = get_object_or_404(Matter, pk=id)
 
@@ -62,6 +64,7 @@ def activity_index(request, id):
 
 
 @login_required
+@matter_access_required
 def activity_list(request, id):
     matter = get_object_or_404(Matter, pk=id)
 
@@ -100,6 +103,7 @@ def activity_list(request, id):
 
 
 @login_required
+@matter_access_required
 def activity_sort(request, id):
     """Toggle sorting between newest-first and oldest-first."""
     matter = get_object_or_404(Matter, pk=id)
@@ -144,6 +148,7 @@ def activity_sort(request, id):
 
 
 @login_required
+@matter_access_required
 def activity_report(request, id):
     matter = get_object_or_404(Matter, pk=id)
     file = generate_activity_report(matter, request)
@@ -164,6 +169,7 @@ MATTER_ACTIVITY_TRIGGER = "matterActivityChanged"
 
 
 @login_required
+@matter_access_required
 @require_POST
 def activity_toggle_select(request, matter_id, entry_id):
     get_object_or_404(TimeEntry, pk=entry_id)
@@ -173,6 +179,7 @@ def activity_toggle_select(request, matter_id, entry_id):
 
 
 @login_required
+@matter_access_required
 @require_POST
 def activity_select_all(request, matter_id):
     sort_order = request.session.get("matter_activity_sort", "-id")
@@ -191,6 +198,7 @@ def activity_select_all(request, matter_id):
 
 
 @login_required
+@matter_access_required
 @require_POST
 def activity_clear_selection(request, matter_id):
     clear_selected_ids(request, get_session_key("selected_matter_activity", matter_id))
@@ -199,6 +207,7 @@ def activity_clear_selection(request, matter_id):
 
 
 @login_required
+@matter_access_required
 def activity_bulk_update_matter(request, matter_id):
     key = get_session_key("selected_matter_activity", matter_id)
     selected_entries = get_selected_ids(request, key)
@@ -239,6 +248,7 @@ def activity_bulk_update_matter(request, matter_id):
 
 
 @login_required
+@matter_access_required
 def activity_bulk_update_comp(request, matter_id):
     key = get_session_key("selected_matter_activity", matter_id)
     selected_entries = get_selected_ids(request, key)
@@ -272,6 +282,7 @@ def activity_bulk_update_comp(request, matter_id):
 
 
 @login_required
+@matter_access_required
 def activity_bulk_apply_labels(request, matter_id):
     key = get_session_key("selected_matter_activity", matter_id)
     selected_entries = get_selected_ids(request, key)

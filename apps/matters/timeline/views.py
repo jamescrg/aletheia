@@ -2,9 +2,11 @@ import os
 from datetime import date, datetime
 
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
+from apps.accounts.access import matter_access_required
 from apps.case.facts.filters import FactsFilter
 from apps.case.facts.forms import FactForm
 from apps.case.facts.generate_pdf import generate_facts_pdf
@@ -13,6 +15,7 @@ from apps.matters.models import Matter
 
 
 @login_required
+@matter_access_required
 def timeline_index(request, id):
     matter = get_object_or_404(Matter, pk=id)
 
@@ -29,6 +32,7 @@ def timeline_index(request, id):
 
 
 @login_required
+@matter_access_required
 def timeline_list(request, id):
     matter = get_object_or_404(Matter, pk=id)
 
@@ -50,6 +54,7 @@ def timeline_list(request, id):
 
 
 @login_required
+@matter_access_required
 def add(request, id):
     matter = get_object_or_404(Matter, pk=id)
 
@@ -85,6 +90,7 @@ def add(request, id):
 
 
 @login_required
+@matter_access_required
 def edit(request, id, fact_id):
     matter = get_object_or_404(Matter, pk=id)
     fact = get_object_or_404(Fact, pk=fact_id)
@@ -121,6 +127,7 @@ def edit(request, id, fact_id):
 
 
 @login_required
+@matter_access_required
 def delete(request, matter_id, fact_id):
     fact = get_object_or_404(Fact, pk=fact_id)
     fact.delete()
@@ -129,6 +136,7 @@ def delete(request, matter_id, fact_id):
 
 
 @login_required
+@matter_access_required
 def print(request, id):
     matter = get_object_or_404(Matter, pk=id)
     facts = Fact.objects.filter(matter=matter.id).order_by("date")
@@ -143,6 +151,8 @@ def print(request, id):
 @login_required
 def timeline_pdf(request, pk):
     matter = get_object_or_404(Matter, pk=pk)
+    if not request.user.has_matter_access(matter):
+        return HttpResponseForbidden()
     file = generate_facts_pdf(matter.id, request)
 
     current_date = datetime.now().strftime("%Y-%m-%d")
@@ -158,6 +168,7 @@ def timeline_pdf(request, pk):
 
 
 @login_required
+@matter_access_required
 def edit_fact_description(request, matter_id, fact_id):
     fact = get_object_or_404(Fact, pk=fact_id)
     matter = get_object_or_404(Matter, pk=matter_id)
@@ -166,6 +177,7 @@ def edit_fact_description(request, matter_id, fact_id):
 
 
 @login_required
+@matter_access_required
 def update_fact_description(request, matter_id, fact_id):
     fact = get_object_or_404(Fact, pk=fact_id)
     matter = get_object_or_404(Matter, pk=matter_id)
@@ -180,6 +192,7 @@ def update_fact_description(request, matter_id, fact_id):
 
 
 @login_required
+@matter_access_required
 def edit_fact_citations(request, matter_id, fact_id):
     fact = get_object_or_404(Fact, pk=fact_id)
     matter = get_object_or_404(Matter, pk=matter_id)
@@ -188,6 +201,7 @@ def edit_fact_citations(request, matter_id, fact_id):
 
 
 @login_required
+@matter_access_required
 def update_fact_citations(request, matter_id, fact_id):
     fact = get_object_or_404(Fact, pk=fact_id)
     matter = get_object_or_404(Matter, pk=matter_id)

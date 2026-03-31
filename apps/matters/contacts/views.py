@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
+from apps.accounts.access import matter_access_required
 from apps.contacts.functions.load_contacts import load_contacts
 from apps.contacts.models import Contact
 from apps.matters.contacts.filters import MatterContactFilter
@@ -105,6 +106,7 @@ def get_contact_list(request, matter):
 
 
 @login_required
+@matter_access_required
 def index(request, id):
     matter = get_object_or_404(Matter, pk=id)
 
@@ -121,6 +123,7 @@ def index(request, id):
 
 
 @login_required
+@matter_access_required
 def contact_list(request, id):
     """HTMX endpoint to reload the contact table."""
     matter = get_object_or_404(Matter, pk=id)
@@ -136,6 +139,7 @@ def contact_list(request, id):
 
 
 @login_required
+@matter_access_required
 def contact_filter(request, id):
     """Handle filter form display and submission."""
     matter = get_object_or_404(Matter, pk=id)
@@ -159,6 +163,7 @@ def contact_filter(request, id):
 
 
 @login_required
+@matter_access_required
 def contact_sort(request, id, order):
     """Handle column sorting."""
     matter = get_object_or_404(Matter, pk=id)
@@ -181,6 +186,7 @@ def contact_sort(request, id, order):
 
 
 @login_required
+@matter_access_required
 def assign(request, id):
     matter = get_object_or_404(Matter, pk=id)
     groups = Group.objects.filter(is_active=True).order_by("order")
@@ -200,6 +206,7 @@ def assign(request, id):
 
 
 @login_required
+@matter_access_required
 def assign_results(request, id):
     matter = get_object_or_404(Matter, pk=id)
     text = request.POST.get("search_text")
@@ -269,6 +276,7 @@ def assign_delete(request, id):
 
 
 @login_required
+@matter_access_required
 def filter_group(request, id, group_id):
     """Quick filter by group from dropdown."""
     session_key = f"matter_contacts_filter_{id}"
@@ -279,6 +287,7 @@ def filter_group(request, id, group_id):
 
 
 @login_required
+@matter_access_required
 def filter_role(request, id, role_id):
     """Quick filter by role from dropdown."""
     session_key = f"matter_contacts_filter_{id}"

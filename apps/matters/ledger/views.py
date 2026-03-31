@@ -6,6 +6,7 @@ from django.http import HttpResponseForbidden
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
+from apps.accounts.access import matter_access_required
 from apps.matters.ledger.generate_ledger import generate_ledger
 from apps.matters.ledger.get_ledger_data import get_ledger_data
 from apps.matters.models import Matter
@@ -19,6 +20,7 @@ def _check_financial_perm(request):
 
 
 @login_required
+@matter_access_required
 def ledger_index(request, id):
     forbidden = _check_financial_perm(request)
     if forbidden:
@@ -49,6 +51,7 @@ def ledger_index(request, id):
 
 
 @login_required
+@matter_access_required
 def ledger_list(request, id):
     forbidden = _check_financial_perm(request)
     if forbidden:
@@ -77,6 +80,8 @@ def ledger_pdf(request, pk):
     if forbidden:
         return forbidden
     matter = get_object_or_404(Matter, pk=pk)
+    if not request.user.has_matter_access(matter):
+        return HttpResponseForbidden()
     file = generate_ledger(matter.id, request)
 
     current_date = datetime.now().strftime("%Y-%m-%d")

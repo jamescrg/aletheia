@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
+from apps.accounts.access import matter_access_required
 from apps.accounts.models import CustomUser
 from apps.matters.models import Matter
 from apps.matters.rates.forms import RateForm
@@ -9,6 +10,7 @@ from apps.matters.rates.models import Rate
 
 
 @login_required
+@matter_access_required
 def rate_index(request, id):
     matter = get_object_or_404(Matter, pk=id)
 
@@ -25,6 +27,7 @@ def rate_index(request, id):
 
 
 @login_required
+@matter_access_required
 def rate_list(request, id):
     matter = get_object_or_404(Matter, pk=id)
 
@@ -41,6 +44,7 @@ def rate_list(request, id):
 
 
 @login_required
+@matter_access_required
 def add(request, id):
     matter = get_object_or_404(Matter, pk=id)
 
@@ -83,6 +87,7 @@ def add(request, id):
 
 
 @login_required
+@matter_access_required
 def edit(request, id, rate_id):
     matter = get_object_or_404(Matter, pk=id)
 
@@ -116,6 +121,7 @@ def edit(request, id, rate_id):
 
 
 @login_required
+@matter_access_required
 def delete(request, matter_id, rate_id):
     rate = get_object_or_404(Rate, pk=rate_id)
     rate.delete()

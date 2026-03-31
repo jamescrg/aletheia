@@ -2,11 +2,13 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
+from apps.accounts.access import matter_access_required
 from apps.matters.events.get_event_data import get_event_data
 from apps.matters.models import Matter
 
 
 @login_required
+@matter_access_required
 def events_index(request, id):
     matter = get_object_or_404(Matter, pk=id)
 
@@ -22,6 +24,7 @@ def events_index(request, id):
 
 
 @login_required
+@matter_access_required
 def events_list(request, id):
     matter = get_object_or_404(Matter, pk=id)
 
@@ -39,6 +42,7 @@ def events_list(request, id):
 
 
 @login_required
+@matter_access_required
 def events_filter_status(request, id, status):
     matter = get_object_or_404(Matter, pk=id)
     session_key = f"matter_events_filter_{matter.id}"
@@ -49,6 +53,7 @@ def events_filter_status(request, id, status):
 
 
 @login_required
+@matter_access_required
 def events_filter_sort(request, id, order):
     matter = get_object_or_404(Matter, pk=id)
     session_key = f"matter_events_sort_{matter.id}"
