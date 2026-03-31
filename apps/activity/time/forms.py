@@ -32,7 +32,7 @@ class TimeEntryForm(forms.ModelForm):
 
         widgets = {
             "matter": forms.Select(attrs={"onchange": "updateRate()", "tabindex": "1"}),
-            "date": forms.DateInput(attrs={"type": "date", "tabindex": "3"}),
+            "date": forms.DateInput(attrs={"type": "date", "tabindex": "5"}),
             "actions": forms.Textarea(
                 attrs={
                     "onfocus": "moveFocusToEnd(this)",
@@ -51,6 +51,8 @@ class TimeEntryForm(forms.ModelForm):
         user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
         self.renderer = CustomFormRendererCompact()
+        self.fields["hours"].widget.attrs["tabindex"] = "3"
+        self.fields["rate"].widget.attrs["tabindex"] = "4"
         if user:
             self.fields["matter"].queryset = filter_matters_for_user(
                 self.fields["matter"].queryset, user
