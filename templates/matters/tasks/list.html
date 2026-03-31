@@ -196,7 +196,7 @@
     </thead>
     <tbody>
       {% for task in objects %}
-        <tr class="{% if task.id in new_task_ids %}task-new-highlight{% endif %}{% if task.date_due and task.date_due < today and task.status != 'Complete' %} past-due{% endif %}">
+        <tr class="priority-{{ task.priority }}{% if task.id in new_task_ids %} task-new-highlight{% endif %}{% if task.date_due and task.date_due < today and task.status != 'Complete' %} past-due{% endif %}">
           <td class="col-select">
             {% url 'matters:tasks-toggle-select' matter.id task.id as toggle_url %}
             {% include "selection/checkbox.html" with toggle_url=toggle_url obj_id=task.id selected_ids=selected_tasks %}

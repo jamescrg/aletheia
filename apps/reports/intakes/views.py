@@ -1,6 +1,6 @@
 import os
 from collections import defaultdict
-from datetime import datetime
+from datetime import date, datetime
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
@@ -44,11 +44,11 @@ def intakes_index(request):
     # Get filter data from session
     filter_data = request.session.get("intakes_filter", {})
 
-    # Set date filter objects (None means no date filtering)
-    date_from_obj = None
-    date_to_obj = None
+    # Set date filter objects, defaulting to current calendar month
     date_from = filter_data.get("date_from")
     date_to = filter_data.get("date_to")
+    date_from_obj = None
+    date_to_obj = None
 
     if date_from:
         try:
@@ -61,6 +61,11 @@ def intakes_index(request):
             date_to_obj = datetime.strptime(date_to, "%Y-%m-%d").date()
         except ValueError:
             date_to = None
+
+    if not date_from_obj and not date_to_obj:
+        today = date.today()
+        date_from_obj = today.replace(day=1)
+        date_from = date_from_obj.strftime("%Y-%m-%d")
 
     # Get intakes
     intakes = Intake.objects.all()
@@ -191,11 +196,11 @@ def intakes_list(request):
     # Get filter data from session
     filter_data = request.session.get("intakes_filter", {})
 
-    # Set date filter objects (None means no date filtering)
-    date_from_obj = None
-    date_to_obj = None
+    # Set date filter objects, defaulting to current calendar month
     date_from = filter_data.get("date_from")
     date_to = filter_data.get("date_to")
+    date_from_obj = None
+    date_to_obj = None
 
     if date_from:
         try:
@@ -208,6 +213,11 @@ def intakes_list(request):
             date_to_obj = datetime.strptime(date_to, "%Y-%m-%d").date()
         except ValueError:
             date_to = None
+
+    if not date_from_obj and not date_to_obj:
+        today = date.today()
+        date_from_obj = today.replace(day=1)
+        date_from = date_from_obj.strftime("%Y-%m-%d")
 
     # Get intakes
     intakes = Intake.objects.all()

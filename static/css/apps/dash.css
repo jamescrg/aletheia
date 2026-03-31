@@ -110,13 +110,17 @@
 }
 
 /* Dashboard Tasks Table - match tasks-table column widths */
+.dashboard-table.tasks {
+  table-layout: fixed;
+}
+
 .dashboard-table.tasks .matter {
-  min-width: 11.875rem;
   width: 11.875rem;
 }
 
 .dashboard-table.tasks .description {
-  min-width: 18.75rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dashboard-table.tasks .user {

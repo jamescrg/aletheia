@@ -50,7 +50,7 @@ def get_matter_tasks_data(request, matter_id):
         filter_data = {
             **filter_data,
             "status": filter_data.get("status", "Pending"),
-            "order_by": filter_data.get("order_by", "priority"),
+            "order_by": filter_data.get("order_by", "date_due"),
             "matter": matter_id,
         }
         filter = TasksFilter(filter_data, queryset=matter_queryset)
@@ -63,7 +63,7 @@ def get_matter_tasks_data(request, matter_id):
         default_filter = {
             "status": "Pending",
             "matter": matter_id,
-            "order_by": "priority",
+            "order_by": "date_due",
             "user": None,  # All users
             "focus": "",  # All focus values
         }
@@ -150,7 +150,7 @@ def get_matter_tasks_data(request, matter_id):
 
     # Get current order and strip leading '-' for comparison
     current_order = (
-        filter_data.get("order_by", "priority") if filter_data else "priority"
+        filter_data.get("order_by", "date_due") if filter_data else "date_due"
     )
     current_order = current_order.lstrip("-")
 

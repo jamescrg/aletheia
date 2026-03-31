@@ -84,8 +84,8 @@ def revenue_index(request):
                     }
                 )
     else:
-        # Default: last 6 months
-        for i in range(5, -1, -1):  # Reverse order: 5, 4, 3, 2, 1, 0
+        # Default: last 3 months
+        for i in range(2, -1, -1):
             month_date = today - relativedelta(months=i)
             months.append(
                 {
@@ -95,6 +95,8 @@ def revenue_index(request):
                     "month": month_date.month,
                 }
             )
+        date_from_obj = (today - relativedelta(months=2)).replace(day=1)
+        date_from = date_from_obj.strftime("%Y-%m-%d")
 
     # Build revenue data for each month
     revenue_data = []
@@ -212,8 +214,8 @@ def revenue_list(request):
                     }
                 )
     else:
-        # Default: last 6 months
-        for i in range(5, -1, -1):  # Reverse order: 5, 4, 3, 2, 1, 0
+        # Default: last 3 months
+        for i in range(2, -1, -1):
             month_date = today - relativedelta(months=i)
             months.append(
                 {
@@ -223,6 +225,8 @@ def revenue_list(request):
                     "month": month_date.month,
                 }
             )
+        date_from_obj = (today - relativedelta(months=2)).replace(day=1)
+        date_from = date_from_obj.strftime("%Y-%m-%d")
 
     # Build revenue data for each month
     revenue_data = []

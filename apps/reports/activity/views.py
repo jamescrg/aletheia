@@ -90,24 +90,24 @@ def activity_index(request):
                     }
                 )
     else:
-        # Default: last 6 months
-        for i in range(5, -1, -1):  # Reverse order: 5, 4, 3, 2, 1, 0
-            month_date = today - relativedelta(months=i)
-            months.append(
-                {
-                    "date": month_date,
-                    "name": month_date.strftime("%B %Y"),
-                    "year": month_date.year,
-                    "month": month_date.month,
-                }
-            )
+        # Default: current calendar month
+        months.append(
+            {
+                "date": today,
+                "name": today.strftime("%B %Y"),
+                "year": today.year,
+                "month": today.month,
+            }
+        )
+        date_from = today.replace(day=1).strftime("%Y-%m-%d")
+        date_from_obj = today.replace(day=1)
 
     # Get all users who have time entries
     # Determine the date range for user filtering
     if date_from_obj:
         filter_start = date_from_obj
     else:
-        filter_start = today - relativedelta(months=6)
+        filter_start = today.replace(day=1)
 
     users_query = CustomUser.objects.filter(timeentry__date__gte=filter_start)
 
@@ -276,24 +276,24 @@ def activity_list(request):
                     }
                 )
     else:
-        # Default: last 6 months
-        for i in range(5, -1, -1):  # Reverse order: 5, 4, 3, 2, 1, 0
-            month_date = today - relativedelta(months=i)
-            months.append(
-                {
-                    "date": month_date,
-                    "name": month_date.strftime("%B %Y"),
-                    "year": month_date.year,
-                    "month": month_date.month,
-                }
-            )
+        # Default: current calendar month
+        months.append(
+            {
+                "date": today,
+                "name": today.strftime("%B %Y"),
+                "year": today.year,
+                "month": today.month,
+            }
+        )
+        date_from = today.replace(day=1).strftime("%Y-%m-%d")
+        date_from_obj = today.replace(day=1)
 
     # Get all users who have time entries
     # Determine the date range for user filtering
     if date_from_obj:
         filter_start = date_from_obj
     else:
-        filter_start = today - relativedelta(months=6)
+        filter_start = today.replace(day=1)
 
     users_query = CustomUser.objects.filter(timeentry__date__gte=filter_start)
 

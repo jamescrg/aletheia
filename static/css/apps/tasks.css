@@ -220,7 +220,7 @@ i.priority-1 {
 }
 
 .tasks-table .matter {
-  width: 16rem;
+  width: 15rem;
 }
 
 .tasks-table .description {
@@ -228,27 +228,33 @@ i.priority-1 {
   white-space: normal;
 }
 
+.tasks-table td.description {
+  position: relative;
+  padding-right: 3.5rem;
+}
+
 .tasks-table td.description > a:first-child {
   min-width: 0;
 }
 
 .task-decorators {
-  float: right;
-  margin-left: 0.5rem;
+  position: absolute;
+  right: 0.625rem;
+  top: 0.625rem;
 }
 
 .tasks-table .status {
-  width: 9rem;
+  width: 7rem;
 }
 
 .tasks-table .user {
-  width: 9rem;
+  width: 7rem;
 }
 
 .tasks-table .date {
   overflow: visible;
   white-space: nowrap;
-  width: 9rem;
+  width: 7rem;
 }
 
 .tasks-table .date .dropdown-menu {

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
@@ -27,11 +27,11 @@ def clients_index(request):
     # Get filter data from session
     filter_data = request.session.get("clients_filter", {})
 
-    # Set date filter objects (None means no date filtering)
-    date_from_obj = None
-    date_to_obj = None
+    # Set date filter objects, defaulting to current calendar month
     date_from = filter_data.get("date_from")
     date_to = filter_data.get("date_to")
+    date_from_obj = None
+    date_to_obj = None
 
     if date_from:
         try:
@@ -44,6 +44,11 @@ def clients_index(request):
             date_to_obj = datetime.strptime(date_to, "%Y-%m-%d").date()
         except ValueError:
             date_to = None
+
+    if not date_from_obj and not date_to_obj:
+        today = date.today()
+        date_from_obj = today.replace(day=1)
+        date_from = date_from_obj.strftime("%Y-%m-%d")
 
     # Get all current clients
     current_clients = Contact.objects.filter(client_status="Current").order_by("name")
@@ -122,11 +127,11 @@ def clients_list(request):
     # Get filter data from session
     filter_data = request.session.get("clients_filter", {})
 
-    # Set date filter objects (None means no date filtering)
-    date_from_obj = None
-    date_to_obj = None
+    # Set date filter objects, defaulting to current calendar month
     date_from = filter_data.get("date_from")
     date_to = filter_data.get("date_to")
+    date_from_obj = None
+    date_to_obj = None
 
     if date_from:
         try:
@@ -139,6 +144,11 @@ def clients_list(request):
             date_to_obj = datetime.strptime(date_to, "%Y-%m-%d").date()
         except ValueError:
             date_to = None
+
+    if not date_from_obj and not date_to_obj:
+        today = date.today()
+        date_from_obj = today.replace(day=1)
+        date_from = date_from_obj.strftime("%Y-%m-%d")
 
     # Get all current clients
     current_clients = Contact.objects.filter(client_status="Current").order_by("name")
@@ -259,8 +269,12 @@ def client_statement_filter(request):
             status=204, headers={"HX-Trigger": "clientStatementChanged"}
         )
 
-    # Get current filter data from session for display
+    # Get current filter data from session, default to current month
     filter_data = request.session.get("client_statement_filter", {})
+    if not filter_data.get("month_num"):
+        now = datetime.now()
+        filter_data["month_num"] = str(now.month)
+        filter_data["year"] = str(now.year)
     clients = Contact.objects.filter(client_status="Current").order_by("name")
 
     # Generate year list (5 years back, current year, 2 years forward)
