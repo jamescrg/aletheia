@@ -43,6 +43,8 @@
 }
 
 #note-folders .list-group-item {
+  border-bottom: none;
+  border-top: 1px solid var(--border-medium);
   padding-left: 0.125rem;
 }
 
