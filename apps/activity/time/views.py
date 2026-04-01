@@ -224,7 +224,15 @@ def time_add(request, id=None, request_app="activity"):
                         ).aggregate(total=models.Sum("hours"))["total"]
                         or 0
                     )
-                    toast_success(response, f"Total time for today: {today_total}h")
+                    toast_success(
+                        response,
+                        f"Total time for today: {today_total}h",
+                        duration=8000,
+                        link={
+                            "url": reverse("activity:time-index"),
+                            "text": "View activity",
+                        },
+                    )
                 return response
             elif request_app in ("matters", "case"):
                 url = reverse("activity:time-index")
