@@ -130,7 +130,7 @@
 }
 
 .item-selected-highlight {
-  background: var(--selected-background);
+  background: var(--background-control);
 }
 
 
