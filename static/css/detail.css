@@ -39,11 +39,12 @@ Detail Layout (header / subnav / body)
 
 .detail-header .toolbar a,
 .detail-header .toolbar button {
-  border: solid 1px var(--border-medium);
+  border: solid 1px var(--border-medium-dark);
+  background: var(--background-body);
 }
 
 .detail-header .toolbar .toggle-active {
-  border: solid 1px var(--border-medium);
+  border: solid 1px var(--border-medium-dark);
 }
 
 .detail-header .dropdown-menu a {
