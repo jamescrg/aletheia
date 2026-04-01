@@ -53,8 +53,8 @@ Detail Layout (header / subnav / body)
 /* Subnav - tab navigation */
 .subnav {
   background: var(--background-subnav);
-  border-bottom: solid 1px var(--border-medium);
-  border-top: solid 1px var(--border-medium);
+  border-bottom: solid 1px var(--border-medium-dark);
+  border-top: solid 1px var(--border-medium-dark);
 }
 
 .subnav ul {

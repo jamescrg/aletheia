@@ -34,9 +34,9 @@
      ========================================================================== */
   --background-nav: var(--stone-350);
   --background-body: var(--stone-125);
-  --background-subnav: var(--stone-175);
+  --background-subnav: var(--stone-200);
   --background-subnav-contrast: var(--stone-225);
-  --background-control: var(--stone-175);
+  --background-control: var(--stone-200);
   --background-section: var(--stone-150);
   --background-td: var(--stone-125);
   --background-medium-light: var(--stone-75);
@@ -54,8 +54,8 @@
      ========================================================================== */
   --sidebar-width: 13rem;
   --sidebar-width-collapsed: 4.5rem;
-  --background-sidebar: var(--stone-175);
-  --background-sidebar-hover: var(--stone-215);
+  --background-sidebar: var(--stone-200);
+  --background-sidebar-hover: var(--stone-225);
   --background-sidebar-active: var(--stone-250);
 
   /* ==========================================================================
