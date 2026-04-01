@@ -663,7 +663,15 @@ body:has(.note-page.standalone) {
    Notes List Table Styles
    ============================================================================= */
 
+#notes-table {
+  margin-left: -1rem;
+  margin-right: -1rem;
+}
+
 .notes-list {
+  border-left: none;
+  border-radius: 0;
+  border-right: none;
   min-width: 54rem;
 }
 
