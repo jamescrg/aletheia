@@ -26,13 +26,13 @@ body.intake-detail .content {
   }
 
   .intake-detail-layout > .intake-sidebar {
-    flex: 0 0 calc(33.333% - 0.5rem);
-    max-width: calc(33.333% - 0.5rem);
+    flex: 0 0 calc(37.5% - 0.5rem);
+    max-width: calc(37.5% - 0.5rem);
   }
 
   .intake-detail-layout > .intake-main {
-    flex: 0 0 calc(66.666% - 1rem);
-    max-width: calc(66.666% - 1rem);
+    flex: 0 0 calc(62.5% - 1rem);
+    max-width: calc(62.5% - 1rem);
   }
 }
 
