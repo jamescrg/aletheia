@@ -1,0 +1,35 @@
+<div class="modal-dialog modal-md">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Filter Unbilled</h1>
+      <div>
+        <button type="button" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <form id="unbilled-filter-form"
+            class="form-responsive form-spacious filter"
+            hx-target="#htmx-modal-container"
+            hx-post="{% url 'invoicing:unbilled-filter' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="last_invoice_before">Last Invoice Before</label>
+          <input type="date"
+                 id="last_invoice_before"
+                 name="last_invoice_before"
+                 value="{{ last_invoice_before }}">
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button"
+              class="btn btn-secondary"
+              hx-post="{% url 'management:clear-filters' session_key='unbilled_filter' trigger='unbilledListChanged' %}">
+        Restore Defaults
+      </button>
+      <button type="submit" form="unbilled-filter-form" class="btn btn-success">Apply</button>
+    </div>
+  </div>
+</div>

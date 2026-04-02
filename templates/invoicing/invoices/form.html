@@ -18,8 +18,16 @@
         {{ form }}
       </form>
     </div>
-    <div class="modal-footer">
-      <button type="submit" form="invoice-form" class="btn btn-success">Submit</button>
+    <div class="modal-footer modal-footer-3col">
+      <div class="modal-footer-left">
+        <button type="button"
+                class="btn btn-secondary"
+                @click="$dispatch('close-modal')">Cancel</button>
+      </div>
+      <div class="modal-footer-center"></div>
+      <div class="modal-footer-right">
+        <button type="submit" form="invoice-form" class="btn btn-success">Submit</button>
+      </div>
     </div>
   </div>
 </div>

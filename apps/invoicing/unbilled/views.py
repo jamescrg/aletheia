@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 
 from apps.invoicing.unbilled.unbilled import get_unbilled_data
@@ -43,3 +44,21 @@ def unbilled_sort(request, order):
     request.session.modified = True
 
     return redirect("invoicing:unbilled-list")
+
+
+@login_required
+def unbilled_filter(request):
+    """Filter modal for unbilled list."""
+    if request.method == "POST":
+        filter_data = request.session.get("unbilled_filter", {})
+        last_invoice_before = request.POST.get("last_invoice_before", "")
+        filter_data["last_invoice_before"] = last_invoice_before
+        request.session["unbilled_filter"] = filter_data
+
+        return HttpResponse(status=204, headers={"HX-Trigger": "unbilledListChanged"})
+
+    filter_data = request.session.get("unbilled_filter", {})
+    context = {
+        "last_invoice_before": filter_data.get("last_invoice_before", ""),
+    }
+    return render(request, "invoicing/unbilled/filter.html", context)

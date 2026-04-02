@@ -214,6 +214,10 @@ Credits
   width: 7rem;
 }
 
+.unbilled-list .unbilled-date {
+  width: 8rem;
+}
+
 .unbilled-totals td {
   background: var(--background-control);
 }

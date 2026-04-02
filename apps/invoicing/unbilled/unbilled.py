@@ -1,8 +1,11 @@
-from django.db.models import DecimalField, F, OuterRef, Q, Subquery, Sum
+from datetime import date
+
+from django.db.models import DateField, DecimalField, F, OuterRef, Q, Subquery, Sum
 from django.db.models.functions import Coalesce
 
 from apps.activity.expenses.models import ExpenseEntry
 from apps.activity.time.models import TimeEntry
+from apps.invoicing.invoices.models import Invoice
 from apps.management.pagination import CustomPaginator
 from apps.matters.models import Matter
 from apps.trust.trust import get_confirmed_client_balance
@@ -49,6 +52,13 @@ def get_unbilled_data(request):
         .values("total")
     )
 
+    # Subquery for the most recent invoice date per matter
+    last_invoice_subquery = (
+        Invoice.objects.filter(matter=OuterRef("pk"))
+        .order_by("-date_issued")
+        .values("date_issued")[:1]
+    )
+
     # Annotate matters with all unbilled time/fees and expenses
     matters = (
         Matter.objects.all()
@@ -68,9 +78,19 @@ def get_unbilled_data(request):
                 0,
                 output_field=DecimalField(),
             ),
+            last_invoice_date=Subquery(last_invoice_subquery, output_field=DateField()),
         )
         .filter(Q(unbilled_hours__gt=0) | Q(unbilled_expenses__gt=0))
     )
+
+    # Apply last invoice date filter
+    filter_data = request.session.get("unbilled_filter", {})
+    last_invoice_before = filter_data.get("last_invoice_before")
+    if last_invoice_before:
+        cutoff = date.fromisoformat(last_invoice_before)
+        matters = matters.filter(
+            Q(last_invoice_date__lte=cutoff) | Q(last_invoice_date__isnull=True)
+        )
 
     # Convert to list for pagination
     matters_list = list(matters)
@@ -135,6 +155,10 @@ def get_unbilled_data(request):
         matters_list.sort(key=lambda m: m.clearance, reverse=reverse)
     elif sort_field == "unbilled_fees":
         matters_list.sort(key=lambda m: m.unbilled_fees, reverse=reverse)
+    elif sort_field == "last_invoice_date":
+        matters_list.sort(
+            key=lambda m: m.last_invoice_date or date.min, reverse=reverse
+        )
 
     # Pagination
     pagination = CustomPaginator(

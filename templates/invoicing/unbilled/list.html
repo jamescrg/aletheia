@@ -1,7 +1,17 @@
 {% load humanize %}
 <div class="toolbar">
   <div class="toolbar-left">
-    <h2>Unbilled Activity</h2>
+    <div class="filter-tools">
+      <button type="button"
+              class="btn-icon"
+              hx-get="{% url 'invoicing:unbilled-filter' %}"
+              hx-target="#htmx-modal-container"
+              hx-trigger="click"
+              data-bs-toggle="modal"
+              data-bs-target="#htmx-modal-container">
+        <i class="icon-list-filter with-text"></i>Filter
+      </button>
+    </div>
   </div>
   <div class="toolbar-right">
     <span class="app-badge app-badge-lg">Count: {{ matter_count }}</span>
@@ -35,6 +45,13 @@
           <i class="icon-chevrons-up-down"></i>
         </button>
       </th>
+      <th class="unbilled-date">
+        Last Inv.
+        <button class="btn-sort {% if current_order == 'last_invoice_date' %}active{% endif %}"
+                hx-post="{% url 'invoicing:unbilled-sort' 'last_invoice_date' %}">
+          <i class="icon-chevrons-up-down"></i>
+        </button>
+      </th>
     </tr>
     {% for matter in matters %}
       <tr>
@@ -58,10 +75,11 @@
         <td class="numeric unbilled-col{% if matter.clearance < 0 %} clearance-negative{% endif %}">
           ${{ matter.clearance|floatformat:2|intcomma }}
         </td>
+        <td class="unbilled-date">{{ matter.last_invoice_date|date:"Y-m-d"|default:"" }}</td>
       </tr>
     {% empty %}
       <tr>
-        <td colspan="7" class="empty-message">No unbilled activity found.</td>
+        <td colspan="8" class="empty-message">No unbilled activity found.</td>
       </tr>
     {% endfor %}
     <tr class="total-row">
@@ -86,6 +104,7 @@
       <td class="numeric unbilled-col">
         <strong>${{ total_clearance|floatformat:2|intcomma }}</strong>
       </td>
+      <td class="unbilled-date"></td>
     </tr>
   </table>
   <div>{% include "pagination.html" %}</div>

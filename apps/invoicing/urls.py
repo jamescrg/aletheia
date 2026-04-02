@@ -48,7 +48,12 @@ from apps.invoicing.payments.views import (
     payments_index,
     payments_list,
 )
-from apps.invoicing.unbilled.views import unbilled_index, unbilled_list, unbilled_sort
+from apps.invoicing.unbilled.views import (
+    unbilled_filter,
+    unbilled_index,
+    unbilled_list,
+    unbilled_sort,
+)
 
 app_name = "invoicing"
 
@@ -59,6 +64,7 @@ urlpatterns = [
     path("invoicing/unbilled/", unbilled_index, name="unbilled-index"),
     path("invoicing/unbilled/list/", unbilled_list, name="unbilled-list"),
     path("invoicing/unbilled/sort/<str:order>/", unbilled_sort, name="unbilled-sort"),
+    path("invoicing/unbilled/filter/", unbilled_filter, name="unbilled-filter"),
     # Collection
     path("invoicing/collection/", collection_index, name="collection-index"),
     path("invoicing/collection/list/", collection_list, name="collection-list"),
