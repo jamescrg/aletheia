@@ -3,7 +3,7 @@
    ========================================================================== */
 
 body.contacts-page {
-  /* background-color: var(--background-subnav); */
+  background-color: var(--background-subnav);
 }
 
 body.contacts-page .content {

@@ -1,4 +1,5 @@
 body.notes-page {
+  background-color: var(--background-subnav);
 }
 
 body.notes-page .content {
