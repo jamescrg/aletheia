@@ -14,7 +14,7 @@ button:focus,
 }
 
 body {
-  font-family: "Open Sans", sans-serif;
+  font-family: "Geist Variable", "Geist", sans-serif;
   margin: 0;
   overflow: hidden;
   padding: 0;
@@ -71,7 +71,7 @@ body {
   background: none;
   border: none;
   border-radius: 0.375rem;
-  color: var(--stone-700);
+  color: var(--selected-color);
   cursor: pointer;
   display: flex;
   font-size: 1.25rem;
@@ -103,7 +103,7 @@ body {
 }
 
 .highlights-controls .btn-icon:hover {
-  color: var(--stone-900);
+  color: var(--color-darker);
 }
 
 #highlights-list {
@@ -113,8 +113,8 @@ body {
 
 .highlight-item {
   align-items: flex-start;
-  background: var(--stone-50);
-  border: 1px solid var(--stone-300);
+  background: var(--background-light);
+  border: 1px solid var(--border-medium);
   border-radius: var(--radius-sm);
   cursor: pointer;
   display: flex;
@@ -126,11 +126,11 @@ body {
 }
 
 .highlight-item:hover {
-  background: var(--stone-100);
+  background: var(--background-body);
 }
 
 .highlight-item.active {
-  background: var(--stone-100);
+  background: var(--background-body);
 }
 
 .highlight-content {
@@ -151,25 +151,25 @@ body {
 
 .highlight-importance {
   bottom: 0.5rem;
-  color: var(--stone-400);
+  color: var(--color-muted-more);
   font-size: 0.75rem;
   position: absolute;
   right: 0.5rem;
 }
 
 .highlight-edit-btn {
-  color: var(--stone-400);
+  color: var(--color-muted-more);
   flex-shrink: 0;
   padding-left: 0.25rem;
   text-decoration: none;
 }
 
 .highlight-edit-btn:hover {
-  color: var(--stone-700);
+  color: var(--selected-color);
 }
 
 .no-highlights {
-  color: var(--stone-400);
+  color: var(--color-muted-more);
   font-size: 0.875rem;
   padding: 20px;
   text-align: center;
@@ -214,16 +214,16 @@ body {
 }
 
 .highlight-item.hl-purple.active {
-  border: 2px solid var(--violet-400);
+  border: 2px solid var(--blue-400);
 }
 
 /* Modal */
 .modal-content {
-  background: var(--stone-100);
+  background: var(--background-body);
 }
 
 .modal-header {
-  border-bottom: 1px solid var(--stone-300);
+  border-bottom: 1px solid var(--border-medium);
 }
 
 .modal-header .modal-title {
@@ -237,19 +237,19 @@ body {
 }
 
 .modal-footer {
-  border-top: 1px solid var(--stone-300);
+  border-top: 1px solid var(--border-medium);
 }
 
 #highlight-form .form-control,
 #highlight-form .form-select {
-  background: var(--stone-50);
-  border: 1px solid var(--stone-300);
+  background: var(--background-light);
+  border: 1px solid var(--border-medium);
   border-radius: var(--radius-sm);
 }
 
 #highlight-form .form-control:focus,
 #highlight-form .form-select:focus {
-  border-color: var(--stone-400);
+  border-color: var(--color-muted-more);
   box-shadow: none;
   outline: none;
 }

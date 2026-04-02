@@ -4,8 +4,8 @@ Development Environment Styles
 
 /* Dev environment banner */
 .dev-banner {
-  background-color: var(--stone-250);
-  border-bottom: 2px solid var(--stone-400);
+  background-color: var(--selected-background);
+  border-bottom: 2px solid var(--border-dark);
   color: var(--orange-700);
   font-size: 0.75rem;
   font-weight: 600;

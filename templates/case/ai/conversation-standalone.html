@@ -1,130 +1,147 @@
 {% load static %}
 {% load cache_buster %}
 <!DOCTYPE html>
-<head>
-  <meta charset="UTF-8" content="" />
-  <title>{{ conversation.title|truncatechars:40 }} - AI Chat</title>
-  <link rel="icon"
-        type="image/x-icon"
-        href="{% static 'images/ai-favicon.svg' %}" />
-  <meta name="viewport" content="width = device-width, initial-scale = 1" />
-  <link rel="stylesheet"
-        href="https://unpkg.com/lucide-static@0.462.0/font/lucide.css" />
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap-reboot.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
-        rel="stylesheet">
-  <link rel="stylesheet" href="{% static_v 'css/palette.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/colors.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/typeography.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/badges.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/buttons.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/icons.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/forms.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/modals.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/apps/case/ai.css' %}" />
-</head>
-<body class="ai-chat-body" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-  <div class="ai-chat-layout">
-    <aside class="ai-chat-sidebar" id="historySidebar">
-      <div class="ai-sidebar-header">
-        <h2>History</h2>
-        <button type="button"
-                class="btn-icon ai-sidebar-toggle"
-                onclick="toggleSidebar()"
-                title="Collapse sidebar">
-          <i class="icon-chevron-left"></i>
-        </button>
-      </div>
-      <div class="ai-sidebar-list" id="promptList">
-        {% for message in messages %}
-          {% if message.role == "user" %}
-            <a href="#message-{{ message.id }}"
-               class="ai-sidebar-item"
-               data-tooltip="{{ message.content|truncatechars:300 }}"
-               onclick="scrollToMessage('message-{{ message.id }}'); return false;">
-              <span class="ai-sidebar-item-initials">
-                {% if message.user %}
-                  {{ message.user.first_name|slice:":1" }}{{ message.user.last_name|slice:":1" }}
-                {% else %}
-                  ?
-                {% endif %}
-              </span>
-              <span class="ai-sidebar-item-text">{{ message.content|truncatechars:60 }}</span>
-            </a>
+<html lang="en"
+      data-theme="{{ request.user.color_scheme|default:'classic' }}"
+      data-mode="{{ request.user.dark_mode|default:'system' }}">
+  <head>
+    <meta charset="UTF-8" content="" />
+    <meta name="description" content="LawAdmin - AI Conversation">
+    <meta name="keywords" content="law, legal, ai, conversation">
+    <title>{{ conversation.title|truncatechars:40 }} - AI Chat</title>
+    <link rel="icon"
+          type="image/x-icon"
+          href="{% static 'images/ai-favicon.svg' %}" />
+    <meta name="viewport" content="width = device-width, initial-scale = 1" />
+    <link rel="stylesheet"
+          href="https://unpkg.com/lucide-static@0.462.0/font/lucide.css" />
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap-reboot.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/@fontsource-variable/geist-sans/index.css">
+    <link rel="stylesheet" href="{% static_v 'css/palette.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/colors.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/layout.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/typeography.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/badges.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/buttons.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/icons.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/forms.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/lists.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/modals.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/interface.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/apps/case/ai.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/themes.css' %}" />
+    <script>
+    (function() {
+      var mode = document.documentElement.getAttribute('data-mode');
+      if (mode === 'system') {
+        var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-mode', isDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-mode-source', 'system');
+      }
+    })();
+    </script>
+  </head>
+  <body class="ai-chat-body" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <div class="ai-chat-layout">
+      <aside class="ai-chat-sidebar" id="historySidebar">
+        <div class="ai-sidebar-header">
+          <h2>History</h2>
+          <button type="button"
+                  class="btn-icon ai-sidebar-toggle"
+                  onclick="toggleSidebar()"
+                  title="Collapse sidebar">
+            <i class="icon-chevron-left"></i>
+          </button>
+        </div>
+        <div class="ai-sidebar-list" id="promptList">
+          {% for message in messages %}
+            {% if message.role == "user" %}
+              <a href="#message-{{ message.id }}"
+                 class="ai-sidebar-item"
+                 data-tooltip="{{ message.content|truncatechars:300 }}"
+                 onclick="scrollToMessage('message-{{ message.id }}'); return false;">
+                <span class="ai-sidebar-item-initials">
+                  {% if message.user %}
+                    {{ message.user.first_name|slice:":1" }}{{ message.user.last_name|slice:":1" }}
+                  {% else %}
+                    ?
+                  {% endif %}
+                </span>
+                <span class="ai-sidebar-item-text">{{ message.content|truncatechars:60 }}</span>
+              </a>
+            {% endif %}
+          {% empty %}
+            <div class="ai-sidebar-empty">No prompts yet</div>
+          {% endfor %}
+        </div>
+      </aside>
+      <main class="ai-chat-main">
+        <header class="ai-chat-header">
+          <span class="app-badge badge-purple">{{ matter.name }}</span>
+          <h1 id="conversationTitle">{{ conversation.title }}</h1>
+          <span class="app-badge badge-lg ai-llm-{{ conversation.llm }}">{{ conversation.get_llm_display }}</span>
+        </header>
+        <div class="ai-chat-scroll">
+          {% if conversation.summary %}
+            <div class="ai-conversation-summary">
+              <h3>Conversation Summary</h3>
+              <p>{{ conversation.summary }}</p>
+            </div>
           {% endif %}
-        {% empty %}
-          <div class="ai-sidebar-empty">No prompts yet</div>
-        {% endfor %}
-      </div>
-    </aside>
-    <main class="ai-chat-main">
-      <header class="ai-chat-header">
-        <span class="app-badge badge-purple">{{ matter.name }}</span>
-        <h1 id="conversationTitle">{{ conversation.title }}</h1>
-        <span class="app-badge badge-lg ai-llm-{{ conversation.llm }}">{{ conversation.get_llm_display }}</span>
-      </header>
-      <div class="ai-chat-scroll">
-        {% if conversation.summary %}
-          <div class="ai-conversation-summary">
-            <h3>Conversation Summary</h3>
-            <p>{{ conversation.summary }}</p>
+          <div id="messageContainer"
+               class="ai-messages"
+               hx-get="{% url 'case:ai-messages' matter.id %}?conversation_id={{ conversation.id }}"
+               hx-trigger="messagesUpdated from:body"
+               hx-swap="innerHTML">{% include "case/ai/messages.html" %}</div>
+        </div>
+        <div class="ai-input-container">
+          <div id="attachmentsList">
+            {% if not is_new %}
+              {% include "case/ai/attachments.html" with attachments=conversation.attachments.all %}
+            {% endif %}
           </div>
-        {% endif %}
-        <div id="messageContainer"
-             class="ai-messages"
-             hx-get="{% url 'case:ai-messages' matter.id %}?conversation_id={{ conversation.id }}"
-             hx-trigger="messagesUpdated from:body"
-             hx-swap="innerHTML">{% include "case/ai/messages.html" %}</div>
-      </div>
-      <div class="ai-input-container">
-        <div id="attachmentsList">
-          {% if not is_new %}
-            {% include "case/ai/attachments.html" with attachments=conversation.attachments.all %}
-          {% endif %}
+          <div class="ai-input-row">
+            <input type="file"
+                   id="fileInput"
+                   accept=".pdf"
+                   class="hidden-file-input"
+                   onchange="uploadFile(this)">
+            <button type="button"
+                    class="btn-icon ai-upload-btn"
+                    onclick="document.getElementById('fileInput').click()"
+                    title="Attach PDF">
+              <i class="icon-paperclip"></i>
+            </button>
+            <form id="chatForm"
+                  hx-post="{% url 'case:ai-send' matter.id %}"
+                  hx-target="#messageContainer"
+                  hx-swap="innerHTML">
+              <input type="hidden"
+                     name="conversation_id"
+                     id="conversationId"
+                     value="{% if not is_new %}{{ conversation.id }}{% endif %}">
+              <input type="hidden" name="llm" value="{{ conversation.llm }}">
+              <textarea name="message"
+                        id="aiMessageInput"
+                        placeholder="Ask about this matter..."
+                        rows="2"
+                        required
+                        onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); this.form.requestSubmit(); }"></textarea>
+            </form>
+            <button type="button"
+                    class="btn-icon ai-expand-btn"
+                    id="expandPromptBtn"
+                    title="Expand editor">
+              <i class="icon-maximize-2"></i>
+            </button>
+          </div>
         </div>
-        <div class="ai-input-row">
-          <input type="file"
-                 id="fileInput"
-                 accept=".pdf"
-                 class="hidden-file-input"
-                 onchange="uploadFile(this)">
-          <button type="button"
-                  class="btn-icon ai-upload-btn"
-                  onclick="document.getElementById('fileInput').click()"
-                  title="Attach PDF">
-            <i class="icon-paperclip"></i>
-          </button>
-          <form id="chatForm"
-                hx-post="{% url 'case:ai-send' matter.id %}"
-                hx-target="#messageContainer"
-                hx-swap="innerHTML">
-            <input type="hidden"
-                   name="conversation_id"
-                   id="conversationId"
-                   value="{% if not is_new %}{{ conversation.id }}{% endif %}">
-            <input type="hidden" name="llm" value="{{ conversation.llm }}">
-            <textarea name="message"
-                      id="aiMessageInput"
-                      placeholder="Ask about this matter..."
-                      rows="2"
-                      required
-                      onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); this.form.requestSubmit(); }"></textarea>
-          </form>
-          <button type="button"
-                  class="btn-icon ai-expand-btn"
-                  id="expandPromptBtn"
-                  title="Expand editor">
-            <i class="icon-maximize-2"></i>
-          </button>
-        </div>
-      </div>
-    </main>
-  </div>
-  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
-  <script>
+      </main>
+    </div>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <script>
     function scrollToMessage(messageId) {
       const element = document.getElementById(messageId);
       if (element) {
@@ -309,10 +326,18 @@
         window.dispatchEvent(new CustomEvent('open-modal'));
       });
     });
-  </script>
-  <!-- Alpine.js (CDN) -->
-  <script defer src="https://unpkg.com/alpinejs@3.14.3/dist/cdn.min.js"></script>
-  <script src="{% static_v 'js/alpine-components.js' %}"></script>
-  {% include "modals.html" %}
-  {% include "confirm-modal.html" %}
-</body>
+    </script>
+    <!-- Alpine.js (CDN) -->
+    <script defer src="https://unpkg.com/alpinejs@3.14.3/dist/cdn.min.js"></script>
+    <script src="{% static_v 'js/alpine-components.js' %}"></script>
+    {% include "modals.html" %}
+    {% include "confirm-modal.html" %}
+    <script>
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+      if (document.documentElement.getAttribute('data-mode-source') === 'system') {
+        document.documentElement.setAttribute('data-mode', e.matches ? 'dark' : 'light');
+      }
+    });
+    </script>
+  </body>
+</html>

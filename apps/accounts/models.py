@@ -11,6 +11,19 @@ ROLE_OPTIONS = (
 )
 
 
+class ColorScheme(models.TextChoices):
+    CLASSIC = "classic", "Classic"
+    BLUE = "blue", "Blue"
+    PURPLE = "purple", "Purple"
+    TEAL = "teal", "Teal"
+
+
+class DarkMode(models.TextChoices):
+    SYSTEM = "system", "System"
+    LIGHT = "light", "Light"
+    DARK = "dark", "Dark"
+
+
 class CustomUser(AbstractUser):
     google_contacts_credentials = models.TextField(null=True, blank=True)
     google_calendar_credentials = models.TextField(null=True, blank=True)
@@ -26,6 +39,12 @@ class CustomUser(AbstractUser):
     perm_intakes = models.BooleanField(default=True)
     perm_reports = models.BooleanField(default=True)
     perm_research = models.BooleanField(default=True)
+    color_scheme = models.CharField(
+        max_length=10, choices=ColorScheme.choices, default=ColorScheme.CLASSIC
+    )
+    dark_mode = models.CharField(
+        max_length=6, choices=DarkMode.choices, default=DarkMode.SYSTEM
+    )
     history = HistoricalRecords()
 
     objects = CustomUserManager()

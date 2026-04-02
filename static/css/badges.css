@@ -35,7 +35,7 @@ a.app-badge:visited {
 Badge color classes
 ------------------------------------------------ */
 
-.app-badge.badge-blue { background-color: var(--blue-100); }
+.app-badge.badge-blue { background-color: var(--label-blue); }
 .app-badge.badge-gray { background-color: var(--label-gray); }
 .app-badge.badge-green { background-color: var(--label-green); }
 .app-badge.badge-lime { background-color: var(--lime-100); }

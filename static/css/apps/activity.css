@@ -60,6 +60,10 @@ Activity list table
   white-space: normal;
 }
 
+.activity .actions .label-badge:first-of-type {
+  margin-left: 0.5rem;
+}
+
 .activity .hours {
   text-align: right;
   width: 5rem;

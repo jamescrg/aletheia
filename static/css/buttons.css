@@ -22,11 +22,16 @@
 }
 
 .btn-primary,
-.btn-primary:hover,
 .btn-primary:focus {
   background: var(--button-primary-background);
   border-color: var(--button-primary-background);
   box-shadow: none;
+  color: var(--button-primary-color);
+}
+
+.btn-primary:hover {
+  background: var(--link-hover);
+  border-color: var(--link-hover);
   color: var(--button-primary-color);
 }
 
@@ -39,11 +44,15 @@
 .btn-secondary,
 .btn-secondary:focus,
 .btn-secondary:active {
-  background: var(--blue-50);
+  background: var(--background-section);
   border-color: var(--border-medium);
   box-shadow: none;
   color: var(--button-secondary-color);
   outline: none;
+}
+
+.btn-secondary:hover {
+  background: var(--background-control);
 }
 
 .btn-outline-primary,
@@ -56,17 +65,27 @@
 }
 
 .btn-danger {
-  background: var(--red-100);
-  border-color: var(--border-medium);
+  background: var(--red-700);
+  border-color: var(--red-700);
   box-shadow: none;
-  color: var(--button-secondary-color);
+  color: white;
+}
+
+.btn-danger:hover {
+  background: var(--red-800);
+  border-color: var(--red-800);
 }
 
 .btn-success {
-  background: var(--lime-100);
-  border-color: var(--border-medium);
+  background: var(--green-700);
+  border-color: var(--green-700);
   box-shadow: none;
-  color: var(--button-secondary-color);
+  color: white;
+}
+
+.btn-success:hover {
+  background: var(--green-800);
+  border-color: var(--green-800);
 }
 
 .btn-success i {
@@ -125,7 +144,7 @@
 }
 
 .dropdown-item i {
-  color: var(--stone-400);
+  color: var(--color-muted-more);
   margin-right: 0.5rem;
 }
 
@@ -227,7 +246,7 @@ td:hover .btn-ghost,
 }
 
 .toggle-switch .toggle-track {
-  background: var(--stone-300);
+  background: var(--border-medium);
   border-radius: 0.5rem;
   bottom: 0;
   left: 0;
@@ -251,7 +270,7 @@ td:hover .btn-ghost,
 }
 
 .toggle-switch input:checked + .toggle-track {
-  background: var(--violet-500);
+  background: var(--link);
 }
 
 .toggle-switch input:checked + .toggle-track::before {
@@ -294,9 +313,9 @@ td:hover .btn-ghost,
 }
 
 .btn-check:hover {
-  color: var(--violet-500);
+  color: var(--link);
 }
 
 .btn-check .icon-square-check {
-  color: var(--violet-500);
+  color: var(--link);
 }

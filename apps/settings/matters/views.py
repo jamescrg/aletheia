@@ -19,6 +19,7 @@ def matters_index(request):
         practice_areas = practice_areas.filter(is_active=False)
 
     context = {
+        "app": "settings",
         "subapp": "matters",
         "practice_areas": practice_areas,
         "practice_area_filter": practice_area_filter,

@@ -33,9 +33,90 @@ Profile Form
 .profile-form #id_old_password,
 .profile-form #id_new_password,
 .profile-form #id_confirm_password,
-.profile-form #id_initials {
+.profile-form #id_initials,
+.profile-form #id_color_scheme {
   max-width: 18.75rem;
   width: 100%;
+}
+
+.scheme-dropdown {
+  max-width: 18.75rem;
+  position: relative;
+  width: 100%;
+}
+
+.scheme-dropdown-trigger {
+  align-items: center;
+  background: var(--input-background);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  color: var(--color-primary);
+  cursor: pointer;
+  display: flex;
+  font-family: inherit;
+  font-size: 1rem;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  line-height: 1.5;
+  max-width: 18.75rem;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  width: 100%;
+}
+
+.scheme-dropdown-trigger i {
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  margin-left: auto;
+}
+
+.scheme-dropdown-menu {
+  background: var(--background-light);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  left: 0;
+  list-style: none;
+  margin: 0.25rem 0 0;
+  max-width: 18.75rem;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 100%;
+  z-index: 10;
+}
+
+.scheme-dropdown-item {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.scheme-dropdown-item:hover {
+  background: var(--background-control);
+}
+
+.scheme-dropdown-item.active {
+  background: var(--selected-background);
+}
+
+.swatch-dot {
+  border-radius: 50%;
+  display: block;
+  flex-shrink: 0;
+  height: 0.75rem;
+  width: 0.75rem;
+}
+
+.mode-icon {
+  color: var(--color-muted);
+  font-size: 1rem;
+}
+
+.scheme-dropdown-label,
+.mode-dropdown-label {
+  flex: 1;
 }
 
 /* ==========================================================================

@@ -29,6 +29,7 @@ def get_user_list(request):
     current_order = current_order.lstrip("-")
 
     context = {
+        "app": "settings",
         "subapp": "users",
         "users": pagination.object_list,
         "pagination": pagination,

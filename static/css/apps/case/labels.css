@@ -14,7 +14,7 @@ Label color classes
   font-weight: normal;
 }
 
-.label-blue { background-color: var(--blue-100); }
+.label-blue { background-color: var(--label-blue); }
 .label-gray { background-color: var(--label-gray); }
 .label-green { background-color: var(--label-green); }
 .label-orange { background-color: var(--label-orange); }

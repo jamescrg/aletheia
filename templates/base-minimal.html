@@ -1,76 +1,98 @@
 {% load static %}
 {% load cache_buster %}
 <!DOCTYPE html>
-<head>
-  <meta charset="UTF-8" content="" />
-  <title>
-    {% block title %}
-      LawAdmin
-    {% endblock title %}
-  </title>
-  {% block favicon %}
+<html lang="en"
+      data-theme="{{ user.color_scheme|default:'classic' }}"
+      data-mode="{{ user.dark_mode|default:'system' }}">
+  <head>
+    <meta charset="UTF-8" content="" />
+    <meta name="description" content="LawAdmin - Legal Practice Management">
+    <meta name="keywords" content="law, legal, practice management">
+    <title>
+      {% block title %}
+        LawAdmin
+      {% endblock title %}
+    </title>
+    {% block favicon %}
+      {% if env == 'dev' %}
+        <link rel="icon"
+              type="image/svg+xml"
+              href="{% static 'images/briefcase-fill-dev.svg' %}" />
+      {% else %}
+        <link rel="icon"
+              type="image/svg+xml"
+              href="{% static 'images/briefcase-fill.svg' %}" />
+      {% endif %}
+    {% endblock favicon %}
+    <!-- set viewport for mobile devices -->
+    <meta name="viewport" content="width = device-width, initial-scale = 1" />
+    <link rel="stylesheet"
+          href="https://unpkg.com/lucide-static@0.462.0/font/lucide.css" />
+    <!-- app stylesheets -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/@fontsource-variable/geist-sans/index.css">
+    <link rel="stylesheet" href="{% static_v 'css/palette.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/colors.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/typeography.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/badges.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/layout.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/toolbar.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/detail.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/cards.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/tables.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/lists.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/modals.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/buttons.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/icons.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/forms.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/combobox.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/interface.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/apps/case.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/apps/case/ai.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/apps/case/highlights.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/apps/notes.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/apps/notes-editor.css' %}" />
+    <link rel="stylesheet" href="{% static_v 'css/themes.css' %}" />
+    <script>
+    (function() {
+      var mode = document.documentElement.getAttribute('data-mode');
+      if (mode === 'system') {
+        var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-mode', isDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-mode-source', 'system');
+      }
+    })();
+    </script>
     {% if env == 'dev' %}
-      <link rel="icon"
-            type="image/svg+xml"
-            href="{% static 'images/briefcase-fill-dev.svg' %}" />
-    {% else %}
-      <link rel="icon"
-            type="image/svg+xml"
-            href="{% static 'images/briefcase-fill.svg' %}" />
+      <link rel="stylesheet" href="{% static_v 'css/dev.css' %}" />
     {% endif %}
-  {% endblock favicon %}
-  <!-- set viewport for mobile devices -->
-  <meta name="viewport" content="width = device-width, initial-scale = 1" />
-  <link rel="stylesheet"
-        href="https://unpkg.com/lucide-static@0.462.0/font/lucide.css" />
-  <!-- app stylesheets -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
-        rel="stylesheet">
-  <link rel="stylesheet" href="{% static_v 'css/palette.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/colors.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/typeography.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/badges.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/layout.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/toolbar.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/detail.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/cards.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/tables.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/lists.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/modals.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/buttons.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/icons.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/forms.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/combobox.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/interface.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/apps/case.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/apps/case/ai.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/apps/case/highlights.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/apps/notes.css' %}" />
-  <link rel="stylesheet" href="{% static_v 'css/apps/notes-editor.css' %}" />
-  {% if env == 'dev' %}
-    <link rel="stylesheet" href="{% static_v 'css/dev.css' %}" />
-  {% endif %}
-</head>
-<body class="minimal-layout {% if env == 'dev' %}env-dev{% endif %}"
-      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-  {% if env == 'dev' %}
-    <div class="dev-banner">
-      <span>DEVELOPMENT ENVIRONMENT</span>
-    </div>
-  {% endif %}
-  {% include "modals.html" %}
-  {% include "confirm-modal.html" %}
-  {% block content %}
-  {% endblock content %}
-  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
-  <script defer src="https://unpkg.com/alpinejs@3.14.3/dist/cdn.min.js"></script>
-  <script src="{% static_v 'js/alpine-components.js' %}"></script>
-  <script src="https://unpkg.com/dropzone@5.9.3/dist/min/dropzone.min.js"></script>
-  <link rel="stylesheet"
-        href="https://unpkg.com/dropzone@5.9.3/dist/min/dropzone.min.css" />
-  <script src="{% static_v 'js/htmx-focus.js' %}"></script>
-  <script src="{% static_v 'js/main.js' %}"></script>
-  <script src="{% static_v 'js/file-upload-forms.js' %}" defer></script>
-</body>
+  </head>
+  <body class="minimal-layout {% if env == 'dev' %}env-dev{% endif %}"
+        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    {% if env == 'dev' %}
+      <div class="dev-banner">
+        <span>DEVELOPMENT ENVIRONMENT</span>
+      </div>
+    {% endif %}
+    {% include "modals.html" %}
+    {% include "confirm-modal.html" %}
+    {% block content %}
+    {% endblock content %}
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.14.3/dist/cdn.min.js"></script>
+    <script src="{% static_v 'js/alpine-components.js' %}"></script>
+    <script src="https://unpkg.com/dropzone@5.9.3/dist/min/dropzone.min.js"></script>
+    <link rel="stylesheet"
+          href="https://unpkg.com/dropzone@5.9.3/dist/min/dropzone.min.css" />
+    <script src="{% static_v 'js/htmx-focus.js' %}"></script>
+    <script src="{% static_v 'js/main.js' %}"></script>
+    <script src="{% static_v 'js/file-upload-forms.js' %}" defer></script>
+    <script>
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+      if (document.documentElement.getAttribute('data-mode-source') === 'system') {
+        document.documentElement.setAttribute('data-mode', e.matches ? 'dark' : 'light');
+      }
+    });
+    </script>
+  </body>
+</html>

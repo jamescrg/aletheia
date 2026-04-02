@@ -3,7 +3,7 @@
    ========================================================================== */
 
 .ai-chat-body {
-  background: var(--stone-300);
+  background: var(--background-body);
   font-size: 1.15rem;
   height: 100vh;
   margin: 0;
@@ -17,7 +17,7 @@
 
 .ai-chat-header {
   align-items: center;
-  background: var(--stone-50);
+  background: var(--background-light);
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem 2rem;
@@ -53,7 +53,7 @@
 }
 
 .ai-chat-sidebar {
-  background: var(--stone-150);
+  background: var(--background-section);
   border-right: 1px solid var(--border-dark);
   display: flex;
   flex-direction: column;
@@ -126,9 +126,9 @@
 
 .ai-sidebar-item-initials {
   align-items: center;
-  background: var(--stone-200);
+  background: var(--background-control);
   border-radius: 50%;
-  color: var(--stone-600);
+  color: var(--color-primary);
   display: flex;
   flex-shrink: 0;
   font-size: 0.625rem;
@@ -194,7 +194,7 @@
 
 @keyframes message-highlight {
   0% {
-    background: var(--yellow-100);
+    background: var(--label-yellow);
   }
 
   100% {
@@ -275,30 +275,30 @@
   background: none;
   border: none;
   border-radius: var(--radius-xs);
-  color: var(--stone-400);
+  color: var(--color-muted-more);
   cursor: pointer;
   padding: 0.25rem;
 }
 
 .ai-conversations-table .btn-icon-toggle:hover {
-  background: var(--stone-100);
+  background: var(--background-body);
   color: var(--link);
 }
 
 .ai-conversations-table .btn-icon-toggle.active {
-  color: var(--violet-600);
+  color: var(--link);
 }
 
 .ai-conversations-table .btn-icon-toggle.active:hover {
-  color: var(--violet-700);
+  color: var(--link-hover);
 }
 
 /* Participant Badges */
 .participant-badge {
   align-items: center;
-  background: var(--stone-200);
+  background: var(--background-control);
   border-radius: 50%;
-  color: var(--stone-700);
+  color: var(--selected-color);
   display: inline-flex;
   font-size: 0.75rem;
   font-weight: 600;
@@ -382,31 +382,31 @@
 }
 
 .ai-conversation-reference.active {
-  color: var(--violet-600);
+  color: var(--link);
   opacity: 1;
 }
 
 .ai-conversation-rename:hover,
 .ai-conversation-reference:hover {
-  background: var(--stone-200);
+  background: var(--background-control);
   color: var(--link);
 }
 
 .ai-conversation-delete:hover {
-  background: var(--red-100);
-  color: var(--red-600);
+  background: var(--label-red);
+  color: var(--urgent);
 }
 
 .ai-conversation-item.is-reference {
-  background: var(--violet-50);
+  background: var(--background-section);
 }
 
 .ai-conversation-item.is-reference:hover {
-  background: var(--violet-100);
+  background: var(--background-control);
 }
 
 .ai-conversation-title i {
-  color: var(--violet-500);
+  color: var(--link);
   font-size: 0.75rem;
 }
 
@@ -431,16 +431,16 @@
 }
 
 .ai-llm-claude {
-  background: var(--violet-100);
-  border: 1px solid var(--violet-300);
-  color: var(--stone-700);
+  background: var(--label-blue);
+  border: 1px solid var(--border-medium);
+  color: var(--selected-color);
 }
 
 .ai-llm-gemini-flash,
 .ai-llm-gemini-pro {
-  background: var(--lime-100);
-  border: 1px solid var(--lime-300);
-  color: var(--stone-700);
+  background: var(--label-green);
+  border: 1px solid var(--border-medium);
+  color: var(--selected-color);
 }
 
 /* New conversation buttons */
@@ -455,25 +455,25 @@
 }
 
 .ai-new-claude {
-  background: var(--violet-100);
-  border: 1px solid var(--violet-300);
-  color: var(--violet-700);
+  background: var(--label-blue);
+  border: 1px solid var(--border-medium);
+  color: var(--color-primary);
 }
 
 .ai-new-claude:hover {
-  background: var(--violet-200);
+  background: var(--selected-background);
 }
 
 .ai-new-gemini-flash,
 .ai-new-gemini-pro {
-  background: var(--lime-100);
-  border: 1px solid var(--lime-300);
-  color: var(--lime-700);
+  background: var(--label-green);
+  border: 1px solid var(--border-medium);
+  color: var(--color-primary);
 }
 
 .ai-new-gemini-flash:hover,
 .ai-new-gemini-pro:hover {
-  background: var(--lime-200);
+  background: var(--selected-background);
 }
 
 /* Title link styled as anchor */
@@ -586,7 +586,7 @@
 
 /* Messages */
 .ai-chat-scroll {
-  background: var(--stone-50);
+  background: var(--background-light);
   flex: 1;
   overflow-y: auto;
 }
@@ -621,7 +621,7 @@
   background: transparent;
   border: none;
   border-radius: var(--radius-xs);
-  color: var(--stone-400);
+  color: var(--color-muted-more);
   cursor: pointer;
   opacity: 0;
   padding: 0.25rem;
@@ -647,7 +647,7 @@
   background: transparent;
   border: none;
   border-radius: var(--radius-xs);
-  color: var(--stone-400);
+  color: var(--color-muted-more);
   cursor: pointer;
   opacity: 0;
   padding: 0.25rem;
@@ -684,11 +684,11 @@
 }
 
 .ai-message-user .ai-message-content {
-  background: var(--stone-150);
+  background: var(--background-section);
 }
 
 .ai-message-assistant .ai-message-content {
-  background: var(--stone-50);
+  background: var(--background-light);
 }
 
 .ai-message-time {
@@ -739,7 +739,7 @@
 /* Input Area */
 .ai-input-container {
   /* border-top: 1px solid var(--border-dark); */
-  background: var(--stone-50);
+  background: var(--background-light);
   padding: 1.5rem 1rem 2.5rem;
 }
 
@@ -850,10 +850,10 @@
 
 .ai-status-content {
   align-items: center;
-  background: var(--stone-100);
-  border: 1px solid var(--violet-300);
+  background: var(--background-body);
+  border: 1px solid var(--border-medium);
   border-radius: var(--radius-md);
-  color: var(--stone-700);
+  color: var(--selected-color);
   display: flex;
   font-size: 0.9375rem;
   gap: 0.75rem;
@@ -861,7 +861,7 @@
 }
 
 .ai-status-content i {
-  color: var(--violet-600);
+  color: var(--link);
   font-size: 1.25rem;
 }
 
@@ -870,7 +870,7 @@
 }
 
 .ai-status-elapsed {
-  color: var(--stone-500);
+  color: var(--color-muted);
   font-size: 0.8125rem;
 }
 
@@ -879,7 +879,7 @@
   background: transparent;
   border: none;
   border-radius: var(--radius-sm);
-  color: var(--stone-400);
+  color: var(--color-muted-more);
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -888,7 +888,7 @@
 }
 
 .ai-cancel-btn:hover {
-  background: var(--stone-200);
+  background: var(--background-control);
   color: var(--urgent);
 }
 
@@ -937,7 +937,7 @@
 .ai-markdown h4,
 .ai-markdown h5,
 .ai-markdown h6 {
-  color: var(--stone-800);
+  color: var(--color-darker);
   font-weight: 600;
   line-height: 1.3;
   margin-bottom: 0.5rem;
@@ -951,7 +951,7 @@
 }
 
 .ai-markdown h1 {
-  border-bottom: 1px solid var(--stone-300);
+  border-bottom: 1px solid var(--border-medium);
   font-size: 1.25rem;
   padding-bottom: 0.25rem;
 }
@@ -1012,9 +1012,9 @@
 
 /* Blockquotes */
 .ai-markdown blockquote {
-  background: var(--stone-100);
-  border-left: 3px solid var(--purple-400);
-  color: var(--stone-700);
+  background: var(--background-body);
+  border-left: 3px solid var(--link);
+  color: var(--selected-color);
   margin: 0.75rem 0;
   padding: 0.5rem 0.75rem;
 }
@@ -1025,9 +1025,9 @@
 
 /* Code - inline */
 .ai-markdown code {
-  background: var(--stone-200);
+  background: var(--background-control);
   border-radius: 0.25rem;
-  color: var(--stone-800);
+  color: var(--color-darker);
   display: inline;
   font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace;
   font-size: 0.875em;
@@ -1039,7 +1039,7 @@
 
 /* Code - blocks */
 .ai-markdown pre {
-  background: var(--stone-800);
+  background: var(--color-darker);
   border-radius: 0.375rem;
   margin: 0.75rem 0;
   overflow-x: auto;
@@ -1049,7 +1049,7 @@
 .ai-markdown pre code {
   background: transparent;
   border-radius: 0;
-  color: var(--stone-100);
+  color: var(--background-body);
   display: block;
   font-size: 0.8125rem;
   line-height: 1.5;
@@ -1066,35 +1066,35 @@
 
 .ai-markdown th,
 .ai-markdown td {
-  border: 1px solid var(--stone-300);
+  border: 1px solid var(--border-medium);
   padding: 0.5rem 0.75rem;
   text-align: left;
 }
 
 .ai-markdown th {
-  background: var(--stone-200);
+  background: var(--background-control);
   font-weight: 600;
 }
 
 .ai-markdown tr:nth-child(even) {
-  background: var(--stone-100);
+  background: var(--background-body);
 }
 
 /* Horizontal rules */
 .ai-markdown hr {
   border: none;
-  border-top: 1px solid var(--stone-300);
+  border-top: 1px solid var(--border-medium);
   margin: 1rem 0;
 }
 
 /* Links */
 .ai-markdown a {
-  color: var(--purple-600);
+  color: var(--link);
   text-decoration: underline;
 }
 
 .ai-markdown a:hover {
-  color: var(--purple-800);
+  color: var(--color-darker);
 }
 
 /* Bold and italic */
@@ -1108,9 +1108,9 @@
 
 /* Highlighted text (==text==) */
 .ai-markdown mark {
-  background: var(--yellow-200);
+  background: var(--label-yellow);
   border-radius: 0.125rem;
-  color: var(--stone-800);
+  color: var(--color-darker);
   padding: 0.125rem 0.25rem;
 }
 
@@ -1223,8 +1223,8 @@
 
 .ai-upload-btn:hover,
 .ai-expand-btn:hover {
-  background: var(--stone-100);
-  color: var(--stone-700);
+  background: var(--background-body);
+  color: var(--selected-color);
 }
 
 .ai-attachments-list {
@@ -1237,10 +1237,10 @@
 
 .ai-attachment-chip {
   align-items: center;
-  background: var(--stone-100);
-  border: 1px solid var(--stone-300);
+  background: var(--background-body);
+  border: 1px solid var(--border-medium);
   border-radius: var(--radius-sm);
-  color: var(--stone-700);
+  color: var(--selected-color);
   display: inline-flex;
   font-size: 0.875rem;
   gap: 0.375rem;
@@ -1248,7 +1248,7 @@
 }
 
 .ai-attachment-chip i {
-  color: var(--red-600);
+  color: var(--urgent);
 }
 
 .ai-attachment-name {
@@ -1265,16 +1265,16 @@
 }
 
 .ai-attachment-completed .ai-attachment-status {
-  color: var(--green-600);
+  color: var(--success);
 }
 
 .ai-attachment-pending .ai-attachment-status,
 .ai-attachment-processing .ai-attachment-status {
-  color: var(--yellow-600);
+  color: var(--warning);
 }
 
 .ai-attachment-failed .ai-attachment-status {
-  color: var(--red-600);
+  color: var(--urgent);
 }
 
 .ai-attachment-remove {
@@ -1282,7 +1282,7 @@
   background: transparent;
   border: none;
   border-radius: var(--radius-xs);
-  color: var(--stone-500);
+  color: var(--color-muted);
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -1291,15 +1291,15 @@
 }
 
 .ai-attachment-remove:hover {
-  background: var(--stone-200);
-  color: var(--red-600);
+  background: var(--background-control);
+  color: var(--urgent);
 }
 
 .ai-attachments-error {
-  background: var(--red-50);
-  border: 1px solid var(--red-200);
+  background: var(--error-background);
+  border: 1px solid var(--error-border);
   border-radius: var(--radius-sm);
-  color: var(--red-600);
+  color: var(--error);
   font-size: 0.875rem;
   margin-bottom: 0.5rem;
   padding: 0.5rem;
@@ -1320,7 +1320,7 @@
 
 .prompt-editor-toolbar {
   align-items: center;
-  background: var(--stone-100);
+  background: var(--background-body);
   border: none;
   border-bottom: 1px solid var(--border-medium);
   display: flex;
@@ -1332,20 +1332,20 @@
   background: transparent;
   border: none;
   border-radius: var(--radius-xs);
-  color: var(--stone-600);
+  color: var(--color-primary);
   cursor: pointer;
   font-size: 1rem;
   padding: 0.375rem 0.5rem;
 }
 
 .prompt-editor-toolbar .btn-icon:hover {
-  background: var(--stone-200);
-  color: var(--stone-800);
+  background: var(--background-control);
+  color: var(--color-darker);
 }
 
 .prompt-editor-toolbar .btn-icon.active {
-  background: var(--violet-100);
-  color: var(--violet-700);
+  background: var(--selected-background);
+  color: var(--link);
 }
 
 .prompt-editor-toolbar .toolbar-divider {
@@ -1357,7 +1357,7 @@
 
 .prompt-editor-toolbar #save-status-btn {
   align-items: center;
-  color: var(--stone-500);
+  color: var(--color-muted);
   display: flex;
   font-size: 1rem;
   justify-content: center;
@@ -1427,9 +1427,9 @@
 }
 
 .prompt-editor-content .ProseMirror blockquote {
-  background: var(--stone-50);
-  border-left: 3px solid var(--violet-400);
-  color: var(--stone-700);
+  background: var(--background-light);
+  border-left: 3px solid var(--link);
+  color: var(--selected-color);
   margin: 0.75rem 0;
   padding: 0.5rem 0.75rem;
 }
@@ -1489,30 +1489,30 @@
 
 .citation-verified a {
   background: var(--label-green);
-  color: var(--lime-800);
+  color: var(--success);
 }
 
 .citation-verified a:hover {
-  background: var(--lime-200);
+  background: var(--label-green);
 }
 
 .citation-unverified a,
 .citation-unverified span {
   background: var(--label-orange);
-  color: var(--orange-800);
+  color: var(--warning);
 }
 
 .citation-unverified a:hover {
-  background: var(--orange-200);
+  background: var(--label-orange);
 }
 
 .citation-search a {
   background: var(--label-gray);
-  color: var(--stone-600);
+  color: var(--color-primary);
 }
 
 .citation-search a:hover {
-  background: var(--stone-200);
+  background: var(--background-control);
 }
 
 .citation-verified i,
@@ -1549,7 +1549,7 @@
 
 /* Citations summary block */
 .citations-summary {
-  background: var(--stone-100);
+  background: var(--background-body);
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-sm);
   font-size: 0.875rem;
@@ -1559,14 +1559,14 @@
 
 .citations-summary-header {
   align-items: center;
-  color: var(--stone-700);
+  color: var(--selected-color);
   display: flex;
   font-weight: 500;
   gap: 0.5rem;
 }
 
 .citations-summary-header i {
-  color: var(--stone-500);
+  color: var(--color-muted);
 }
 
 .citations-unverified-list {
@@ -1588,14 +1588,14 @@
 
 /* Context Preview Page */
 .context-stats {
-  color: var(--stone-600);
+  color: var(--color-primary);
   display: flex;
   font-size: 0.875rem;
   gap: 1.5rem;
 }
 
 .context-cost-estimates {
-  background: var(--stone-100);
+  background: var(--background-body);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   margin-bottom: 1.5rem;
@@ -1603,7 +1603,7 @@
 }
 
 .context-cost-estimates h3 {
-  color: var(--stone-600);
+  color: var(--color-primary);
   font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.025em;
@@ -1629,24 +1629,24 @@
 }
 
 .cost-model {
-  color: var(--stone-600);
+  color: var(--color-primary);
   font-size: 0.9375rem;
   font-weight: 500;
 }
 
 .cost-value {
-  color: var(--stone-800);
+  color: var(--color-darker);
   font-size: 1.125rem;
   font-weight: 600;
 }
 
 .cost-context {
-  color: var(--stone-500);
+  color: var(--color-muted);
   font-size: 0.875rem;
 }
 
 .cost-context small {
-  color: var(--stone-400);
+  color: var(--color-muted-more);
 }
 
 .cost-context.warning {
@@ -1654,7 +1654,7 @@
 }
 
 .cost-context.exceeded {
-  color: var(--red-600);
+  color: var(--urgent);
   font-weight: 500;
 }
 
@@ -1668,8 +1668,8 @@
 }
 
 .cost-item.cost-exceeded {
-  background: var(--red-50);
-  border-color: var(--red-300);
+  background: var(--error-background);
+  border-color: var(--error-border);
 }
 
 .context-sections {
@@ -1679,17 +1679,17 @@
 }
 
 .context-section {
-  background: var(--stone-50);
+  background: var(--background-light);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
 }
 
 .context-section-header {
   align-items: center;
-  background: var(--stone-100);
+  background: var(--background-body);
   border: none;
   border-radius: var(--radius-sm);
-  color: var(--stone-800);
+  color: var(--color-darker);
   cursor: pointer;
   display: flex;
   font-size: 0.9375rem;
@@ -1701,11 +1701,11 @@
 }
 
 .context-section-header:hover {
-  background: var(--stone-200);
+  background: var(--background-control);
 }
 
 .context-section-header i {
-  color: var(--stone-500);
+  color: var(--color-muted);
   font-size: 0.875rem;
   transition: transform 0.15s ease;
 }
@@ -1719,7 +1719,7 @@
 }
 
 .context-section-text {
-  color: var(--stone-700);
+  color: var(--selected-color);
   line-height: 1.5;
   margin: 0;
   overflow-wrap: break-word;
@@ -1747,8 +1747,8 @@
 }
 
 .importance-high {
-  background: var(--red-100);
-  color: var(--red-700);
+  background: var(--label-red);
+  color: var(--urgent);
 }
 
 .importance-med {
@@ -1757,8 +1757,8 @@
 }
 
 .importance-low {
-  background: var(--stone-100);
-  color: var(--stone-500);
+  background: var(--background-body);
+  color: var(--color-muted);
 }
 
 /* Context Section Groups (Auto Pool, Excluded) */
@@ -1770,7 +1770,7 @@
   align-items: center;
   background: none;
   border: none;
-  color: var(--stone-700);
+  color: var(--selected-color);
   cursor: pointer;
   display: flex;
   font-size: 1rem;
@@ -1783,11 +1783,11 @@
 }
 
 .context-group-header:hover {
-  color: var(--stone-900);
+  color: var(--color-darker);
 }
 
 .context-group-header > i {
-  color: var(--stone-400);
+  color: var(--color-muted-more);
   font-size: 1rem;
   transition: transform 0.15s ease;
 }
@@ -1797,18 +1797,18 @@
 }
 
 .context-group-header.excluded {
-  color: var(--stone-500);
+  color: var(--color-muted);
 }
 
 .context-group-meta {
-  color: var(--stone-400);
+  color: var(--color-muted-more);
   font-size: 1rem;
   font-weight: 400;
   margin-left: auto;
 }
 
 .context-group-description {
-  color: var(--stone-500);
+  color: var(--color-muted);
   font-size: 1rem;
   margin: 0 0 1rem;
 }
@@ -1822,7 +1822,7 @@
 }
 
 .manifest-item-meta {
-  color: var(--stone-400);
+  color: var(--color-muted-more);
   flex-shrink: 0;
   font-size: 1rem;
   font-weight: 400;
@@ -1831,11 +1831,11 @@
 }
 
 .excluded-item .context-section-header.excluded {
-  background: var(--stone-50);
-  color: var(--stone-400);
+  background: var(--background-light);
+  color: var(--color-muted-more);
   cursor: default;
 }
 
 .excluded-item .context-section-header.excluded:hover {
-  background: var(--stone-50);
+  background: var(--background-light);
 }

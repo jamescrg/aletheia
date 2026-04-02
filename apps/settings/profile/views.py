@@ -18,6 +18,7 @@ def _get_form_errors(form):
 @login_required
 def profile_index(request):
     context = {
+        "app": "settings",
         "subapp": "profile",
     }
     return render(request, "settings/profile/index.html", context)
@@ -25,6 +26,9 @@ def profile_index(request):
 
 @login_required
 def personal_profile(request, form_type=None):
+    form = ProfileForm(instance=request.user)
+    change_password_form = ChangePasswordForm(instance=request.user)
+
     if request.method == "POST":
         if form_type == "profile":
             form = ProfileForm(request.POST, instance=request.user)
@@ -39,7 +43,7 @@ def personal_profile(request, form_type=None):
                 request.POST, instance=request.user
             )
 
-            if change_password_form.is_valid() and form_type == "password":
+            if change_password_form.is_valid():
                 user = change_password_form.save(commit=True)
                 user.save()
 
@@ -50,10 +54,6 @@ def personal_profile(request, form_type=None):
                 errors = _get_form_errors(change_password_form)
 
                 return HttpResponse(f'<div class="error-msg">{errors}</div>')
-
-    else:
-        form = ProfileForm(instance=request.user)
-        change_password_form = ChangePasswordForm(instance=request.user)
 
     context = {
         "user": request.user,

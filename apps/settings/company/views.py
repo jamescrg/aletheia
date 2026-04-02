@@ -26,5 +26,5 @@ def company_index(request):
     return render(
         request,
         "settings/company/index.html",
-        {"subapp": "company", "form": form, "company": company},
+        {"app": "settings", "subapp": "company", "form": form, "company": company},
     )

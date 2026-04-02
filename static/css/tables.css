@@ -34,7 +34,6 @@ th,
 .table > :not(caption) > * > th {
   background: var(--background-control);
   border-bottom: solid 1px var(--border-medium);
-  border-right: solid 1px var(--border-medium);
   font-weight: 500;
   padding: 0.625rem 1rem;
   text-align: left;
@@ -48,15 +47,9 @@ th,
   background: transparent;
 }
 
-th:last-child,
-.table > :not(caption) > * > th:last-child {
-  border-right: none;
-}
-
 td {
   background: var(--background-td);
   border-bottom: solid 1px var(--border-medium);
-  border-right: solid 1px var(--border-medium);
   overflow: hidden;
   padding: 0.625rem 1rem;
   text-overflow: ellipsis;
@@ -66,10 +59,6 @@ td {
 
 td.col-select {
   vertical-align: top;
-}
-
-td:last-child {
-  border-right: none;
 }
 
 tbody tr:last-child td {

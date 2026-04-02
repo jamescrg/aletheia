@@ -336,12 +336,12 @@
 
 #note-editor mark.mark-citation,
 #note-editor mark[data-color="mark-citation"] {
-  background: var(--stone-150);
+  background: var(--background-section);
 }
 
 #note-editor mark.mark-gray,
 #note-editor mark[data-color="mark-gray"] {
-  background: var(--stone-200);
+  background: var(--background-control);
 }
 
 /* Search match highlight */

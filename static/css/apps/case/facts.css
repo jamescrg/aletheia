@@ -61,7 +61,7 @@ Display
 }
 
 .facts-list tr.importance-4 > .importance .button-link {
-  color: var(--violet-600);
+  color: var(--blue-600);
 }
 
 .facts-list .citations {

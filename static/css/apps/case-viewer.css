@@ -5,7 +5,7 @@
 }
 
 body {
-  font-family: "Open Sans", sans-serif;
+  font-family: "Geist Variable", "Geist", sans-serif;
   margin: 0;
   overflow: hidden;
   padding: 0;
@@ -92,7 +92,7 @@ body {
 }
 
 #viewer {
-  background: white;
+  background: var(--background-light);
   box-shadow: 0 2px 8px rgb(0 0 0 / 15%);
   position: relative;
 }
@@ -159,7 +159,7 @@ body {
 
 /* Highlights Sidebar */
 #highlights-sidebar {
-  background: white;
+  background: var(--background-light);
   border-left: 1px solid var(--border-medium);
   flex-shrink: 0;
   overflow-y: auto;

@@ -103,6 +103,6 @@
 .move-tree .move-depth-2 { padding-left: 2rem; }
 .move-tree .move-depth-3 { padding-left: 2.875rem; }
 
-.move-tree-item.move-current { background: var(--violet-100); }
-.move-tree-item.move-selected { background: var(--lime-100); }
-.move-tree-item.move-current.move-selected { background: var(--violet-100); }
+.move-tree-item.move-current { background: var(--blue-100); }
+.move-tree-item.move-selected { background: var(--blue-50); }
+.move-tree-item.move-current.move-selected { background: var(--blue-100); }

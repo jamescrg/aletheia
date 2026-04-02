@@ -92,6 +92,18 @@
           </a>
         </li>
       {% endif %}
+      <li {% if app == 'settings' %}class="active"{% endif %}>
+        <a id="nav-settings"
+           href="{% url 'settings:settings' %}"
+           data-tooltip="Settings"
+           hx-boost="true"
+           hx-target="#main-content"
+           hx-select="#main-content"
+           hx-swap="outerHTML show:window:top">
+          <i class="icon-settings"></i>
+          <span class="sidebar-label">Settings</span>
+        </a>
+      </li>
     </ul>
     <ul class="sidebar-nav-utils">
       <li>
@@ -101,17 +113,6 @@
            data-tooltip="Search">
           <i class="icon-search"></i>
           <span class="sidebar-label">Search</span>
-        </a>
-      </li>
-      <li {% if app == 'settings' %}class="active"{% endif %}>
-        <a href="{% url 'settings:settings' %}"
-           data-tooltip="Settings"
-           hx-boost="true"
-           hx-target="#main-content"
-           hx-select="#main-content"
-           hx-swap="outerHTML show:window:top">
-          <i class="icon-settings"></i>
-          <span class="sidebar-label">Settings</span>
         </a>
       </li>
       <li>

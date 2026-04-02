@@ -162,8 +162,8 @@
   --fc-button-active-bg-color: var(--selected-background);
   --fc-button-active-border-color: var(--selected-border);
   --fc-today-bg-color: var(--amber-100);
-  --fc-event-bg-color: var(--lime-600);
-  --fc-event-border-color: var(--lime-700);
+  --fc-event-bg-color: var(--blue-600);
+  --fc-event-border-color: var(--blue-700);
   --fc-event-text-color: white;
   --fc-page-bg-color: var(--background-section);
   --fc-neutral-bg-color: var(--background-light);
@@ -293,7 +293,7 @@
 }
 
 .fc .fc-day-today .fc-daygrid-day-number {
-  background-color: var(--violet-200);
+  background-color: var(--blue-200);
   border-radius: 50%;
   font-weight: 600;
   height: 1.75rem;

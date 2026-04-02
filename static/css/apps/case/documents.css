@@ -56,7 +56,7 @@ i.importance-5 {
 }
 
 i.importance-4 {
-  color: var(--violet-600);
+  color: var(--blue-600);
 }
 
 i.importance-2,
@@ -148,7 +148,7 @@ i.importance-1 {
 }
 
 #documents-list tr.importance-4 > .col-importance .button-link {
-  color: var(--violet-600);
+  color: var(--blue-600);
 }
 
 /* Ghost buttons for empty date */

@@ -137,7 +137,7 @@ class TestGetUnbilledData:
         request = self._make_request(user)
         result = get_unbilled_data(request)
         matters = list(result["matters"])
-        assert matters[0].clearance == 0
+        assert matters[0].trust_balance == 0
 
     def test_matter_with_only_expenses(self, user, matter, unbilled_expense):
         """Matters with only unbilled expenses (no time) are included."""

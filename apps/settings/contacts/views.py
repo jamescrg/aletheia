@@ -29,6 +29,7 @@ def contacts_index(request):
         roles = roles.filter(is_active=False)
 
     context = {
+        "app": "settings",
         "subapp": "contacts",
         "roles": roles,
         "groups": groups,

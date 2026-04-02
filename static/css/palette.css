@@ -54,7 +54,9 @@
   --neutral-500: oklch(55.6% 0.0 none);
   --neutral-600: oklch(43.9% 0.0 none);
   --neutral-700: oklch(37.1% 0.0 none);
+  --neutral-750: oklch(31% 0.0 none);
   --neutral-800: oklch(26.9% 0.0 none);
+  --neutral-850: oklch(23.5% 0.0 none);
   --neutral-900: oklch(20.5% 0.0 none);
   --neutral-950: oklch(14.5% 0.0 none);
 
@@ -134,6 +136,7 @@
   --yellow-800: oklch(47.6% 0.103 61.9deg);
   --yellow-900: oklch(42.1% 0.09 57.7deg);
   --yellow-950: oklch(28.6% 0.064 53.8deg);
+  --yellow-dark: oklch(45% 0.12 100deg);
 
   /* Lime */
   --lime-50: oklch(98.6% 0.031 120.8deg);

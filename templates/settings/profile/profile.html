@@ -1,3 +1,4 @@
+{% load static cache_buster %}
 <h2>General Info</h2>
 <hr />
 <form hx-post="{% url 'settings:personal-profile' 'profile' %}"
@@ -6,7 +7,75 @@
       id="profile-form"
       class="form-responsive form-spacious profile-form">
   {% csrf_token %}
-  {{ form }}
+  {% for field in form %}
+    {% if field.name == "color_scheme" %}
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      <div>
+        <div class="scheme-dropdown"
+             x-data="{ open: false }"
+             @click.outside="open = false">
+          <button type="button" class="scheme-dropdown-trigger" @click="open = !open">
+            <span class="swatch-dot swatch-{{ field.value }}"></span>
+            <span class="scheme-dropdown-label">{{ field.value|title }}</span>
+            <i class="icon-chevron-down"></i>
+          </button>
+          <ul class="scheme-dropdown-menu" x-show="open" x-cloak>
+            {% for value, label in field.field.choices %}
+              <li class="scheme-dropdown-item {% if field.value == value %}active{% endif %}"
+                  data-scheme="{{ value }}"
+                  @click="open = false">
+                <span class="swatch-dot swatch-{{ value }}"></span>
+                {{ label }}
+              </li>
+            {% endfor %}
+          </ul>
+          <select name="{{ field.html_name }}" id="{{ field.id_for_label }}" hidden>
+            {% for value, label in field.field.choices %}
+              <option value="{{ value }}" {% if field.value == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    {% elif field.name == "dark_mode" %}
+      <label for="{{ field.id_for_label }}">Appearance</label>
+      <div>
+        <div class="scheme-dropdown"
+             x-data="{ open: false }"
+             @click.outside="open = false">
+          <button type="button" class="scheme-dropdown-trigger" @click="open = !open">
+            <i class="icon-{% if field.value == 'dark' %}moon{% elif field.value == 'light' %}sun{% else %}monitor{% endif %} mode-icon"></i>
+            <span class="mode-dropdown-label">{{ field.value|title }}</span>
+            <i class="icon-chevron-down"></i>
+          </button>
+          <ul class="scheme-dropdown-menu" x-show="open" x-cloak>
+            <li class="scheme-dropdown-item {% if field.value == 'system' %}active{% endif %}"
+                data-appearance="system"
+                @click="open = false">
+              <i class="icon-monitor mode-icon"></i> System
+            </li>
+            <li class="scheme-dropdown-item {% if field.value == 'light' %}active{% endif %}"
+                data-appearance="light"
+                @click="open = false">
+              <i class="icon-sun mode-icon"></i> Light
+            </li>
+            <li class="scheme-dropdown-item {% if field.value == 'dark' %}active{% endif %}"
+                data-appearance="dark"
+                @click="open = false">
+              <i class="icon-moon mode-icon"></i> Dark
+            </li>
+          </ul>
+          <select name="{{ field.html_name }}" id="{{ field.id_for_label }}" hidden>
+            {% for value, label in field.field.choices %}
+              <option value="{{ value }}" {% if field.value == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    {% else %}
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      <div>{{ field }}</div>
+    {% endif %}
+  {% endfor %}
   <br />
   <div class="flex-center-space">
     <div>
@@ -15,6 +84,7 @@
     </div>
   </div>
 </form>
+<script src="{% static_v 'js/profile-settings.js' %}"></script>
 <h2>Change Password</h2>
 <hr />
 <form hx-post="{% url 'settings:personal-profile' 'password' %}"

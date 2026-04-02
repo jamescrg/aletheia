@@ -1,0 +1,239 @@
+/* Classic (lime/green) — the original color scheme */
+[data-theme="classic"] {
+  --link: var(--lime-750);
+  --link-hover: var(--lime-600);
+  --icon-violet: var(--lime-700);
+  --icon-violet-muted: var(--lime-600);
+  --accent-link: var(--link);
+  --add: var(--link);
+  --button-primary-color: var(--stone-300);
+}
+
+[data-theme="blue"] {
+  --link: var(--blue-600);
+  --link-hover: var(--blue-500);
+  --icon-violet: var(--blue-600);
+  --icon-violet-muted: var(--blue-500);
+  --accent-link: var(--link);
+  --add: var(--link);
+  --button-primary-color: var(--stone-50);
+}
+
+[data-theme="purple"] {
+  --link: var(--violet-600);
+  --link-hover: var(--violet-500);
+  --icon-violet: var(--violet-600);
+  --icon-violet-muted: var(--violet-500);
+  --accent-link: var(--link);
+  --add: var(--link);
+  --button-primary-color: var(--stone-50);
+}
+
+[data-theme="teal"] {
+  --link: var(--teal-600);
+  --link-hover: var(--teal-500);
+  --icon-violet: var(--teal-600);
+  --icon-violet-muted: var(--teal-500);
+  --accent-link: var(--link);
+  --add: var(--link);
+  --button-primary-color: var(--stone-50);
+}
+
+[data-mode="dark"] {
+  color-scheme: dark;
+
+  --color-primary: var(--stone-300);
+  --color-darker: var(--stone-100);
+  --color-muted: var(--stone-400);
+  --color-muted-more: var(--stone-500);
+  --color-lighter: var(--stone-600);
+
+  --background-nav: var(--neutral-600);
+  --background-body: var(--neutral-800);
+  --background-subnav: var(--neutral-750);
+  --background-subnav-contrast: var(--neutral-700);
+  --background-control: var(--neutral-700);
+  --background-section: var(--neutral-750);
+  --background-td: var(--neutral-750);
+  --background-medium-light: var(--neutral-750);
+  --background-light: var(--neutral-750);
+
+  --background-sidebar: var(--neutral-750);
+  --background-sidebar-hover: var(--neutral-700);
+  --background-sidebar-active: var(--neutral-600);
+
+  --selected-background: var(--neutral-700);
+  --selected-color: var(--stone-200);
+  --selected-border: var(--neutral-600);
+
+  --border-light: var(--neutral-700);
+  --border-medium: var(--neutral-600);
+  --border-medium-dark: var(--neutral-500);
+  --border-dark: var(--neutral-400);
+
+  --input-border: var(--neutral-600);
+  --input-background: var(--neutral-700);
+  --input-placeholder: var(--stone-500);
+
+  --button-secondary-background: var(--neutral-750);
+  --button-secondary-color: var(--stone-300);
+  --button-toolbar: var(--stone-300);
+
+  --urgent: var(--orange-400);
+  --warning: var(--orange-400);
+  --success: var(--lime-400);
+  --true: var(--lime-400);
+  --false: var(--orange-400);
+  --error: var(--orange-400);
+  --error-background: var(--orange-950);
+  --error-border: var(--orange-400);
+
+  --label-blue: var(--blue-900);
+  --label-gray: var(--neutral-700);
+  --label-green: var(--lime-900);
+  --label-orange: var(--orange-900);
+  --label-purple: var(--violet-900);
+  --label-red: var(--red-900);
+  --label-yellow: var(--yellow-dark);
+
+  --icon-default: var(--stone-300);
+  --icon-muted: var(--stone-500);
+  --icon-yellow: var(--yellow-400);
+
+  --hl-gray: var(--neutral-750);
+  --hl-blue: var(--blue-950);
+  --hl-slate: var(--slate-900);
+  --hl-green: var(--lime-950);
+  --hl-orange: var(--orange-950);
+  --hl-violet: var(--violet-950);
+  --hl-red: var(--red-950);
+  --hl-yellow: var(--yellow-dark);
+}
+
+[data-mode="dark"] .past-due td {
+  background: var(--neutral-800) !important;
+}
+
+[data-mode="dark"] .ai-chat-scroll {
+  background: var(--neutral-850);
+}
+
+[data-mode="dark"] .ai-message-user .ai-message-content {
+  background: var(--neutral-700);
+}
+
+[data-mode="dark"] .ai-message-assistant .ai-message-content {
+  background: var(--neutral-750);
+}
+
+[data-mode="dark"] .ai-input-container {
+  background: var(--neutral-800);
+}
+
+[data-mode="dark"] .ai-input-container textarea {
+  background: var(--neutral-750);
+  border-color: var(--neutral-600);
+  color: var(--color-primary);
+}
+
+[data-mode="dark"] .ai-chat-header {
+  background: var(--neutral-800);
+  border-bottom: 1px solid var(--neutral-600);
+}
+
+[data-mode="dark"] .ai-chat-sidebar {
+  background: var(--neutral-800);
+}
+
+[data-mode="dark"] .ai-list-rename-input {
+  background: var(--neutral-700);
+  color: var(--color-primary);
+}
+
+[data-mode="dark"] .ai-conversation-summary {
+  background: var(--neutral-750);
+}
+
+[data-mode="dark"] .modal-backdrop {
+  background-color: rgb(0 0 0 / 60%);
+}
+
+[data-mode="dark"] .sidebar {
+  box-shadow: inset -1px 0 0 var(--neutral-600);
+}
+
+[data-mode="dark"] .flatpickr-calendar {
+  background: var(--neutral-800);
+  border-color: var(--neutral-600);
+  box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 40%);
+}
+
+[data-mode="dark"] .flatpickr-months,
+[data-mode="dark"] .flatpickr-weekdays,
+[data-mode="dark"] .flatpickr-month {
+  background: var(--neutral-800);
+  color: var(--stone-300);
+}
+
+[data-mode="dark"] span.flatpickr-weekday {
+  color: var(--stone-400);
+}
+
+[data-mode="dark"] .flatpickr-day {
+  color: var(--stone-300);
+}
+
+[data-mode="dark"] .flatpickr-day:hover {
+  background: var(--neutral-600);
+  border-color: var(--neutral-600);
+}
+
+[data-mode="dark"] .flatpickr-day.today {
+  border-color: var(--stone-500);
+}
+
+[data-mode="dark"] .numInputWrapper:hover,
+[data-mode="dark"] .flatpickr-current-month input.cur-year:hover {
+  background: transparent;
+}
+
+[data-mode="dark"] .flatpickr-current-month input.cur-year,
+[data-mode="dark"] .flatpickr-current-month .flatpickr-monthDropdown-months {
+  color: var(--stone-300);
+}
+
+[data-mode="dark"] .dropzone {
+  border-color: var(--border-medium) !important;
+}
+
+[data-mode="dark"][data-theme="classic"] {
+  --link: var(--lime-500);
+  --link-hover: var(--lime-400);
+  --icon-violet: var(--lime-500);
+  --icon-violet-muted: var(--lime-400);
+  --button-primary-color: var(--stone-900);
+}
+
+[data-mode="dark"][data-theme="blue"] {
+  --link: var(--blue-400);
+  --link-hover: var(--blue-300);
+  --icon-violet: var(--blue-400);
+  --icon-violet-muted: var(--blue-300);
+  --button-primary-color: var(--stone-900);
+}
+
+[data-mode="dark"][data-theme="purple"] {
+  --link: var(--violet-400);
+  --link-hover: var(--violet-300);
+  --icon-violet: var(--violet-400);
+  --icon-violet-muted: var(--violet-300);
+  --button-primary-color: var(--stone-900);
+}
+
+[data-mode="dark"][data-theme="teal"] {
+  --link: var(--teal-400);
+  --link-hover: var(--teal-300);
+  --icon-violet: var(--teal-400);
+  --icon-violet-muted: var(--teal-300);
+  --button-primary-color: var(--stone-900);
+}

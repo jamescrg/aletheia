@@ -12,6 +12,8 @@ class ProfileForm(forms.ModelForm):
             "last_name",
             "email",
             "initials",
+            "color_scheme",
+            "dark_mode",
         ]
 
 

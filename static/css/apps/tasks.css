@@ -27,7 +27,7 @@ i.priority-5 {
 
 tr.priority-4 > td.priority .button-link,
 i.priority-4 {
-  color: var(--violet-600);
+  color: var(--blue-600);
 }
 
 i.priority-2,

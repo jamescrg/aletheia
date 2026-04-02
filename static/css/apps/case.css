@@ -339,11 +339,11 @@
 }
 
 #caselaws-table .btn-icon-toggle.active {
-  color: var(--violet-600);
+  color: var(--blue-600);
 }
 
 #caselaws-table .btn-icon-toggle.active:hover {
-  color: var(--violet-700);
+  color: var(--blue-700);
 }
 
 #caselaws-table td {

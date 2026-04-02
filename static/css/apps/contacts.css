@@ -370,7 +370,7 @@ body.contacts-page .content {
 .contact-trust-section .btn-outline-primary:hover {
   background-color: var(--color-darker);
   border-color: var(--color-darker);
-  color: white;
+  color: var(--background-light);
 }
 
 .intake-description {

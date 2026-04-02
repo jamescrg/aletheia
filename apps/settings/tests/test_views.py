@@ -123,6 +123,8 @@ def test_personal_profile_update(client, user):
         "last_name": "UpdatedLast",
         "email": "updated@profile.com",
         "initials": "UU",
+        "color_scheme": "classic",
+        "dark_mode": "system",
     }
     response = client.post("/settings/profile/personal/profile/", data)
     assert response.status_code == 200
