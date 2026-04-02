@@ -57,15 +57,16 @@ def invoices_list(request):
 
 def _get_invoice_time_context(request, invoice):
     """Build context for the invoice time entries tab."""
+    session_key = f"invoice_{invoice.pk}_time_pagination"
     entries = TimeEntry.objects.filter(invoice=invoice).order_by("date")
     summary = calculate_time_summary(entries)
     pagination = CustomPaginator(
-        entries, per_page=10, request=request, session_key="invoice_time_pagination"
+        entries, per_page=10, request=request, session_key=session_key
     )
     return {
         "objects": pagination.get_object_list(),
         "pagination": pagination,
-        "session_key": "invoice_time_pagination",
+        "session_key": session_key,
         "trigger_key": "timeChanged",
         "summary": summary,
     }
@@ -114,34 +115,36 @@ def invoice_tab_content(request, pk, tab):
     }
 
     if tab == "time":
+        time_key = f"invoice_{pk}_time_pagination"
         entries = TimeEntry.objects.filter(invoice=invoice).order_by("date")
         summary = calculate_time_summary(entries)
         pagination = CustomPaginator(
-            entries, per_page=10, request=request, session_key="invoice_time_pagination"
+            entries, per_page=10, request=request, session_key=time_key
         )
         context.update(
             {
                 "objects": pagination.get_object_list(),
                 "pagination": pagination,
-                "session_key": "invoice_time_pagination",
+                "session_key": time_key,
                 "trigger_key": "timeChanged",
                 "summary": summary,
             }
         )
     elif tab == "expenses":
+        expenses_key = f"invoice_{pk}_expenses_pagination"
         expenses = ExpenseEntry.objects.filter(invoice=invoice).order_by("date")
         summary = calculate_expense_summary(expenses)
         pagination = CustomPaginator(
             expenses,
             per_page=10,
             request=request,
-            session_key="invoice_expenses_pagination",
+            session_key=expenses_key,
         )
         context.update(
             {
                 "objects": pagination.get_object_list(),
                 "pagination": pagination,
-                "session_key": "invoice_expenses_pagination",
+                "session_key": expenses_key,
                 "trigger_key": "expensesChanged",
                 "summary": summary,
             }
@@ -201,12 +204,13 @@ def pdf_preview(request, pk):
 @login_required
 def invoice_time_entries_index(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
+    session_key = f"invoice_{pk}_time_pagination"
 
     entries = TimeEntry.objects.filter(invoice=invoice).order_by("date")
     summary = calculate_time_summary(entries)
 
     pagination = CustomPaginator(
-        entries, per_page=10, request=request, session_key="invoice_time_pagination"
+        entries, per_page=10, request=request, session_key=session_key
     )
 
     context = {
@@ -214,7 +218,7 @@ def invoice_time_entries_index(request, pk):
         "subapp": "time",
         "objects": pagination.get_object_list(),
         "pagination": pagination,
-        "session_key": "invoice_time_pagination",
+        "session_key": session_key,
         "trigger_key": "timeChanged",
         "invoice": invoice,
         "summary": summary,
@@ -227,12 +231,13 @@ def invoice_time_entries_index(request, pk):
 @login_required
 def invoice_time_entries(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
+    session_key = f"invoice_{pk}_time_pagination"
 
     entries = TimeEntry.objects.filter(invoice=invoice).order_by("date")
     summary = calculate_time_summary(entries)
 
     pagination = CustomPaginator(
-        entries, per_page=10, request=request, session_key="invoice_time_pagination"
+        entries, per_page=10, request=request, session_key=session_key
     )
 
     context = {
@@ -240,7 +245,7 @@ def invoice_time_entries(request, pk):
         "subapp": "time",
         "objects": pagination.get_object_list(),
         "pagination": pagination,
-        "session_key": "invoice_time_pagination",
+        "session_key": session_key,
         "trigger_key": "timeChanged",
         "invoice": invoice,
         "summary": summary,
@@ -253,6 +258,7 @@ def invoice_time_entries(request, pk):
 @login_required
 def invoice_expense_entries_index(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
+    session_key = f"invoice_{pk}_expenses_pagination"
 
     expenses = ExpenseEntry.objects.filter(invoice=invoice).order_by("date")
     summary = calculate_expense_summary(expenses)
@@ -261,7 +267,7 @@ def invoice_expense_entries_index(request, pk):
         expenses,
         per_page=10,
         request=request,
-        session_key="invoice_expenses_pagination",
+        session_key=session_key,
     )
 
     context = {
@@ -269,7 +275,7 @@ def invoice_expense_entries_index(request, pk):
         "subapp": "expenses",
         "objects": pagination.get_object_list(),
         "pagination": pagination,
-        "session_key": "invoice_expenses_pagination",
+        "session_key": session_key,
         "trigger_key": "expensesChanged",
         "invoice": invoice,
         "summary": summary,
@@ -282,6 +288,7 @@ def invoice_expense_entries_index(request, pk):
 @login_required
 def invoice_expense_entries(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
+    session_key = f"invoice_{pk}_expenses_pagination"
 
     expenses = ExpenseEntry.objects.filter(invoice=invoice).order_by("date")
     summary = calculate_expense_summary(expenses)
@@ -290,7 +297,7 @@ def invoice_expense_entries(request, pk):
         expenses,
         per_page=10,
         request=request,
-        session_key="invoice_expenses_pagination",
+        session_key=session_key,
     )
 
     context = {
@@ -298,7 +305,7 @@ def invoice_expense_entries(request, pk):
         "subapp": "expenses",
         "objects": pagination.get_object_list(),
         "pagination": pagination,
-        "session_key": "invoice_expenses_pagination",
+        "session_key": session_key,
         "trigger_key": "expensesChanged",
         "invoice": invoice,
         "summary": summary,
