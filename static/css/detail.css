@@ -51,6 +51,7 @@ Detail Layout (header / subnav / body)
   border: none;
 }
 
+
 /* Subnav - tab navigation */
 .subnav {
   background: var(--background-subnav);
