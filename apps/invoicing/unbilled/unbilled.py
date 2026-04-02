@@ -140,8 +140,8 @@ def get_unbilled_data(request):
     # Handle sorting
     filter_data = request.session.get("unbilled_filter", {})
     order_by = filter_data.get(
-        "order_by", "-unbilled_fees"
-    )  # Default to fees descending
+        "order_by", "-total_activity"
+    )  # Default to activity descending
 
     # Sort the list based on order_by field
     reverse = order_by.startswith("-")

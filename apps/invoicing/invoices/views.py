@@ -373,7 +373,10 @@ def invoices_add(request):
             filter_data = request.session.get("invoices_filter", {})
             filter_data["status"] = "DRAFT"
             request.session["invoices_filter"] = filter_data
-            return HttpResponse(status=204, headers={"HX-Trigger": "invoicesChanged"})
+            return HttpResponse(
+                status=204,
+                headers={"HX-Trigger": "invoicesChanged, unbilledListChanged"},
+            )
 
     else:
         form = InvoiceForm(use_required_attribute=False)

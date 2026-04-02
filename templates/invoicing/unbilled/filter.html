@@ -14,8 +14,30 @@
             hx-target="#htmx-modal-container"
             hx-post="{% url 'invoicing:unbilled-filter' %}">
         {% csrf_token %}
-        <div class="form-group">
-          <label for="last_invoice_before">Last Invoice Before</label>
+        <label for="order_by">Sort By</label>
+        <div>
+          <select id="order_by" name="order_by">
+            <option value="-total_activity"
+                    {% if order_by == "-total_activity" %}selected{% endif %}>Activity (High to Low)</option>
+            <option value="total_activity"
+                    {% if order_by == "total_activity" %}selected{% endif %}>Activity (Low to High)</option>
+            <option value="name" {% if order_by == "name" %}selected{% endif %}>Matter (A to Z)</option>
+            <option value="-name" {% if order_by == "-name" %}selected{% endif %}>Matter (Z to A)</option>
+            <option value="-unbilled_fees"
+                    {% if order_by == "-unbilled_fees" %}selected{% endif %}>Fees (High to Low)</option>
+            <option value="unbilled_fees"
+                    {% if order_by == "unbilled_fees" %}selected{% endif %}>Fees (Low to High)</option>
+            <option value="-clearance"
+                    {% if order_by == "-clearance" %}selected{% endif %}>Clearance (High to Low)</option>
+            <option value="clearance" {% if order_by == "clearance" %}selected{% endif %}>Clearance (Low to High)</option>
+            <option value="last_invoice_date"
+                    {% if order_by == "last_invoice_date" %}selected{% endif %}>Last Invoice (Oldest First)</option>
+            <option value="-last_invoice_date"
+                    {% if order_by == "-last_invoice_date" %}selected{% endif %}>Last Invoice (Newest First)</option>
+          </select>
+        </div>
+        <label for="last_invoice_before">Last Invoice Before</label>
+        <div>
           <input type="date"
                  id="last_invoice_before"
                  name="last_invoice_before"

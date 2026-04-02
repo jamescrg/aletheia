@@ -51,8 +51,10 @@ def unbilled_filter(request):
     """Filter modal for unbilled list."""
     if request.method == "POST":
         filter_data = request.session.get("unbilled_filter", {})
-        last_invoice_before = request.POST.get("last_invoice_before", "")
-        filter_data["last_invoice_before"] = last_invoice_before
+        filter_data["last_invoice_before"] = request.POST.get("last_invoice_before", "")
+        order_by = request.POST.get("order_by", "")
+        if order_by:
+            filter_data["order_by"] = order_by
         request.session["unbilled_filter"] = filter_data
 
         return HttpResponse(status=204, headers={"HX-Trigger": "unbilledListChanged"})
@@ -60,5 +62,6 @@ def unbilled_filter(request):
     filter_data = request.session.get("unbilled_filter", {})
     context = {
         "last_invoice_before": filter_data.get("last_invoice_before", ""),
+        "order_by": filter_data.get("order_by", "-total_activity"),
     }
     return render(request, "invoicing/unbilled/filter.html", context)
