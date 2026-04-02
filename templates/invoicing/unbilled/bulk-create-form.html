@@ -1,0 +1,47 @@
+<div class="modal-dialog modal-md">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Create {{ selected_count }} Invoice{{ selected_count|pluralize }}</h1>
+      <div>
+        <button type="button" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <form id="bulk-create-form"
+            class="form-responsive form-spacious"
+            hx-target="#htmx-modal-container"
+            hx-post="{% url 'invoicing:unbilled-bulk-create-invoices' %}">
+        {% csrf_token %}
+        <label for="date_limit">Limit Date</label>
+        <div>
+          <input type="date"
+                 id="date_limit"
+                 name="date_limit"
+                 value="{{ date_limit }}"
+                 required>
+        </div>
+        <label for="date_issued">Issue Date</label>
+        <div>
+          <input type="date"
+                 id="date_issued"
+                 name="date_issued"
+                 value="{{ date_issued }}"
+                 required>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer modal-footer-3col">
+      <div class="modal-footer-left">
+        <button type="button"
+                class="btn btn-secondary"
+                @click="$dispatch('close-modal')">Cancel</button>
+      </div>
+      <div class="modal-footer-center"></div>
+      <div class="modal-footer-right">
+        <button type="submit" form="bulk-create-form" class="btn btn-success">Create Invoices</button>
+      </div>
+    </div>
+  </div>
+</div>

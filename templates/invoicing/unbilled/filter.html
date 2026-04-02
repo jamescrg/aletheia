@@ -14,6 +14,14 @@
             hx-target="#htmx-modal-container"
             hx-post="{% url 'invoicing:unbilled-filter' %}">
         {% csrf_token %}
+        <label for="activity_period">Activity Period</label>
+        <div>
+          <select id="activity_period" name="activity_period">
+            <option value="" {% if not activity_period %}selected{% endif %}>All Activity</option>
+            <option value="prior_month"
+                    {% if activity_period == "prior_month" %}selected{% endif %}>Prior Month</option>
+          </select>
+        </div>
         <label for="order_by">Sort By</label>
         <div>
           <select id="order_by" name="order_by">
@@ -27,9 +35,6 @@
                     {% if order_by == "-unbilled_fees" %}selected{% endif %}>Fees (High to Low)</option>
             <option value="unbilled_fees"
                     {% if order_by == "unbilled_fees" %}selected{% endif %}>Fees (Low to High)</option>
-            <option value="-clearance"
-                    {% if order_by == "-clearance" %}selected{% endif %}>Clearance (High to Low)</option>
-            <option value="clearance" {% if order_by == "clearance" %}selected{% endif %}>Clearance (Low to High)</option>
             <option value="last_invoice_date"
                     {% if order_by == "last_invoice_date" %}selected{% endif %}>Last Invoice (Oldest First)</option>
             <option value="-last_invoice_date"

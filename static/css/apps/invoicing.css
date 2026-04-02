@@ -202,6 +202,14 @@ Credits
   min-width: 70rem;
 }
 
+.unbilled-list th.col-select,
+.unbilled-list td.col-select {
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+  width: 2.5rem;
+}
+
 .unbilled-list .unbilled-col {
   width: 9rem;
 }
@@ -223,7 +231,7 @@ Credits
 }
 
 .create-invoice-icon {
-  color: var(--icon-muted);
+  color: var(--color-muted-more);
   float: right;
   font-size: 1rem;
   margin-left: 0.5rem;

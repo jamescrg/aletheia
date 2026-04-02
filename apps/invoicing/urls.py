@@ -49,10 +49,15 @@ from apps.invoicing.payments.views import (
     payments_list,
 )
 from apps.invoicing.unbilled.views import (
+    unbilled_bulk_create_invoices,
+    unbilled_clear_selection,
     unbilled_filter,
+    unbilled_filter_period,
     unbilled_index,
     unbilled_list,
+    unbilled_select_all,
     unbilled_sort,
+    unbilled_toggle_select,
 )
 
 app_name = "invoicing"
@@ -65,6 +70,31 @@ urlpatterns = [
     path("invoicing/unbilled/list/", unbilled_list, name="unbilled-list"),
     path("invoicing/unbilled/sort/<str:order>/", unbilled_sort, name="unbilled-sort"),
     path("invoicing/unbilled/filter/", unbilled_filter, name="unbilled-filter"),
+    path(
+        "invoicing/unbilled/filter-period/<str:period>/",
+        unbilled_filter_period,
+        name="unbilled-filter-period",
+    ),
+    path(
+        "invoicing/unbilled/toggle-select/<int:matter_id>/",
+        unbilled_toggle_select,
+        name="unbilled-toggle-select",
+    ),
+    path(
+        "invoicing/unbilled/select-all/",
+        unbilled_select_all,
+        name="unbilled-select-all",
+    ),
+    path(
+        "invoicing/unbilled/clear-selection/",
+        unbilled_clear_selection,
+        name="unbilled-clear-selection",
+    ),
+    path(
+        "invoicing/unbilled/bulk-create-invoices/",
+        unbilled_bulk_create_invoices,
+        name="unbilled-bulk-create-invoices",
+    ),
     # Collection
     path("invoicing/collection/", collection_index, name="collection-index"),
     path("invoicing/collection/list/", collection_list, name="collection-list"),

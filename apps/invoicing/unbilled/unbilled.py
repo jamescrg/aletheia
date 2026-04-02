@@ -7,6 +7,7 @@ from apps.activity.expenses.models import ExpenseEntry
 from apps.activity.time.models import TimeEntry
 from apps.invoicing.invoices.models import Invoice
 from apps.management.pagination import CustomPaginator
+from apps.management.selection import all_visible_selected, get_selected_ids
 from apps.matters.models import Matter
 from apps.trust.trust import get_confirmed_client_balance
 
@@ -14,14 +15,30 @@ from apps.trust.trust import get_confirmed_client_balance
 def get_unbilled_data(request):
     """Get matters with any unbilled time or expenses."""
     unbilled_data = {}
+    filter_data = request.session.get("unbilled_filter", {})
+    activity_period = filter_data.get("activity_period", "")
+
+    # Base filters for unbilled entries
+    time_filters = {
+        "matter": OuterRef("pk"),
+        "entered": False,
+        "invoice__isnull": True,
+    }
+    expense_filters = {
+        "matter": OuterRef("pk"),
+        "entered": False,
+        "invoice__isnull": True,
+    }
+
+    # Apply activity period date cutoff
+    if activity_period == "prior_month":
+        cutoff = date.today().replace(day=1)
+        time_filters["date__lt"] = cutoff
+        expense_filters["date__lt"] = cutoff
 
     # Use subqueries to avoid JOIN multiplication when aggregating multiple related tables
     unbilled_hours_subquery = (
-        TimeEntry.objects.filter(
-            matter=OuterRef("pk"),
-            entered=False,
-            invoice__isnull=True,
-        )
+        TimeEntry.objects.filter(**time_filters)
         .exclude(comp=True)
         .values("matter")
         .annotate(total=Sum("hours"))
@@ -29,11 +46,7 @@ def get_unbilled_data(request):
     )
 
     unbilled_fees_subquery = (
-        TimeEntry.objects.filter(
-            matter=OuterRef("pk"),
-            entered=False,
-            invoice__isnull=True,
-        )
+        TimeEntry.objects.filter(**time_filters)
         .exclude(comp=True)
         .values("matter")
         .annotate(total=Sum(F("hours") * F("rate")))
@@ -41,11 +54,7 @@ def get_unbilled_data(request):
     )
 
     unbilled_expenses_subquery = (
-        ExpenseEntry.objects.filter(
-            matter=OuterRef("pk"),
-            entered=False,
-            invoice__isnull=True,
-        )
+        ExpenseEntry.objects.filter(**expense_filters)
         .exclude(comp=True)
         .values("matter")
         .annotate(total=Sum("amount"))
@@ -84,7 +93,6 @@ def get_unbilled_data(request):
     )
 
     # Apply last invoice date filter
-    filter_data = request.session.get("unbilled_filter", {})
     last_invoice_before = filter_data.get("last_invoice_before")
     if last_invoice_before:
         cutoff = date.fromisoformat(last_invoice_before)
@@ -112,7 +120,6 @@ def get_unbilled_data(request):
     total_expenses = 0
     total_activity = 0
     total_trust = 0
-    total_clearance = 0
 
     for matter in matters_list:
         # Get trust balance for this matter's client
@@ -123,22 +130,14 @@ def get_unbilled_data(request):
         # Calculate total activity (fees + expenses)
         matter.total_activity = matter.unbilled_fees + matter.unbilled_expenses
 
-        # Calculate clearance (trust - total activity), but set to 0 if no trust balance
-        if matter.trust_balance == 0:
-            matter.clearance = 0
-        else:
-            matter.clearance = matter.trust_balance - matter.total_activity
-
         # Add to totals
         total_hours += matter.unbilled_hours
         total_fees += matter.unbilled_fees
         total_expenses += matter.unbilled_expenses
         total_activity += matter.total_activity
         total_trust += matter.trust_balance
-        total_clearance += matter.clearance
 
     # Handle sorting
-    filter_data = request.session.get("unbilled_filter", {})
     order_by = filter_data.get(
         "order_by", "-total_activity"
     )  # Default to activity descending
@@ -151,8 +150,6 @@ def get_unbilled_data(request):
         matters_list.sort(key=lambda m: m.name.lower(), reverse=reverse)
     elif sort_field == "total_activity":
         matters_list.sort(key=lambda m: m.total_activity, reverse=reverse)
-    elif sort_field == "clearance":
-        matters_list.sort(key=lambda m: m.clearance, reverse=reverse)
     elif sort_field == "unbilled_fees":
         matters_list.sort(key=lambda m: m.unbilled_fees, reverse=reverse)
     elif sort_field == "last_invoice_date":
@@ -171,7 +168,14 @@ def get_unbilled_data(request):
     # Get current order and strip leading '-' for comparison
     current_order = order_by.lstrip("-")
 
-    unbilled_data["matters"] = pagination.get_object_list()
+    page_matters = pagination.get_object_list()
+    visible_ids = [m.id for m in page_matters]
+    selected_ids = get_selected_ids(request, "selected_unbilled")
+
+    # Store visible IDs in session for select-all
+    request.session["unbilled_visible_ids"] = visible_ids
+
+    unbilled_data["matters"] = page_matters
     unbilled_data["matter_count"] = len(matters_list)
     unbilled_data["pagination"] = pagination
     unbilled_data["session_key"] = "unbilled_pagination"
@@ -181,14 +185,11 @@ def get_unbilled_data(request):
     unbilled_data["total_expenses"] = total_expenses
     unbilled_data["total_activity"] = total_activity
     unbilled_data["total_trust"] = total_trust
-    unbilled_data["total_clearance"] = total_clearance
+    unbilled_data["activity_period"] = activity_period
     unbilled_data["order_by"] = order_by
     unbilled_data["current_order"] = current_order
-    unbilled_data["filter_active"] = bool(
-        filter_data
-        and any(
-            v for k, v in filter_data.items() if k != "order_by" and v not in (None, "")
-        )
-    )
+    unbilled_data["selected_ids"] = selected_ids
+    unbilled_data["all_selected"] = all_visible_selected(selected_ids, visible_ids)
+    unbilled_data["filter_label"] = filter_data.get("filter_label")
 
     return unbilled_data

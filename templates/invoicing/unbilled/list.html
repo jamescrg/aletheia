@@ -2,15 +2,65 @@
 <div class="toolbar">
   <div class="toolbar-left">
     <div class="filter-tools">
-      <button type="button"
-              class="btn-icon{% if filter_active %} toggle-active{% endif %}"
-              hx-get="{% url 'invoicing:unbilled-filter' %}"
-              hx-target="#htmx-modal-container"
-              hx-trigger="click"
-              data-bs-toggle="modal"
-              data-bs-target="#htmx-modal-container">
-        <i class="icon-list-filter with-text"></i>Filter
-      </button>
+      {% if selected_ids %}
+        <button type="button"
+                class="btn-icon toggle-active"
+                hx-post="{% url 'invoicing:unbilled-clear-selection' %}"
+                hx-swap="none">
+          {{ selected_ids|length }} <i class="icon-x bulk-clear-icon"></i>
+        </button>
+        <button type="button"
+                class="btn-icon"
+                hx-get="{% url 'invoicing:unbilled-bulk-create-invoices' %}"
+                hx-target="#htmx-modal-container"
+                data-bs-toggle="modal"
+                data-bs-target="#htmx-modal-container">
+          <i class="icon-copy-plus with-text"></i>Create Invoices
+        </button>
+      {% else %}
+        <button type="button"
+                class="btn-icon{% if filter_label == 'custom' %} toggle-active{% endif %}"
+                hx-get="{% url 'invoicing:unbilled-filter' %}"
+                hx-target="#htmx-modal-container"
+                hx-trigger="click"
+                data-bs-toggle="modal"
+                data-bs-target="#htmx-modal-container">
+          <i class="icon-list-filter with-text"></i>Filter
+        </button>
+        <div class="dropdown" x-data="dropdown()">
+          <button type="button"
+                  class="select-btn filter-dropdown-button{% if activity_period %} toggle-active{% endif %}"
+                  x-ref="button"
+                  @click="toggle()"
+                  :aria-expanded="open">
+            <span>
+              <i class="icon-calendar with-text"></i>
+              {% if activity_period == "prior_month" %}
+                Prior Month
+              {% else %}
+                All Activity
+              {% endif %}
+            </span>
+            <small>
+              <i class="icon-chevron-down"></i>
+            </small>
+          </button>
+          <ul class="dropdown-menu" x-ref="menu" x-show="open">
+            <li>
+              <a class="dropdown-item{% if not activity_period %} active{% endif %}"
+                 href="#"
+                 hx-post="{% url 'invoicing:unbilled-filter-period' 'all' %}"
+                 hx-swap="none">All Activity</a>
+            </li>
+            <li>
+              <a class="dropdown-item{% if activity_period == 'prior_month' %} active{% endif %}"
+                 href="#"
+                 hx-post="{% url 'invoicing:unbilled-filter-period' 'prior_month' %}"
+                 hx-swap="none">Prior Month</a>
+            </li>
+          </ul>
+        </div>
+      {% endif %}
     </div>
   </div>
   <div class="toolbar-right">
@@ -20,6 +70,10 @@
 <div class="table-container">
   <table class="table unbilled-list">
     <tr>
+      <th class="col-select">
+        {% url 'invoicing:unbilled-select-all' as select_all_url %}
+        {% include "selection/select-all-btn.html" with select_all_url=select_all_url all_selected=all_selected %}
+      </th>
       <th class="unbilled-matter">
         Matter
         <button class="btn-sort {% if current_order == 'name' %}active{% endif %}"
@@ -38,13 +92,6 @@
         </button>
       </th>
       <th class="numeric unbilled-col">Trust</th>
-      <th class="numeric unbilled-col">
-        Clearance
-        <button class="btn-sort {% if current_order == 'clearance' %}active{% endif %}"
-                hx-post="{% url 'invoicing:unbilled-sort' 'clearance' %}">
-          <i class="icon-chevrons-up-down"></i>
-        </button>
-      </th>
       <th class="unbilled-date">
         Last Inv.
         <button class="btn-sort {% if current_order == 'last_invoice_date' %}active{% endif %}"
@@ -55,6 +102,10 @@
     </tr>
     {% for matter in matters %}
       <tr>
+        <td class="col-select">
+          {% url 'invoicing:unbilled-toggle-select' matter.id as toggle_url %}
+          {% include "selection/checkbox.html" with toggle_url=toggle_url obj_id=matter.id selected_ids=selected_ids %}
+        </td>
         <td class="unbilled-matter">
           <a href="{% url 'matters:ledger' matter.id %}">{{ matter.name }}</a>
           <a href="#"
@@ -72,9 +123,6 @@
         <td class="numeric unbilled-col">${{ matter.unbilled_expenses|floatformat:2|intcomma }}</td>
         <td class="numeric unbilled-col">${{ matter.total_activity|floatformat:2|intcomma }}</td>
         <td class="numeric unbilled-col">${{ matter.trust_balance|floatformat:2|intcomma }}</td>
-        <td class="numeric unbilled-col{% if matter.clearance < 0 %} clearance-negative{% endif %}">
-          ${{ matter.clearance|floatformat:2|intcomma }}
-        </td>
         <td class="unbilled-date">{{ matter.last_invoice_date|date:"Y-m-d"|default:"" }}</td>
       </tr>
     {% empty %}
@@ -83,6 +131,7 @@
       </tr>
     {% endfor %}
     <tr class="total-row">
+      <td class="col-select"></td>
       <td class="unbilled-matter">
         <strong>Totals</strong>
       </td>
@@ -100,9 +149,6 @@
       </td>
       <td class="numeric unbilled-col">
         <strong>${{ total_trust|floatformat:2|intcomma }}</strong>
-      </td>
-      <td class="numeric unbilled-col">
-        <strong>${{ total_clearance|floatformat:2|intcomma }}</strong>
       </td>
       <td class="unbilled-date"></td>
     </tr>
