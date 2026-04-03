@@ -11,6 +11,17 @@
   border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
+.contacts-page .card > .detail-header,
+.contacts-page .card > .folders > .detail-header {
+  margin: -1.25rem -1rem 0;
+  padding: 1rem;
+}
+
+.contacts-page .detail-header.toolbar button {
+  background: var(--background-body);
+  border-color: var(--border-medium-dark);
+}
+
 /* ==========================================================================
    Contacts Layout (Bootstrap grid replacement)
    ========================================================================== */

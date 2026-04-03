@@ -1,8 +1,16 @@
-body.notes-page {
-  background-color: var(--background-subnav);
+.notes-page .detail-header {
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
-body.notes-page .content {
+.notes-page .card > .detail-header,
+.notes-page .card > .folders > .detail-header {
+  margin: -1.25rem -1rem 0;
+  padding: 1rem;
+}
+
+.notes-page .detail-header.toolbar button {
+  background: var(--background-body);
+  border-color: var(--border-medium-dark);
 }
 
 /* =============================================================================
