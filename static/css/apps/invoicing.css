@@ -127,6 +127,10 @@ tr.muted {
   opacity: 0.5;
 }
 
+.void-badge {
+  margin-top: 0.25rem;
+}
+
 .invoices-cancel-form input {
   margin-top: 0.5rem;
   width: 100%;

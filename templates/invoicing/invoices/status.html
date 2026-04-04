@@ -1,5 +1,6 @@
 {% if invoice.status == 'VOID' %}
-  <span id="status-dropdown-{{ invoice.id }}">Void</span>
+  <span id="status-dropdown-{{ invoice.id }}"
+        class="{% if view == 'detail' %}app-badge badge-blue void-badge{% endif %}">Void</span>
 {% else %}
   <div id="status-dropdown-{{ invoice.id }}"
        class="dropdown"
