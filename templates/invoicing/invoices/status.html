@@ -9,7 +9,10 @@
             class="button-link"
             x-ref="button"
             @click="toggle()"
-            :aria-expanded="open">{{ invoice.status_display }}</button>
+            :aria-expanded="open">
+      {{ invoice.status_display }}
+      {% if view == 'detail' %}<small><i class="icon-chevron-down"></i></small>{% endif %}
+    </button>
     <ul class="dropdown-menu"
         x-ref="menu"
         x-show="open"
