@@ -73,18 +73,18 @@
           '';
 
           db-psql = pkgs.writeShellScriptBin "db-psql" ''
-            PGPASSWORD="''${DB_PASSWORD:-lawadminpass}" exec ${pkgs.postgresql_16}/bin/psql \
+            PGPASSWORD="''${DB_PASSWORD:-vimlawpass}" exec ${pkgs.postgresql_16}/bin/psql \
               -h "''${DB_HOST:-localhost}" \
               -p "''${DB_PORT:-5433}" \
-              -U "''${DB_USER:-lawadminuser}" \
-              -d "''${DB_NAME:-lawadmin}" \
+              -U "''${DB_USER:-vimlawuser}" \
+              -d "''${DB_NAME:-vimlaw}" \
               "$@"
           '';
 
           db-reset = pkgs.writeShellScriptBin "db-reset" ''
             set -e
-            DB="''${DB_NAME:-lawadmin}"
-            DB_USER="''${DB_USER:-lawadminuser}"
+            DB="''${DB_NAME:-vimlaw}"
+            DB_USER="''${DB_USER:-vimlawuser}"
             echo "Resetting database $DB..."
 
             ${pkgs.postgresql_16}/bin/dropdb \
@@ -185,7 +185,7 @@
       in
       {
         devShells.default = pkgs.mkShell {
-          name = "lawadmin-dev";
+          name = "vimlaw-dev";
 
           buildInputs = systemDeps ++ runtimeDeps ++ [ python ] ++ (builtins.attrValues scripts);
 

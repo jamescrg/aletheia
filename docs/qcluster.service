@@ -1,5 +1,5 @@
 [Unit]
-Description=Django-Q Cluster for Law Admin
+Description=Django-Q Cluster for VimLaw
 After=network.target postgresql.service
 
 [Service]

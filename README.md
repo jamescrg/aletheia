@@ -1,4 +1,4 @@
-# Law-Admin
+# VimLaw
 
 A web-based law practice management application with integrated case
 building and AI-powered legal analysis.

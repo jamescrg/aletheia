@@ -1,7 +1,7 @@
 [project]
-name = "lawadmin"
+name = "vimlaw"
 version = "0.1.0"
-description = "Law Admin - Django law practice management application"
+description = "VimLaw - Django law practice management application"
 readme = "README.md"
 requires-python = ">=3.10"
 
