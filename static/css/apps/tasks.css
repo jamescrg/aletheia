@@ -35,6 +35,10 @@ i.priority-1 {
   color: var(--color-muted-more);
 }
 
+tr > td.priority.complete .button-link {
+  color: var(--color-muted-more);
+}
+
 /* ==========================================================================
  Shared Styles
 ========================================================================== */
