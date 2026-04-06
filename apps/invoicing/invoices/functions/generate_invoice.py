@@ -1,16 +1,49 @@
 import os
 from tempfile import NamedTemporaryFile
+from urllib.parse import urlparse
 
+from django.conf import settings
+from django.contrib.staticfiles import finders
 from django.core.files.base import ContentFile
 from django.core.handlers.wsgi import WSGIRequest
 from django.template.loader import render_to_string
-from weasyprint import HTML
+from weasyprint import HTML, default_url_fetcher
 
 from apps.activity.expenses.models import ExpenseEntry
 from apps.activity.time.models import TimeEntry
 from apps.invoicing.invoices.models import Invoice
 from apps.settings.models import Company
 from apps.trust.trust import get_confirmed_client_balance
+
+
+def _static_file_url_fetcher(url):
+    """URL fetcher that resolves static files from the local filesystem.
+
+    Handles two issues with file:// URL resolution:
+    1. Absolute paths (/static/...) cause urljoin to ignore the base_url,
+       resolving to file:///static/... instead of file://<BASE_DIR>/static/...
+    2. Cache buster query strings (?v=...) break filesystem lookups.
+    """
+    parsed = urlparse(url)
+    if parsed.scheme == "file":
+        clean_path = parsed.path
+        # If the file exists as-is (no query string issue), use it directly
+        if os.path.isfile(clean_path):
+            return default_url_fetcher(f"file://{clean_path}")
+        # Extract the relative path after the static prefix
+        static_prefix = "/" + settings.STATIC_URL.strip("/") + "/"
+        if static_prefix in clean_path:
+            relative_path = clean_path.split(static_prefix, 1)[1]
+            # Try Django's staticfiles finders (works with DEBUG=True)
+            found = finders.find(relative_path)
+            if found:
+                return default_url_fetcher(f"file://{found}")
+            # Fall back to STATIC_ROOT (works with DEBUG=False)
+            if settings.STATIC_ROOT:
+                static_root_path = os.path.join(settings.STATIC_ROOT, relative_path)
+                if os.path.isfile(static_root_path):
+                    return default_url_fetcher(f"file://{static_root_path}")
+    return default_url_fetcher(url)
 
 
 def generate_invoice(
@@ -55,7 +88,8 @@ def generate_invoice(
     html_string = render_to_string("invoicing/invoices/invoice.html", context)
     if not base_url and request:
         base_url = request.build_absolute_uri("/").rstrip("/")
-    html = HTML(string=html_string, base_url=base_url)
+    url_fetcher = _static_file_url_fetcher if base_url.startswith("file://") else None
+    html = HTML(string=html_string, base_url=base_url, url_fetcher=url_fetcher)
 
     with NamedTemporaryFile(suffix=".pdf", delete=False) as pdf_file:
         html.write_pdf(target=pdf_file.name)
