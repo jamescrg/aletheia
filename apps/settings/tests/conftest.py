@@ -11,7 +11,7 @@ from apps.matters.models import Matter, PracticeArea, Relationship, Role
 @pytest.fixture
 def user():
     user = CustomUser.objects.create(
-        username="Ollie", email="ollie@gmail.com", user_rate=100
+        username="Ollie", email="testuser@example.com", user_rate=100
     )
     user.set_password("clawboy")
     user.save()
@@ -45,14 +45,14 @@ def contact(user, folder):
         name="Mohandas Gandhi",
         company="Gandhi, PC",
         address="225 Paper Street, Porbandar, India",
-        phone1="406.363.1234",
+        phone1="406.555.1234",
         phone1_label="Work",
         phone2="123.456.2222",
         phone2_label="Mobile",
         phone3="123.456.5555",
         phone3_label="Other",
-        email="gandhi@gandhi.com",
-        website="gandhi.com",
+        email="contact@example.com",
+        website="example.com",
         notes="The Mahatma",
     )
     contact.save()
@@ -112,7 +112,7 @@ def intake():
         name="Mohandas Gandhi",
         address="225 Paper Street, Porbandar, India",
         phone="123.456.7890",
-        email="gandhi@gandhi.com",
+        email="contact@example.com",
     )
     intake.save()
     return intake

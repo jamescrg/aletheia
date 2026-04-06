@@ -12,7 +12,7 @@ def test_intake_content(intake):
         "name": "Mohandas Gandhi",
         "address": "225 Paper Street, Porbandar, India",
         "phone": "123.456.7890",
-        "email": "gandhi@gandhi.com",
+        "email": "contact@example.com",
     }
     for key, val in expected_values.items():
         assert getattr(intake, key) == val

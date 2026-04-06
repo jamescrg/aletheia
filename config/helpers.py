@@ -59,7 +59,7 @@ def normalize_phone(value):
     Examples:
         "(406) 363-1234" -> ("4063631234", True)
         "1-406-363-1234" -> ("4063631234", True)
-        "406.363.1234 x123" -> ("4063631234x123", True)
+        "406.555.1234 x123" -> ("4063631234x123", True)
         "invalid" -> ("invalid", False)
     """
     if not value:

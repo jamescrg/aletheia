@@ -63,7 +63,7 @@ def test_edit_post(client, folder, contact):
     data = {
         "folder": folder.id,
         "name": "Descartes",
-        "phone1": "440.500.6000",
+        "phone1": "440.555.6000",
         "client_status": "Current",
     }
 

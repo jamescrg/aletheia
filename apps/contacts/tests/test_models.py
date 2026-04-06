@@ -11,7 +11,7 @@ def test_content(contact):
     expected_values = {
         "name": "Mohandas Gandhi",
         "company": "Gandhi, PC",
-        "phone1": "406.363.1234",
+        "phone1": "406.555.1234",
     }
     for key, val in expected_values.items():
         assert getattr(contact, key) == val

@@ -48,7 +48,7 @@ def test_intake_edit_post(client, intake, practice_area):
         "name": "Desmond Tutu",
         "address": "225 Paper Street, Porbandar, India",
         "phone": "123.456.7890",
-        "email": "tutu@gandhi.com",
+        "email": "tutu@example.com",
         "practice_area": practice_area.id,
         "source": "Internet",
         "status": "Open",
