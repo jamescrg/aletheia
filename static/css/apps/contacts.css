@@ -17,9 +17,10 @@
   padding: 1rem;
 }
 
-.contacts-page .card > .folders > .detail-header::after {
+.contacts-page .card > .folders > .detail-header .toolbar-left::after {
   content: "";
   height: calc(1.25rem + 1rem + 2px);
+  width: 0;
 }
 
 .contacts-page .detail-header.toolbar button {
