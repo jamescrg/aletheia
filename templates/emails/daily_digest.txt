@@ -1,4 +1,4 @@
-Daily Digest for {{ today|date:"l, F j, Y" }}
+VimLaw Daily Digest for {{ today|date:"l, F j, Y" }}
 ============================================
 
 Hi {{ user.first_name|default:user.username }},
