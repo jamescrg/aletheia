@@ -41,7 +41,7 @@
 
 .research-search-card {
   border-bottom: 1px solid var(--border-medium);
-  padding: 0 5rem 1.25rem;
+  padding: 0 0 1.25rem;
 }
 
 .research-refinement-card {
