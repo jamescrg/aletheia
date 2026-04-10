@@ -84,6 +84,7 @@ class ResearchResult(AuditMixin):
         max_length=20, choices=VERIFY_STATUS_CHOICES, default="none"
     )
     review_summary = models.TextField(blank=True, default="")
+    has_negative_history = models.BooleanField(null=True, default=None)
 
     class Meta:
         ordering = ["position"]

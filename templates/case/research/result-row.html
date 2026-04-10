@@ -18,6 +18,12 @@
            title="View on CourtListener"><i class="icon-external-link"></i></a>
       {% endif %}
     </div>
+    {% if result.has_negative_history %}
+      <span class="app-badge app-badge-sm badge-red"
+            title="Negative treatment detected in citing cases">
+        <i class="icon-alert-triangle"></i> Negative History
+      </span>
+    {% endif %}
     {% if result.relevance == "pending" %}
       <span class="app-badge app-badge-sm"><i class="icon-loader spin"></i> Summarizing</span>
     {% elif result.relevance == "high" %}

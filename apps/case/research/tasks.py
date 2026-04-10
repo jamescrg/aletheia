@@ -313,7 +313,27 @@ def _process_query(query_id):
             if result.position != i:
                 ResearchResult.objects.filter(pk=result.id).update(position=i)
 
-        # ── Phase 5: Final Summary ──
+        # ── Phase 5: Negative History Check ──
+        high_results = list(
+            ResearchResult.objects.filter(query_id=query_id, relevance="high").order_by(
+                "position"
+            )
+        )
+        if high_results:
+            with ThreadPoolExecutor(max_workers=3) as executor:
+                futures = {
+                    executor.submit(_check_negative_history, r): r for r in high_results
+                }
+                for future in as_completed(futures):
+                    try:
+                        future.result()
+                    except Exception:
+                        r = futures[future]
+                        logger.exception(
+                            "Error checking negative history for result %s", r.id
+                        )
+
+        # ── Phase 6: Final Summary ──
         _generate_final_summary(query_id)
 
     except Exception:
@@ -512,6 +532,68 @@ def _evaluate_full(result, query_text):
         ResearchResult.objects.filter(pk=result_id).update(
             relevance="error", status_message="AI evaluation failed"
         )
+
+
+def _check_negative_history(result):
+    """Quick check for negative treatment in top forward citations."""
+    if not result.cluster_id:
+        return
+
+    cluster = fetch_cluster(result.cluster_id)
+    if not cluster:
+        return
+
+    sub_opinions = cluster.get("sub_opinions", [])
+    if not sub_opinions:
+        return
+
+    try:
+        opinion_id = int(sub_opinions[0].rstrip("/").split("/")[-1])
+    except (ValueError, IndexError):
+        return
+
+    forward_cites = get_forward_citations(opinion_id, limit=3)
+    if not forward_cites:
+        ResearchResult.objects.filter(pk=result.id).update(has_negative_history=False)
+        return
+
+    excerpts = []
+    for cite in forward_cites:
+        citing_opinion = fetch_opinion(cite["citing_opinion_id"])
+        if citing_opinion.found:
+            excerpts.append(citing_opinion.plain_text[:3000])
+
+    if not excerpts:
+        ResearchResult.objects.filter(pk=result.id).update(has_negative_history=False)
+        return
+
+    combined = "\n\n---\n\n".join(
+        f"Citing Opinion {i + 1}:\n{e}" for i, e in enumerate(excerpts)
+    )
+
+    system_prompt = "You are a legal research assistant. Respond ONLY with valid JSON."
+    user_prompt = (
+        f"The following opinions cite {result.case_name} ({result.citation}). "
+        f"Do any of them overrule, disapprove, limit, or negatively treat the cited case?\n\n"
+        f"{combined}\n\n"
+        f'Respond with JSON: {{"has_negative_treatment": true or false, '
+        f'"reason": "one sentence explanation"}}'
+    )
+
+    try:
+        response_text, _, _ = send_to_gemini(
+            system_prompt, [{"role": "user", "content": user_prompt}]
+        )
+        cleaned = response_text.strip()
+        if cleaned.startswith("```"):
+            cleaned = cleaned.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+        parsed = json.loads(cleaned)
+        has_negative = parsed.get("has_negative_treatment", False)
+        ResearchResult.objects.filter(pk=result.id).update(
+            has_negative_history=has_negative
+        )
+    except Exception:
+        logger.exception("Error checking negative history for result %s", result.id)
 
 
 def _process_result(result, query_text):
