@@ -19,7 +19,9 @@
   </div>
 {% endif %}
 {% if result %}
-  <div id="review-detail">{% include "case/research/review-content.html" %}</div>
+  <div class="research-card">
+    <div id="review-detail">{% include "case/research/review-content.html" %}</div>
+  </div>
 {% elif reviewed_results %}
   <div class="research-reviewed-list">
     {% for r in reviewed_results %}
