@@ -63,7 +63,7 @@
     {% if save_error %}
       <span class="research-save-error">{{ save_error }}</span>
     {% elif result.cluster_id %}
-      <button class="research-bookmark-toggle{% if saved_to_caselaws or result.is_bookmarked %} active{% endif %}"
+      <button class="btn{% if saved_to_caselaws or result.is_bookmarked %} research-bookmark-active{% endif %}"
               title="{% if saved_to_caselaws or result.is_bookmarked %}Bookmarked{% else %}Bookmark Case{% endif %}"
               {% if not saved_to_caselaws and not result.is_bookmarked %} hx-post="{% url 'case:research-save-caselaw' result.id %}" hx-target="#result-{{ result.id }}" hx-swap="outerHTML" {% endif %}>
         <i class="icon-bookmark"></i>

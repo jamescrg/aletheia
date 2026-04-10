@@ -95,7 +95,7 @@
 }
 
 #research-tab-content {
-  padding: 0 5rem;
+  padding: 0 10rem;
 }
 
 .research-results-header {
@@ -278,26 +278,9 @@
   border-color: var(--border-medium);
 }
 
-.research-bookmark-toggle {
-  background: none;
-  border: none;
-  border-radius: var(--radius-xs);
-  color: var(--stone-400);
-  cursor: pointer;
-  padding: 0.25rem;
-}
-
-.research-bookmark-toggle:hover {
-  background: var(--stone-100);
-  color: var(--link);
-}
-
-.research-bookmark-toggle.active {
-  color: var(--violet-600);
-}
-
-.research-bookmark-toggle.active:hover {
-  color: var(--violet-700);
+.research-card-actions .btn.research-bookmark-active {
+  background: var(--selected-background);
+  border-color: var(--selected-border);
 }
 
 .research-saved-badge {
