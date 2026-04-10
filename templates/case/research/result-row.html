@@ -82,6 +82,14 @@
          hx-swap="innerHTML">
         <i class="icon-file-text"></i> View Brief
       </a>
+    {% elif result.existing_brief_id %}
+      <a href="#"
+         class="btn"
+         hx-get="{% url 'case:research-brief-detail' result.existing_brief_id %}"
+         hx-target="#research"
+         hx-swap="innerHTML">
+        <i class="icon-file-text"></i> View Brief
+      </a>
     {% elif brief_generating %}
       <span class="research-status-msg"
             hx-get="{% url 'case:research-brief-status' brief_id %}"

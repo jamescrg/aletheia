@@ -222,6 +222,17 @@ def research_results(request, matter_id, query_id):
     )
     results = pagination.get_object_list()
 
+    cluster_ids = [r.cluster_id for r in results if r.cluster_id]
+    brief_map = {}
+    if cluster_ids:
+        brief_map = dict(
+            CaseBrief.objects.filter(
+                matter=matter, cluster_id__in=cluster_ids
+            ).values_list("cluster_id", "id")
+        )
+    for r in results:
+        r.existing_brief_id = brief_map.get(r.cluster_id)
+
     return render(
         request,
         "case/research/results.html",

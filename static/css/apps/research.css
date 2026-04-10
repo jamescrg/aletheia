@@ -94,12 +94,8 @@
   padding: 1rem 5rem 0;
 }
 
-.research-history-list,
-.research-review-lookup,
-.research-reviewed-list,
-.research-empty-state {
-  margin: 0 auto;
-  max-width: 60rem;
+#research-tab-content {
+  padding: 0 5rem;
 }
 
 .research-results-header {
