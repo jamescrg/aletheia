@@ -7,7 +7,6 @@ from django.views.generic import CreateView
 
 from .forms import CustomUserCreationForm, VerificationCodeForm
 from .models import CustomUser, EmailVerificationCode
-from .utils import generate_verification_code, send_verification_email
 
 
 class SignUpView(CreateView):
@@ -37,24 +36,9 @@ class LoginView(View):
 
         if form.is_valid():
             user = form.get_user()
-            # Delete any existing codes for this user
-            EmailVerificationCode.objects.filter(user=user).delete()
-
-            # Generate and save new code
-            code = generate_verification_code()
-            EmailVerificationCode.objects.create(user=user, code=code)
-
-            # Send email
-            send_verification_email(user, code)
-
-            # Store user ID in session for verification step
-            request.session["pending_user_id"] = user.id
-            # Preserve the next URL for after verification
+            login(request, user)
             next_url = request.POST.get("next") or request.GET.get("next", "")
-            if next_url:
-                request.session["login_next_url"] = next_url
-
-            return redirect("accounts:login-verify")
+            return redirect(next_url or settings.LOGIN_REDIRECT_URL)
 
         # Invalid credentials - show form with errors
         return render(
