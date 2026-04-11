@@ -672,6 +672,11 @@ body:has(.note-page.standalone) {
    ============================================================================= */
 
 #notes-table {
+  margin-left: -1rem;
+  margin-right: -1rem;
+}
+
+.detail-body #notes-table {
   margin-left: -0.25rem;
   margin-right: -0.25rem;
 }
