@@ -7,5 +7,6 @@
          hx-trigger="change, blur, keyup[key=='Enter']"
          onfocus="moveFocusToEnd(this)"
          hx-swap="outerHTML"
+         x-init="$el.focus()"
          value="{{ matter.work_status }}" />
 </div>
