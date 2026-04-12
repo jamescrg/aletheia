@@ -108,6 +108,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "apps.dash.middleware.DailyDashCheckMiddleware",
     "utils.middleware.CurrentUserMiddleware",
+    "apps.accounts.middleware.HtmxLoginRedirectMiddleware",
     "apps.accounts.middleware.PermissionMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
 ]

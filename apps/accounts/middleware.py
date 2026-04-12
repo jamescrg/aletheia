@@ -1,4 +1,26 @@
-from django.http import HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden
+
+
+class HtmxLoginRedirectMiddleware:
+    """Redirect HTMX requests from logged-out users to the login page."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+
+        if (
+            not request.user.is_authenticated
+            and request.headers.get("HX-Request") == "true"
+            and response.status_code == 302
+        ):
+            redirect_url = response.get("Location", "/accounts/login/")
+            resp = HttpResponse(status=200)
+            resp["HX-Redirect"] = redirect_url
+            return resp
+
+        return response
 
 
 class PermissionMiddleware:
