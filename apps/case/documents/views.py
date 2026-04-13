@@ -1,10 +1,11 @@
 import json
+import logging
 
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.db.models import Q
-from django.http import HttpResponse, JsonResponse
+from django.http import FileResponse, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
@@ -22,6 +23,8 @@ from apps.management.selection import (
 from .filters import FilesFilter
 from .forms import BulkFilesForm, FilesForm
 from .get_document_data import get_document_data
+
+logger = logging.getLogger(__name__)
 
 
 @login_required
@@ -453,7 +456,7 @@ def documents_edit(request, document_id):
             elif document.matter_id != old_matter_id and old_file_path:
                 file_extension = old_file_path.split(".")[-1].lower()
                 new_file_path = (
-                    f"case/{document.matter_id}/{document.pk}.{file_extension}"
+                    f"documents/{document.matter_id}/{document.pk}.{file_extension}"
                 )
 
                 # Read old file, save to new path, delete old
@@ -606,15 +609,24 @@ def serve_document(request, document_id):
         return HttpResponse("No file attached to this document.", status=404)
 
     try:
-        file_content = document.file.read()
+        document.file.open("rb")
+        response = FileResponse(
+            document.file,
+            content_type="application/pdf",
+        )
+        response["Content-Length"] = document.file.size
+        response["Cache-Control"] = "private, max-age=3600"
+        return response
+    except FileNotFoundError:
+        logger.warning(
+            "Document %s file not found in storage: %s", document_id, document.file.name
+        )
+        return HttpResponse("File not found in storage.", status=404)
     except Exception:
-        return HttpResponse("Could not retrieve file from storage.", status=502)
-
-    response = HttpResponse(file_content, content_type="application/pdf")
-    response["Content-Length"] = len(file_content)
-    response["Cache-Control"] = "private, max-age=3600"
-
-    return response
+        logger.exception(
+            "Failed to serve document %s (file: %s)", document_id, document.file.name
+        )
+        return HttpResponse("Could not retrieve file from storage.", status=500)
 
 
 @login_required
@@ -1012,7 +1024,9 @@ def bulk_documents_matter(request, matter_id):
                     from django.core.files.storage import default_storage
 
                     file_extension = old_file_path.split(".")[-1].lower()
-                    new_file_path = f"case/{target_matter.id}/{doc.pk}.{file_extension}"
+                    new_file_path = (
+                        f"documents/{target_matter.id}/{doc.pk}.{file_extension}"
+                    )
 
                     try:
                         with default_storage.open(old_file_path, "rb") as f:
