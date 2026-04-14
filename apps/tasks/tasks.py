@@ -173,6 +173,8 @@ def get_list_data(request):
         and any(
             [
                 filter_data.get("status") == "Complete",
+                filter_data.get("matter") not in (None, ""),
+                filter_data.get("date_due_min") not in (None, ""),
                 filter_data.get("date_completed_min") not in (None, ""),
                 filter_data.get("date_completed_max") not in (None, ""),
             ]
