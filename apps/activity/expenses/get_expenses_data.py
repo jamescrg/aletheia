@@ -90,6 +90,14 @@ def get_expenses_data(request):
     visible_ids = [expense.id for expense in pagination.get_object_list()]
     all_selected = all_visible_selected(selected_expenses, visible_ids)
 
+    custom_filter_active = filter_data and any(
+        [
+            filter_data.get("comp") not in (None, ""),
+            filter_data.get("matter") not in (None, ""),
+            filter_data.get("keyword", "") != "",
+        ]
+    )
+
     context = {
         "edit": False,
         "objects": pagination.get_object_list(),
@@ -102,6 +110,7 @@ def get_expenses_data(request):
         "selected_user": selected_user,
         "user_id": user_id,
         "filter_label": filter_data.get("filter_label", None),
+        "custom_filter_active": custom_filter_active,
         "current_order": current_order,
         "selected_expenses": selected_expenses,
         "all_selected": all_selected,

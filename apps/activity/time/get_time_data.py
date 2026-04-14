@@ -91,6 +91,15 @@ def get_time_data(request):
     visible_ids = [entry.id for entry in pagination.get_object_list()]
     all_selected = all_visible_selected(selected_time, visible_ids)
 
+    # Filter button highlights when modal-specific fields have non-default values
+    custom_filter_active = filter_data and any(
+        [
+            filter_data.get("comp") not in (None, ""),
+            filter_data.get("matter") not in (None, ""),
+            filter_data.get("keyword", "") != "",
+        ]
+    )
+
     context = {
         "edit": False,
         "objects": pagination.get_object_list(),
@@ -103,6 +112,7 @@ def get_time_data(request):
         "selected_user": selected_user,
         "user_id": user_id,
         "filter_label": filter_data.get("filter_label", None) if filter_data else None,
+        "custom_filter_active": custom_filter_active,
         "current_order": current_order,
         "selected_time": selected_time,
         "all_selected": all_selected,

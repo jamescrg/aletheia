@@ -84,48 +84,43 @@ def expenses_filter_quick(request, quick_filter):
     monday = today - timedelta(days=today.weekday())
     month_start = today.replace(day=1)
 
-    base = {
-        "date_min": "",
-        "date_max": "",
-        "matter": None,
-        "keyword": "",
-        "comp": None,
-        "entered": None,
-        "invoice": None,
-    }
-
     quick_filters = {
-        "all": {**base, "filter_label": "all"},
-        "unbilled": {**base, "entered": 0, "invoice": 0, "filter_label": "unbilled"},
+        "all": {"date_min": "", "date_max": "", "filter_label": "all"},
+        "unbilled": {
+            "date_min": "",
+            "date_max": "",
+            "entered": 0,
+            "invoice": 0,
+            "filter_label": "unbilled",
+        },
         "today": {
-            **base,
             "date_min": str(today),
             "date_max": str(today),
             "filter_label": "today",
         },
         "yesterday": {
-            **base,
             "date_min": str(today - timedelta(days=1)),
             "date_max": str(today - timedelta(days=1)),
             "filter_label": "yesterday",
         },
         "this_week": {
-            **base,
             "date_min": str(monday),
             "date_max": str(today),
             "filter_label": "this_week",
         },
         "this_month": {
-            **base,
             "date_min": str(month_start),
             "date_max": str(today),
             "filter_label": "this_month",
         },
     }
 
-    existing = request.session.get("expenses_filter", {})
-    filter_data = quick_filters[quick_filter]
-    filter_data["user"] = existing.get("user")
+    filter_data = request.session.get("expenses_filter", {})
+    filter_data.update(quick_filters[quick_filter])
+
+    if quick_filter != "unbilled" and filter_data.get("entered") == 0:
+        filter_data.pop("entered", None)
+        filter_data.pop("invoice", None)
 
     request.session["expenses_filter"] = filter_data
     request.session.modified = True

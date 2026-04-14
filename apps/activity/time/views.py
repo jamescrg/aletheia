@@ -135,55 +135,46 @@ def time_filter_quick(request, quick_filter):
     monday = today - timedelta(days=today.weekday())
     month_start = today.replace(day=1)
 
-    base = {
-        "date_min": "",
-        "date_max": "",
-        "matter": None,
-        "keyword": "",
-        "comp": None,
-        "entered": None,
-        "invoice": None,
-        "order_by": "-date",
-    }
-
+    # Each quick filter only defines the fields it controls.
+    # All other session filter state (user, comp, matter, keyword, etc.) is preserved.
     quick_filters = {
-        "all": {**base, "filter_label": "all"},
+        "all": {"date_min": "", "date_max": "", "filter_label": "all"},
         "unbilled": {
-            **base,
+            "date_min": "",
+            "date_max": "",
             "entered": 0,
             "invoice": 0,
-            "order_by": "date",
             "filter_label": "unbilled",
         },
         "today": {
-            **base,
             "date_min": str(today),
             "date_max": str(today),
             "filter_label": "today",
         },
         "yesterday": {
-            **base,
             "date_min": str(today - timedelta(days=1)),
             "date_max": str(today - timedelta(days=1)),
             "filter_label": "yesterday",
         },
         "this_week": {
-            **base,
             "date_min": str(monday),
             "date_max": str(today),
             "filter_label": "this_week",
         },
         "this_month": {
-            **base,
             "date_min": str(month_start),
             "date_max": str(today),
             "filter_label": "this_month",
         },
     }
 
-    existing = request.session.get("time_filter", {})
-    filter_data = quick_filters[quick_filter]
-    filter_data["user"] = existing.get("user")
+    filter_data = request.session.get("time_filter", {})
+    filter_data.update(quick_filters[quick_filter])
+
+    # When switching away from "unbilled", clear its entered/invoice overrides
+    if quick_filter != "unbilled" and filter_data.get("entered") == 0:
+        filter_data.pop("entered", None)
+        filter_data.pop("invoice", None)
 
     request.session["time_filter"] = filter_data
     request.session.modified = True
