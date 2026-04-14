@@ -195,5 +195,8 @@ def get_unbilled_data(request):
     unbilled_data["selected_ids"] = selected_ids
     unbilled_data["all_selected"] = all_visible_selected(selected_ids, visible_ids)
     unbilled_data["filter_label"] = filter_data.get("filter_label")
+    unbilled_data["custom_filter_active"] = bool(
+        filter_data.get("last_invoice_before", "")
+    )
 
     return unbilled_data
