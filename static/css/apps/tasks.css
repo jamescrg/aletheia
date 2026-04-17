@@ -36,12 +36,15 @@ i.priority-5 {
 }
 
 i.priority-3 {
-  color: var(--color-muted);
+  color: var(--slate-400);
 }
 
-i.priority-2,
+i.priority-2 {
+  color: var(--slate-500);
+}
+
 i.priority-1 {
-  color: var(--color-muted-more);
+  color: var(--slate-600);
 }
 
 tr > td.priority.complete .button-link {

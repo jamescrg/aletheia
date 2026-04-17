@@ -64,12 +64,15 @@ i.importance-5 {
 }
 
 i.importance-3 {
-  color: var(--color-muted);
+  color: var(--slate-400);
 }
 
-i.importance-2,
+i.importance-2 {
+  color: var(--slate-500);
+}
+
 i.importance-1 {
-  color: var(--color-muted-more);
+  color: var(--slate-600);
 }
 
 /* OCR badge in file column */

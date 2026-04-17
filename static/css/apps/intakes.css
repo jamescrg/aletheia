@@ -179,12 +179,15 @@ Detail View - Left Panel
 }
 
 .intake-list .importance i.importance-3 {
-  color: var(--color-muted);
+  color: var(--slate-400);
 }
 
-.intake-list .importance i.importance-2,
+.intake-list .importance i.importance-2 {
+  color: var(--slate-500);
+}
+
 .intake-list .importance i.importance-1 {
-  color: var(--color-muted-more);
+  color: var(--slate-600);
 }
 
 .intake-list th a {
