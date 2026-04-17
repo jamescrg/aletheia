@@ -170,12 +170,18 @@ def get_matter_tasks_data(request, matter_id):
         "users": CustomUser.objects.filter(is_active=True).order_by("username"),
         "user_id": user_id,
         "selected_user": selected_user.username.capitalize() if selected_user else None,
-        "priorities": list(range(5, 0, -1)),
+        "priorities": list(range(7, 0, -1)),
         "priority_value": priority_value,
         "selected_priority": (
-            {5: "Highest", 4: "Higher", 3: "Normal", 2: "Lower", 1: "Lowest"}.get(
-                priority_value, ""
-            )
+            {
+                7: "Highest",
+                6: "Higher",
+                5: "High",
+                4: "Normal",
+                3: "Low",
+                2: "Lower",
+                1: "Lowest",
+            }.get(priority_value, "")
             if priority_value
             else ""
         ),

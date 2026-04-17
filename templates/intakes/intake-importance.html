@@ -4,12 +4,16 @@
           x-ref="button"
           @click="toggle()"
           :aria-expanded="open">
-    {% if intake.importance == 5 %}
+    {% if intake.importance == 7 %}
       <i class="icon-chevrons-up"></i>
-    {% elif intake.importance == 4 %}
+    {% elif intake.importance == 6 %}
       <i class="icon-chevron-up"></i>
-    {% elif intake.importance == 3 %}
+    {% elif intake.importance == 5 %}
+      <i class="icon-chevron-up"></i>
+    {% elif intake.importance == 4 %}
       <i class="icon-equal"></i>
+    {% elif intake.importance == 3 %}
+      <i class="icon-chevron-down"></i>
     {% elif intake.importance == 2 %}
       <i class="icon-chevron-down"></i>
     {% else %}
@@ -20,23 +24,37 @@
     <li>
       <a class="dropdown-item"
          href="#"
+         hx-post="{% url 'intakes:edit-importance' intake.id 7 %}"
+         hx-target="closest td"
+         hx-swap="innerHTML"><i class="icon-chevrons-up importance-7"></i> Highest</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
+         hx-post="{% url 'intakes:edit-importance' intake.id 6 %}"
+         hx-target="closest td"
+         hx-swap="innerHTML"><i class="icon-chevron-up importance-6"></i> Higher</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
          hx-post="{% url 'intakes:edit-importance' intake.id 5 %}"
          hx-target="closest td"
-         hx-swap="innerHTML"><i class="icon-chevrons-up importance-5"></i> Highest</a>
+         hx-swap="innerHTML"><i class="icon-chevron-up importance-5"></i> High</a>
     </li>
     <li>
       <a class="dropdown-item"
          href="#"
          hx-post="{% url 'intakes:edit-importance' intake.id 4 %}"
          hx-target="closest td"
-         hx-swap="innerHTML"><i class="icon-chevron-up importance-4"></i> Higher</a>
+         hx-swap="innerHTML"><i class="icon-equal"></i> Normal</a>
     </li>
     <li>
       <a class="dropdown-item"
          href="#"
          hx-post="{% url 'intakes:edit-importance' intake.id 3 %}"
          hx-target="closest td"
-         hx-swap="innerHTML"><i class="icon-equal"></i> Normal</a>
+         hx-swap="innerHTML"><i class="icon-chevron-down importance-3"></i> Low</a>
     </li>
     <li>
       <a class="dropdown-item"

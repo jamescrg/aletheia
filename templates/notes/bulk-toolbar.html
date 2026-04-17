@@ -11,22 +11,36 @@
       <a class="dropdown-item"
          href="#"
          hx-post="{% url 'notes:bulk-set-importance' %}"
+         hx-vals='{"importance": "7"}'
+         hx-swap="none"><i class="icon-chevrons-up importance-7"></i> Highest</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
+         hx-post="{% url 'notes:bulk-set-importance' %}"
+         hx-vals='{"importance": "6"}'
+         hx-swap="none"><i class="icon-chevron-up importance-6"></i> Higher</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
+         hx-post="{% url 'notes:bulk-set-importance' %}"
          hx-vals='{"importance": "5"}'
-         hx-swap="none"><i class="icon-chevrons-up importance-5"></i> Highest</a>
+         hx-swap="none"><i class="icon-chevron-up importance-5"></i> High</a>
     </li>
     <li>
       <a class="dropdown-item"
          href="#"
          hx-post="{% url 'notes:bulk-set-importance' %}"
          hx-vals='{"importance": "4"}'
-         hx-swap="none"><i class="icon-chevron-up importance-4"></i> Higher</a>
+         hx-swap="none"><i class="icon-equal"></i> Normal</a>
     </li>
     <li>
       <a class="dropdown-item"
          href="#"
          hx-post="{% url 'notes:bulk-set-importance' %}"
          hx-vals='{"importance": "3"}'
-         hx-swap="none"><i class="icon-equal"></i> Normal</a>
+         hx-swap="none"><i class="icon-chevron-down importance-3"></i> Low</a>
     </li>
     <li>
       <a class="dropdown-item"

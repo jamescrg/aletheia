@@ -279,7 +279,7 @@ def add_label_to(request, object_type, object_id):
 
     context = {
         context_key: obj,
-        "importance_choices": range(5, 0, -1),
+        "importance_choices": range(7, 0, -1),
         "matter": matter,
     }
 
@@ -311,7 +311,7 @@ def remove_label_from(request, object_type, object_id):
 
     context = {
         context_key: obj,
-        "importance_choices": range(5, 0, -1),
+        "importance_choices": range(7, 0, -1),
         "matter": matter,
     }
 
@@ -342,7 +342,7 @@ def labels_create_and_apply(request, object_type, object_id):
 
     context = {
         context_key: obj,
-        "importance_choices": range(5, 0, -1),
+        "importance_choices": range(7, 0, -1),
         "matter": matter,
     }
 

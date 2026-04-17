@@ -58,12 +58,16 @@
                 @click="toggle()"
                 :aria-expanded="open">
         <span><i class="icon-flag with-text"></i>
-        {% if importance_value == 5 %}
+        {% if importance_value == 7 %}
           Highest
-        {% elif importance_value == 4 %}
+        {% elif importance_value == 6 %}
           Higher
-        {% elif importance_value == 3 %}
+        {% elif importance_value == 5 %}
+          High
+        {% elif importance_value == 4 %}
           Normal
+        {% elif importance_value == 3 %}
+          Low
         {% elif importance_value == 2 %}
           Lower
         {% elif importance_value == 1 %}
@@ -78,22 +82,34 @@
     </button>
     <ul class="dropdown-menu" x-ref="menu" x-show="open">
       <li>
+        <a class="dropdown-item {% if importance_value == 7 %}active{% endif %}"
+           href="#"
+           hx-get="{% url 'case:highlights-filter-importance' matter.id 7 %}"
+           hx-target="#highlights"><i class="icon-chevrons-up importance-7"></i> Highest</a>
+      </li>
+      <li>
+        <a class="dropdown-item {% if importance_value == 6 %}active{% endif %}"
+           href="#"
+           hx-get="{% url 'case:highlights-filter-importance' matter.id 6 %}"
+           hx-target="#highlights"><i class="icon-chevron-up importance-6"></i> Higher</a>
+      </li>
+      <li>
         <a class="dropdown-item {% if importance_value == 5 %}active{% endif %}"
            href="#"
            hx-get="{% url 'case:highlights-filter-importance' matter.id 5 %}"
-           hx-target="#highlights"><i class="icon-chevrons-up importance-5"></i> Highest</a>
+           hx-target="#highlights"><i class="icon-chevron-up importance-5"></i> High</a>
       </li>
       <li>
         <a class="dropdown-item {% if importance_value == 4 %}active{% endif %}"
            href="#"
            hx-get="{% url 'case:highlights-filter-importance' matter.id 4 %}"
-           hx-target="#highlights"><i class="icon-chevron-up importance-4"></i> Higher</a>
+           hx-target="#highlights"><i class="icon-equal"></i> Normal</a>
       </li>
       <li>
         <a class="dropdown-item {% if importance_value == 3 %}active{% endif %}"
            href="#"
            hx-get="{% url 'case:highlights-filter-importance' matter.id 3 %}"
-           hx-target="#highlights"><i class="icon-equal"></i> Normal</a>
+           hx-target="#highlights"><i class="icon-chevron-down importance-3"></i> Low</a>
       </li>
       <li>
         <a class="dropdown-item {% if importance_value == 2 %}active{% endif %}"

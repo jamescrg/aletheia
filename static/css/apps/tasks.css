@@ -20,14 +20,23 @@ td.priority .button-link {
   color: var(--color-muted-more);
 }
 
-tr.priority-5 > td.priority .button-link,
-i.priority-5 {
+tr.priority-7 > td.priority .button-link,
+i.priority-7 {
   color: var(--red-600);
 }
 
-tr.priority-4 > td.priority .button-link,
-i.priority-4 {
+tr.priority-6 > td.priority .button-link,
+i.priority-6 {
   color: var(--violet-600);
+}
+
+tr.priority-5 > td.priority .button-link,
+i.priority-5 {
+  color: var(--violet-400);
+}
+
+i.priority-3 {
+  color: var(--color-muted);
 }
 
 i.priority-2,

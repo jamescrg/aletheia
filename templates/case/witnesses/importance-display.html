@@ -4,12 +4,16 @@
           x-ref="button"
           @click="toggle()"
           :aria-expanded="open">
-    {% if witness.importance == 5 %}
+    {% if witness.importance == 7 %}
       <i class="icon-chevrons-up"></i>
-    {% elif witness.importance == 4 %}
+    {% elif witness.importance == 6 %}
       <i class="icon-chevron-up"></i>
-    {% elif witness.importance == 3 %}
+    {% elif witness.importance == 5 %}
+      <i class="icon-chevron-up"></i>
+    {% elif witness.importance == 4 %}
       <i class="icon-equal"></i>
+    {% elif witness.importance == 3 %}
+      <i class="icon-chevron-down"></i>
     {% elif witness.importance == 2 %}
       <i class="icon-chevron-down"></i>
     {% else %}
@@ -20,20 +24,32 @@
     <li>
       <a class="dropdown-item"
          href="#"
+         hx-get="{% url 'case:witness-importance' witness.id 7 %}"
+         hx-target="#witnesses"><i class="icon-chevrons-up importance-7"></i> Highest</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
+         hx-get="{% url 'case:witness-importance' witness.id 6 %}"
+         hx-target="#witnesses"><i class="icon-chevron-up importance-6"></i> Higher</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
          hx-get="{% url 'case:witness-importance' witness.id 5 %}"
-         hx-target="#witnesses"><i class="icon-chevrons-up importance-5"></i> Highest</a>
+         hx-target="#witnesses"><i class="icon-chevron-up importance-5"></i> High</a>
     </li>
     <li>
       <a class="dropdown-item"
          href="#"
          hx-get="{% url 'case:witness-importance' witness.id 4 %}"
-         hx-target="#witnesses"><i class="icon-chevron-up importance-4"></i> Higher</a>
+         hx-target="#witnesses"><i class="icon-equal"></i> Normal</a>
     </li>
     <li>
       <a class="dropdown-item"
          href="#"
          hx-get="{% url 'case:witness-importance' witness.id 3 %}"
-         hx-target="#witnesses"><i class="icon-equal"></i> Normal</a>
+         hx-target="#witnesses"><i class="icon-chevron-down importance-3"></i> Low</a>
     </li>
     <li>
       <a class="dropdown-item"

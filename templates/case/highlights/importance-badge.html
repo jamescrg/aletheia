@@ -6,12 +6,16 @@
           x-ref="button"
           @click="toggle()"
           :aria-expanded="open">
-    {% if highlight.importance == 5 %}
-      <i class="icon-chevrons-up importance-5"></i>
+    {% if highlight.importance == 7 %}
+      <i class="icon-chevrons-up importance-7"></i>
+    {% elif highlight.importance == 6 %}
+      <i class="icon-chevron-up importance-6"></i>
+    {% elif highlight.importance == 5 %}
+      <i class="icon-chevron-up importance-5"></i>
     {% elif highlight.importance == 4 %}
-      <i class="icon-chevron-up importance-4"></i>
-    {% elif highlight.importance == 3 %}
       <i class="icon-equal"></i>
+    {% elif highlight.importance == 3 %}
+      <i class="icon-chevron-down importance-3"></i>
     {% elif highlight.importance == 2 %}
       <i class="icon-chevron-down importance-2"></i>
     {% else %}
@@ -20,25 +24,39 @@
   </button>
   <ul class="dropdown-menu" x-ref="menu" x-show="open">
     <li>
+      <a class="dropdown-item {% if highlight.importance == 7 %}active{% endif %}"
+         href="#"
+         hx-post="{% url 'case:highlight-importance' highlight.id 7 %}"
+         hx-target="#highlight-importance-{{ highlight.id }}"
+         hx-swap="outerHTML"><i class="icon-chevrons-up importance-7"></i> Highest</a>
+    </li>
+    <li>
+      <a class="dropdown-item {% if highlight.importance == 6 %}active{% endif %}"
+         href="#"
+         hx-post="{% url 'case:highlight-importance' highlight.id 6 %}"
+         hx-target="#highlight-importance-{{ highlight.id }}"
+         hx-swap="outerHTML"><i class="icon-chevron-up importance-6"></i> Higher</a>
+    </li>
+    <li>
       <a class="dropdown-item {% if highlight.importance == 5 %}active{% endif %}"
          href="#"
          hx-post="{% url 'case:highlight-importance' highlight.id 5 %}"
          hx-target="#highlight-importance-{{ highlight.id }}"
-         hx-swap="outerHTML"><i class="icon-chevrons-up importance-5"></i> Highest</a>
+         hx-swap="outerHTML"><i class="icon-chevron-up importance-5"></i> High</a>
     </li>
     <li>
       <a class="dropdown-item {% if highlight.importance == 4 %}active{% endif %}"
          href="#"
          hx-post="{% url 'case:highlight-importance' highlight.id 4 %}"
          hx-target="#highlight-importance-{{ highlight.id }}"
-         hx-swap="outerHTML"><i class="icon-chevron-up importance-4"></i> Higher</a>
+         hx-swap="outerHTML"><i class="icon-equal"></i> Normal</a>
     </li>
     <li>
       <a class="dropdown-item {% if highlight.importance == 3 %}active{% endif %}"
          href="#"
          hx-post="{% url 'case:highlight-importance' highlight.id 3 %}"
          hx-target="#highlight-importance-{{ highlight.id }}"
-         hx-swap="outerHTML"><i class="icon-equal"></i> Normal</a>
+         hx-swap="outerHTML"><i class="icon-chevron-down importance-3"></i> Low</a>
     </li>
     <li>
       <a class="dropdown-item {% if highlight.importance == 2 %}active{% endif %}"

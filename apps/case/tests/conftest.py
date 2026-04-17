@@ -143,7 +143,6 @@ def highlight(document, user):
         coordinates={"rects": [{"x1": 100, "y1": 100, "x2": 200, "y2": 120}]},
         color="yellow",
         created_by=user,
-        importance=3,
     )
 
 
@@ -166,7 +165,6 @@ def fact(user, matter):
         matter=matter,
         date="2024-01-25",
         description="Important event occurred",
-        importance=3,
     )
 
 

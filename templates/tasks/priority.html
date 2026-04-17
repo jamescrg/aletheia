@@ -4,12 +4,16 @@
           x-ref="button"
           @click="toggle()"
           :aria-expanded="open">
-    {% if task.priority == 5 %}
+    {% if task.priority == 7 %}
       <i class="icon-chevrons-up"></i>
-    {% elif task.priority == 4 %}
+    {% elif task.priority == 6 %}
       <i class="icon-chevron-up"></i>
-    {% elif task.priority == 3 %}
+    {% elif task.priority == 5 %}
+      <i class="icon-chevron-up"></i>
+    {% elif task.priority == 4 %}
       <i class="icon-equal"></i>
+    {% elif task.priority == 3 %}
+      <i class="icon-chevron-down"></i>
     {% elif task.priority == 2 %}
       <i class="icon-chevron-down"></i>
     {% else %}
@@ -20,20 +24,32 @@
     <li>
       <a class="dropdown-item"
          href="#"
+         hx-get="{% url 'tasks:task-priority' task_id=task.id priority=7 %}"
+         hx-target="#tasks"><i class="icon-chevrons-up priority-7"></i> Highest</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
+         hx-get="{% url 'tasks:task-priority' task_id=task.id priority=6 %}"
+         hx-target="#tasks"><i class="icon-chevron-up priority-6"></i> Higher</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
          hx-get="{% url 'tasks:task-priority' task_id=task.id priority=5 %}"
-         hx-target="#tasks"><i class="icon-chevrons-up priority-5"></i> Highest</a>
+         hx-target="#tasks"><i class="icon-chevron-up priority-5"></i> High</a>
     </li>
     <li>
       <a class="dropdown-item"
          href="#"
          hx-get="{% url 'tasks:task-priority' task_id=task.id priority=4 %}"
-         hx-target="#tasks"><i class="icon-chevron-up priority-4"></i> Higher</a>
+         hx-target="#tasks"><i class="icon-equal"></i> Normal</a>
     </li>
     <li>
       <a class="dropdown-item"
          href="#"
          hx-get="{% url 'tasks:task-priority' task_id=task.id priority=3 %}"
-         hx-target="#tasks"><i class="icon-equal"></i> Normal</a>
+         hx-target="#tasks"><i class="icon-chevron-down priority-3"></i> Low</a>
     </li>
     <li>
       <a class="dropdown-item"

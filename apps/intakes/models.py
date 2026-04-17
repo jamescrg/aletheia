@@ -12,7 +12,7 @@ class Intake(AuditMixin, models.Model):
     name = models.CharField(max_length=100)
     date = models.DateField(null=True)
     importance = models.PositiveIntegerField(
-        default=3, validators=[MinValueValidator(1), MaxValueValidator(5)]
+        default=4, validators=[MinValueValidator(1), MaxValueValidator(7)]
     )
     address = models.CharField(max_length=255, blank=True, null=True)
     disputed_property = models.CharField(max_length=255, blank=True, null=True)

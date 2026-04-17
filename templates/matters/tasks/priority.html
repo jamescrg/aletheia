@@ -4,12 +4,16 @@
           x-ref="button"
           @click="toggle()"
           :aria-expanded="open">
-    {% if task.priority == 5 %}
+    {% if task.priority == 7 %}
       <i class="icon-chevrons-up"></i>
-    {% elif task.priority == 4 %}
+    {% elif task.priority == 6 %}
       <i class="icon-chevron-up"></i>
-    {% elif task.priority == 3 %}
+    {% elif task.priority == 5 %}
+      <i class="icon-chevron-up"></i>
+    {% elif task.priority == 4 %}
       <i class="icon-equal"></i>
+    {% elif task.priority == 3 %}
+      <i class="icon-chevron-down"></i>
     {% elif task.priority == 2 %}
       <i class="icon-chevron-down"></i>
     {% else %}
@@ -20,23 +24,37 @@
     <li>
       <a class="dropdown-item"
          href="#"
+         hx-post="{% url 'matters:tasks-priority' matter.id task.id 7 %}"
+         hx-target="#matterTasks"
+         hx-swap="outerHTML"><i class="icon-chevrons-up importance-7"></i> Highest</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
+         hx-post="{% url 'matters:tasks-priority' matter.id task.id 6 %}"
+         hx-target="#matterTasks"
+         hx-swap="outerHTML"><i class="icon-chevron-up importance-6"></i> Higher</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
          hx-post="{% url 'matters:tasks-priority' matter.id task.id 5 %}"
          hx-target="#matterTasks"
-         hx-swap="outerHTML"><i class="icon-chevrons-up importance-5"></i> Highest</a>
+         hx-swap="outerHTML"><i class="icon-chevron-up importance-5"></i> High</a>
     </li>
     <li>
       <a class="dropdown-item"
          href="#"
          hx-post="{% url 'matters:tasks-priority' matter.id task.id 4 %}"
          hx-target="#matterTasks"
-         hx-swap="outerHTML"><i class="icon-chevron-up importance-4"></i> Higher</a>
+         hx-swap="outerHTML"><i class="icon-equal"></i> Normal</a>
     </li>
     <li>
       <a class="dropdown-item"
          href="#"
          hx-post="{% url 'matters:tasks-priority' matter.id task.id 3 %}"
          hx-target="#matterTasks"
-         hx-swap="outerHTML"><i class="icon-equal"></i> Normal</a>
+         hx-swap="outerHTML"><i class="icon-chevron-down importance-3"></i> Low</a>
     </li>
     <li>
       <a class="dropdown-item"

@@ -98,13 +98,19 @@ def get_highlights_data(request, matter, matter_id):
         "keyword": keyword,
         "order_by": order_by,
         "current_order": current_order,
-        "importance_choices": range(5, 0, -1),
-        "importances": list(range(5, 0, -1)),
+        "importance_choices": range(7, 0, -1),
+        "importances": list(range(7, 0, -1)),
         "importance_value": importance_value,
         "selected_importance": (
-            {5: "Highest", 4: "Higher", 3: "Normal", 2: "Lower", 1: "Lowest"}.get(
-                importance_value, ""
-            )
+            {
+                7: "Highest",
+                6: "Higher",
+                5: "High",
+                4: "Normal",
+                3: "Low",
+                2: "Lower",
+                1: "Lowest",
+            }.get(importance_value, "")
             if importance_value
             else ""
         ),
