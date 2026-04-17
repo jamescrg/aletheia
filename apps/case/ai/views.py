@@ -1063,7 +1063,7 @@ def context_preview(request, matter_id):
         format_tasks,
         load_legal_prompt,
     )
-    from .selector import build_manifest, estimate_tokens
+    from .selector import _resolve_content, build_manifest, estimate_tokens
 
     matter, _ = get_matter_from_url(request, matter_id)
 
@@ -1180,7 +1180,7 @@ def context_preview(request, matter_id):
     baseline_tokens = estimate_tokens(baseline_text)
 
     auto_pool_tokens = sum(
-        estimate_tokens(content_map[(item.item_type, item.item_id)])
+        estimate_tokens(_resolve_content((item.item_type, item.item_id), content_map))
         for item in manifest_items
         if (item.item_type, item.item_id) in content_map
     )
