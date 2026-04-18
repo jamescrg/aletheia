@@ -56,7 +56,7 @@ def test_new_task_with_complete_status(user):
         user=user,
         description="New complete task",
         status="Complete",
-        priority=1,
+        importance=1,
     )
     assert task.date_completed == date.today()
 

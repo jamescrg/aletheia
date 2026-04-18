@@ -39,24 +39,28 @@
         </button>
         <div class="dropdown" x-data="dropdown()">
           <button type="button"
-                  id="tasks-priority-filter"
-                  class="select-btn filter-dropdown-button priority-dropdown {% if priority_value %}toggle-active{% endif %}"
+                  id="tasks-importance-filter"
+                  class="select-btn filter-dropdown-button importance-dropdown {% if importance_value %}toggle-active{% endif %}"
                   x-ref="button"
                   @click="toggle()"
                   :aria-expanded="open">
           <span><i class="icon-flag with-text"></i>
-          {% if priority_value == 5 %}
+          {% if importance_value == 7 %}
             Highest
-          {% elif priority_value == 4 %}
+          {% elif importance_value == 6 %}
+            Higher
+          {% elif importance_value == 5 %}
             High
-          {% elif priority_value == 3 %}
+          {% elif importance_value == 4 %}
             Normal
-          {% elif priority_value == 2 %}
+          {% elif importance_value == 3 %}
             Low
-          {% elif priority_value == 1 %}
+          {% elif importance_value == 2 %}
+            Lower
+          {% elif importance_value == 1 %}
             Lowest
           {% else %}
-            Priority
+            Importance
           {% endif %}
         </span>
         <small>
@@ -66,40 +70,54 @@
       <ul class="dropdown-menu"
           x-ref="menu"
           x-show="open"
-          hx-target="#tasks-priority-filter"
+          hx-target="#tasks-importance-filter"
           hx-swap="outerHTML">
         <li>
-          <a class="dropdown-item {% if priority_value == 5 %}active{% endif %}"
+          <a class="dropdown-item {% if importance_value == 7 %}active{% endif %}"
              href="#"
-             hx-post="{% url 'tasks:filter-priority' 5 %}"
+             hx-post="{% url 'tasks:filter-importance' 7 %}"
              hx-target="#tasks"
-             hx-swap="#outerHTML"><i class="icon-chevrons-up priority-5"></i> Highest</a>
+             hx-swap="#outerHTML"><i class="icon-chevrons-up importance-7"></i> Highest</a>
         </li>
         <li>
-          <a class="dropdown-item {% if priority_value == 4 %}active{% endif %}"
+          <a class="dropdown-item {% if importance_value == 6 %}active{% endif %}"
              href="#"
-             hx-post="{% url 'tasks:filter-priority' 4 %}"
+             hx-post="{% url 'tasks:filter-importance' 6 %}"
              hx-target="#tasks"
-             hx-swap="#outerHTML"><i class="icon-chevron-up priority-4"></i> High</a>
+             hx-swap="#outerHTML"><i class="icon-chevron-up importance-6"></i> Higher</a>
         </li>
         <li>
-          <a class="dropdown-item {% if priority_value == 3 %}active{% endif %}"
+          <a class="dropdown-item {% if importance_value == 5 %}active{% endif %}"
              href="#"
-             hx-post="{% url 'tasks:filter-priority' 3 %}"
+             hx-post="{% url 'tasks:filter-importance' 5 %}"
+             hx-target="#tasks"
+             hx-swap="#outerHTML"><i class="icon-chevron-up importance-5"></i> High</a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if importance_value == 4 %}active{% endif %}"
+             href="#"
+             hx-post="{% url 'tasks:filter-importance' 4 %}"
              hx-target="#tasks"
              hx-swap="#outerHTML"><i class="icon-equal"></i> Normal</a>
         </li>
         <li>
-          <a class="dropdown-item {% if priority_value == 2 %}active{% endif %}"
+          <a class="dropdown-item {% if importance_value == 3 %}active{% endif %}"
              href="#"
-             hx-post="{% url 'tasks:filter-priority' 2 %}"
+             hx-post="{% url 'tasks:filter-importance' 3 %}"
              hx-target="#tasks"
-             hx-swap="#outerHTML"><i class="icon-chevron-down priority-2"></i> Low</a>
+             hx-swap="#outerHTML"><i class="icon-chevron-down importance-3"></i> Low</a>
         </li>
         <li>
-          <a class="dropdown-item {% if not priority_value %}active{% endif %}"
+          <a class="dropdown-item {% if importance_value == 2 %}active{% endif %}"
              href="#"
-             hx-post="{% url 'tasks:filter-priority' 0 %}"
+             hx-post="{% url 'tasks:filter-importance' 2 %}"
+             hx-target="#tasks"
+             hx-swap="#outerHTML"><i class="icon-chevron-down importance-2"></i> Lower</a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if not importance_value %}active{% endif %}"
+             href="#"
+             hx-post="{% url 'tasks:filter-importance' 0 %}"
              hx-target="#tasks"
              hx-swap="#outerHTML"><i class="icon-flag"></i> All Levels</a>
         </li>
@@ -210,11 +228,11 @@
           {% url 'tasks:select-all' as select_all_url %}
           {% include "selection/select-all-btn.html" with select_all_url=select_all_url all_selected=all_selected %}
         </th>
-        <th class="priority">
-          <button class="btn-sort {% if current_order == 'priority' %}active{% endif %}"
+        <th class="importance">
+          <button class="btn-sort {% if current_order == 'importance' %}active{% endif %}"
                   hx-target="#tasks"
                   hx-swap="innerHTML"
-                  hx-post="{% url 'tasks:filter-sort' '-priority' %}">
+                  hx-post="{% url 'tasks:filter-sort' '-importance' %}">
             <i class="icon-flag"></i>
           </button>
         </th>
@@ -267,13 +285,13 @@
     </thead>
     <tbody>
       {% for task in objects %}
-        <tr class="priority-{{ task.priority }}{% if task.id in new_task_ids or task.id in edited_task_ids %} task-new-highlight{% endif %}{% if task.date_due and task.date_due < today and task.status != 'Complete' %} past-due{% endif %}">
+        <tr class="importance-{{ task.importance }}{% if task.id in new_task_ids or task.id in edited_task_ids %} task-new-highlight{% endif %}{% if task.date_due and task.date_due < today and task.status != 'Complete' %} past-due{% endif %}">
           <td class="col-select">
             {% url 'tasks:toggle-select' task.id as toggle_url %}
             {% include "selection/checkbox.html" with toggle_url=toggle_url obj_id=task.id selected_ids=selected_tasks %}
           </td>
-          <td class="priority dropdown-cell {% if task.status == 'Complete' %}complete{% endif %}"
-              data-label="Priority">{% include "tasks/priority.html" %}</td>
+          <td class="importance dropdown-cell {% if task.status == 'Complete' %}complete{% endif %}"
+              data-label="Importance">{% include "tasks/importance.html" %}</td>
           <td class="matter {% if task.status == 'Complete' %}complete{% endif %}"
               data-label="Matter">{% include "tasks/matter.html" %}</td>
           <td class="description {% if task.status == 'Complete' %}complete{% endif %}"

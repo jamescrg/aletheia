@@ -16,7 +16,7 @@ class TaskForm(forms.ModelForm):
             "matter",
             "description",
             "user",
-            "priority",
+            "importance",
             "status",
             "date_due",
             "date_completed",
@@ -31,11 +31,13 @@ class TaskForm(forms.ModelForm):
             "description": "Task",
         }
 
-        PRIORITIES = (
-            (5, "Highest"),
-            (4, "High"),
-            (3, "Normal"),
-            (2, "Low"),
+        IMPORTANCE_CHOICES = (
+            (7, "Highest"),
+            (6, "Higher"),
+            (5, "High"),
+            (4, "Normal"),
+            (3, "Low"),
+            (2, "Lower"),
             (1, "Lowest"),
         )
 
@@ -54,7 +56,7 @@ class TaskForm(forms.ModelForm):
             "user": forms.Select(attrs={"class": ""}),
             "status": forms.Select(choices=STATUSES),
             "date_due": forms.DateInput(attrs={"type": "date", "class": ""}),
-            "priority": forms.Select(choices=PRIORITIES),
+            "importance": forms.Select(choices=IMPORTANCE_CHOICES),
             "date_completed": forms.DateInput(attrs={"type": "date", "class": ""}),
         }
 
@@ -62,7 +64,7 @@ class TaskForm(forms.ModelForm):
         user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
         self.renderer = CustomFormRendererCompact()
-        self.fields["priority"].initial = 3
+        self.fields["importance"].initial = 3
         # Customize user field to display title case usernames
         self.fields["user"].label_from_instance = lambda obj: obj.username.title()
         if user:
@@ -93,18 +95,20 @@ class BulkTasksForm(forms.Form):
         ("Complete", "Complete"),
     ]
 
-    PRIORITY_CHOICES = [
+    IMPORTANCE_CHOICES = [
         ("", "— No change —"),
-        ("5", "Highest"),
-        ("4", "High"),
-        ("3", "Normal"),
-        ("2", "Low"),
+        ("7", "Highest"),
+        ("6", "Higher"),
+        ("5", "High"),
+        ("4", "Normal"),
+        ("3", "Low"),
+        ("2", "Lower"),
         ("1", "Lowest"),
     ]
 
     status = forms.ChoiceField(choices=STATUS_CHOICES, required=False, label="Status")
-    priority = forms.ChoiceField(
-        choices=PRIORITY_CHOICES, required=False, label="Priority"
+    importance = forms.ChoiceField(
+        choices=IMPORTANCE_CHOICES, required=False, label="Priority"
     )
     date_due = forms.DateField(
         widget=forms.DateInput(attrs={"type": "date"}),

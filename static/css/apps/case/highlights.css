@@ -175,12 +175,13 @@ Table Layout
   color: var(--color-muted-more);
 }
 
-.highlights-list tr.importance-5 > .importance .button-link {
+.highlights-list tr.importance-7 > .importance .button-link,
+.highlights-list tr.importance-6 > .importance .button-link {
   color: var(--red-600);
 }
 
-.highlights-list tr.importance-4 > .importance .button-link {
-  color: var(--violet-600);
+.highlights-list tr.importance-5 > .importance .button-link {
+  color: var(--violet-400);
 }
 
 /* Fix dropdown overflow issues while allowing horizontal scroll */

@@ -4,12 +4,16 @@
           x-ref="button"
           @click="toggle()"
           :aria-expanded="open">
-    {% if document.importance == 5 %}
+    {% if document.importance == 7 %}
       <i class="icon-chevrons-up"></i>
-    {% elif document.importance == 4 %}
+    {% elif document.importance == 6 %}
       <i class="icon-chevron-up"></i>
-    {% elif document.importance == 3 %}
+    {% elif document.importance == 5 %}
+      <i class="icon-chevron-up"></i>
+    {% elif document.importance == 4 %}
       <i class="icon-equal"></i>
+    {% elif document.importance == 3 %}
+      <i class="icon-chevron-down"></i>
     {% elif document.importance == 2 %}
       <i class="icon-chevron-down"></i>
     {% else %}
@@ -20,26 +24,38 @@
     <li>
       <a class="dropdown-item"
          href="#"
+         hx-get="{% url 'case:document-importance' document.id 7 %}"
+         hx-target="#documents"><i class="icon-chevrons-up importance-7"></i> Highest</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
+         hx-get="{% url 'case:document-importance' document.id 6 %}"
+         hx-target="#documents"><i class="icon-chevron-up importance-6"></i> Higher</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
          hx-get="{% url 'case:document-importance' document.id 5 %}"
-         hx-target="#documents"><i class="icon-chevrons-up importance-5"></i> Highest</a>
+         hx-target="#documents"><i class="icon-chevron-up importance-5"></i> High</a>
     </li>
     <li>
       <a class="dropdown-item"
          href="#"
          hx-get="{% url 'case:document-importance' document.id 4 %}"
-         hx-target="#documents"><i class="icon-chevron-up importance-4"></i> High</a>
-    </li>
-    <li>
-      <a class="dropdown-item"
-         href="#"
-         hx-get="{% url 'case:document-importance' document.id 3 %}"
          hx-target="#documents"><i class="icon-equal"></i> Normal</a>
     </li>
     <li>
       <a class="dropdown-item"
          href="#"
+         hx-get="{% url 'case:document-importance' document.id 3 %}"
+         hx-target="#documents"><i class="icon-chevron-down importance-3"></i> Low</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
          hx-get="{% url 'case:document-importance' document.id 2 %}"
-         hx-target="#documents"><i class="icon-chevron-down importance-2"></i> Low</a>
+         hx-target="#documents"><i class="icon-chevron-down importance-2"></i> Lower</a>
     </li>
     <li>
       <a class="dropdown-item"

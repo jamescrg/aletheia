@@ -46,12 +46,16 @@
               x-ref="button"
               @click="toggle()"
               :aria-expanded="open">
-        {% if note.importance == 5 %}
+        {% if note.importance == 7 %}
           <i class="icon-chevrons-up"></i>
-        {% elif note.importance == 4 %}
+        {% elif note.importance == 6 %}
           <i class="icon-chevron-up"></i>
-        {% elif note.importance == 3 %}
+        {% elif note.importance == 5 %}
+          <i class="icon-chevron-up"></i>
+        {% elif note.importance == 4 %}
           <i class="icon-equal"></i>
+        {% elif note.importance == 3 %}
+          <i class="icon-chevron-down"></i>
         {% elif note.importance == 2 %}
           <i class="icon-chevron-down"></i>
         {% else %}
@@ -62,26 +66,38 @@
         <li>
           <a class="dropdown-item"
              href="#"
+             hx-post="{% url 'notes:note-importance' note.id 7 %}"
+             hx-target="#notes"><i class="icon-chevrons-up importance-7"></i> Highest</a>
+        </li>
+        <li>
+          <a class="dropdown-item"
+             href="#"
+             hx-post="{% url 'notes:note-importance' note.id 6 %}"
+             hx-target="#notes"><i class="icon-chevron-up importance-6"></i> Higher</a>
+        </li>
+        <li>
+          <a class="dropdown-item"
+             href="#"
              hx-post="{% url 'notes:note-importance' note.id 5 %}"
-             hx-target="#notes"><i class="icon-chevrons-up importance-5"></i> Highest</a>
+             hx-target="#notes"><i class="icon-chevron-up importance-5"></i> High</a>
         </li>
         <li>
           <a class="dropdown-item"
              href="#"
              hx-post="{% url 'notes:note-importance' note.id 4 %}"
-             hx-target="#notes"><i class="icon-chevron-up importance-4"></i> High</a>
-        </li>
-        <li>
-          <a class="dropdown-item"
-             href="#"
-             hx-post="{% url 'notes:note-importance' note.id 3 %}"
              hx-target="#notes"><i class="icon-equal"></i> Normal</a>
         </li>
         <li>
           <a class="dropdown-item"
              href="#"
+             hx-post="{% url 'notes:note-importance' note.id 3 %}"
+             hx-target="#notes"><i class="icon-chevron-down importance-3"></i> Low</a>
+        </li>
+        <li>
+          <a class="dropdown-item"
+             href="#"
              hx-post="{% url 'notes:note-importance' note.id 2 %}"
-             hx-target="#notes"><i class="icon-chevron-down importance-2"></i> Low</a>
+             hx-target="#notes"><i class="icon-chevron-down importance-2"></i> Lower</a>
         </li>
         <li>
           <a class="dropdown-item"

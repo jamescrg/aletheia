@@ -22,7 +22,7 @@ class TestNote:
             matter=matter,
             title="Default Importance Note",
         )
-        assert note.importance == 3
+        assert note.importance == 4
 
     def test_category_choices(self, matter, user):
         """All category choices should be valid."""

@@ -10,11 +10,13 @@ STATUS_CHOICES = (
     ("Complete", "Complete"),
 )
 
-PRIORITY_CHOICES = (
-    (5, "Highest"),
-    (4, "High"),
-    (3, "Normal"),
-    (2, "Low"),
+IMPORTANCE_CHOICES = (
+    (7, "Highest"),
+    (6, "Higher"),
+    (5, "High"),
+    (4, "Normal"),
+    (3, "Low"),
+    (2, "Lower"),
     (1, "Lowest"),
 )
 
@@ -53,12 +55,12 @@ class TasksOrderingFilter(django_filters.OrderingFilter):
             if ordering[0] == "date_due":
                 return qs.order_by(
                     F("date_due").asc(nulls_last=True),
-                    "-priority",
+                    "-importance",
                     "matter__name",
                     "description",
                     "id",
                 )
-            if ordering[0] in ("priority", "-priority"):
+            if ordering[0] in ("importance", "-importance"):
                 return qs.order_by(
                     "-status",
                     ordering[0],
@@ -87,9 +89,9 @@ class TasksFilter(django_filters.FilterSet):
         queryset=CustomUser.objects.filter(is_active=True).order_by("username"),
         empty_label="All",
     )
-    priority = django_filters.ChoiceFilter(
-        field_name="priority",
-        choices=PRIORITY_CHOICES,
+    importance = django_filters.ChoiceFilter(
+        field_name="importance",
+        choices=IMPORTANCE_CHOICES,
         lookup_expr="gte",
         label="Priority (≥)",
         empty_label="All",
@@ -103,7 +105,7 @@ class TasksFilter(django_filters.FilterSet):
     order_by = TasksOrderingFilter(
         fields=(
             ("date_due", "date_due"),
-            ("priority", "priority"),
+            ("importance", "importance"),
             ("matter__name", "matter__name"),
             ("description", "description"),
             ("status", "status"),
@@ -115,7 +117,7 @@ class TasksFilter(django_filters.FilterSet):
         model = Task
         fields = [
             "status",
-            "priority",
+            "importance",
             "matter",
             "user",
             "date_due",

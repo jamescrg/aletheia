@@ -5,10 +5,12 @@ from django.db.models import Q
 from apps.case.models import Document, Label
 
 IMPORTANCE_CHOICES = (
-    (5, "Highest"),
-    (4, "High"),
-    (3, "Normal"),
-    (2, "Low"),
+    (7, "Highest"),
+    (6, "Higher"),
+    (5, "High"),
+    (4, "Normal"),
+    (3, "Low"),
+    (2, "Lower"),
     (1, "Lowest"),
 )
 

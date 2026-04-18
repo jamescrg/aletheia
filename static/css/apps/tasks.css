@@ -16,26 +16,38 @@
  Priority Colors
 ========================================================================== */
 
-td.priority .button-link {
+td.importance .button-link {
   color: var(--color-muted-more);
 }
 
-tr.priority-5 > td.priority .button-link,
-i.priority-5 {
+tr.importance-7 > td.importance .button-link,
+i.importance-7,
+tr.importance-6 > td.importance .button-link,
+i.importance-6 {
   color: var(--red-600);
 }
 
-tr.priority-4 > td.priority .button-link,
-i.priority-4 {
+tr.importance-5 > td.importance .button-link,
+i.importance-5 {
   color: var(--violet-600);
 }
 
-i.priority-2,
-i.priority-1 {
-  color: var(--color-muted-more);
+tr.importance-3 > td.importance .button-link,
+i.importance-3 {
+  color: var(--slate-400);
 }
 
-tr > td.priority.complete .button-link {
+tr.importance-2 > td.importance .button-link,
+i.importance-2 {
+  color: var(--slate-500);
+}
+
+tr.importance-1 > td.importance .button-link,
+i.importance-1 {
+  color: var(--slate-600);
+}
+
+tr > td.importance.complete .button-link {
   color: var(--color-muted-more);
 }
 
@@ -149,7 +161,7 @@ tr > td.priority.complete .button-link {
   text-align: left;
 }
 
-.priority-dropdown i.with-text {
+.importance-dropdown i.with-text {
   margin-right: 0.25rem;
 }
 
@@ -163,9 +175,8 @@ tr > td.priority.complete .button-link {
 }
 
 .tasks-toolbar .filter-tools .filter-dropdown-button {
-  max-width: 9rem;
+  max-width: 10rem;
   min-width: 4.5rem;
-  width: 9rem;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
 }
@@ -192,33 +203,33 @@ tr > td.priority.complete .button-link {
   color: var(--icon-muted);
 }
 
-.tasks-table .priority {
+.tasks-table .importance {
   text-align: center;
   width: 3rem;
 }
 
 
-.priority-arrow .icon-arrow-up-to-line {
+.importance-arrow .icon-arrow-up-to-line {
   font-size: 0.9rem;
   left: 0.25rem;
   position: relative;
   top: 0;
 }
 
-.priority-text {
+.importance-text {
   position: relative;
   right: 1rem;
 }
 
-.tasks-table .priority i {
+.tasks-table .importance i {
   /* margin: 0; */
 }
 
-.priority .btn-sort {
+.importance .btn-sort {
   margin: 0;
 }
 
-.tasks-table .priority .dropdown-menu {
+.tasks-table .importance .dropdown-menu {
   min-width: auto;
   text-align: left;
 }
@@ -525,7 +536,7 @@ tr > td.priority.complete .button-link {
   .tasks-table td.matter { order: 1; }
   .tasks-table td.date { order: 2; }
   .tasks-table td.description { order: 3; }
-  .tasks-table td.priority { order: 4; }
+  .tasks-table td.importance { order: 4; }
   .tasks-table td.status { order: 5; }
   .tasks-table td.user { order: 6; }
 
@@ -572,7 +583,7 @@ tr > td.priority.complete .button-link {
   }
 
   /* Interactive elements sit above the stretched link */
-  .tasks-table td.priority,
+  .tasks-table td.importance,
   .tasks-table td.status,
   .tasks-table td.user,
   .tasks-table td.date {
@@ -586,7 +597,7 @@ tr > td.priority.complete .button-link {
   }
 
   /* Metadata cells: inline row */
-  .tasks-table td.priority,
+  .tasks-table td.importance,
   .tasks-table td.status,
   .tasks-table td.user,
   .tasks-table td.date {
@@ -599,20 +610,20 @@ tr > td.priority.complete .button-link {
 
 
   /* Priority column width reset */
-  .tasks-table .priority {
+  .tasks-table .importance {
     text-align: left;
     width: auto;
   }
 
   /* Disable dropdowns and date picker on mobile */
-  .tasks-table td.priority .dropdown-menu,
+  .tasks-table td.importance .dropdown-menu,
   .tasks-table td.status .dropdown-menu,
   .tasks-table td.user .dropdown-menu,
   .tasks-table td.date .dropdown-menu {
     display: none !important;
   }
 
-  .tasks-table td.priority .button-link,
+  .tasks-table td.importance .button-link,
   .tasks-table td.status .button-link,
   .tasks-table td.user .button-link,
   .tasks-table td.date a,

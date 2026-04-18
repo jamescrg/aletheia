@@ -186,9 +186,9 @@ urlpatterns = [
         name="tasks-filter-user",
     ),
     path(
-        "matters/<int:id>/tasks/filter-priority/<int:priority_value>",
-        tasks.tasks_filter_priority,
-        name="tasks-filter-priority",
+        "matters/<int:id>/tasks/filter-importance/<int:importance_value>",
+        tasks.tasks_filter_importance,
+        name="tasks-filter-importance",
     ),
     path(
         "matters/<int:id>/tasks/filter-focus/<str:focus>",
@@ -206,9 +206,9 @@ urlpatterns = [
         name="tasks-set-status",
     ),
     path(
-        "matters/<int:id>/tasks/<int:task_id>/priority/<int:priority>",
-        tasks.tasks_priority,
-        name="tasks-priority",
+        "matters/<int:id>/tasks/<int:task_id>/importance/<int:importance>",
+        tasks.tasks_importance,
+        name="tasks-importance",
     ),
     path(
         "matters/<int:id>/tasks/<int:task_id>/user/<int:user_id>",
@@ -254,9 +254,9 @@ urlpatterns = [
         name="tasks-bulk-set-due-date",
     ),
     path(
-        "matters/<int:id>/tasks/bulk-set-priority",
-        tasks.tasks_bulk_set_priority,
-        name="tasks-bulk-set-priority",
+        "matters/<int:id>/tasks/bulk-set-importance",
+        tasks.tasks_bulk_set_importance,
+        name="tasks-bulk-set-importance",
     ),
     path(
         "matters/<int:id>/tasks/bulk-set-status",

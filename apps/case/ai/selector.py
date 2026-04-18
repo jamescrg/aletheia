@@ -218,7 +218,7 @@ def format_manifest_for_prompt(items: list[ManifestItem], token_budget: int) -> 
         lines.append(
             f'[{type_label}-{item.item_id}] "{item.name}" '
             f"({item.category}{date_str}) - {item.description} "
-            f"[~{item.word_count:,} words, priority: {item.importance}/5]"
+            f"[~{item.word_count:,} words, importance: {item.importance}/7]"
         )
 
     return "\n".join(lines)

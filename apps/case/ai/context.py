@@ -722,7 +722,7 @@ def format_proceedings(matter) -> str:
 def format_tasks(matter) -> str:
     """Format tasks, pending first."""
     tasks = Task.objects.filter(matter=matter).order_by(
-        "date_completed", "priority", "date_due"
+        "date_completed", "importance", "date_due"
     )[:20]
 
     if not tasks:
@@ -731,7 +731,7 @@ def format_tasks(matter) -> str:
     lines = []
     for task in tasks:
         status_icon = "[DONE]" if task.date_completed else "[PENDING]"
-        line = f"- {status_icon} P{task.priority}: {task.description}"
+        line = f"- {status_icon} P{task.importance}: {task.description}"
         if task.date_due:
             line += f" (Due: {task.date_due})"
         lines.append(line)

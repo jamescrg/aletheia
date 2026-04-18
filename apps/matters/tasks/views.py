@@ -146,7 +146,7 @@ def get_matter_tasks_data(request, matter_id):
     if user_id:
         selected_user = CustomUser.objects.filter(id=user_id).first()
 
-    priority_value = filter_data.get("priority") if filter_data else None
+    importance_value = filter_data.get("importance") if filter_data else None
 
     # Get current order and strip leading '-' for comparison
     current_order = (
@@ -170,13 +170,19 @@ def get_matter_tasks_data(request, matter_id):
         "users": CustomUser.objects.filter(is_active=True).order_by("username"),
         "user_id": user_id,
         "selected_user": selected_user.username.capitalize() if selected_user else None,
-        "priorities": list(range(5, 0, -1)),
-        "priority_value": priority_value,
-        "selected_priority": (
-            {5: "Highest", 4: "High", 3: "Normal", 2: "Low", 1: "Lowest"}.get(
-                priority_value, ""
-            )
-            if priority_value
+        "importances": list(range(7, 0, -1)),
+        "importance_value": importance_value,
+        "selected_importance": (
+            {
+                7: "Highest",
+                6: "Higher",
+                5: "High",
+                4: "Normal",
+                3: "Low",
+                2: "Lower",
+                1: "Lowest",
+            }.get(importance_value, "")
+            if importance_value
             else ""
         ),
         "focus": focus,
@@ -296,12 +302,12 @@ def tasks_add_quick(request, id):
     task.date_due = date.today()
     task.matter = matter  # Always assign to the current matter
 
-    # auto populate priority from filter
-    filter_priority = filter_data.get("priority")
-    if filter_priority and int(filter_priority) != 0:
-        task.priority = int(filter_priority)
+    # auto populate importance from filter
+    filter_importance = filter_data.get("importance")
+    if filter_importance and int(filter_importance) != 0:
+        task.importance = int(filter_importance)
     else:
-        task.priority = 3
+        task.importance = 3
 
     # auto populate the user
     user_id = filter_data.get("user", None)
@@ -443,12 +449,12 @@ def tasks_filter_focus(request, id, focus):
 
 @login_required
 @matter_access_required
-def tasks_filter_priority(request, id, priority_value):
-    """Filter tasks by priority for a matter"""
+def tasks_filter_importance(request, id, importance_value):
+    """Filter tasks by importance for a matter"""
     filter_data = request.session.get("matter_tasks_filter", {})
     filter_data["matter"] = id
     # Set to None when 0 (All) is selected, otherwise use the value
-    filter_data["priority"] = None if priority_value == 0 else priority_value
+    filter_data["importance"] = None if importance_value == 0 else importance_value
 
     request.session["matter_tasks_filter"] = filter_data
     return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
@@ -500,11 +506,11 @@ def tasks_set_status(request, id, task_id, status):
 
 @login_required
 @matter_access_required
-def tasks_priority(request, id, task_id, priority):
-    """Change task priority for a matter"""
+def tasks_importance(request, id, task_id, importance):
+    """Change task importance for a matter"""
     matter = get_object_or_404(Matter, pk=id)
     task = get_object_or_404(Task, pk=task_id, matter=matter)
-    task.priority = priority
+    task.importance = importance
     task.save()
     return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
 
@@ -655,7 +661,7 @@ def tasks_bulk_update(request, id):
         if form.is_valid():
             tasks = Task.objects.filter(id__in=selected_tasks, matter=matter)
             status = form.cleaned_data.get("status")
-            priority = form.cleaned_data.get("priority")
+            importance = form.cleaned_data.get("importance")
             date_due = form.cleaned_data.get("date_due")
             user = form.cleaned_data.get("user")
             new_matter = form.cleaned_data.get("matter")
@@ -664,8 +670,8 @@ def tasks_bulk_update(request, id):
                 if status:
                     task.status = status
 
-                if priority:
-                    task.priority = int(priority)
+                if importance:
+                    task.importance = int(importance)
 
                 if date_due:
                     task.date_due = date_due
@@ -736,18 +742,18 @@ def tasks_bulk_clear_due_date(request, id):
 @login_required
 @matter_access_required
 @require_POST
-def tasks_bulk_set_priority(request, id):
-    """Set priority on selected tasks."""
+def tasks_bulk_set_importance(request, id):
+    """Set importance on selected tasks."""
     key = get_session_key("selected_tasks", id)
     selected_tasks = get_selected_ids(request, key)
 
     if not selected_tasks:
         return HttpResponse(status=400, content="No tasks selected.")
 
-    priority = request.POST.get("priority")
-    if priority:
+    importance = request.POST.get("importance")
+    if importance:
         Task.objects.filter(id__in=selected_tasks, matter_id=id).update(
-            priority=int(priority)
+            importance=int(importance)
         )
         clear_selected_ids(request, key)
 

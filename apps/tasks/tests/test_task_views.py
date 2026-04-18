@@ -20,7 +20,7 @@ def test_add_post(client, folder, task_data):
     task_data["description"] = "New title"
     task_data["date_due"] = ""
     task_data["matter_id"] = ""
-    task_data["priority"] = "1"
+    task_data["importance"] = "1"
     response = client.post("/tasks/add", task_data)
     assert response.status_code == 204
     found = Task.objects.filter(description=task_data["description"]).first()
@@ -39,7 +39,7 @@ def test_edit_post(client, folder, task, user):
         "description": "Finish unit testing",
         "status": "Pending",
         "user": user.id,
-        "priority": 1,
+        "importance": 1,
     }
     response = client.post(reverse("tasks:edit", args=[task.id]), data)
     assert response.status_code == 204  # HTMX response on success

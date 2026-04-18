@@ -40,9 +40,9 @@ def get_list_data(request):
         matter_id = filter_data.get("matter")
         matter_id = int(matter_id) if matter_id not in (None, "") else None
 
-        priority_value = filter_data.get("priority")
-        priority_value = (
-            int(priority_value) if priority_value not in (None, "", 0) else None
+        importance_value = filter_data.get("importance")
+        importance_value = (
+            int(importance_value) if importance_value not in (None, "", 0) else None
         )
 
     else:
@@ -58,7 +58,7 @@ def get_list_data(request):
 
         user_id = request.user.id
         matter_id = None
-        priority_value = None
+        importance_value = None
 
     # Force-show newly created tasks at the top regardless of filters
     new_task_ids = request.session.pop("new_task_ids", [])
@@ -161,13 +161,15 @@ def get_list_data(request):
         ),
         "today": today,
         "users": CustomUser.objects.filter(is_active=True).order_by("username"),
-        "priorities": list(range(5, 0, -1)),
+        "importances": list(range(7, 0, -1)),
         "user_id": user_id,
         "matter_id": matter_id,
-        "priority_value": priority_value,
+        "importance_value": importance_value,
         "selected_matter": selected_matter.name if selected_matter else "",
         "selected_user": selected_user.username.capitalize() if selected_user else "",
-        "selected_priority": f"Priority {priority_value}" if priority_value else "",
+        "selected_importance": f"Priority {importance_value}"
+        if importance_value
+        else "",
         "filter_label": filter_data.get("filter_label", None) if filter_data else None,
         "custom_filter_active": filter_data
         and any(

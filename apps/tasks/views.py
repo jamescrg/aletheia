@@ -154,12 +154,12 @@ def tasks_add_quick(request):
     task.status = "Pending"
     task.date_due = date.today()
 
-    # auto populate priority from filter
-    filter_priority = filter_data.get("priority")
-    if filter_priority and int(filter_priority) != 0:
-        task.priority = int(filter_priority)
+    # auto populate importance from filter
+    filter_importance = filter_data.get("importance")
+    if filter_importance and int(filter_importance) != 0:
+        task.importance = int(filter_importance)
     else:
-        task.priority = 3
+        task.importance = 3
 
     # auto populate the user
     user_id = filter_data.get("user", None)
@@ -376,10 +376,10 @@ def tasks_filter_user(request, user_id):
 
 
 @login_required
-def tasks_filter_priority(request, priority_value):
+def tasks_filter_importance(request, importance_value):
     filter_data = request.session.get("tasks_filter", {})
     # Set to empty string when 0 (All) is selected, otherwise use the value
-    filter_data["priority"] = "" if priority_value == 0 else priority_value
+    filter_data["importance"] = "" if importance_value == 0 else importance_value
 
     request.session["tasks_filter"] = filter_data
 
@@ -395,7 +395,7 @@ def tasks_filter_default(request):
         "date_due_min": None,
         "matter": None,
         "user": request.user.id,
-        "order_by": "priority",
+        "order_by": "importance",
     }
     request.session["tasks_filter"] = filter_data
     request.session.modified = True
@@ -457,9 +457,9 @@ def tasks_change_user(request, task_id):
 
 
 @login_required
-def tasks_priority(request, task_id, priority):
+def tasks_importance(request, task_id, importance):
     task = get_object_or_404(Task, pk=task_id)
-    task.priority = priority
+    task.importance = importance
     task.save()
     request.session["edited_task_ids"] = [task.id]
     return redirect("tasks:list")
@@ -724,7 +724,7 @@ def tasks_bulk_update(request):
         if form.is_valid():
             tasks = Task.objects.filter(id__in=selected_tasks)
             status = form.cleaned_data.get("status")
-            priority = form.cleaned_data.get("priority")
+            importance = form.cleaned_data.get("importance")
             date_due = form.cleaned_data.get("date_due")
             user = form.cleaned_data.get("user")
             matter = form.cleaned_data.get("matter")
@@ -733,8 +733,8 @@ def tasks_bulk_update(request):
                 if status:
                     task.status = status
 
-                if priority:
-                    task.priority = int(priority)
+                if importance:
+                    task.importance = int(importance)
 
                 if date_due:
                     task.date_due = date_due
@@ -794,17 +794,17 @@ def tasks_bulk_clear_due_date(request):
 
 @login_required
 @require_POST
-def tasks_bulk_set_priority(request):
-    """Set priority on selected tasks."""
+def tasks_bulk_set_importance(request):
+    """Set importance on selected tasks."""
     key = get_session_key("selected_tasks")
     selected_tasks = get_selected_ids(request, key)
 
     if not selected_tasks:
         return HttpResponse(status=400, content="No tasks selected.")
 
-    priority = request.POST.get("priority")
-    if priority:
-        Task.objects.filter(id__in=selected_tasks).update(priority=int(priority))
+    importance = request.POST.get("importance")
+    if importance:
+        Task.objects.filter(id__in=selected_tasks).update(importance=int(importance))
         clear_selected_ids(request, key)
 
     return selection_response(TASKS_TRIGGER)

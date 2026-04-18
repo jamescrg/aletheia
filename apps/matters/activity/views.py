@@ -58,6 +58,9 @@ def activity_index(request, id):
         "summary": summary,
         "selected_entries": selected_entries,
         "all_selected": all_selected,
+        "matters": Matter.objects.filter(
+            status__in=["Pending", "Open", "Complete"]
+        ).order_by("name"),
     }
 
     return render(request, "matters/activity/main.html", context)
@@ -97,6 +100,9 @@ def activity_list(request, id):
         "summary": summary,
         "selected_entries": selected_entries,
         "all_selected": all_selected,
+        "matters": Matter.objects.filter(
+            status__in=["Pending", "Open", "Complete"]
+        ).order_by("name"),
     }
 
     return render(request, "matters/activity/list.html", context)
@@ -142,6 +148,9 @@ def activity_sort(request, id):
         "summary": summary,
         "selected_entries": selected_entries,
         "all_selected": all_selected,
+        "matters": Matter.objects.filter(
+            status__in=["Pending", "Open", "Complete"]
+        ).order_by("name"),
     }
 
     return render(request, "matters/activity/list.html", context)

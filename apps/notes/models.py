@@ -120,7 +120,7 @@ class Note(AuditMixin, models.Model):
         "case.Highlight", blank=True, related_name="notes"
     )
 
-    importance = models.PositiveIntegerField(default=3)
+    importance = models.PositiveIntegerField(default=4)
     labels = models.ManyToManyField("case.Label", related_name="notes", blank=True)
 
     viewed_at = models.DateTimeField(null=True, blank=True)

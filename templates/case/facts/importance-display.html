@@ -4,12 +4,16 @@
           x-ref="button"
           @click="toggle()"
           :aria-expanded="open">
-    {% if fact.importance == 5 %}
+    {% if fact.importance == 7 %}
       <i class="icon-chevrons-up"></i>
-    {% elif fact.importance == 4 %}
+    {% elif fact.importance == 6 %}
       <i class="icon-chevron-up"></i>
-    {% elif fact.importance == 3 %}
+    {% elif fact.importance == 5 %}
+      <i class="icon-chevron-up"></i>
+    {% elif fact.importance == 4 %}
       <i class="icon-equal"></i>
+    {% elif fact.importance == 3 %}
+      <i class="icon-chevron-down"></i>
     {% elif fact.importance == 2 %}
       <i class="icon-chevron-down"></i>
     {% else %}
@@ -20,26 +24,38 @@
     <li>
       <a class="dropdown-item"
          href="#"
+         hx-get="{% url 'case:fact-importance' fact.id 7 %}"
+         hx-target="#facts"><i class="icon-chevrons-up importance-7"></i> Highest</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
+         hx-get="{% url 'case:fact-importance' fact.id 6 %}"
+         hx-target="#facts"><i class="icon-chevron-up importance-6"></i> Higher</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
          hx-get="{% url 'case:fact-importance' fact.id 5 %}"
-         hx-target="#facts"><i class="icon-chevrons-up importance-5"></i> Highest</a>
+         hx-target="#facts"><i class="icon-chevron-up importance-5"></i> High</a>
     </li>
     <li>
       <a class="dropdown-item"
          href="#"
          hx-get="{% url 'case:fact-importance' fact.id 4 %}"
-         hx-target="#facts"><i class="icon-chevron-up importance-4"></i> High</a>
-    </li>
-    <li>
-      <a class="dropdown-item"
-         href="#"
-         hx-get="{% url 'case:fact-importance' fact.id 3 %}"
          hx-target="#facts"><i class="icon-equal"></i> Normal</a>
     </li>
     <li>
       <a class="dropdown-item"
          href="#"
+         hx-get="{% url 'case:fact-importance' fact.id 3 %}"
+         hx-target="#facts"><i class="icon-chevron-down importance-3"></i> Low</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
          hx-get="{% url 'case:fact-importance' fact.id 2 %}"
-         hx-target="#facts"><i class="icon-chevron-down importance-2"></i> Low</a>
+         hx-target="#facts"><i class="icon-chevron-down importance-2"></i> Lower</a>
     </li>
     <li>
       <a class="dropdown-item"

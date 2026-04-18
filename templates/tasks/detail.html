@@ -44,7 +44,7 @@
         </div>
         <div class="task-detail-row">
           <div class="task-detail-meta">
-            <span class="task-detail-priority">Priority: {{ task.priority }}</span>
+            <span class="task-detail-importance">Importance: {{ task.importance }}</span>
             <span class="task-detail-user">{{ task.user.username|title }}</span>
             <span class="task-detail-status">{{ task.status }}</span>
             <span class="task-detail-date">{{ task.date_due|date:"M j, Y"|default:"" }}</span>

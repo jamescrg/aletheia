@@ -134,6 +134,11 @@ urlpatterns = [
         name="documents-bulk-category",
     ),
     path(
+        "case/<int:matter_id>/documents/bulk-importance/",
+        documents.bulk_documents_importance,
+        name="documents-bulk-importance",
+    ),
+    path(
         "case/<int:matter_id>/documents/bulk-matter/",
         documents.bulk_documents_matter,
         name="documents-bulk-matter",

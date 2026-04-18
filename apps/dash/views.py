@@ -42,11 +42,11 @@ def dash_index(request):
         date__gte=today, date__lte=end_date
     ).count()
 
-    # Tasks past due, due today, or due tomorrow, ordered by due date then priority
+    # Tasks past due, due today, or due tomorrow, ordered by due date then importance
     urgent_tasks = Task.objects.filter(
         status="Pending",
         date_due__lte=tomorrow,
-    ).order_by("date_due", "priority")
+    ).order_by("date_due", "importance")
 
     # Unbilled hours and fees
     if request.user.is_admin:

@@ -962,6 +962,26 @@ def bulk_documents_delete(request, matter_id):
 
 
 @login_required
+@require_POST
+def bulk_documents_importance(request, matter_id):
+    """Bulk set importance on selected documents."""
+    key = get_session_key("selected_documents", matter_id)
+    selected_documents = get_selected_ids(request, key)
+
+    if not selected_documents:
+        return HttpResponse(status=400, content="No documents selected.")
+
+    importance = request.POST.get("importance")
+    if importance:
+        Document.objects.filter(id__in=selected_documents).update(
+            importance=int(importance)
+        )
+
+    clear_selected_ids(request, key)
+    return selection_response("documentsChanged")
+
+
+@login_required
 def bulk_documents_category(request, matter_id):
     """Show modal to select category for bulk move."""
     matter, _ = get_matter_from_url(request, matter_id)

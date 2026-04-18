@@ -10,18 +10,53 @@
                   hx-swap="none">
             {{ selected_time|length }} <i class="icon-x bulk-clear-icon"></i>
           </button>
-          <button type="button"
-                  class="btn-icon"
-                  hx-get="{% url 'activity:time-bulk-update-matter' %}"
-                  hx-target="#htmx-modal-container">
-            <i class="icon-folder with-text"></i> Matter
-          </button>
-          <button type="button"
-                  class="btn-icon"
-                  hx-get="{% url 'activity:time-bulk-update-comp' %}"
-                  hx-target="#htmx-modal-container">
-            <i class="icon-check with-text"></i> Comp
-          </button>
+          <div class="dropdown" x-data="dropdown()">
+            <button type="button"
+                    class="btn-icon"
+                    x-ref="button"
+                    @click="toggle()"
+                    :aria-expanded="open">
+              <span><i class="icon-briefcase-business with-text"></i> Matter</span>
+              <small><i class="icon-chevron-down"></i></small>
+            </button>
+            <ul class="dropdown-menu" x-ref="menu" x-show="open" @click="close()">
+              {% for m in matters %}
+                <li>
+                  <a class="dropdown-item"
+                     href="#"
+                     hx-post="{% url 'activity:time-bulk-update-matter' %}"
+                     hx-vals='{"matter": "{{ m.id }}"}'
+                     hx-swap="none"><i class="icon-briefcase-business"></i> {{ m.name }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="dropdown" x-data="dropdown()">
+            <button type="button"
+                    class="btn-icon"
+                    x-ref="button"
+                    @click="toggle()"
+                    :aria-expanded="open">
+              <span><i class="icon-check with-text"></i> Comp</span>
+              <small><i class="icon-chevron-down"></i></small>
+            </button>
+            <ul class="dropdown-menu" x-ref="menu" x-show="open" @click="close()">
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-post="{% url 'activity:time-bulk-update-comp' %}"
+                   hx-vals='{"comp": "true"}'
+                   hx-swap="none"><i class="icon-check"></i> Comp</a>
+              </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-post="{% url 'activity:time-bulk-update-comp' %}"
+                   hx-vals='{"comp": "false"}'
+                   hx-swap="none"><i class="icon-x"></i> Not Comp</a>
+              </li>
+            </ul>
+          </div>
           <button type="button"
                   class="btn-icon"
                   hx-get="{% url 'activity:time-bulk-apply-labels' %}"

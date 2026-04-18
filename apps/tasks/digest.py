@@ -72,18 +72,18 @@ def send_digest_for_user(user):
     overdue_tasks = tasks_qs.filter(
         date_due__lt=today,
         status="Pending",
-    ).order_by("date_due", "-priority")
+    ).order_by("date_due", "-importance")
 
     today_tasks = tasks_qs.filter(
         date_due=today,
         status="Pending",
-    ).order_by("-priority")
+    ).order_by("-importance")
 
     upcoming_tasks = tasks_qs.filter(
         date_due__gt=today,
         date_due__lte=upcoming_end,
         status="Pending",
-    ).order_by("date_due", "-priority")
+    ).order_by("date_due", "-importance")
 
     has_content = (
         overdue_events.exists()

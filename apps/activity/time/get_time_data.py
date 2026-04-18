@@ -10,6 +10,7 @@ from apps.management.selection import (
     get_selected_ids,
     get_session_key,
 )
+from apps.matters.models import Matter
 
 
 def get_time_data(request):
@@ -116,6 +117,9 @@ def get_time_data(request):
         "current_order": current_order,
         "selected_time": selected_time,
         "all_selected": all_selected,
+        "matters": Matter.objects.filter(
+            status__in=["Pending", "Open", "Complete"]
+        ).order_by("name"),
     }
 
     return context
