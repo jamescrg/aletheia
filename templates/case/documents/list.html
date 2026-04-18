@@ -38,18 +38,130 @@
               </li>
             </ul>
           </div>
-          <button type="button"
-                  class="btn-icon"
-                  hx-get="{% url 'case:documents-bulk-category' matter.id %}"
-                  hx-target="#htmx-modal-container">
-            <i class="icon-folder with-text"></i> Category
-          </button>
-          <button type="button"
-                  class="btn-icon"
-                  hx-get="{% url 'case:documents-bulk-matter' matter.id %}"
-                  hx-target="#htmx-modal-container">
-            <i class="icon-briefcase with-text"></i> Matter
-          </button>
+          <div class="dropdown" x-data="dropdown()">
+            <button type="button"
+                    class="btn-icon"
+                    x-ref="button"
+                    @click="toggle()"
+                    :aria-expanded="open">
+              <span><i class="icon-folder with-text"></i> Category</span>
+              <small><i class="icon-chevron-down"></i></small>
+            </button>
+            <ul class="dropdown-menu" x-ref="menu" x-show="open" @click="close()">
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-post="{% url 'case:documents-bulk-category' matter.id %}"
+                   hx-vals='{"category": "Correspondence"}'
+                   hx-swap="none"><i class="icon-folder"></i> Correspondence</a>
+              </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-post="{% url 'case:documents-bulk-category' matter.id %}"
+                   hx-vals='{"category": "Discovery"}'
+                   hx-swap="none"><i class="icon-folder"></i> Discovery</a>
+              </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-post="{% url 'case:documents-bulk-category' matter.id %}"
+                   hx-vals='{"category": "Evidence"}'
+                   hx-swap="none"><i class="icon-folder"></i> Evidence</a>
+              </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-post="{% url 'case:documents-bulk-category' matter.id %}"
+                   hx-vals='{"category": "Record"}'
+                   hx-swap="none"><i class="icon-folder"></i> Record</a>
+              </li>
+            </ul>
+          </div>
+          <div class="dropdown" x-data="dropdown()">
+            <button type="button"
+                    class="btn-icon"
+                    x-ref="button"
+                    @click="toggle()"
+                    :aria-expanded="open">
+              <span><i class="icon-briefcase-business with-text"></i> Matter</span>
+              <small><i class="icon-chevron-down"></i></small>
+            </button>
+            <ul class="dropdown-menu" x-ref="menu" x-show="open" @click="close()">
+              {% for m in matters %}
+                {% if m.id != matter.id %}
+                  <li>
+                    <a class="dropdown-item"
+                       href="#"
+                       hx-post="{% url 'case:documents-bulk-matter' matter.id %}"
+                       hx-vals='{"matter": "{{ m.id }}"}'
+                       hx-swap="none"><i class="icon-briefcase-business"></i> {{ m.name }}</a>
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="dropdown" x-data="dropdown()">
+            <button type="button"
+                    class="btn-icon"
+                    x-ref="button"
+                    @click="toggle()"
+                    :aria-expanded="open">
+              <span><i class="icon-flag with-text"></i> Importance</span>
+              <small><i class="icon-chevron-down"></i></small>
+            </button>
+            <ul class="dropdown-menu" x-ref="menu" x-show="open" @click="close()">
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-post="{% url 'case:documents-bulk-importance' matter.id %}"
+                   hx-vals='{"importance": "7"}'
+                   hx-swap="none"><i class="icon-chevrons-up importance-7"></i> Highest</a>
+              </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-post="{% url 'case:documents-bulk-importance' matter.id %}"
+                   hx-vals='{"importance": "6"}'
+                   hx-swap="none"><i class="icon-chevron-up importance-6"></i> Higher</a>
+              </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-post="{% url 'case:documents-bulk-importance' matter.id %}"
+                   hx-vals='{"importance": "5"}'
+                   hx-swap="none"><i class="icon-chevron-up importance-5"></i> High</a>
+              </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-post="{% url 'case:documents-bulk-importance' matter.id %}"
+                   hx-vals='{"importance": "4"}'
+                   hx-swap="none"><i class="icon-equal"></i> Normal</a>
+              </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-post="{% url 'case:documents-bulk-importance' matter.id %}"
+                   hx-vals='{"importance": "3"}'
+                   hx-swap="none"><i class="icon-chevron-down importance-3"></i> Low</a>
+              </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-post="{% url 'case:documents-bulk-importance' matter.id %}"
+                   hx-vals='{"importance": "2"}'
+                   hx-swap="none"><i class="icon-chevron-down importance-2"></i> Lower</a>
+              </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-post="{% url 'case:documents-bulk-importance' matter.id %}"
+                   hx-vals='{"importance": "1"}'
+                   hx-swap="none"><i class="icon-chevrons-down importance-1"></i> Lowest</a>
+              </li>
+            </ul>
+          </div>
           <button type="button"
                   class="btn-icon"
                   hx-post="{% url 'case:documents-bulk-delete' matter.id %}"
