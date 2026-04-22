@@ -6,11 +6,81 @@ import logging
 import re
 
 from django import template
+from django.urls import reverse
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
 logger = logging.getLogger(__name__)
 register = template.Library()
+
+
+VETTING_ICON = {
+    "supports": ("icon-check", "citation-vetted-supports", "Case supports claim"),
+    "partial": (
+        "icon-minus",
+        "citation-vetted-partial",
+        "Case partially supports claim",
+    ),
+    "contradicts": (
+        "icon-triangle-alert",
+        "citation-vetted-contradicts",
+        "Case contradicts claim",
+    ),
+    "unclear": ("icon-help-circle", "citation-vetted-unclear", "Case support unclear"),
+}
+
+
+def create_vetting_badge(vetting, message_id, citation_index):
+    """Render a badge for substantive Flash vetting of a single citation.
+
+    Returns an empty string if vetting hasn't been run (no vetting dict).
+    Pending/running show a small spinner; terminal states link to a modal
+    with the Flash verdict, extracted claim, and pull-quote.
+    """
+    if not vetting:
+        return ""
+
+    status = vetting.get("status")
+    if status in ("pending", "running"):
+        title = "Checking whether the case supports the claim…"
+        return (
+            '<span class="citation-vetting citation-vetted-pending" '
+            f'title="{escape(title)}">'
+            '<i class="icon-loader spinning"></i>'
+            "</span>"
+        )
+
+    if status == "failed":
+        err = vetting.get("error") or "Vetting failed"
+        return (
+            '<span class="citation-vetting citation-vetted-failed" '
+            f'title="{escape(err)}">'
+            '<i class="icon-circle-off"></i>'
+            "</span>"
+        )
+
+    if status == "completed":
+        verdict = vetting.get("verdict") or "unclear"
+        icon_class, badge_class, default_title = VETTING_ICON.get(
+            verdict, VETTING_ICON["unclear"]
+        )
+        explanation = vetting.get("explanation") or default_title
+        detail_url = reverse(
+            "case:ai-citation-vetting-detail",
+            args=[message_id, citation_index],
+        )
+        return (
+            f'<span class="citation-vetting {badge_class}" title="{escape(explanation)}">'
+            f'<a href="#" '
+            f'hx-get="{escape(detail_url)}" '
+            f'hx-target="#htmx-modal-container" hx-swap="innerHTML" '
+            f"onclick=\"window.dispatchEvent(new CustomEvent('open-modal'));\">"
+            f'<i class="{icon_class}"></i>'
+            f"</a>"
+            f"</span>"
+        )
+
+    return ""
 
 
 def build_citation_lookup(citations):
@@ -105,7 +175,16 @@ def create_citation_badge(citation_data):
 
 
 @register.filter
-def enhance_citations(html_content, citations_list):
+def has_pending_vetting(message):
+    """True if any case citation on this message is still being vetted."""
+    from apps.case.ai.vetting import has_pending_vetting as _has_pending
+
+    citations = getattr(message, "verified_citations", None) or []
+    return _has_pending(citations)
+
+
+@register.filter
+def enhance_citations(html_content, message):
     """
     Post-process rendered HTML to add verification badges to citations.
 
@@ -115,48 +194,57 @@ def enhance_citations(html_content, citations_list):
 
     Args:
         html_content: The rendered HTML from markdown
-        citations_list: List of citation dicts from verification
+        message: The Message object (supplies .verified_citations and .id
+            so vetting badges can link to the detail modal)
 
     Returns:
         Enhanced HTML with citation badges in the authorities section
     """
+    citations_list = getattr(message, "verified_citations", None) or []
     if not html_content or not citations_list:
         return html_content
 
     result = str(html_content)
+    message_id = getattr(message, "id", None)
 
-    # Build a lookup of citations - only use case citations for badges
+    # Build a lookup of citations -> (citation_data, index) for case citations.
+    # Indexing is preserved from the full list so vetting badges link to the
+    # correct modal.
     citation_lookup = {}
-    for cit in citations_list:
-        # Only process case citations (skip statutes, etc.)
+    for idx, cit in enumerate(citations_list):
         if cit.get("citation_type") != "case":
             continue
         text = cit.get("original_text", "")
         if text:
-            citation_lookup[text.lower()] = cit
+            citation_lookup[text.lower()] = (cit, idx)
 
     def find_citation_in_text(text):
         """Find which citation from our lookup matches this text."""
         text_lower = text.lower()
-        for citation_text, citation_data in citation_lookup.items():
+        for citation_text, pair in citation_lookup.items():
             if citation_text in text_lower:
-                return citation_data
-        return None
+                return pair
+        return None, None
 
     def enhance_list_item(match):
         """Add badge to a list item if it contains a citation."""
         li_content = match.group(1)
 
-        # Find if this list item contains any of our citations
-        citation_data = find_citation_in_text(li_content)
+        citation_data, citation_index = find_citation_in_text(li_content)
 
         if citation_data:
             badge = create_citation_badge(citation_data)
-            if badge:
-                # Wrap the content with badge in front (replacing bullet)
+            vetting_badge = ""
+            if message_id is not None and citation_index is not None:
+                vetting_badge = create_vetting_badge(
+                    citation_data.get("vetting") or {},
+                    message_id,
+                    citation_index,
+                )
+            if badge or vetting_badge:
                 return (
                     f'<li class="citation-row">'
-                    f'<span class="citation-badge-wrapper">{badge}</span>'
+                    f'<span class="citation-badge-wrapper">{badge}{vetting_badge}</span>'
                     f'<span class="citation-text">{li_content}</span>'
                     f"</li>"
                 )

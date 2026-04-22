@@ -1,0 +1,10 @@
+{% load markdown_extras citation_extras %}
+<div id="message-body-{{ message.id }}"
+     class="ai-message-text ai-markdown"
+     {% if message|has_pending_vetting %} hx-get="{% url 'case:ai-message-vetting-status' message.id %}" hx-trigger="every 3s" hx-swap="outerHTML"{% endif %}>
+  {% if message.verified_citations %}
+    {{ message.content|render_markdown|enhance_citations:message }}
+  {% else %}
+    {{ message.content|render_markdown }}
+  {% endif %}
+</div>

@@ -65,6 +65,7 @@
         <span class="app-badge badge-purple">{{ matter.name }}</span>
         <h1 id="conversationTitle">{{ conversation.title }}</h1>
         <span class="app-badge badge-lg ai-llm-{{ conversation.llm }}">{{ conversation.get_llm_display }}</span>
+        {% include "case/ai/vet-citations-pill.html" with conversation=conversation %}
       </header>
       <div class="ai-chat-scroll">
         {% if conversation.summary %}

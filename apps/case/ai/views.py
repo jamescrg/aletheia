@@ -440,6 +440,18 @@ def ai_status(request, conv_id):
             daemon=True,
         ).start()
 
+        # If the conversation has vetting enabled, seed pending vetting entries
+        # on case citations and launch a background job to Flash-vet each one.
+        if conversation.vet_citations:
+            from .vetting import process_citation_vetting, seed_pending_vetting
+
+            if seed_pending_vetting(assistant_message):
+                threading.Thread(
+                    target=process_citation_vetting,
+                    args=(assistant_message.id,),
+                    daemon=True,
+                ).start()
+
         # Clear the cache
         cache.delete(cache_key)
 
@@ -775,6 +787,73 @@ def set_ai_context(request, conv_id, state):
         request,
         "case/ai/ai-context-cell.html",
         {"conv": conversation},
+    )
+
+
+@login_required
+@require_POST
+def set_vet_citations(request, conv_id, state):
+    """Toggle the vet_citations flag on a conversation (on/off)."""
+    if state not in ("on", "off"):
+        return HttpResponse(status=400)
+
+    conversation = get_object_or_404(
+        Conversation, pk=conv_id, matter__in=get_accessible_matters()
+    )
+
+    conversation.vet_citations = state == "on"
+    conversation.save(update_fields=["vet_citations"])
+
+    return render(
+        request,
+        "case/ai/vet-citations-pill.html",
+        {"conversation": conversation},
+    )
+
+
+@login_required
+def citation_vetting_detail(request, message_id, citation_index):
+    """Return a modal fragment describing the Flash vetting verdict for one citation."""
+    message = get_object_or_404(
+        Message,
+        pk=message_id,
+        conversation__matter__in=get_accessible_matters(),
+    )
+
+    citations = message.verified_citations or []
+    if citation_index < 0 or citation_index >= len(citations):
+        return HttpResponse(status=404)
+
+    citation = citations[citation_index]
+    return render(
+        request,
+        "case/ai/citation-vetting-modal.html",
+        {
+            "citation": citation,
+            "vetting": citation.get("vetting") or {},
+            "message": message,
+        },
+    )
+
+
+@login_required
+def message_vetting_status(request, message_id):
+    """Return the updated assistant message content with current vetting badges.
+
+    The wrapping element advertises an HTMX poll trigger only while any case
+    citation is still in a non-terminal vetting state; once everything is
+    done, the fragment is returned without the trigger and polling stops.
+    """
+    message = get_object_or_404(
+        Message,
+        pk=message_id,
+        conversation__matter__in=get_accessible_matters(),
+    )
+
+    return render(
+        request,
+        "case/ai/vetting-wrapper.html",
+        {"message": message},
     )
 
 

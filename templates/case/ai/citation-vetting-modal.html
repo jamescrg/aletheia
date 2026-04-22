@@ -1,0 +1,75 @@
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Citation Check</h1>
+      <div>
+        <button type="button" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body citation-vetting-modal-body">
+      <div class="citation-vetting-case">
+        <div class="citation-vetting-case-name">
+          {{ citation.case_name|default:citation.case_name_ai|default:"(unknown case)" }}
+        </div>
+        <div class="citation-vetting-case-cite">{{ citation.normalized|default:citation.original_text }}</div>
+        {% if citation.url %}
+          <a href="{{ citation.url }}"
+             target="_blank"
+             rel="noopener"
+             class="citation-vetting-case-link">
+            <i class="icon-external-link"></i> View opinion on CourtListener
+          </a>
+        {% endif %}
+      </div>
+      {% if vetting.status == "completed" %}
+        <div class="citation-vetting-verdict citation-vetting-verdict-{{ vetting.verdict }}">
+          {% if vetting.verdict == "supports" %}
+            <i class="icon-check"></i> Case supports the claim
+          {% elif vetting.verdict == "partial" %}
+            <i class="icon-minus"></i> Case partially supports the claim
+          {% elif vetting.verdict == "contradicts" %}
+            <i class="icon-triangle-alert"></i> Case contradicts the claim
+          {% else %}
+            <i class="icon-help-circle"></i> Unclear whether the case supports the claim
+          {% endif %}
+        </div>
+        {% if vetting.claim %}
+          <div class="citation-vetting-section">
+            <h3>What the AI is using this case for</h3>
+            <p>{{ vetting.claim }}</p>
+          </div>
+        {% endif %}
+        {% if vetting.explanation %}
+          <div class="citation-vetting-section">
+            <h3>Rationale</h3>
+            <p>{{ vetting.explanation }}</p>
+          </div>
+        {% endif %}
+        {% if vetting.quote %}
+          <div class="citation-vetting-section">
+            <h3>Pull-quote from the opinion</h3>
+            <blockquote class="citation-vetting-quote">
+              {{ vetting.quote }}
+            </blockquote>
+          </div>
+        {% endif %}
+      {% elif vetting.status == "failed" %}
+        <div class="citation-vetting-verdict citation-vetting-verdict-failed">
+          <i class="icon-circle-off"></i> Vetting failed
+        </div>
+        {% if vetting.error %}<p class="citation-vetting-error">{{ vetting.error }}</p>{% endif %}
+      {% else %}
+        <div class="citation-vetting-verdict citation-vetting-verdict-pending">
+          <i class="icon-loader spinning"></i> Vetting in progress…
+        </div>
+      {% endif %}
+    </div>
+    <div class="modal-footer">
+      <button type="button"
+              class="btn btn-secondary"
+              @click="$dispatch('close-modal')">Close</button>
+    </div>
+  </div>
+</div>

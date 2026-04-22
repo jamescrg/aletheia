@@ -21,13 +21,7 @@
     </div>
     <div class="ai-message-content">
       {% if message.role == "assistant" %}
-        <div class="ai-message-text ai-markdown">
-          {% if message.verified_citations %}
-            {{ message.content|render_markdown|enhance_citations:message.verified_citations }}
-          {% else %}
-            {{ message.content|render_markdown }}
-          {% endif %}
-        </div>
+        {% include "case/ai/vetting-wrapper.html" with message=message %}
       {% else %}
         <div class="ai-message-text">{{ message.content|linebreaks }}</div>
         {% if not forloop.first %}

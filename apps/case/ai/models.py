@@ -43,6 +43,13 @@ class Conversation(AuditMixin, models.Model):
         null=True,
         help_text="AI-generated summary for intelligent context selection",
     )
+    vet_citations = models.BooleanField(
+        default=True,
+        help_text=(
+            "After each response, launch a Gemini Flash job per cited case to "
+            "check whether the case actually supports what the AI claims."
+        ),
+    )
     history = HistoricalRecords()
 
     class Meta:

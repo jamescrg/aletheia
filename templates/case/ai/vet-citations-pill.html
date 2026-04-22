@@ -1,0 +1,23 @@
+{% if conversation.vet_citations %}
+  <button type="button"
+          id="vetCitationsPill"
+          class="app-badge badge-lg ai-vet-citations-pill ai-vet-citations-on"
+          hx-post="{% url 'case:ai-set-vet-citations' conversation.id 'off' %}"
+          hx-target="#vetCitationsPill"
+          hx-swap="outerHTML"
+          title="Citation vetting is ON. After each response, Gemini Flash checks whether each cited case actually supports the AI's claim. Click to turn off.">
+    <i class="icon-shield-check"></i>
+    Vet citations: On
+  </button>
+{% else %}
+  <button type="button"
+          id="vetCitationsPill"
+          class="app-badge badge-lg ai-vet-citations-pill ai-vet-citations-off"
+          hx-post="{% url 'case:ai-set-vet-citations' conversation.id 'on' %}"
+          hx-target="#vetCitationsPill"
+          hx-swap="outerHTML"
+          title="Citation vetting is OFF. Click to turn on — future responses will be substantively checked against each cited case.">
+    <i class="icon-shield-off"></i>
+    Vet citations: Off
+  </button>
+{% endif %}

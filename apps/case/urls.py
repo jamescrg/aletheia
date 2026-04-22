@@ -877,6 +877,21 @@ urlpatterns = [
         ai.set_ai_context,
         name="ai-set-ai-context",
     ),
+    path(
+        "case/ai/conversations/<int:conv_id>/vet-citations/<str:state>/",
+        ai.set_vet_citations,
+        name="ai-set-vet-citations",
+    ),
+    path(
+        "case/ai/messages/<int:message_id>/vetting-status/",
+        ai.message_vetting_status,
+        name="ai-message-vetting-status",
+    ),
+    path(
+        "case/ai/messages/<int:message_id>/citation/<int:citation_index>/vetting/",
+        ai.citation_vetting_detail,
+        name="ai-citation-vetting-detail",
+    ),
     # AI conversation selection & bulk actions
     path(
         "case/<int:matter_id>/ai/toggle-select/<int:conv_id>/",
