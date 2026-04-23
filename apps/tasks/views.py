@@ -312,8 +312,9 @@ def tasks_filter(request, user=None):
 
 @login_required
 def tasks_filter_quick(request, quick_filter):
-    end_of_week = date.today() + timedelta(days=7)
-    end_of_week = end_of_week.strftime("%Y-%m-%d")
+    today = date.today()
+    start_of_week = today - timedelta(days=today.weekday())
+    end_of_week = start_of_week + timedelta(days=6)
 
     quick_filters = {
         "all": {
@@ -333,15 +334,15 @@ def tasks_filter_quick(request, quick_filter):
         "today": {
             "filter_label": "today",
             "status": "Pending",
-            "date_due_max": date.today().strftime("%Y-%m-%d"),
+            "date_due_max": today.strftime("%Y-%m-%d"),
             "date_due_min": "",
             "has_due_date": "",
         },
         "week": {
             "filter_label": "week",
             "status": "Pending",
-            "date_due_max": end_of_week,
-            "date_due_min": "",
+            "date_due_min": start_of_week.strftime("%Y-%m-%d"),
+            "date_due_max": end_of_week.strftime("%Y-%m-%d"),
             "has_due_date": "",
         },
     }
