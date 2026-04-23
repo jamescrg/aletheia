@@ -30,7 +30,7 @@ def get_time_data(request):
         "comp": None,
         "entered": 0,
         "invoice": 0,
-        "order_by": "date",
+        "order_by": "-date",
     }
 
     filter_data = request.session.get("time_filter", {})
@@ -82,7 +82,7 @@ def get_time_data(request):
             selected_user = user.username.capitalize()
 
     # Get current order and strip leading '-' for comparison
-    current_order = filter_data.get("order_by", "date") if filter_data else "date"
+    current_order = filter_data.get("order_by", "-date") if filter_data else "-date"
     current_order = current_order.lstrip("-")
 
     # Get selection data
