@@ -239,7 +239,7 @@ tr > td.importance.complete .button-link {
 }
 
 .tasks-table .description {
-  min-width: 31.5rem;
+  min-width: 12rem;
   white-space: normal;
 }
 
@@ -288,8 +288,8 @@ tr > td.importance.complete .button-link {
 }
 
 .tasks-table {
-  min-width: 73rem;
   overflow: visible;
+  width: 100%;
 }
 
 .tasks-table .date .empty-date-icon {
