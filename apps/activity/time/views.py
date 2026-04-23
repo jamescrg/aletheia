@@ -113,7 +113,7 @@ def time_filter_matter(request, matter_id):
         "comp": None,
         "entered": None,
         "invoice": None,
-        "order_by": "date",
+        "order_by": "-date",
     }
 
     for key, val in new_values.items():
