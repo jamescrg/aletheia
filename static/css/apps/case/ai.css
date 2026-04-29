@@ -1442,6 +1442,7 @@
   display: inline-flex;
   font-size: 1rem;
   margin-left: 0.25rem;
+  user-select: none;
   vertical-align: middle;
 }
 
@@ -1674,6 +1675,7 @@
 .citation-badge-wrapper {
   flex-shrink: 0;
   min-width: 1.5rem;
+  user-select: none;
 }
 
 /* Citations summary block */

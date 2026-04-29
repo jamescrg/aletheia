@@ -201,11 +201,14 @@ def has_pending_vetting(message):
 @register.filter
 def enhance_citations(html_content, message):
     """
-    Post-process rendered HTML to add verification badges to citations.
+    Post-process rendered HTML to add verification badges next to each
+    inline citation occurrence.
 
-    Looks for the "Table of Authorities" section and adds badges to each
-    list item. Badges are wrapped in a span and positioned at the end
-    of each citation line.
+    For every case citation on the message, find every occurrence of the
+    citation's matched text (e.g. "410 U.S. 113") in the rendered HTML
+    and inject a badge `<span>` immediately after it. The badge is the
+    same shape used elsewhere — a Flash-vetting chip when vetting data
+    is present, otherwise a plain verification badge.
 
     Args:
         html_content: The rendered HTML from markdown
@@ -213,7 +216,7 @@ def enhance_citations(html_content, message):
             so vetting badges can link to the detail modal)
 
     Returns:
-        Enhanced HTML with citation badges in the authorities section
+        Enhanced HTML with inline citation badges
     """
     citations_list = getattr(message, "verified_citations", None) or []
     if not html_content or not citations_list:
@@ -222,78 +225,39 @@ def enhance_citations(html_content, message):
     result = str(html_content)
     message_id = getattr(message, "id", None)
 
-    # Build a lookup of citations -> (citation_data, index). Only case
-    # citations need the indexed form (so vetting badges can link to the
-    # correct modal). Statutes get the text-keyed lookup and render the
-    # legacy name-match badge.
-    citation_lookup = {}
-    for idx, cit in enumerate(citations_list):
-        text = cit.get("original_text", "")
-        if text:
-            citation_lookup[text.lower()] = (cit, idx)
+    # Walk citations in original order so we badge each one we have data
+    # for. Only case citations get badges in this pass — statute badging
+    # is intentionally out of scope for now.
+    for idx, citation_data in enumerate(citations_list):
+        if citation_data.get("citation_type") != "case":
+            continue
+        original_text = citation_data.get("original_text") or ""
+        if not original_text:
+            continue
 
-    def find_citation_in_text(text):
-        """Find which citation from our lookup matches this text."""
-        text_lower = text.lower()
-        for citation_text, pair in citation_lookup.items():
-            if citation_text in text_lower:
-                return pair
-        return None, None
+        vetting = citation_data.get("vetting") or {}
+        if vetting and message_id is not None:
+            badge = create_vetting_badge(vetting, message_id, idx)
+        else:
+            badge = create_citation_badge(citation_data)
 
-    def enhance_list_item(match):
-        """Add badge to a list item if it contains a citation."""
-        li_content = match.group(1)
+        if not badge:
+            continue
 
-        citation_data, citation_index = find_citation_in_text(li_content)
-
-        if citation_data:
-            vetting = citation_data.get("vetting") or {}
-            # For case citations that have been through Flash vetting, the
-            # vetting badge is the single source of truth — it covers the
-            # same "is this a real, well-named case" signal as the old
-            # badge plus the substantive verdict, and its modal includes a
-            # link to CourtListener. For statutes and legacy/unvetted case
-            # citations, fall back to the old name-match badge.
-            if (
-                vetting
-                and citation_data.get("citation_type") == "case"
-                and message_id is not None
-                and citation_index is not None
-            ):
-                badge = create_vetting_badge(vetting, message_id, citation_index)
-            else:
-                badge = create_citation_badge(citation_data)
-
-            if badge:
-                return (
-                    f'<li class="citation-row">'
-                    f'<span class="citation-badge-wrapper">{badge}</span>'
-                    f'<span class="citation-text">{li_content}</span>'
-                    f"</li>"
-                )
-
-        return f"<li>{li_content}</li>"
-
-    # Find the Table of Authorities section
-    heading_pattern = (
-        r"(<h[1-6][^>]*>.*?"
-        r"(?:table\s+of\s+)?(?:authorities|citations)"
-        r".*?</h[1-6]>)"
-        r"(.*?)(?=<h[1-6]|$)"
-    )
-    heading_match = re.search(heading_pattern, result, flags=re.IGNORECASE | re.DOTALL)
-
-    if heading_match:
-        # Found an authorities heading - enhance list items after it
-        before = result[: heading_match.start(2)]
-        section = heading_match.group(2)
-        after = result[heading_match.end(2) :]
-
-        # Replace each <li>...</li> with enhanced version
-        enhanced_section = re.sub(
-            r"<li>(.*?)</li>", enhance_list_item, section, flags=re.DOTALL
+        # Insert the badge after each occurrence of the citation text in
+        # the HTML. The negative lookbehind for `="` keeps us out of
+        # attribute values; in normal markdown-rendered prose citations
+        # only appear in text nodes, so a regex pass over the full HTML
+        # is safe and simple.
+        pattern = re.compile(
+            r'(?<![="\'])' + re.escape(original_text),
+            flags=re.IGNORECASE,
         )
-        result = before + enhanced_section + after
+
+        def _insert(match, badge=badge):
+            return match.group(0) + badge
+
+        result = pattern.sub(_insert, result)
 
     return mark_safe(result)
 

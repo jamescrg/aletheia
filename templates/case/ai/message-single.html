@@ -1,4 +1,26 @@
 {% load humanize markdown_extras citation_extras %}
+<script>
+  // Idempotent global; defined here too because message-single may be the
+  // initial swap target via HTMX before the messages partial has loaded.
+  if (typeof window.copyMessageText === "undefined") {
+    window.copyMessageText = function(buttonEl) {
+      const messageText = buttonEl
+        .closest(".ai-message-content")
+        .querySelector(".ai-message-text");
+      if (!messageText) return;
+      const clone = messageText.cloneNode(true);
+      clone
+        .querySelectorAll(".citation-vetting, .citation-badge-wrapper")
+        .forEach((n) => n.remove());
+      navigator.clipboard.writeText(clone.innerText).then(() => {
+        buttonEl.innerHTML = "<i class='icon-check'></i>";
+        setTimeout(() => {
+          buttonEl.innerHTML = "<i class='icon-copy'></i>";
+        }, 2000);
+      });
+    };
+  }
+</script>
 <div class="ai-message ai-message-{{ message.role }}"
      id="message-{{ message.id }}"
      data-initials="{% if message.user %}{{ message.user.first_name|slice:":1" }}{{ message.user.last_name|slice:":1" }}{% endif %}">
@@ -26,7 +48,7 @@
     {% endif %}
     {% if message.role == "assistant" %}
       <button class="ai-copy-btn btn-icon"
-              onclick="navigator.clipboard.writeText(this.closest('.ai-message-content').querySelector('.ai-message-text').innerText).then(() => { this.innerHTML = '<i class=\'icon-check\'></i>'; setTimeout(() => { this.innerHTML = '<i class=\'icon-copy\'></i>'; }, 2000); })"
+              onclick="window.copyMessageText(this)"
               title="Copy to clipboard">
         <i class="icon-copy"></i>
       </button>
