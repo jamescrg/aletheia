@@ -1,20 +1,16 @@
-<ul class="assign-results">
+<div class="labels-flow apply-labels-flow">
   {% for label in labels %}
-    <li>
-      <a href="#"
-         hx-post="{% url 'case:add-label-to' object_type object.id %}"
-         hx-vals='{"label_id": "{{ label.id }}"{% if view %}, "view": "{{ view }}"{% endif %}}'
-         hx-target="#{{ object_type }}-{{ object.id }}"
-         hx-swap="outerHTML"
-         @click="$dispatch('close-modal')">
-        <span class="badge label-{{ label.color }}">{{ label.name }}</span>
-        {% if label.is_global %}&nbsp; (Global){% endif %}
-      </a>
-    </li>
+    <a href="#"
+       class="app-badge label-{{ label.color }}"
+       hx-post="{% url 'case:add-label-to' object_type object.id %}"
+       hx-vals='{"label_id": "{{ label.id }}"{% if view %}, "view": "{{ view }}"{% endif %}}'
+       hx-target="#{{ object_type }}-{{ object.id }}"
+       hx-swap="outerHTML"
+       @click="$dispatch('close-modal')">{{ label.name }}</a>
   {% empty %}
-    <li class="empty-message">No matching labels found.</li>
+    <span class="apply-labels-empty">No matching labels found.</span>
   {% endfor %}
-</ul>
+</div>
 <div class="create-label-section">
   <div class="create-label-header">
     <i class="icon-plus"></i>Create New Label

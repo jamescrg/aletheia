@@ -48,8 +48,18 @@ Label assignment modal
   padding-top: 0.75rem;
 }
 
-#labels-results .assign-results a:hover .badge {
-  opacity: 0.8;
+.apply-labels-flow {
+  margin-top: 1rem;
+}
+
+.apply-labels-flow .app-badge {
+  cursor: pointer;
+}
+
+.apply-labels-empty {
+  color: var(--color-muted);
+  font-style: italic;
+  padding: 0.5rem 0;
 }
 
 /* ------------------------------------------------

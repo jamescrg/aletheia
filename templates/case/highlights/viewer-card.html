@@ -1,0 +1,32 @@
+<div id="highlight-{{ highlight.id }}"
+     class="highlight-item hl-{{ highlight.color }} unselected"
+     data-highlight-id="{{ highlight.id }}"
+     data-page="{{ highlight.page_number }}"
+     data-color="{{ highlight.color }}">
+  <div class="highlight-main">
+    <div class="highlight-content">
+      <div class="highlight-slug">{{ highlight.slug }}</div>
+      <div class="highlight-citation">{{ highlight.citation }}</div>
+    </div>
+    <div class="highlight-importance">
+      <i class="icon-flag"></i> {{ highlight.importance }}
+    </div>
+    <a href="#"
+       class="highlight-edit-btn edit-highlight"
+       data-highlight-id="{{ highlight.id }}">
+      <i class="icon-pencil"></i>
+    </a>
+  </div>
+  <div class="highlight-labels-area">
+    {% for label in highlight.labels.all %}
+      {% include "case/labels/badge.html" with object_type="highlight" object=highlight view="viewer" %}
+    {% endfor %}
+    <a href="#"
+       class="add-icon add-label-icon"
+       title="Add label"
+       hx-get="{% url 'case:labels-apply-modal' 'highlight' highlight.id %}?view=viewer"
+       hx-target="#htmx-modal-container">
+      <i class="icon-tag"></i>
+    </a>
+  </div>
+</div>

@@ -112,13 +112,12 @@ body {
 }
 
 .highlight-item {
-  align-items: flex-start;
   background: var(--stone-50);
   border: 1px solid var(--stone-300);
   border-radius: var(--radius-sm);
   cursor: pointer;
   display: flex;
-  gap: 0.5rem;
+  flex-direction: column;
   margin-bottom: 0.5rem;
   padding: 0.75rem;
   position: relative;
@@ -133,9 +132,47 @@ body {
   background: var(--stone-100);
 }
 
+.highlight-main {
+  align-items: flex-start;
+  display: flex;
+  gap: 0.5rem;
+  position: relative;
+}
+
 .highlight-content {
   flex: 1;
   min-width: 0;
+}
+
+.highlight-labels-area {
+  align-items: center;
+  border-top: 1px solid var(--border-light, var(--stone-300));
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-top: 0.625rem;
+  padding-top: 0.5rem;
+}
+
+.highlight-labels-area .label-badge {
+  margin-right: 0;
+}
+
+.highlight-labels-area .app-badge {
+  font-size: 1rem;
+  padding: 0.125rem 0.5rem;
+}
+
+.highlight-labels-area .add-label-icon {
+  align-items: center;
+  color: var(--stone-400);
+  display: inline-flex;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+.highlight-labels-area .add-label-icon:hover {
+  color: var(--stone-700);
 }
 
 .highlight-slug {
@@ -150,11 +187,11 @@ body {
 }
 
 .highlight-importance {
-  bottom: 0.5rem;
+  bottom: 0;
   color: var(--stone-400);
-  font-size: 0.75rem;
+  font-size: 1rem;
   position: absolute;
-  right: 0.5rem;
+  right: 0;
 }
 
 .highlight-edit-btn {
@@ -182,7 +219,8 @@ body {
 }
 
 #highlights-list.condensed .highlight-citation,
-#highlights-list.condensed .highlight-importance {
+#highlights-list.condensed .highlight-importance,
+#highlights-list.condensed .highlight-labels-area {
   display: none;
 }
 

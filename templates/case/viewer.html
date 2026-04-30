@@ -22,6 +22,8 @@
     <link rel="stylesheet" href="{% static_v 'css/modals.css' %}">
     <link rel="stylesheet" href="{% static_v 'css/badges.css' %}">
     <link rel="stylesheet" href="{% static_v 'css/interface.css' %}">
+    <link rel="stylesheet" href="{% static_v 'css/combobox.css' %}">
+    <link rel="stylesheet" href="{% static_v 'css/apps/case/labels.css' %}">
     <link rel="stylesheet" href="{% static_v 'css/viewer.css' %}">
     <script defer src="https://unpkg.com/alpinejs@3.14.3/dist/cdn.min.js"></script>
     <script src="{% static_v 'js/alpine-components.js' %}"></script>
@@ -52,23 +54,7 @@
         </div>
         <div id="highlights-list">
           {% for highlight in highlights %}
-            <div class="highlight-item hl-{{ highlight.color }} unselected"
-                 data-highlight-id="{{ highlight.id }}"
-                 data-page="{{ highlight.page_number }}"
-                 data-color="{{ highlight.color }}">
-              <div class="highlight-content">
-                <div class="highlight-slug">{{ highlight.slug }}</div>
-                <div class="highlight-citation">{{ highlight.citation }}</div>
-              </div>
-              <div class="highlight-importance">
-                <i class="icon-flag"></i> {{ highlight.importance }}
-              </div>
-              <a href="#"
-                 class="highlight-edit-btn edit-highlight"
-                 data-highlight-id="{{ highlight.id }}">
-                <i class="icon-pencil"></i>
-              </a>
-            </div>
+            {% include "case/highlights/viewer-card.html" %}
           {% empty %}
             <div class="no-highlights">
               No highlights yet. Select text in the PDF and click the Highlight button to create one.
@@ -156,6 +142,12 @@
     <div id="edit-highlight-modal" class="modal" tabindex="-1">
       <div id="edit-highlight-modal-content"></div>
     </div>
+    <!-- HTMX Modal Container (used for label apply modal) -->
+    <div id="htmx-modal-container"
+         class="modal fade"
+         x-data="modal()"
+         x-cloak
+         tabindex="-1"></div>
     {% include "confirm-modal.html" %}
     <!-- HTMX (CDN) -->
     <script src="https://unpkg.com/htmx.org@1.9.12"></script>
@@ -439,22 +431,37 @@
       const noHighlights = list.querySelector('.no-highlights');
       if (noHighlights) noHighlights.remove();
 
+      const applyModalUrl = `/case/labels/apply/highlight/${highlight.id}/?view=viewer`;
+
       const item = document.createElement('div');
+      item.id = `highlight-${highlight.id}`;
       item.className = `highlight-item hl-${highlight.color} unselected`;
       item.dataset.highlightId = highlight.id;
       item.dataset.page = highlight.page_number;
       item.dataset.color = highlight.color;
       item.innerHTML = `
-        <div class="highlight-content">
-          <div class="highlight-slug">${escapeHtml(highlight.slug)}</div>
-          <div class="highlight-citation">${escapeHtml(highlight.citation || '')}</div>
+        <div class="highlight-main">
+          <div class="highlight-content">
+            <div class="highlight-slug">${escapeHtml(highlight.slug)}</div>
+            <div class="highlight-citation">${escapeHtml(highlight.citation || '')}</div>
+          </div>
+          <div class="highlight-importance"><i class="icon-flag"></i> ${highlight.importance}</div>
+          <a href="#" class="highlight-edit-btn edit-highlight" data-highlight-id="${highlight.id}">
+            <i class="icon-pencil"></i>
+          </a>
         </div>
-        <div class="highlight-importance"><i class="icon-flag"></i> ${highlight.importance}</div>
-        <a href="#" class="highlight-edit-btn edit-highlight" data-highlight-id="${highlight.id}">
-          <i class="icon-pencil"></i>
-        </a>
+        <div class="highlight-labels-area">
+          <a href="#" class="add-icon add-label-icon" title="Add label" hx-get="${applyModalUrl}" hx-target="#htmx-modal-container">
+            <i class="icon-tag"></i>
+          </a>
+        </div>
       `;
       list.appendChild(item);
+
+      // Tell HTMX to process the new HTMX attributes on the inserted node
+      if (window.htmx) {
+        htmx.process(item);
+      }
 
       // Re-sort by page number and update count
       sortHighlights('page');
@@ -484,7 +491,7 @@
     // Sidebar click handlers
     document.getElementById('highlights-list').addEventListener('click', function(e) {
       const item = e.target.closest('.highlight-item');
-      if (item && !e.target.closest('.delete-highlight') && !e.target.closest('.edit-highlight')) {
+      if (item && !e.target.closest('.delete-highlight') && !e.target.closest('.edit-highlight') && !e.target.closest('.highlight-labels-area') && !e.target.closest('.dropdown-menu')) {
         const highlightId = parseInt(item.dataset.highlightId);
         const page = parseInt(item.dataset.page);
 

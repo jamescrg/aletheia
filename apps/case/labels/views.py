@@ -184,9 +184,11 @@ def _get_object_for_labels(object_type, object_id, view=None):
     elif object_type == "highlight":
         obj = get_object_or_404(Highlight, id=object_id)
         matter = obj.document.matter if obj.document else None
-        # Use table row template if view=table, otherwise card template
+        # Pick row template based on view: table row, viewer sidebar card, or card
         if view == "table":
             row_template = "case/highlights/highlight-row.html"
+        elif view == "viewer":
+            row_template = "case/highlights/viewer-card.html"
         else:
             row_template = "case/highlights/row.html"
         context_key = "highlight"
