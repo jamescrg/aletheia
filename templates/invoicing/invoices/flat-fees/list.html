@@ -1,0 +1,40 @@
+{% block subcontent %}
+  <div class="table-container">
+    <table class="table activity">
+      <tr>
+        <th class="date">
+          Date
+          <a href={% url 'activity:flat-fees-order-by' 'date' %}>
+            <i class="icon-chevrons-up-down"></i>
+          </a>
+        </th>
+        <th class="user">User</th>
+        <th class="matter">
+          Matter
+          <a href={% url 'activity:flat-fees-order-by' 'matter' %}>
+            <i class="icon-chevrons-up-down"></i>
+          </a>
+        </th>
+        <th class="actions">
+          Description
+          <a href={% url 'activity:flat-fees-order-by' 'description' %}>
+            <i class="icon-chevrons-up-down"></i>
+          </a>
+        </th>
+        <th class="numeric amount">Amount</th>
+      </tr>
+      <tr id="flat-fee-table"></tr>
+      {% for entry in objects %}
+        <tr id="flat-fee-{{ entry.id }}">{% include "activity/flat-fees/table-row.html" %}</tr>
+      {% empty %}
+        <tr>
+          <td colspan="5" class="empty-message">No flat fees found for this invoice.</td>
+        </tr>
+      {% endfor %}
+    </table>
+    <div class="flex-start-space">
+      <div>{% include "pagination.html" %}</div>
+      {% include "activity/flat-fees/summary.html" %}
+    </div>
+  </div>
+{% endblock subcontent %}

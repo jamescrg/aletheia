@@ -1,0 +1,8 @@
+{% extends "invoicing/invoices/detail/detail.html" %}
+{% block subcontent %}
+  {% load humanize %}
+  <div id="flat-fees"
+       hx-trigger="load, flatFeesChanged from:body"
+       hx-get="{% url 'invoicing:invoice-flat-fee-entries' invoice.id %}"
+       hx-target="this">{% include "invoicing/invoices/flat-fees/list.html" %}</div>
+{% endblock subcontent %}

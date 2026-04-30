@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 
 from apps.activity.expenses.models import ExpenseEntry
+from apps.activity.flat_fees.models import FlatFeeEntry
 from apps.activity.time.models import TimeEntry
 from apps.matters.models import Matter
 from apps.settings.models import Company
@@ -24,17 +25,23 @@ def generate_activity_report(
     # Get all expenses for this matter
     expenses = ExpenseEntry.objects.filter(matter=matter).order_by("date", "id")
 
+    # Get all flat-fee entries for this matter
+    flat_fee_entries = FlatFeeEntry.objects.filter(matter=matter).order_by("date", "id")
+
     # Calculate totals
     total_time_fees = sum(entry.fee for entry in time_entries)
     total_expenses = sum(expense.amount for expense in expenses)
-    matter_total = total_time_fees + total_expenses
+    total_flat_fees = sum(entry.amount for entry in flat_fee_entries)
+    matter_total = total_time_fees + total_expenses + total_flat_fees
 
     context = {
         "matter": matter,
         "time_entries": time_entries,
         "expenses": expenses,
+        "flat_fee_entries": flat_fee_entries,
         "total_time_fees": total_time_fees,
         "total_expenses": total_expenses,
+        "total_flat_fees": total_flat_fees,
         "matter_total": matter_total,
         "current_date": date.today(),
         "company": Company.objects.first(),

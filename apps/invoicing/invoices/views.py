@@ -11,6 +11,10 @@ from apps.activity.expenses.models import ExpenseEntry
 from apps.activity.expenses.summary import (
     calculate_summary as calculate_expense_summary,
 )
+from apps.activity.flat_fees.models import FlatFeeEntry
+from apps.activity.flat_fees.summary import (
+    calculate_summary as calculate_flat_fee_summary,
+)
 from apps.activity.time.models import TimeEntry
 from apps.activity.time.summary import calculate_summary as calculate_time_summary
 from apps.invoicing.applications.models import PaymentApplication
@@ -147,6 +151,25 @@ def invoice_tab_content(request, pk, tab):
                 "pagination": pagination,
                 "session_key": expenses_key,
                 "trigger_key": "expensesChanged",
+                "summary": summary,
+            }
+        )
+    elif tab == "flat-fees":
+        flat_fees_key = f"invoice_{pk}_flat_fees_pagination"
+        flat_fees = FlatFeeEntry.objects.filter(invoice=invoice).order_by("date", "id")
+        summary = calculate_flat_fee_summary(flat_fees)
+        pagination = CustomPaginator(
+            flat_fees,
+            per_page=10,
+            request=request,
+            session_key=flat_fees_key,
+        )
+        context.update(
+            {
+                "objects": pagination.get_object_list(),
+                "pagination": pagination,
+                "session_key": flat_fees_key,
+                "trigger_key": "flatFeesChanged",
                 "summary": summary,
             }
         )
@@ -314,6 +337,66 @@ def invoice_expense_entries(request, pk):
     }
 
     return render(request, "invoicing/invoices/expenses/list.html", context)
+
+
+@login_required
+def invoice_flat_fee_entries_index(request, pk):
+    invoice = get_object_or_404(Invoice, pk=pk)
+    session_key = f"invoice_{pk}_flat_fees_pagination"
+
+    flat_fees = FlatFeeEntry.objects.filter(invoice=invoice).order_by("date", "id")
+    summary = calculate_flat_fee_summary(flat_fees)
+
+    pagination = CustomPaginator(
+        flat_fees,
+        per_page=10,
+        request=request,
+        session_key=session_key,
+    )
+
+    context = {
+        "app": "invoicing",
+        "subapp": "flat-fees",
+        "objects": pagination.get_object_list(),
+        "pagination": pagination,
+        "session_key": session_key,
+        "trigger_key": "flatFeesChanged",
+        "invoice": invoice,
+        "summary": summary,
+        "view": "detail",
+    }
+
+    return render(request, "invoicing/invoices/flat-fees/index.html", context)
+
+
+@login_required
+def invoice_flat_fee_entries(request, pk):
+    invoice = get_object_or_404(Invoice, pk=pk)
+    session_key = f"invoice_{pk}_flat_fees_pagination"
+
+    flat_fees = FlatFeeEntry.objects.filter(invoice=invoice).order_by("date", "id")
+    summary = calculate_flat_fee_summary(flat_fees)
+
+    pagination = CustomPaginator(
+        flat_fees,
+        per_page=10,
+        request=request,
+        session_key=session_key,
+    )
+
+    context = {
+        "app": "invoicing",
+        "subapp": "flat-fees",
+        "objects": pagination.get_object_list(),
+        "pagination": pagination,
+        "session_key": session_key,
+        "trigger_key": "flatFeesChanged",
+        "invoice": invoice,
+        "summary": summary,
+        "view": "detail",
+    }
+
+    return render(request, "invoicing/invoices/flat-fees/list.html", context)
 
 
 @login_required

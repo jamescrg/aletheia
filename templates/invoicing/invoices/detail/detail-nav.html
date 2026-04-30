@@ -23,6 +23,12 @@
          hx-target=".detail-body"
          hx-push-url="{% url 'invoicing:invoice-expense-entries-index' invoice.id %}">Expenses</a>
     </li>
+    <li {% if subapp == "flat-fees" %}class="active"{% endif %}>
+      <a href="{% url 'invoicing:invoice-flat-fee-entries-index' invoice.id %}"
+         hx-get="{% url 'invoicing:invoice-tab-content' invoice.id 'flat-fees' %}"
+         hx-target=".detail-body"
+         hx-push-url="{% url 'invoicing:invoice-flat-fee-entries-index' invoice.id %}">Flat Fees</a>
+    </li>
     <li {% if subapp == "preview" %}class="active"{% endif %}>
       <a href="{% url 'invoicing:invoice-pdf-preview-index' invoice.id %}"
          hx-get="{% url 'invoicing:invoice-tab-content' invoice.id 'preview' %}"

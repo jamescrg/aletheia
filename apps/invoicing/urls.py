@@ -16,6 +16,8 @@ from apps.invoicing.invoices.views import (
     invoice_details_index,
     invoice_expense_entries,
     invoice_expense_entries_index,
+    invoice_flat_fee_entries,
+    invoice_flat_fee_entries_index,
     invoice_ledes_98b,
     invoice_tab_content,
     invoice_time_entries,
@@ -185,6 +187,16 @@ urlpatterns = [
         "invoicing/invoices-detail/<int:pk>/expense-entries/",
         invoice_expense_entries,
         name="invoice-expense-entries",
+    ),
+    path(
+        "invoicing/invoices-detail/<int:pk>/flat-fee-entries-index/",
+        invoice_flat_fee_entries_index,
+        name="invoice-flat-fee-entries-index",
+    ),
+    path(
+        "invoicing/invoices-detail/<int:pk>/flat-fee-entries/",
+        invoice_flat_fee_entries,
+        name="invoice-flat-fee-entries",
     ),
     path(
         "invoicing/invoice/quick-payment/<int:pk>/<str:payment_type>/",

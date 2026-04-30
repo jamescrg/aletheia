@@ -9,6 +9,7 @@ from django.db.models import (
 from django.db.models.functions import Coalesce
 
 from apps.activity.expenses.models import ExpenseEntry
+from apps.activity.flat_fees.models import FlatFeeEntry
 from apps.activity.time.models import TimeEntry
 from apps.invoicing.credits.models import Credit
 from apps.invoicing.invoices.models import Invoice
@@ -38,7 +39,16 @@ def get_collection_data(request):
         .values("total")
     )
 
-    # Annotate invoices with their final_total (net_fees + net_expenses - discount)
+    # Subquery to calculate net flat fees for an invoice (excluding comp'd entries)
+    invoice_flat_fees_subquery = (
+        FlatFeeEntry.objects.filter(invoice=OuterRef("pk"))
+        .exclude(comp=True)
+        .values("invoice")
+        .annotate(total=Sum("amount"))
+        .values("total")
+    )
+
+    # Annotate invoices with their final_total (net_fees + net_expenses + net_flat_fees - discount)
     invoices_with_totals = Invoice.objects.annotate(
         net_fees=Coalesce(
             Subquery(invoice_fees_subquery, output_field=DecimalField()), 0
@@ -46,8 +56,11 @@ def get_collection_data(request):
         net_expenses=Coalesce(
             Subquery(invoice_expenses_subquery, output_field=DecimalField()), 0
         ),
+        net_flat_fees=Coalesce(
+            Subquery(invoice_flat_fees_subquery, output_field=DecimalField()), 0
+        ),
         final_total=ExpressionWrapper(
-            F("net_fees") + F("net_expenses") - F("discount"),
+            F("net_fees") + F("net_expenses") + F("net_flat_fees") - F("discount"),
             output_field=DecimalField(),
         ),
     )

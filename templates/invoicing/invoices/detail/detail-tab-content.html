@@ -11,6 +11,11 @@
        hx-trigger="expensesChanged from:body"
        hx-get="{% url 'invoicing:invoice-expense-entries' invoice.id %}"
        hx-target="this">{% include "invoicing/invoices/expenses/list.html" %}</div>
+{% elif subapp == "flat-fees" %}
+  <div id="flat-fees"
+       hx-trigger="flatFeesChanged from:body"
+       hx-get="{% url 'invoicing:invoice-flat-fee-entries' invoice.id %}"
+       hx-target="this">{% include "invoicing/invoices/flat-fees/list.html" %}</div>
 {% elif subapp == "preview" %}
   <div id="preview"
        hx-trigger="previewChanged from:body"

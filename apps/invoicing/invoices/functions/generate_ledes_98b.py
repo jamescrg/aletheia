@@ -4,6 +4,7 @@ from tempfile import NamedTemporaryFile
 from typing import Dict, Union
 
 from apps.activity.expenses.models import ExpenseEntry
+from apps.activity.flat_fees.models import FlatFeeEntry
 from apps.activity.time.models import TimeEntry
 from apps.invoicing.invoices.models import Invoice
 
@@ -39,17 +40,14 @@ HEADER = f"LEDES1998B[]\n{'|'.join(HEADER_FIELDS)}[]\n"
 
 def _get_combined_entries(invoice: Invoice) -> list:
     """
-    Returns a list of combined time and expense entries, with a shared index and sorted by date
+    Returns a list of combined time, flat-fee, and expense entries with a shared index, sorted by date
     """
-    # Merge time and expense entries into a single iterable
     merged_data = chain(
-        # Create tuples of (entry, type) for each entry in the invoice
         ((entry, "time") for entry in invoice.timeentry_set.all()),
+        ((entry, "flat_fee") for entry in invoice.flatfeeentry_set.all()),
         ((expense, "expense") for expense in invoice.expenseentry_set.all()),
     )
 
-    # Sort the merged data by date in descending order (most recent first)
-    # x[0] refers to the entry object (time or expense entry)
     return sorted(merged_data, key=lambda x: x[0].date, reverse=True)
 
 
@@ -69,7 +67,7 @@ def _get_invoicing_dates(invoice: Invoice) -> tuple:
 
 def _format_line(
     invoice: Invoice,
-    entry: Union[TimeEntry, ExpenseEntry],
+    entry: Union[TimeEntry, ExpenseEntry, FlatFeeEntry],
     entry_type: str,
     index: int,
 ) -> str:
@@ -120,6 +118,19 @@ def _format_line(
             "LINE_ITEM_TASK_CODE": "",
             "LINE_ITEM_EXPENSE_CODE": "",
             "LINE_ITEM_ACTIVITY_CODE": "",
+            "LINE_ITEM_DESCRIPTION": entry.description,
+            "LINE_ITEM_UNIT_COST": str(entry.amount),
+        }
+    elif entry_type == "flat_fee":
+        entry_specific_fields = {
+            "EXP/FEE/INV_ADJ_TYPE": "F",
+            "LINE_ITEM_NUMBER_OF_UNITS": "1.0",
+            "LINE_ITEM_ADJUSTMENT_AMOUNT": (f"-{entry.amount}" if entry.comp else "0"),
+            "LINE_ITEM_TOTAL": str(entry.amount),
+            "LINE_ITEM_DATE": entry.date.strftime("%Y%m%d"),
+            "LINE_ITEM_TASK_CODE": "",
+            "LINE_ITEM_EXPENSE_CODE": "",
+            "LINE_ITEM_ACTIVITY_CODE": "A111",
             "LINE_ITEM_DESCRIPTION": entry.description,
             "LINE_ITEM_UNIT_COST": str(entry.amount),
         }
