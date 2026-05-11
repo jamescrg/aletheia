@@ -1,0 +1,49 @@
+<div class="modal-dialog modal-md">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">New Conversation</h1>
+      <div>
+        <button type="button" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <form id="new-conversation-form"
+            class="form-compact"
+            onsubmit="return aiLaunchNewConversation(event);">
+        <div class="form-group">
+          <label for="new-conversation-title">Name</label>
+          <input type="text"
+                 id="new-conversation-title"
+                 class="form-control"
+                 required
+                 autofocus>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button"
+              class="btn btn-secondary"
+              @click="$dispatch('close-modal')">Cancel</button>
+      <button type="submit" form="new-conversation-form" class="btn btn-success">Submit</button>
+    </div>
+  </div>
+</div>
+<script>
+  window.aiLaunchNewConversation = function(event) {
+    event.preventDefault();
+    const input = document.getElementById('new-conversation-title');
+    const title = input.value.trim();
+    if (!title) {
+      input.focus();
+      return false;
+    }
+    const baseUrl = '{% url "case:ai-new-conversation-view" matter.id %}';
+    const llm = '{{ llm }}';
+    const url = `${baseUrl}?llm=${encodeURIComponent(llm)}&title=${encodeURIComponent(title)}`;
+    window.open(url, '_blank');
+    window.dispatchEvent(new CustomEvent('close-modal'));
+    return false;
+  };
+</script>

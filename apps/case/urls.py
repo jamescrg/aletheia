@@ -515,6 +515,11 @@ urlpatterns = [
         name="ai-new-conversation-view",
     ),
     path(
+        "case/<int:matter_id>/ai/conversations/new/prompt/",
+        ai.new_conversation_prompt,
+        name="ai-new-conversation-prompt",
+    ),
+    path(
         "case/<int:matter_id>/ai/create-prompt/",
         ai.create_prompt,
         name="ai-create-prompt",

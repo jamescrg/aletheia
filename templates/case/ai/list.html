@@ -48,9 +48,11 @@
       </div>
     {% else %}
       <div class="filter-tools">
-        <a href="{% url 'case:ai-new-conversation-view' matter.id %}?llm={{ selected_llm }}"
-           target="_blank"
+        <a href="#"
            class="btn-icon"
+           hx-get="{% url 'case:ai-new-conversation-prompt' matter.id %}?llm={{ selected_llm }}"
+           hx-target="#htmx-modal-container"
+           hx-trigger="click"
            title="New {{ selected_llm_display }} conversation">
           <i class="icon-plus"></i>
         </a>

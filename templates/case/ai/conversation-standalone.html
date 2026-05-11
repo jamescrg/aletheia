@@ -92,6 +92,10 @@
                    id="conversationId"
                    value="{% if not is_new %}{{ conversation.id }}{% endif %}">
             <input type="hidden" name="llm" value="{{ conversation.llm }}">
+            <input type="hidden"
+                   name="title"
+                   id="conversationTitleInput"
+                   value="{{ provided_title|default:'' }}">
             <textarea name="message"
                       id="aiMessageInput"
                       placeholder="Ask about this matter..."
@@ -251,8 +255,10 @@
       const textarea = document.getElementById('aiMessageInput');
       const text = textarea.value.trim();
       const convId = document.getElementById('conversationId').value;
+      const titleInput = document.getElementById('conversationTitleInput');
+      const title = titleInput ? titleInput.value : '';
       const llm = '{{ conversation.llm }}';
-      const url = '{% url "case:ai-prompt-editor" matter.id %}?conversation_id=' + convId + '&llm=' + llm;
+      const url = '{% url "case:ai-prompt-editor" matter.id %}?conversation_id=' + convId + '&llm=' + llm + '&title=' + encodeURIComponent(title);
       // Stash text for the modal to pick up (avoids URL length limits)
       if (text) {
         window._promptEditorInitialText = text;

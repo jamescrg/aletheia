@@ -253,10 +253,14 @@ def new_conversation_view(request, matter_id):
     ]:
         llm = "gemini-pro-latest"
 
-    # Create a dummy conversation object for template (not saved)
+    provided_title = request.GET.get("title", "").strip()
+
+    # Create a dummy conversation object for template (not saved). When the
+    # user named the chat from the new-conversation prompt, use that name as
+    # the display title; otherwise show the legacy "New Conversation" placeholder.
     conversation = Conversation(
         matter=matter,
-        title="New Conversation",
+        title=provided_title or "New Conversation",
         llm=llm,
     )
 
@@ -266,9 +270,31 @@ def new_conversation_view(request, matter_id):
         "messages": [],
         "is_new": True,
         "llm": llm,
+        "provided_title": provided_title,
     }
 
     return render(request, "case/ai/conversation-standalone.html", context)
+
+
+@login_required
+def new_conversation_prompt(request, matter_id):
+    """Return the modal that prompts the user to name a new conversation."""
+    matter, _ = get_matter_from_url(request, matter_id)
+    llm = request.GET.get("llm", "gemini-pro-latest")
+    if llm not in [
+        "claude",
+        "claude-opus",
+        "gemini-flash",
+        "gemini-pro",
+        "gemini-pro-latest",
+    ]:
+        llm = "gemini-pro-latest"
+
+    return render(
+        request,
+        "case/ai/new-conversation-modal.html",
+        {"matter": matter, "llm": llm},
+    )
 
 
 @login_required
@@ -315,6 +341,7 @@ def send_message(request, matter_id):
     user_message = request.POST.get("message", "").strip()
     conversation_id = request.POST.get("conversation_id")
     llm = request.POST.get("llm", "gemini-pro-latest")
+    provided_title = request.POST.get("title", "").strip()
 
     if not user_message:
         return HttpResponse(status=400)
@@ -336,10 +363,15 @@ def send_message(request, matter_id):
             Conversation, pk=conversation_id, matter__in=get_accessible_matters()
         )
     else:
-        # Create conversation on first message
-        title = user_message[:50]
-        if len(user_message) > 50:
-            title += "..."
+        # Create conversation on first message. Prefer the title the user
+        # entered in the new-conversation prompt; otherwise fall back to the
+        # legacy first-50-chars-of-message behavior.
+        if provided_title:
+            title = provided_title
+        else:
+            title = user_message[:50]
+            if len(user_message) > 50:
+                title += "..."
         conversation = Conversation.objects.create(matter=matter, title=title, llm=llm)
         is_new = True
 
@@ -917,6 +949,7 @@ def prompt_editor_modal(request, matter_id):
     matter, _ = get_matter_from_url(request, matter_id)
     conversation_id = request.GET.get("conversation_id", "")
     llm = request.GET.get("llm", "gemini-pro-latest")
+    title = request.GET.get("title", "")
 
     return render(
         request,
@@ -925,6 +958,7 @@ def prompt_editor_modal(request, matter_id):
             "matter": matter,
             "conversation_id": conversation_id,
             "llm": llm,
+            "title": title,
         },
     )
 
