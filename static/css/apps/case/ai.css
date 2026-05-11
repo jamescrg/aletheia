@@ -54,7 +54,7 @@
 
 .ai-chat-sidebar {
   background: var(--stone-150);
-  border-right: 1px solid var(--border-dark);
+  border-right: 1px solid var(--border-medium-dark);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -750,7 +750,7 @@
 
 .ai-input-container textarea {
   background: var(--background-light);
-  border: 1px solid var(--border-dark);
+  border: 1px solid var(--border-medium-dark);
   border-radius: var(--radius-md);
   box-shadow: 0 4px 6px -2px rgb(0 0 0 / 15%);
   font-family: inherit;
@@ -762,7 +762,7 @@
 }
 
 .ai-input-container textarea:focus {
-  border-color: var(--border-dark);
+  border-color: var(--border-medium-dark);
   outline: none;
 }
 
@@ -1213,7 +1213,7 @@
 
 .ai-expand-btn {
   background: var(--background-light);
-  border: 1px solid var(--border-dark);
+  border: 1px solid var(--border-medium-dark);
   border-radius: var(--radius-sm);
   color: var(--color-muted);
   font-size: 1rem;
