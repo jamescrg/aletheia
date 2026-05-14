@@ -26,7 +26,7 @@ class Invoice(AuditMixin, models.Model):
     date_issued = models.DateField()
     message = models.TextField(null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
-    show_comp = models.BooleanField(default=False)
+    show_comp = models.BooleanField(default=True)
     discount = models.DecimalField(max_digits=7, decimal_places=2, default=0)
     status = models.CharField(max_length=20, choices=INVOICE_STATUS, default="DRAFT")
     pdf_file = models.FileField(upload_to=invoice_upload_path, null=True, blank=True)
