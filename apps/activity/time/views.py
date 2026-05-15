@@ -139,6 +139,10 @@ def time_filter_quick(request, quick_filter):
     today = date.today()
     monday = today - timedelta(days=today.weekday())
     month_start = today.replace(day=1)
+    last_monday = monday - timedelta(days=7)
+    last_sunday = monday - timedelta(days=1)
+    last_month_end = month_start - timedelta(days=1)
+    last_month_start = last_month_end.replace(day=1)
 
     # Each quick filter only defines the fields it controls.
     # All other session filter state (user, comp, matter, keyword, etc.) is preserved.
@@ -166,10 +170,20 @@ def time_filter_quick(request, quick_filter):
             "date_max": str(today),
             "filter_label": "this_week",
         },
+        "last_week": {
+            "date_min": str(last_monday),
+            "date_max": str(last_sunday),
+            "filter_label": "last_week",
+        },
         "this_month": {
             "date_min": str(month_start),
             "date_max": str(today),
             "filter_label": "this_month",
+        },
+        "last_month": {
+            "date_min": str(last_month_start),
+            "date_max": str(last_month_end),
+            "filter_label": "last_month",
         },
     }
 

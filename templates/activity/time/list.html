@@ -77,7 +77,7 @@
           </button>
           <div class="dropdown" x-data="dropdown()">
             <button type="button"
-                    class="select-btn filter-dropdown-button {% if filter_label in 'unbilled today yesterday this_week this_month' %}toggle-active{% endif %}"
+                    class="select-btn filter-dropdown-button {% if filter_label in 'unbilled today yesterday this_week last_week this_month last_month' %}toggle-active{% endif %}"
                     x-ref="button"
                     @click="toggle()"
                     :aria-expanded="open">
@@ -90,8 +90,12 @@
               Yesterday
             {% elif filter_label == "this_week" %}
               This Week
+            {% elif filter_label == "last_week" %}
+              Last Week
             {% elif filter_label == "this_month" %}
               This Month
+            {% elif filter_label == "last_month" %}
+              Last Month
             {% else %}
               All Dates
             {% endif %}
@@ -124,7 +128,17 @@
           <li>
             <a class="dropdown-item"
                href="#"
+               hx-post="{% url 'activity:time-filter-quick' 'last_week' %}">Last Week</a>
+          </li>
+          <li>
+            <a class="dropdown-item"
+               href="#"
                hx-post="{% url 'activity:time-filter-quick' 'this_month' %}">This Month</a>
+          </li>
+          <li>
+            <a class="dropdown-item"
+               href="#"
+               hx-post="{% url 'activity:time-filter-quick' 'last_month' %}">Last Month</a>
           </li>
           <li>
             <a class="dropdown-item"

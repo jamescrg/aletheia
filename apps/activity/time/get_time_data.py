@@ -58,9 +58,21 @@ def get_time_data(request):
             monday = current_date - timedelta(days=current_date.weekday())
             filter.data["date_min"] = str(monday)
             filter.data["date_max"] = str(current_date)
+        elif filter_label == "last_week":
+            monday = current_date - timedelta(days=current_date.weekday())
+            last_monday = monday - timedelta(days=7)
+            last_sunday = monday - timedelta(days=1)
+            filter.data["date_min"] = str(last_monday)
+            filter.data["date_max"] = str(last_sunday)
         elif filter_label == "this_month":
             filter.data["date_min"] = str(current_date.replace(day=1))
             filter.data["date_max"] = str(current_date)
+        elif filter_label == "last_month":
+            month_start = current_date.replace(day=1)
+            last_month_end = month_start - timedelta(days=1)
+            last_month_start = last_month_end.replace(day=1)
+            filter.data["date_min"] = str(last_month_start)
+            filter.data["date_max"] = str(last_month_end)
 
         entries = filter.qs
         user_id = filter_data.get("user")
