@@ -28,20 +28,37 @@ def generate_activity_report(
     # Get all flat-fee entries for this matter
     flat_fee_entries = FlatFeeEntry.objects.filter(matter=matter).order_by("date", "id")
 
-    # Calculate totals
-    total_time_fees = sum(entry.fee for entry in time_entries)
-    total_expenses = sum(expense.amount for expense in expenses)
-    total_flat_fees = sum(entry.amount for entry in flat_fee_entries)
-    matter_total = total_time_fees + total_expenses + total_flat_fees
+    # Calculate gross / comp / net totals for each category (mirrors the
+    # invoice template's gross-minus-comp structure so the matter total
+    # reflects what's actually billable).
+    gross_time_fees = sum(entry.fee for entry in time_entries)
+    comp_time_fees = sum(entry.fee for entry in time_entries if entry.comp)
+    net_time_fees = gross_time_fees - comp_time_fees
+
+    gross_expenses = sum(expense.amount for expense in expenses)
+    comp_expenses = sum(expense.amount for expense in expenses if expense.comp)
+    net_expenses = gross_expenses - comp_expenses
+
+    gross_flat_fees = sum(entry.amount for entry in flat_fee_entries)
+    comp_flat_fees = sum(entry.amount for entry in flat_fee_entries if entry.comp)
+    net_flat_fees = gross_flat_fees - comp_flat_fees
+
+    matter_total = net_time_fees + net_expenses + net_flat_fees
 
     context = {
         "matter": matter,
         "time_entries": time_entries,
         "expenses": expenses,
         "flat_fee_entries": flat_fee_entries,
-        "total_time_fees": total_time_fees,
-        "total_expenses": total_expenses,
-        "total_flat_fees": total_flat_fees,
+        "gross_time_fees": gross_time_fees,
+        "comp_time_fees": comp_time_fees,
+        "net_time_fees": net_time_fees,
+        "gross_expenses": gross_expenses,
+        "comp_expenses": comp_expenses,
+        "net_expenses": net_expenses,
+        "gross_flat_fees": gross_flat_fees,
+        "comp_flat_fees": comp_flat_fees,
+        "net_flat_fees": net_flat_fees,
         "matter_total": matter_total,
         "current_date": date.today(),
         "company": Company.objects.first(),

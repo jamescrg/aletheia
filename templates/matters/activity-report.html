@@ -51,9 +51,19 @@
                 <td class="money {% if entry.comp %}comp{% endif %}">${{ entry.fee|floatformat:2|intcomma }}</td>
               </tr>
             {% endfor %}
+            {% if comp_time_fees %}
+              <tr>
+                <td colspan="4">Time Entries</td>
+                <td class="money">${{ gross_time_fees|floatformat:2|intcomma }}</td>
+              </tr>
+              <tr>
+                <td colspan="4">Less Comp Time</td>
+                <td class="money">- ${{ comp_time_fees|floatformat:2|intcomma }}</td>
+              </tr>
+            {% endif %}
             <tr>
-              <td colspan="4">Total Time Charges</td>
-              <td class="money">${{ total_time_fees|floatformat:2|intcomma }}</td>
+              <td colspan="4">Total Time Entries</td>
+              <td class="money">${{ net_time_fees|floatformat:2|intcomma }}</td>
             </tr>
           </table>
         </div>
@@ -74,9 +84,19 @@
                 <td class="money{% if entry.comp %} comp{% endif %}">${{ entry.amount|floatformat:2|intcomma }}</td>
               </tr>
             {% endfor %}
+            {% if comp_flat_fees %}
+              <tr>
+                <td colspan="2">Flat Fees</td>
+                <td class="money">${{ gross_flat_fees|floatformat:2|intcomma }}</td>
+              </tr>
+              <tr>
+                <td colspan="2">Less Comp Flat Fees</td>
+                <td class="money">- ${{ comp_flat_fees|floatformat:2|intcomma }}</td>
+              </tr>
+            {% endif %}
             <tr>
               <td colspan="2">Total Flat Fees</td>
-              <td class="money">${{ total_flat_fees|floatformat:2|intcomma }}</td>
+              <td class="money">${{ net_flat_fees|floatformat:2|intcomma }}</td>
             </tr>
           </table>
         </div>
@@ -100,9 +120,19 @@
                 <td class="money{% if expense.comp %} comp{% endif %}">${{ expense.amount|floatformat:2|intcomma }}</td>
               </tr>
             {% endfor %}
+            {% if comp_expenses %}
+              <tr>
+                <td colspan="2">Expenses</td>
+                <td class="money">${{ gross_expenses|floatformat:2|intcomma }}</td>
+              </tr>
+              <tr>
+                <td colspan="2">Less Comp Expenses</td>
+                <td class="money">- ${{ comp_expenses|floatformat:2|intcomma }}</td>
+              </tr>
+            {% endif %}
             <tr>
               <td colspan="2">Total Expenses</td>
-              <td class="money">${{ total_expenses|floatformat:2|intcomma }}</td>
+              <td class="money">${{ net_expenses|floatformat:2|intcomma }}</td>
             </tr>
           </table>
         </div>
@@ -110,21 +140,21 @@
       <div class="section">
         <h3>Matter Total</h3>
         <table class="table invoice-totals">
-          {% if total_time_fees %}
+          {% if net_time_fees %}
             <tr>
               <td>Time Charges</td>
-              <td class="money">${{ total_time_fees|floatformat:2|intcomma }}</td>
+              <td class="money">${{ net_time_fees|floatformat:2|intcomma }}</td>
             </tr>
           {% endif %}
-          {% if total_flat_fees %}
+          {% if net_flat_fees %}
             <tr>
               <td>Flat Fees</td>
-              <td class="money">${{ total_flat_fees|floatformat:2|intcomma }}</td>
+              <td class="money">${{ net_flat_fees|floatformat:2|intcomma }}</td>
             </tr>
           {% endif %}
           <tr>
             <td>Expenses</td>
-            <td class="money">${{ total_expenses|floatformat:2|intcomma }}</td>
+            <td class="money">${{ net_expenses|floatformat:2|intcomma }}</td>
           </tr>
           <tr>
             <td class="total hl-yellow">Matter Total</td>
