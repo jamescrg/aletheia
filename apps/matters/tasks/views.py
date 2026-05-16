@@ -187,6 +187,20 @@ def get_matter_tasks_data(request, matter_id):
         ),
         "focus": focus,
         "filter_label": filter_data.get("filter_label", None) if filter_data else None,
+        # Filter button is the superset signal for modal-only dimensions on this
+        # page. Importance / user / focus / sort have their own toolbar
+        # dropdowns (matter is scoped to this page), so they're excluded here.
+        "custom_filter_active": bool(filter_data)
+        and any(
+            [
+                filter_data.get("status") == "Complete",
+                filter_data.get("date_due_min") not in (None, ""),
+                filter_data.get("date_due_max") not in (None, ""),
+                filter_data.get("date_completed_min") not in (None, ""),
+                filter_data.get("date_completed_max") not in (None, ""),
+                str(filter_data.get("has_due_date", "")) not in ("", "None"),
+            ]
+        ),
         "current_order": current_order,
         "selected_tasks": selected_tasks,
         "all_selected": all_selected,
@@ -391,8 +405,13 @@ def tasks_filter(request, id):
     matter = get_object_or_404(Matter, pk=id)
 
     if request.method == "POST":
-        # Store filter data in session with matter scope
-        filter_data = request.POST.copy()
+        # Merge into existing session so unmodified quick-filter state is
+        # preserved; skip the CSRF token explicitly.
+        filter_data = dict(request.session.get("matter_tasks_filter", {}))
+        for key, val in request.POST.items():
+            if key == "csrfmiddlewaretoken":
+                continue
+            filter_data[key] = val
         filter_data["matter"] = id  # Ensure matter is always set
         request.session["matter_tasks_filter"] = filter_data
         return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
