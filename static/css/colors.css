@@ -175,3 +175,131 @@
 .money-positive {
   color: var(--success) !important;
 }
+
+/* ==========================================================================
+   Dark theme — Hojicha-inspired warm palette
+   Deepest base is neutral; surface lifts, text, and borders carry warmth
+   (low-chroma tan/brown hues, 48–82°). Accent green shifts from cool lime
+   to a softer yellow-green (~138°) for the Gruvbox-aqua feel.
+   The bootstrap script in base.html resolves "auto" to either "light" or
+   "dark" before paint, so CSS only handles the two concrete states.
+   ========================================================================== */
+[data-theme="dark"] {
+  /* Warm grays — neutral deep base, warming as it lifts */
+  --gb-dark:      oklch(0.277 0     263);
+  --gb-dark-soft: oklch(0.311 0.003  48);
+  --gb-dark1:     oklch(0.344 0.007  48);
+  --gb-dark2:     oklch(0.411 0.011  52);
+  --gb-dark3:     oklch(0.482 0.018  61);
+  --gb-dark4:     oklch(0.551 0.023  63);
+
+  /* Warm creams for text */
+  --gb-light:  oklch(0.956 0.055 96);
+  --gb-light3: oklch(0.756 0.041 82);
+  --gb-light4: oklch(0.690 0.035 76);
+  --gb-gray:   oklch(0.619 0.029 67);
+
+  /* Yellow-green accents (Gruvbox aqua family) */
+  --gb-bright-aqua: oklch(0.756 0.108 138);
+  --gb-aqua:        oklch(0.645 0.094 145);
+  --gb-faded-aqua:  oklch(0.534 0.082 155);
+
+  /* Status accents */
+  --gb-bright-red:    oklch(0.660 0.217  30);
+  --gb-bright-orange: oklch(0.731 0.182  52);
+  --gb-bright-green:  oklch(0.765 0.158 111);
+  --gb-bright-purple: oklch(0.705 0.098   2);
+
+  /* Typography & Text */
+  --color-primary: var(--gb-light4);
+  --color-darker: var(--gb-light);
+  --color-muted: var(--gb-gray);
+  --color-muted-more: var(--gb-dark4);
+  --color-lighter: var(--gb-light);
+
+  /* Links */
+  --link: var(--gb-bright-aqua);
+  --link-hover: var(--gb-aqua);
+
+  /* Backgrounds */
+  --background-nav: var(--gb-dark-soft);
+  --background-body: var(--gb-dark);
+  --background-subnav: var(--gb-dark1);
+  --background-subnav-contrast: var(--gb-dark2);
+  --background-control: var(--gb-dark1);
+  --background-section: var(--gb-dark1);
+  --background-td: var(--gb-dark);
+  --background-medium-light: var(--gb-dark-soft);
+  --background-light: var(--gb-dark-soft);
+
+  /* Navigation */
+  --background-nav-tab-active: var(--background-body);
+  --background-subnav-tab-active: var(--background-section);
+
+  /* Sidebar */
+  --background-sidebar: var(--gb-dark1);
+  --background-sidebar-hover: var(--gb-dark2);
+  --background-sidebar-active: var(--gb-dark3);
+
+  /* Buttons */
+  --button-primary-background: var(--gb-faded-aqua);
+  --button-primary-color: var(--gb-light);
+  --button-secondary-background: var(--background-section);
+  --button-secondary-color: var(--gb-light4);
+  --button-toolbar: var(--gb-light3);
+
+  /* Forms & Inputs */
+  --input-border: var(--gb-dark3);
+  --input-background: var(--gb-dark1);
+  --input-placeholder: var(--gb-dark4);
+
+  /* Borders & Dividers */
+  --border-light: var(--gb-dark1);
+  --border-medium: var(--gb-dark2);
+  --border-medium-dark: var(--gb-dark3);
+  --border-dark: var(--gb-dark4);
+
+  /* Selection & Active States */
+  --selected-background: var(--background-control);
+  --selected-color: var(--gb-bright-purple);
+  --selected-border: var(--gb-dark3);
+
+  /* Status & Feedback */
+  --urgent: var(--gb-bright-orange);
+  --warning: var(--gb-bright-orange);
+  --success: var(--gb-bright-green);
+  --true: var(--gb-bright-green);
+  --false: var(--urgent);
+  --error: var(--urgent);
+  --error-background: var(--red-950);
+  --error-border: var(--urgent);
+
+  /* Labels & Badges (mid-dark tints, readable under cream text) */
+  --label-gray: var(--gb-dark1);
+  --label-green: var(--lime-950);
+  --label-orange: var(--orange-950);
+  --label-purple: var(--violet-950);
+  --label-red: var(--red-950);
+  --label-yellow: var(--yellow-950);
+
+  /* Icons */
+  --icon-default: var(--color-primary);
+  --icon-muted: var(--color-muted);
+  --accent-link: var(--link);
+  --icon-violet: var(--gb-bright-purple);
+  --icon-violet-muted: var(--violet-400);
+  --icon-yellow: var(--gb-bright-orange);
+  --add: var(--link);
+
+  /* Row Highlights (dark tints) */
+  --hl-gray: var(--gb-dark2);
+  --hl-blue: var(--blue-950);
+  --hl-slate: var(--gb-dark1);
+  --hl-green: var(--lime-950);
+  --hl-orange: var(--orange-950);
+  --hl-violet: var(--violet-950);
+  --hl-red: var(--red-950);
+  --hl-yellow: var(--yellow-950);
+}
+
+[data-theme="dark"] .past-due td { background: var(--yellow-950); }

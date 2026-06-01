@@ -22,6 +22,26 @@
   margin-left: 1rem;
 }
 
+.theme-options {
+  border: none;
+  padding: 0;
+  margin: 0 0 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.theme-option small {
+  color: var(--color-muted);
+}
+
 /* ==========================================================================
 Profile Form
 ========================================================================== */

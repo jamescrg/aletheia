@@ -11,5 +11,30 @@
     <p class="detail-text">
       <a class="btn btn-success" href="{% url 'accounts:logout' %}">Logout</a>
     </p>
+    <div class="toolbar">
+      <h1>Appearance</h1>
+    </div>
+    <p class="detail-text">Theme is stored per device.</p>
+    <fieldset class="theme-options" onchange="setTheme(event.target.value)">
+      <label class="theme-option">
+        <input type="radio" name="theme" value="auto">
+        <span>Auto <small>(match system)</small></span>
+      </label>
+      <label class="theme-option">
+        <input type="radio" name="theme" value="light">
+        <span>Light</span>
+      </label>
+      <label class="theme-option">
+        <input type="radio" name="theme" value="dark">
+        <span>Dark</span>
+      </label>
+    </fieldset>
+    <script>
+      (function () {
+        var setting = (window.getThemeSetting && window.getThemeSetting()) || 'auto';
+        var input = document.querySelector('.theme-options input[value="' + setting + '"]');
+        if (input) input.checked = true;
+      })();
+    </script>
   </div>
 {% endblock subcontent %}
