@@ -550,7 +550,28 @@ tr > td.importance.complete .button-link {
   background-color: var(--past-due-bg);
 }
 
+/* Dark mode: signal state with a left accent rail instead of a row fill.
+   Fills are neutralised to the cell background (see colors.css), so the rail
+   is the only treatment. Past-due is a persistent rose rail on the due-date
+   cell; a recently-edited row gets a violet rail on the table's far-left edge
+   that fades out over 2s. The two live in different columns, so a row that is
+   both shows each signal independently. */
+@keyframes task-rail-fade {
+  from { box-shadow: inset 3px 0 0 0 var(--task-highlight-rail); }
+  to   { box-shadow: inset 3px 0 0 0 transparent; }
+}
 
+[data-theme="dark"] .past-due td.date {
+  box-shadow: inset 3px 0 0 0 var(--past-due-rail);
+}
+
+[data-theme="dark"] .task-new-highlight td {
+  animation: none;
+}
+
+[data-theme="dark"] .task-new-highlight td:first-child {
+  animation: task-rail-fade 2s ease-out;
+}
 
 /* ==========================================================================
  Mobile Card Layout

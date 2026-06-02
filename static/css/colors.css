@@ -236,10 +236,13 @@
   --background-td: var(--gb-dark);
   --background-medium-light: var(--gb-dark-soft);
   --background-light: var(--gb-dark-soft);
-  /* Same-lightness tints: held at body-row lightness (~gb-dark, L 0.277) so they
-     never climb the elevation ladder or wash the cell grid — only hue signals state. */
-  --past-due-bg: oklch(0.30 0.08 358);       /* rose-pink cast — split-complement of the link green */
-  --task-highlight-bg: oklch(0.28 0.09 293);  /* violet cast — transient "recently changed" */
+  /* Dark mode signals task state with a left accent rail, not a row fill: a small
+     saturated bar carries the hue without touching the elevation ladder or cell grid.
+     Fills are neutralised to the normal cell background; the rail tokens do the work. */
+  --past-due-bg: var(--background-td);
+  --task-highlight-bg: var(--background-td);
+  --past-due-rail: oklch(0.60 0.17 358);        /* rose-pink — persistent "past due" */
+  --task-highlight-rail: oklch(0.64 0.19 293);  /* violet — transient "recently changed" */
 
   /* Navigation */
   --background-nav-tab-active: var(--background-body);
