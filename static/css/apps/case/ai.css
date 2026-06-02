@@ -1143,7 +1143,9 @@
 .ai-markdown mark {
   background: var(--yellow-200);
   border-radius: 0.125rem;
-  color: var(--color-darker);
+  /* Fixed dark text: the highlight is always bright yellow in both themes, so
+     the text must stay dark (theme-aware --color-darker flips to near-white). */
+  color: var(--stone-900);
   padding: 0.125rem 0.25rem;
 }
 
