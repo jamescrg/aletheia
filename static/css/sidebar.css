@@ -104,6 +104,14 @@
   color: var(--selected-color);
 }
 
+/* Dark mode — active item matches the hover fill (gb-dark2) with no border;
+   the purple text alone marks it active. The shared --selected-background
+   otherwise matches the sidebar's own gb-dark1, leaving no fill contrast. */
+[data-theme="dark"] .sidebar-nav li.active a {
+  background: var(--background-sidebar-active);
+  border: none;
+}
+
 
 /* ==========================================================================
    Icons

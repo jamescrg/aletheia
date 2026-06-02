@@ -265,12 +265,12 @@
 
   /* Navigation */
   --background-nav-tab-active: var(--background-body);
-  --background-subnav-tab-active: var(--background-section);
+  --background-subnav-tab-active: var(--gb-dark2);  /* modest one-step lift above the surface */
 
   /* Sidebar */
   --background-sidebar: var(--gb-dark1);
   --background-sidebar-hover: var(--gb-dark2);
-  --background-sidebar-active: var(--gb-dark3);
+  --background-sidebar-active: var(--gb-dark2);  /* match the hover fill; border + text mark "active" */
 
   /* Buttons */
   --button-primary-background: var(--gb-faded-aqua);

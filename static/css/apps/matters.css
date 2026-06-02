@@ -207,6 +207,17 @@ Mode Pills (Detail/Case toggle)
   border-right: none;
 }
 
+/* Dark mode — mirror the sidebar's own surfaces: the unselected pill takes the
+   nav (sidebar) background, the selected pill takes the active-tab background,
+   so the segmented toggle reads as part of the same navigation system. */
+[data-theme="dark"] .toolbar .mode-pill {
+  background: var(--background-sidebar);
+}
+
+[data-theme="dark"] .toolbar .mode-pill.active {
+  background: var(--background-sidebar-active);
+}
+
 .mode-pills + .filter-tools {
   margin-left: 1.25rem;
 }

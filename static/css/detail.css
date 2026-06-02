@@ -88,6 +88,13 @@ Detail Layout (header / subnav / body)
   color: var(--selected-color);
 }
 
+/* Dark mode — active tab takes the lighter fill with no border; --selected-background
+   otherwise matches the subnav's own gb-dark1 surface (no contrast). */
+[data-theme="dark"] .subnav .active {
+  background: var(--background-subnav-tab-active);
+  border: none;
+}
+
 /* Detail Body - main content area */
 .detail-body {
   border-radius: 0 0 var(--radius-md) var(--radius-md);
