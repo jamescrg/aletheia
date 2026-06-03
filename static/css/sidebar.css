@@ -305,13 +305,15 @@
    ========================================================================== */
 
 @media (width > 768px) {
+  /* In normal flow (not fixed): the bar takes real space and scrolls with
+     the page, so content can't slide under it — this is what kept the page
+     scrolling up behind a fixed bar on load (htmx show:window:top). */
   [data-nav="horizontal"] .sidebar {
     align-items: center;
-    bottom: auto;
     box-shadow: inset 0 -1px 0 var(--border-medium-dark);
     flex-direction: row;
     height: var(--topnav-height);
-    right: 0;
+    position: static;
     transition: none;
     width: auto;
   }
@@ -323,8 +325,7 @@
   [data-nav="horizontal"] .sidebar-nav {
     align-items: center;
     flex-direction: row;
-    overflow-x: auto;
-    overflow-y: visible;
+    overflow: visible;
     padding: 0 0.5rem;
   }
 
@@ -353,22 +354,70 @@
     white-space: nowrap;
   }
 
-  /* Labels always show and collapse affordances are suppressed, regardless
-     of a lingering .sidebar-collapsed class. */
+  /* Main-nav labels always show, regardless of a lingering .sidebar-collapsed
+     class. The brand and the utils group (Search/Settings/Shortcuts) collapse
+     to icons to keep the bar narrow. */
   [data-nav="horizontal"] .sidebar-label {
     display: inline;
   }
 
-  [data-nav="horizontal"] .sidebar-nav li a::after {
-    content: none;
+  [data-nav="horizontal"] .sidebar-brand .sidebar-label,
+  [data-nav="horizontal"] .sidebar-nav-utils .sidebar-label {
+    display: none;
+  }
+
+  [data-nav="horizontal"] .sidebar-nav-utils li a {
+    justify-content: center;
+    padding: 0.5rem;
   }
 
   [data-nav="horizontal"] .sidebar-toggle {
     display: none;
   }
 
+  /* Suppress the vertical (collapsed) left-side tooltips... */
+  [data-nav="horizontal"] .sidebar-nav li a::after {
+    content: none;
+  }
+
+  /* ...but give the icon-only utils items a tooltip below the bar so they
+     stay identifiable. Nav uses overflow: visible so these aren't clipped. */
+  [data-nav="horizontal"] .sidebar-nav-utils li {
+    position: relative;
+  }
+
+  [data-nav="horizontal"] .sidebar-nav-utils li a::after {
+    background: var(--stone-700);
+    border-radius: var(--radius-md);
+    color: var(--stone-100);
+    content: attr(data-tooltip);
+    left: 50%;
+    opacity: 0;
+    padding: 0.25rem 0.5rem;
+    pointer-events: none;
+    position: absolute;
+    top: 100%;
+    transform: translateX(-50%);
+    transition: opacity 150ms ease;
+    white-space: nowrap;
+    z-index: 200;
+  }
+
+  [data-nav="horizontal"] .sidebar-nav-utils li a:hover::after {
+    opacity: 1;
+  }
+
   [data-nav="horizontal"] .main-content {
     margin-left: 0;
-    margin-top: var(--topnav-height);
+  }
+
+  /* Dev only: the fixed dev banner covers the top 1.75rem, so drop the bar
+     below it and remove the now-redundant content offset. */
+  [data-nav="horizontal"] .env-dev .sidebar {
+    margin-top: 1.75rem;
+  }
+
+  [data-nav="horizontal"] .env-dev .main-content {
+    padding-top: 0;
   }
 }
