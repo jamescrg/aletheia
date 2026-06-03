@@ -22,6 +22,9 @@
    island" (e.g. the viewer's highlight cards) light inside a dark page. */
 :root,
 [data-theme="light"] {
+  /* Native form controls + scrollbars follow this */
+  color-scheme: light;
+
   /* ==========================================================================
      Design System - Semantic Colors
      These reference the palette.css color definitions
@@ -240,6 +243,9 @@
    "dark" before paint, so CSS only handles the two concrete states.
    ========================================================================== */
 [data-theme="dark"] {
+  /* Native form controls (radios, checkboxes) + scrollbars render dark */
+  color-scheme: dark;
+
   /* Warm grays — neutral deep base, warming as it lifts */
   --gb-dark:      oklch(0.277 0     263);
   --gb-dark-soft: oklch(0.311 0.003  48);
