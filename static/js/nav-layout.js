@@ -19,4 +19,17 @@
   };
 
   window.getNavLayoutSetting = current;
+
+  // Reflect the stored setting onto the settings-page radios. Runs on load and
+  // after every htmx swap, since the settings content arrives via a boosted
+  // swap where an inline script would not reliably re-run.
+  function syncRadios() {
+    var input = document.querySelector(
+      '.nav-options input[value="' + current() + '"]'
+    );
+    if (input) input.checked = true;
+  }
+
+  syncRadios();
+  document.body.addEventListener('htmx:afterSwap', syncRadios);
 })();

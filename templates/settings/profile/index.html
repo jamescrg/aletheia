@@ -21,13 +21,6 @@
       <span>Dark</span>
     </label>
   </fieldset>
-  <script>
-    (function () {
-      var setting = (window.getThemeSetting && window.getThemeSetting()) || 'auto';
-      var input = document.querySelector('.theme-options input[value="' + setting + '"]');
-      if (input) input.checked = true;
-    })();
-  </script>
   <h2>Navigation</h2>
   <hr />
   <p class="detail-text">Navigation layout is stored per device.</p>
@@ -41,11 +34,4 @@
       <span>Horizontal <small>(top bar)</small></span>
     </label>
   </fieldset>
-  <script>
-    (function () {
-      var setting = (window.getNavLayoutSetting && window.getNavLayoutSetting()) || 'vertical';
-      var input = document.querySelector('.nav-options input[value="' + setting + '"]');
-      if (input) input.checked = true;
-    })();
-  </script>
 {% endblock subcontent %}
