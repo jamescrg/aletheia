@@ -63,7 +63,8 @@ body:has(.note-page.standalone) {
 }
 
 .env-dev .note-editor-layout {
-  height: calc(100vh - 1.5rem);
+  height: calc(100vh - 1.75rem);
+  margin-top: 1.75rem;
 }
 
 /* Left Panel - Notes List */
