@@ -10,11 +10,12 @@ from utils.models import AuditMixin
 class Conversation(AuditMixin, models.Model):
     """A chat conversation within a matter context."""
 
+    # Note: "claude" (Sonnet 4.6) and "gemini-pro" (Gemini 2.5 Pro) were
+    # retired from the picker but remain supported in the dispatch/selector
+    # plumbing so existing conversations on those models keep working.
     LLM_CHOICES = [
-        ("claude", "Claude Sonnet 4.6"),
         ("claude-opus", "Claude Opus 4.8"),
         ("gemini-flash", "Gemini 2.5 Flash"),
-        ("gemini-pro", "Gemini 2.5 Pro"),
         ("gemini-pro-latest", "Gemini Pro (Latest)"),
     ]
 
