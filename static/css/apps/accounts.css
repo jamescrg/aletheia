@@ -1,7 +1,7 @@
 
 body {
   background-color: var(--background-body);
-  color: var(--color-darker);
+  color: var(--color-primary);
   font-family: 'Open Sans', sans-serif;
   font-size: 1.125rem;
 }
