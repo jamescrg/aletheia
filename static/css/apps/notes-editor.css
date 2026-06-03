@@ -351,6 +351,61 @@
   background: var(--stone-200);
 }
 
+/* Dark mode — marks stay light (paper-highlighter look, matching how they'd
+   print) but the inherited text would flip light, so force it dark. */
+[data-theme="dark"] #note-editor mark {
+  color: var(--stone-900);
+}
+
+/* Dark mode — Gruvbox Dark syntax colours; the code block background is a dark
+   token, so the light Gruvbox hues would be unreadable on it. */
+[data-theme="dark"] #note-editor pre code .hljs-comment,
+[data-theme="dark"] #note-editor pre code .hljs-quote {
+  color: #a89984;
+}
+
+[data-theme="dark"] #note-editor pre code .hljs-keyword,
+[data-theme="dark"] #note-editor pre code .hljs-selector-tag,
+[data-theme="dark"] #note-editor pre code .hljs-deletion,
+[data-theme="dark"] #note-editor pre code .hljs-name,
+[data-theme="dark"] #note-editor pre code .hljs-tag {
+  color: #fb4934;
+}
+
+[data-theme="dark"] #note-editor pre code .hljs-string,
+[data-theme="dark"] #note-editor pre code .hljs-addition {
+  color: #b8bb26;
+}
+
+[data-theme="dark"] #note-editor pre code .hljs-number,
+[data-theme="dark"] #note-editor pre code .hljs-literal {
+  color: #d3869b;
+}
+
+[data-theme="dark"] #note-editor pre code .hljs-type,
+[data-theme="dark"] #note-editor pre code .hljs-built_in {
+  color: #fabd2f;
+}
+
+[data-theme="dark"] #note-editor pre code .hljs-title,
+[data-theme="dark"] #note-editor pre code .hljs-section,
+[data-theme="dark"] #note-editor pre code .hljs-attribute {
+  color: #8ec07c;
+}
+
+[data-theme="dark"] #note-editor pre code .hljs-variable,
+[data-theme="dark"] #note-editor pre code .hljs-template-variable,
+[data-theme="dark"] #note-editor pre code .hljs-attr,
+[data-theme="dark"] #note-editor pre code .hljs-params {
+  color: #83a598;
+}
+
+[data-theme="dark"] #note-editor pre code .hljs-symbol,
+[data-theme="dark"] #note-editor pre code .hljs-meta,
+[data-theme="dark"] #note-editor pre code .hljs-operator {
+  color: #fe8019;
+}
+
 /* Search match highlight */
 #note-editor .search-match {
   background: var(--yellow-200);

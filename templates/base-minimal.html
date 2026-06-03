@@ -52,6 +52,15 @@
   {% if env == 'dev' %}
     <link rel="stylesheet" href="{% static_v 'css/dev.css' %}" />
   {% endif %}
+  <script>
+    /* Apply the user's theme before paint (mirrors base.html). */
+    (function () {
+      var setting = localStorage.getItem('theme') || 'auto';
+      var dark = setting === 'dark' || (setting === 'auto' &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    })();
+  </script>
 </head>
 <body class="minimal-layout {% if env == 'dev' %}env-dev{% endif %}"
       hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
