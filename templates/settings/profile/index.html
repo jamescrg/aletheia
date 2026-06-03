@@ -28,4 +28,24 @@
       if (input) input.checked = true;
     })();
   </script>
+  <h2>Navigation</h2>
+  <hr />
+  <p class="detail-text">Navigation layout is stored per device.</p>
+  <fieldset class="nav-options" onchange="setNavLayout(event.target.value)">
+    <label class="nav-option">
+      <input type="radio" name="nav-layout" value="vertical">
+      <span>Vertical <small>(sidebar)</small></span>
+    </label>
+    <label class="nav-option">
+      <input type="radio" name="nav-layout" value="horizontal">
+      <span>Horizontal <small>(top bar)</small></span>
+    </label>
+  </fieldset>
+  <script>
+    (function () {
+      var setting = (window.getNavLayoutSetting && window.getNavLayoutSetting()) || 'vertical';
+      var input = document.querySelector('.nav-options input[value="' + setting + '"]');
+      if (input) input.checked = true;
+    })();
+  </script>
 {% endblock subcontent %}

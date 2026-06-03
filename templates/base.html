@@ -91,6 +91,9 @@
     if (localStorage.getItem('sidebar-collapsed') === 'true') {
       document.documentElement.classList.add('sidebar-collapsed');
     }
+    if (localStorage.getItem('nav-layout') === 'horizontal') {
+      document.documentElement.setAttribute('data-nav', 'horizontal');
+    }
     (function () {
       var setting = localStorage.getItem('theme') || 'auto';
       var dark = setting === 'dark' || (setting === 'auto' &&
@@ -134,6 +137,7 @@
   <script src="{% static_v 'js/main.js' %}"></script>
   <script src="{% static_v 'js/sidebar.js' %}"></script>
   <script src="{% static_v 'js/theme.js' %}"></script>
+  <script src="{% static_v 'js/nav-layout.js' %}"></script>
   <script src="{% static_v 'js/daily-dash-check.js' %}"></script>
   <script src="{% static_v 'js/folders.js' %}"></script>
   <script src="{% static_v 'js/groups.js' %}"></script>

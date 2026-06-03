@@ -87,6 +87,7 @@
      ========================================================================== */
   --sidebar-width: 11.25rem;
   --sidebar-width-collapsed: 4.5rem;
+  --topnav-height: 3.5rem;
   --background-sidebar: var(--stone-200);
   --background-sidebar-hover: var(--stone-225);
   --background-sidebar-active: var(--stone-250);
