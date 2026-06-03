@@ -18,6 +18,15 @@
 <link rel="stylesheet" href="{% static_v 'css/layout.css' %}" />
 <link rel="stylesheet" href="{% static_v 'css/buttons.css' %}" />
 <link rel="stylesheet" href="{% static_v 'css/apps/accounts.css' %}" />
+<script>
+  /* Apply the user's theme before paint (mirrors base.html). */
+  (function () {
+    var setting = localStorage.getItem('theme') || 'auto';
+    var dark = setting === 'dark' || (setting === 'auto' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  })();
+</script>
 <div class="container vertical-center">
   {% block content %}
   {% endblock content %}

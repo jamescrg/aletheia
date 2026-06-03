@@ -154,7 +154,7 @@ button {
 }
 
 .dropzone .dz-preview.dz-success.clickable-preview {
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-medium);
   border-radius: var(--radius-sm);
   cursor: pointer !important;
   margin: 0.25rem 0;
@@ -163,13 +163,13 @@ button {
 }
 
 .dropzone .dz-preview.dz-success.clickable-preview:hover {
-  background-color: #f8f9fa;
-  border-color: #007bff;
+  background-color: var(--background-medium-light);
+  border-color: var(--link);
   box-shadow: 0 2px 4px rgb(0 123 255 / 10%);
 }
 
 .dropzone .dz-preview.dz-success.clickable-preview:hover .dz-filename span {
-  color: #007bff;
+  color: var(--link);
   text-decoration: underline;
 }
 

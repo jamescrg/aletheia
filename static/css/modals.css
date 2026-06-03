@@ -79,14 +79,14 @@
   background: transparent;
   border: none;
   border-radius: var(--radius-sm);
-  color: var(--stone-500);
+  color: var(--color-muted);
   cursor: pointer;
   display: flex;
   padding: 0.25rem;
 }
 
 .modal-header button:hover {
-  background: var(--stone-200);
+  background: var(--background-control);
 }
 
 .modal-title {
@@ -239,7 +239,7 @@ body.modal-open .confirm-modal-overlay {
   background: transparent;
   border: none;
   border-radius: var(--radius-sm);
-  color: var(--stone-500);
+  color: var(--color-muted);
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -247,7 +247,7 @@ body.modal-open .confirm-modal-overlay {
 }
 
 .confirm-modal-close:hover {
-  background: var(--stone-200);
+  background: var(--background-control);
 }
 
 .confirm-modal-close i {
