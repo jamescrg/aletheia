@@ -98,6 +98,10 @@ Matter Switcher
 
 .detail-header .toolbar-left > .back-link {
   padding-block: 0.25rem;
+  /* Nudge the back button right 0.25rem so its left border lines up with the
+     subnav active-tab left border. The header padding puts it at 0.75rem; the
+     tab border sits at 1rem (.subnav ul left margin). */
+  margin-left: 0.25rem;
 }
 
 /* Compensate for the inner padding the matter-switcher button gives its h1
