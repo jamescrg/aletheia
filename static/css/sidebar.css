@@ -411,10 +411,13 @@
     margin-left: 0;
   }
 
-  /* Dev only: the fixed dev banner covers the top 1.75rem, so drop the bar
-     below it and remove the now-redundant content offset. */
-  [data-nav="horizontal"] .env-dev .sidebar {
-    margin-top: 1.75rem;
+  /* Dev only: the banner is fixed for the vertical layout (whose sidebar is
+     also fixed). The horizontal layout is fully in-flow, so put the banner in
+     flow too — otherwise htmx's show:window:top tucks the top of the content
+     under the fixed banner on load. The .env-dev content offset (for the fixed
+     banner) is then redundant and removed. */
+  [data-nav="horizontal"] .dev-banner {
+    position: static;
   }
 
   [data-nav="horizontal"] .env-dev .main-content {
