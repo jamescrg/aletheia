@@ -28,7 +28,7 @@ from apps.tasks.models import (
 )
 from apps.tasks.services import process_quick_task_description
 from apps.tasks.tasks import get_list_data
-from utils.toasts import toast_success
+from utils.toasts import toast_success, toast_warning
 
 TASKS_TRIGGER = "tasksListChanged"
 
@@ -138,9 +138,8 @@ def tasks_add_quick(request):
 
     # Process description with intelligent matter matching
     last_matter_id = request.session.get("last_quick_task_matter")
-    description, matched_matter, use_smart_matching = process_quick_task_description(
-        request.POST["description"], last_matter_id
-    )
+    match = process_quick_task_description(request.POST["description"], last_matter_id)
+    description = match.description
 
     # Prevent creation of tasks with empty description after processing
     if not description.strip():
@@ -168,8 +167,8 @@ def tasks_add_quick(request):
     task.user = CustomUser.objects.filter(pk=int(user_id)).get()
 
     # Set matter: use smart matching if applicable, otherwise use filter matter
-    if use_smart_matching:
-        task.matter = matched_matter
+    if match.use_smart_matching:
+        task.matter = match.matter
     else:
         matter_id = filter_data.get("matter", None)
         if matter_id:
@@ -188,7 +187,22 @@ def tasks_add_quick(request):
     else:
         request.session["last_quick_task_matter"] = None
 
-    return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
+    # Flag when the typed prefix could not be resolved instead of silently
+    # misfiling the task. A clean match stays quiet to keep rapid entry fast.
+    response = HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
+    matter_name = task.matter.name if task.matter else "Admin"
+    if match.status == "ambiguous":
+        toast_warning(
+            response,
+            f'"{match.prefix}" matches more than one matter — added to '
+            f"{matter_name}. Type more of the name.",
+        )
+    elif match.status == "unmatched":
+        toast_warning(
+            response,
+            f'No open matter matches "{match.prefix}" — added to {matter_name}.',
+        )
+    return response
 
 
 @login_required
