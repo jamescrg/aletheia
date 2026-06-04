@@ -5,8 +5,9 @@
         <a href="{% url 'matters:index' %}" class="back-link"><i class="icon-arrow-left"></i></a>
       {% endif %}
       {% include "matters/includes/switcher.html" %}
+      {% include "matters/includes/mode-pills.html" %}
+      {% include "matters/includes/action_buttons.html" %}
     </div>
-    <div class="toolbar-center">{% include "matters/includes/mode-pills.html" %}</div>
-    <div class="toolbar-right">{% include "matters/includes/action_buttons.html" %}</div>
+    <div class="toolbar-right">{% include "matters/includes/matter_tools.html" %}</div>
   </div>
 </div>
