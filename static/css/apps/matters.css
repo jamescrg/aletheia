@@ -110,6 +110,23 @@ Matter Switcher
   margin-left: 0.75rem;
 }
 
+/* The shared back-link rule above tightens the whole left group to 0.5rem.
+   The matter header now holds the switcher, pills and add buttons in that
+   group, which we want spaced a uniform 1.25rem — only the back arrow stays
+   tight to the matter name (pulled back in with a negative margin). */
+.matter-toolbar .toolbar-left:has(> .back-link) {
+  gap: 1.25rem;
+}
+
+.matter-toolbar .toolbar-left > .back-link {
+  margin-right: -0.75rem;
+}
+
+/* A touch more breathing room to the right of the matter switcher. */
+.matter-toolbar .toolbar-left > .matter-switcher {
+  margin-right: 0.5rem;
+}
+
 .toolbar .matter-switcher > button {
   background: none;
   border: none;
@@ -131,7 +148,9 @@ Matter Switcher
 }
 
 .matter-switcher .dropdown-menu {
-  max-height: 28rem;
+  /* Grow with the viewport so long matter lists use the available height; the
+     dropdown's JS positioner still clamps this to the space below the button. */
+  max-height: calc(100vh - 6rem);
   min-width: 16rem;
   overflow-y: auto;
 }
@@ -175,7 +194,14 @@ Mode Pills (Detail/Case toggle)
 .mode-pills {
   display: inline-flex;
   gap: 0;
-  margin: 0 1rem;
+}
+
+/* Matter detail/case toolbar: keep the gap between buttons a uniform 1.25rem.
+   The toolbar-left group already uses gap; match it on the right group, which
+   otherwise inherits the shared .toolbar-right 1rem spacing. */
+.matter-toolbar .toolbar-right > a,
+.matter-toolbar .toolbar-right button {
+  margin-left: 1.25rem;
 }
 
 .toolbar .mode-pill {
