@@ -8,6 +8,13 @@ from utils.models import AuditMixin
 
 User = get_user_model()
 
+# AI context inclusion modes (mirrors apps.case.models.AI_CONTEXT_CHOICES).
+AI_CONTEXT_CHOICES = [
+    ("auto", "Auto"),
+    ("always", "Always"),
+    ("never", "Never"),
+]
+
 
 class NoteFolder(AuditMixin, models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -121,6 +128,12 @@ class Note(AuditMixin, models.Model):
     )
 
     importance = models.PositiveIntegerField(default=4)
+    ai_context = models.CharField(
+        max_length=6,
+        choices=AI_CONTEXT_CHOICES,
+        default="auto",
+        help_text="AI context inclusion: auto (selector decides), always, or never",
+    )
     labels = models.ManyToManyField("case.Label", related_name="notes", blank=True)
 
     # Google Drive sync provenance — null for user-authored notes. A synced note

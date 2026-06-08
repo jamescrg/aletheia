@@ -1076,6 +1076,7 @@ def context_preview(request, matter_id):
     from collections import OrderedDict
 
     from apps.case.models import CaseLaw, Document
+    from apps.notes.models import Note
 
     from .context import (
         collect_context_items,
@@ -1196,6 +1197,15 @@ def context_preview(request, matter_id):
                 "name": cl.case_name,
                 "category": cl.court or "",
                 "date": cl.date_filed,
+            }
+        )
+    for note in Note.objects.filter(matter=matter, ai_context="never"):
+        excluded_items.append(
+            {
+                "type": "Note",
+                "name": note.title,
+                "category": note.get_category_display(),
+                "date": note.updated_at.date() if note.updated_at else None,
             }
         )
 

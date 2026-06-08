@@ -12,6 +12,7 @@ from dataclasses import dataclass
 
 from apps.case.models import CaseLaw, Document
 from apps.invoicing.invoices.models import Invoice
+from apps.notes.models import Note
 
 from .gemini_client import send_to_gemini
 from .models import Conversation
@@ -55,7 +56,7 @@ and a manifest of available case materials, select which materials should be \
 included in context to answer the question effectively.
 
 Return ONLY a JSON object with this format:
-{"selected": [{"type": "document", "id": 123}, {"type": "caselaw", "id": 45}, {"type": "conversation", "id": 67}, {"type": "invoice", "id": 42}]}
+{"selected": [{"type": "document", "id": 123}, {"type": "note", "id": 89}, {"type": "caselaw", "id": 45}, {"type": "conversation", "id": 67}, {"type": "invoice", "id": 42}]}
 
 Rules:
 - Select materials that are relevant to the user's question.
@@ -136,6 +137,42 @@ def build_manifest(matter, current_conversation=None):
             content_parts.append(f"Description: {doc.description}")
         content_parts.append(f"Content:\n{doc.ocr_text}")
         content_map[("document", doc.id)] = "\n".join(content_parts)
+
+    # Notes with ai_context="auto"
+    for note in Note.objects.filter(matter=matter, ai_context="auto"):
+        content_text = note.content or ""
+        if not content_text.strip():
+            continue
+
+        desc = content_text[:200].strip()
+        if len(content_text) > 200:
+            desc += "..."
+
+        category = note.get_category_display()
+        if note.topic:
+            category += f" — {note.topic}"
+
+        manifest_items.append(
+            ManifestItem(
+                item_type="note",
+                item_id=note.id,
+                name=note.title,
+                category=category,
+                date=str(note.updated_at.date()) if note.updated_at else None,
+                description=desc,
+                word_count=len(content_text.split()),
+                importance=note.importance,
+            )
+        )
+
+        # Full note content (no truncation) — same shape as collect_context_items
+        content_parts = [f"**Note: {note.title}**"]
+        if note.category:
+            content_parts[0] += f" [{note.get_category_display()}]"
+        if note.topic:
+            content_parts[0] += f" - {note.topic}"
+        content_parts.append(content_text)
+        content_map[("note", note.id)] = "\n".join(content_parts)
 
     # Case law with ai_context="auto"
     for caselaw in CaseLaw.objects.filter(matter=matter, ai_context="auto"):
@@ -253,9 +290,12 @@ def format_manifest_for_prompt(items: list[ManifestItem], token_budget: int) -> 
     lines = [f"TOKEN BUDGET: ~{token_budget:,} tokens available for materials.\n"]
 
     for item in items:
-        type_label = {"document": "DOC", "caselaw": "CASE", "conversation": "CONV"}.get(
-            item.item_type, item.item_type.upper()
-        )
+        type_label = {
+            "document": "DOC",
+            "caselaw": "CASE",
+            "conversation": "CONV",
+            "note": "NOTE",
+        }.get(item.item_type, item.item_type.upper())
         date_str = f", {item.date}" if item.date else ""
         lines.append(
             f'[{type_label}-{item.item_id}] "{item.name}" '
@@ -371,7 +411,7 @@ def _parse_selector_response(response_text: str) -> list[tuple[str, int]]:
         item_type = item.get("type", "")
         item_id = item.get("id")
         if (
-            item_type in ("document", "caselaw", "conversation", "invoice")
+            item_type in ("document", "caselaw", "conversation", "invoice", "note")
             and item_id is not None
         ):
             keys.append((item_type, int(item_id)))

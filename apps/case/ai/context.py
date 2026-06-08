@@ -229,23 +229,21 @@ def collect_context_items(matter, current_conversation=None) -> list[ContextItem
             )
         )
 
-    # Collect Notes (always CRITICAL - user-created notes are high value)
-    for note in Note.objects.filter(matter=matter):
+    # Collect Notes — only "always" items get full content here. "auto" notes
+    # are chosen by the selector; "never" notes are excluded. Full content, no
+    # truncation (parity with Documents).
+    for note in Note.objects.filter(matter=matter, ai_context="always"):
         content_parts = [f"**Note: {note.title}**"]
         if note.category:
             content_parts[0] += f" [{note.get_category_display()}]"
         if note.topic:
             content_parts[0] += f" - {note.topic}"
         if note.content:
-            # Limit content length per note
-            note_content = note.content[:2000]
-            if len(note.content) > 2000:
-                note_content += "\n... (truncated)"
-            content_parts.append(note_content)
+            content_parts.append(note.content)
 
         items.append(
             ContextItem(
-                importance=5,  # Always CRITICAL for notes
+                importance=note.importance,
                 item_type="note",
                 content="\n".join(content_parts),
                 source_id=note.id,

@@ -516,6 +516,24 @@ def note_importance(request, note_id, value):
 
 
 @login_required
+@require_POST
+def note_set_ai(request, note_id, state):
+    """Set the ai_context state on a note (auto/always/never).
+
+    Editable for synced notes too — ai_context is app-only metadata that the
+    Drive sync never overwrites.
+    """
+    if state not in ("auto", "always", "never"):
+        return HttpResponse(status=400)
+
+    note = get_object_or_404(Note, pk=note_id)
+    note.ai_context = state
+    note.save(update_fields=["ai_context", "updated_at", "updated_by"])
+
+    return render(request, "case/notes/ai-context-cell.html", {"note": note})
+
+
+@login_required
 def reference_search(request, note_id):
     """Search documents and highlights for note references."""
     from django.db.models import Q
