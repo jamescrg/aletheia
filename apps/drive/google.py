@@ -533,3 +533,110 @@ def get_sync_status():
         "unmatched_folders": (state.unmatched_folders if state else []) or [],
         "bootstrapped": bool(state and state.page_token),
     }
+
+
+# --------------------------------------------------------------------------- #
+# Per-matter folder linking (used by the Notes-tab "Link Drive Folder" UI)
+# --------------------------------------------------------------------------- #
+def _find_child_folder(service, parent_id, name):
+    """Return the child folder with the given name, or None."""
+    for child in _list_children(service, parent_id):
+        if child.get("mimeType") == FOLDER_MIME and child.get("name") == name:
+            return child
+    return None
+
+
+def list_matter_folders():
+    """Return sorted folder names directly under the notes root (or [])."""
+    if not check_credentials():
+        return []
+    service = build_service()
+    root_id = _find_root_folder(service)
+    if not root_id:
+        return []
+    return sorted(
+        child["name"]
+        for child in _list_children(service, root_id)
+        if child.get("mimeType") == FOLDER_MIME
+    )
+
+
+def _delete_synced_for_matter(matter, debug_dir, keep_ids, stats):
+    """Delete this matter's synced notes whose Drive file is not in keep_ids."""
+    qs = Note.objects.filter(matter=matter, drive_file_id__isnull=False).exclude(
+        drive_file_id__in=keep_ids
+    )
+    for note in qs:
+        if debug_dir and note.drive_path:
+            _delete_debug(debug_dir, note.drive_path)
+        note.delete()
+        stats["removed"] += 1
+
+
+def resync_matter(matter, debug_dir=None):
+    """Re-sync just one matter's notes from its linked Drive folder.
+
+    Used when a user links/changes a matter's Drive folder in the UI: ingests
+    the folder's Notes/** files and removes this matter's synced notes that are
+    no longer present (e.g. after re-linking to a different folder). If the
+    matter is unlinked, simply drops its synced notes. No-op when Drive is not
+    linked. Resilient to per-file conversion failures. Returns a stats dict.
+    """
+    if not check_credentials():
+        return None
+    if debug_dir is None:
+        debug_dir = settings.DRIVE_NOTES_DEBUG_DIR or ""
+
+    stats = _new_stats()
+
+    if not matter.drive_folder:
+        _delete_synced_for_matter(matter, debug_dir, set(), stats)
+        return stats
+
+    service = build_service()
+    root_id = _find_root_folder(service)
+    if not root_id:
+        return None
+
+    matters = {matter.drive_folder: matter}
+    seen = set()
+    unmatched = set()
+
+    matter_folder = _find_child_folder(service, root_id, matter.drive_folder)
+    notes_folder = (
+        _find_child_folder(service, matter_folder["id"], NOTES_FOLDER_NAME)
+        if matter_folder
+        else None
+    )
+    if notes_folder:
+        stack = [(notes_folder["id"], [matter.drive_folder, NOTES_FOLDER_NAME])]
+        while stack:
+            folder_id, prefix = stack.pop()
+            for child in _list_children(service, folder_id):
+                if child.get("mimeType") == FOLDER_MIME:
+                    stack.append((child["id"], prefix + [child["name"]]))
+                    continue
+                if not _is_allowed(child):
+                    continue
+                try:
+                    _ingest(
+                        service,
+                        child,
+                        prefix + [child["name"]],
+                        matters,
+                        debug_dir,
+                        False,
+                        stats,
+                        unmatched,
+                    )
+                    seen.add(child["id"])
+                except Exception:
+                    logger.exception(
+                        "Failed to sync note %s for matter %s",
+                        child.get("name"),
+                        matter.pk,
+                    )
+
+    # Drop this matter's synced notes that are no longer in the folder.
+    _delete_synced_for_matter(matter, debug_dir, seen, stats)
+    return stats

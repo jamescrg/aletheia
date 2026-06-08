@@ -446,6 +446,21 @@ urlpatterns = [
         notes.notes_shortcuts,
         name="notes-shortcuts",
     ),
+    path(
+        "case/<int:matter_id>/notes/drive/link/",
+        notes.drive_link_modal,
+        name="notes-drive-link-modal",
+    ),
+    path(
+        "case/<int:matter_id>/notes/drive/link/set/",
+        notes.drive_link,
+        name="notes-drive-link",
+    ),
+    path(
+        "case/<int:matter_id>/notes/drive/unlink/",
+        notes.drive_unlink,
+        name="notes-drive-unlink",
+    ),
     # Labels (matter-scoped)
     path("case/<int:matter_id>/labels/", labels.labels_index, name="labels-index"),
     path("case/<int:matter_id>/labels/list/", labels.labels_list, name="labels-list"),

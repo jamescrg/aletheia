@@ -164,6 +164,20 @@
              oninput="this.classList.toggle('toggle-active', this.value.trim() !== '')">
     </div>
   </div>
-  <div class="toolbar-right"></div>
+  <div class="toolbar-right">
+    <button type="button"
+            class="btn-icon"
+            hx-get="{% url 'case:notes-drive-link-modal' matter.id %}"
+            hx-target="#htmx-modal-container"
+            hx-trigger="click"
+            title="{% if matter.drive_folder %}Drive folder: {{ matter.drive_folder }}{% else %}Link a Google Drive folder to sync case notes{% endif %}">
+      <i class="icon-cloud with-text"></i>
+      {% if matter.drive_folder %}
+        {{ matter.drive_folder|truncatechars:24 }}
+      {% else %}
+        Link Drive Folder
+      {% endif %}
+    </button>
+  </div>
 </div>
 <div id="notes-table">{% include "case/notes/table.html" %}</div>

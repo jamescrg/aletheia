@@ -5,8 +5,10 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 
+import apps.drive.google as drive_google
 from apps.case.models import Document, Highlight
 from apps.case.views import get_matter_from_url, get_session_key, set_last_tab
+from apps.matters.models import Matter
 from apps.notes.models import Note, NoteView
 from apps.notes.views import record_note_view
 
@@ -558,3 +560,70 @@ def reference_citations(request, note_id):
         citations[f"hl:{hl.id}"] = hl.citation
 
     return JsonResponse(citations)
+
+
+# ---------------------------------------------------------------------------
+# Google Drive folder linking (Notes tab)
+# ---------------------------------------------------------------------------
+
+
+@login_required
+def drive_link_modal(request, matter_id):
+    """Modal to pick this matter's Google Drive folder from a live list."""
+    matter, _ = get_matter_from_url(request, matter_id)
+
+    folders = drive_google.list_matter_folders()
+    # Folders already linked to a different matter (prevent mis-linking).
+    taken = {
+        m.drive_folder: m
+        for m in Matter.objects.exclude(pk=matter.pk)
+        .exclude(drive_folder__isnull=True)
+        .exclude(drive_folder="")
+    }
+    folder_rows = [{"name": f, "taken_by": taken.get(f)} for f in folders]
+
+    context = {
+        "matter": matter,
+        "folders": folder_rows,
+        "current": matter.drive_folder,
+        "linked": drive_google.check_credentials(),
+    }
+    return render(request, "case/notes/drive-link-modal.html", context)
+
+
+@login_required
+@require_POST
+def drive_link(request, matter_id):
+    """Set this matter's Drive folder and resync its notes immediately."""
+    matter, _ = get_matter_from_url(request, matter_id)
+    folder = request.POST.get("folder", "").strip()
+
+    if folder:
+        clash = Matter.objects.exclude(pk=matter.pk).filter(drive_folder=folder).first()
+        if clash:
+            # 200 so HTMX swaps the message into the modal's error slot.
+            return HttpResponse(
+                f'<p class="error-text">“{folder}” is already linked to '
+                f"{clash}. Unlink it there first.</p>"
+            )
+
+    matter.drive_folder = folder or None
+    matter.save(update_fields=["drive_folder"])
+    # Resync this matter only (ingests the new folder, drops notes from any
+    # previously-linked folder). Synchronous so notes are present on reload;
+    # move to django-q async_task if matters ever carry very large note sets.
+    drive_google.resync_matter(matter)
+
+    return HttpResponse(status=204, headers={"HX-Refresh": "true"})
+
+
+@login_required
+@require_POST
+def drive_unlink(request, matter_id):
+    """Unlink this matter's Drive folder and remove its synced notes."""
+    matter, _ = get_matter_from_url(request, matter_id)
+    matter.drive_folder = None
+    matter.save(update_fields=["drive_folder"])
+    drive_google.resync_matter(matter)
+
+    return HttpResponse(status=204, headers={"HX-Refresh": "true"})
