@@ -1,0 +1,23 @@
+[Unit]
+Description=VimLaw Google Drive case-notes sync (oneshot)
+After=network.target postgresql.service
+
+[Service]
+Type=oneshot
+User=<user>
+Group=<user>
+WorkingDirectory=/home/<user>/law
+ExecStart=/home/<user>/.venvs/law/bin/python manage.py sync_drive_notes
+
+# Environment variables (adjust path if using .env differently)
+EnvironmentFile=/home/<user>/law/config/.env
+
+# Notes:
+# - This is the incremental sync. It no-ops cleanly until an admin links a
+#   Drive account at /settings/integrations/.
+# - Driven by drive-notes-sync.timer (every ~30s). The oneshot type means the
+#   timer naturally waits for the previous run to finish before starting another.
+# - Schedule a nightly `--full` run separately to reconcile folder renames/moves,
+#   which the incremental changes feed does not re-path on its own, e.g.:
+#     ExecStart=... manage.py sync_drive_notes --full
+#   in a second timer set to OnCalendar=*-*-* 03:00:00

@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import F, OuterRef, Subquery
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
@@ -12,6 +12,17 @@ from apps.notes.views import record_note_view
 
 from .filters import NotesFilter
 from .forms import NoteForm
+
+# Notes synced from Google Drive are read-only in the app (Drive is the source
+# of truth); content/title edits would be overwritten on the next sync.
+SYNCED_READONLY_MSG = "This note syncs from Google Drive and is read-only here."
+
+
+def _synced_block(note):
+    """Return a 403 response if the note is Drive-synced, else None."""
+    if note.is_synced:
+        return HttpResponseForbidden(SYNCED_READONLY_MSG)
+    return None
 
 
 def get_notes_data(request, matter, matter_id):
@@ -262,6 +273,8 @@ def sidebar_sort(request, note_id, sort_key):
 def note_edit(request, note_id):
     """Edit note metadata (title, importance)."""
     note = get_object_or_404(Note, pk=note_id)
+    if blocked := _synced_block(note):
+        return blocked
     matter = note.matter
 
     if request.method == "POST":
@@ -291,6 +304,8 @@ def note_edit(request, note_id):
 def note_delete(request, note_id):
     """Delete a note."""
     note = get_object_or_404(Note, pk=note_id)
+    if blocked := _synced_block(note):
+        return blocked
     note.delete()
 
     return HttpResponse(status=204, headers={"HX-Trigger": "notesChanged"})
@@ -302,6 +317,8 @@ def note_content(request, note_id):
     note = get_object_or_404(Note, pk=note_id)
 
     if request.method == "POST":
+        if blocked := _synced_block(note):
+            return blocked
         content = request.POST.get("content", "")
         note.content = content
         note.save()
@@ -315,6 +332,8 @@ def note_content(request, note_id):
 def note_autosave(request, note_id):
     """Autosave endpoint for the editor."""
     note = get_object_or_404(Note, pk=note_id)
+    if blocked := _synced_block(note):
+        return blocked
 
     content = request.POST.get("content", "")
     note.content = content
@@ -330,6 +349,8 @@ def note_autosave(request, note_id):
 def note_title(request, note_id):
     """Update note title."""
     note = get_object_or_404(Note, pk=note_id)
+    if blocked := _synced_block(note):
+        return blocked
 
     title = request.POST.get("title", "").strip()
     if title:

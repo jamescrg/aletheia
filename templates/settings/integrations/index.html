@@ -6,8 +6,8 @@
         <h1>Google Account</h1>
       </div>
       <p class="detail-text">
-        Connect a Google account to syncronize contacts and/or view calendar events on your
-        home page.
+        Connect a Google account to syncronize contacts, view calendar events on your
+        home page, and mirror case notes from Google Drive.
       </p>
       <div class="integrations-list">
         <div class="integrations-item">
@@ -30,7 +30,38 @@
                href="{% url 'settings:google-login' 'calendar' %}">Connect</a>
           {% endif %}
         </div>
+        <div class="integrations-item">
+          <span>Google Drive (Case Notes)</span>
+          {% if drive_token %}
+            <a class="btn btn-danger"
+               href="{% url 'settings:google-logout' 'drive' %}">Disconnect</a>
+          {% else %}
+            <a class="btn btn-success"
+               href="{% url 'settings:google-login' 'drive' %}">Connect</a>
+          {% endif %}
+        </div>
       </div>
+      {% if drive_status %}
+        <div class="drive-sync-status">
+          <p class="detail-text">
+            {{ drive_status.synced_count }} synced note{{ drive_status.synced_count|pluralize }}
+            {% if drive_status.last_sync_at %}
+              · last synced {{ drive_status.last_sync_at|timesince }} ago
+            {% elif not drive_status.bootstrapped %}
+              · not yet synced (run <code>sync_drive_notes --full</code>)
+            {% endif %}
+          </p>
+          {% if drive_status.unmatched_folders %}
+            <p class="detail-text urgent">
+              {{ drive_status.unmatched_folders|length }} Drive folder{{ drive_status.unmatched_folders|length|pluralize }}
+              not linked to a matter (run <code>link_drive_folders</code>):
+            </p>
+            <ul class="drive-unmatched">
+              {% for folder in drive_status.unmatched_folders %}<li>{{ folder }}</li>{% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+      {% endif %}
     {% endif %}
   </div>
 {% endblock subcontent %}

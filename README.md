@@ -61,7 +61,7 @@ The application needs additional software to be installed on the machine
 where the application will be running:
 
 ```bash
-sudo apt-get install -y libpangocairo-1.0-0 tesseract-ocr ghostscript poppler-utils
+sudo apt-get install -y libpangocairo-1.0-0 tesseract-ocr ghostscript poppler-utils pandoc
 ```
 
 - **Pango** (`libpangocairo-1.0-0`) - Required by WeasyPrint for PDF
@@ -71,6 +71,8 @@ sudo apt-get install -y libpangocairo-1.0-0 tesseract-ocr ghostscript poppler-ut
 - **Ghostscript** (`ghostscript`) - Required by ocrmypdf for PDF processing
 - **Poppler** (`poppler-utils`) - Required by pdf2image for PDF to image
   conversion
+- **Pandoc** (`pandoc`) - Converts Google Drive case notes (`.docx`/`.odt`) to
+  Markdown for the case-notes sync (`manage.py sync_drive_notes`)
 
 ### Setting up PostgreSQL
 

@@ -24,6 +24,9 @@ class Matter(AuditMixin, models.Model):
 
     clio_matter_id = models.CharField(max_length=500, null=True, blank=True)
     client_reference_id = models.CharField(max_length=50, blank=True, null=True)
+    # Name of this matter's Google Drive folder under DRIVE_NOTES_ROOT, used to
+    # attach synced case notes. Set via the link_drive_folders command.
+    drive_folder = models.CharField(max_length=255, null=True, blank=True)
     practice_area = models.ForeignKey(
         "PracticeArea",
         on_delete=models.SET_NULL,

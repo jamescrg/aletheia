@@ -156,6 +156,7 @@ function initEditor() {
 
   state.editor = new Editor({
     element: container,
+    editable: !(window.NOTE_DATA && window.NOTE_DATA.readOnly),
     extensions: [
       Document,
       Paragraph,
@@ -216,6 +217,7 @@ function initEditor() {
 function setupTitleEdit() {
   const input = document.getElementById("note-title");
   if (!input) return;
+  if (window.NOTE_DATA && window.NOTE_DATA.readOnly) return;
 
   let originalTitle = input.value;
 

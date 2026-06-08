@@ -4,11 +4,20 @@ import google_auth_oauthlib.flow
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
+import apps.drive.google as drive_google
 from utils.prepare_path import prepare_path
 
 CONTACTS_TOKEN_PATH = "google/contact_tokens.json"
 CALENDAR_TOKEN_PATH = "google/calendar_tokens.json"
+DRIVE_TOKEN_PATH = "google/drive_tokens.json"
 GOOGLE_TOKEN_PATH = "google/google_tokens.json"
+
+# Map the <app> URL segment to its token file.
+TOKEN_PATHS = {
+    "contacts": CONTACTS_TOKEN_PATH,
+    "calendar": CALENDAR_TOKEN_PATH,
+    "drive": DRIVE_TOKEN_PATH,
+}
 
 
 def _token_exists(file_path):
@@ -33,6 +42,7 @@ def _create_flow(redirect_uri):
         scopes=[
             "https://www.googleapis.com/auth/calendar",
             "https://www.googleapis.com/auth/contacts",
+            "https://www.googleapis.com/auth/drive.readonly",
         ],
     )
 
@@ -52,12 +62,18 @@ def _get_auth_url(flow):
 def index(request):
     contacts_token = _token_exists(CONTACTS_TOKEN_PATH)
     calendar_token = _token_exists(CALENDAR_TOKEN_PATH)
+    drive_token = _token_exists(DRIVE_TOKEN_PATH)
+
+    # Drive case-notes sync health (last sync, synced count, unmatched folders).
+    drive_status = drive_google.get_sync_status() if drive_token else None
 
     context = {
         "app": "settings",
         "subapp": "integrations",
         "contacts_token": contacts_token,
         "calendar_token": calendar_token,
+        "drive_token": drive_token,
+        "drive_status": drive_status,
     }
 
     return render(request, "settings/integrations/index.html", context)
@@ -93,7 +109,7 @@ def google_store(request):
 
     app = request.session["app"]
 
-    path = CONTACTS_TOKEN_PATH if app == "contacts" else CALENDAR_TOKEN_PATH
+    path = TOKEN_PATHS.get(app, CALENDAR_TOKEN_PATH)
 
     prepare_path(path)
     with open(path, "w") as file:
@@ -104,7 +120,7 @@ def google_store(request):
 
 @login_required
 def google_logout(request, app):
-    path = CONTACTS_TOKEN_PATH if app == "contacts" else CALENDAR_TOKEN_PATH
+    path = TOKEN_PATHS.get(app, CALENDAR_TOKEN_PATH)
 
     prepare_path(path)
     with open(path, "w") as file:

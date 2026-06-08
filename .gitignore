@@ -16,6 +16,7 @@ google/*
 node_modules/
 __pycache__/
 media/
+drive_notes/
 
 # Local development (Nix)
 .direnv/

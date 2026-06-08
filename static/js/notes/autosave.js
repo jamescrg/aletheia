@@ -10,6 +10,7 @@ export function getMarkdownContent() {
 }
 
 export function scheduleAutosave() {
+  if (window.NOTE_DATA && window.NOTE_DATA.readOnly) return;
   if (state.autosaveTimer) clearTimeout(state.autosaveTimer);
   updateSaveStatus("unsaved");
 
