@@ -1141,15 +1141,13 @@
 
 /* Highlighted text (==text==) */
 .ai-markdown mark {
-  /* Underline highlight instead of a fill: a bright yellow line (the shared
-     "line" yellow, fixed in both themes) under text that keeps its normal
-     theme-aware colour. */
-  background: none;
+  /* Light: a soft yellow fill behind text that keeps its normal colour.
+     Dark flips to an underline (see the co-located dark block at the bottom of
+     this file) because a fill reads as muddy against the dark surface. */
+  background: var(--hl-yellow);
   color: inherit;
-  text-decoration: underline;
-  text-decoration-color: var(--yellow-400);
-  text-decoration-thickness: 0.125em;
-  text-underline-offset: 0.2em;
+  border-radius: 0.15em;
+  padding: 0 0.15em;
 }
 
 /* Task lists (GitHub-style checkboxes) */
@@ -2015,4 +2013,17 @@
 
 .excluded-item .context-section-header.excluded:hover {
   background: var(--ai-surface);
+}
+
+/* Dark mode — highlighted text (==text==) drops the yellow fill (it reads muddy
+   against the dark surface) and moves the colour onto a bright underline (the
+   shared "line" yellow, fixed across themes) under otherwise-normal text. */
+[data-theme="dark"] .ai-markdown mark {
+  background: none;
+  border-radius: 0;
+  padding: 0;
+  text-decoration: underline;
+  text-decoration-color: var(--yellow-400);
+  text-decoration-thickness: 0.125em;
+  text-underline-offset: 0.2em;
 }
