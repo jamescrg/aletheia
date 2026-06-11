@@ -38,6 +38,7 @@ def get_list_data(request):
 
     selected_contact = None
     relationships = None
+    open_matters = None
     selected_contact_not_found = False
 
     if request.session.get("selected_contact_id"):
@@ -81,6 +82,8 @@ def get_list_data(request):
                 open_relationships + pending_relationships + complete_relationships
             )
 
+            open_matters = open_relationships
+
     if google.check_credentials():
         google_logged_in = True
     else:
@@ -106,6 +109,7 @@ def get_list_data(request):
         "selected_contact_not_found": selected_contact_not_found,
         "google_logged_in": google_logged_in,
         "relationships": relationships,
+        "open_matters": open_matters,
         "trust": trust,
         "confirmed_balance": confirmed_balance,
         "pending_balance": pending_balance,

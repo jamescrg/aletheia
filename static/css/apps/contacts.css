@@ -325,6 +325,16 @@
   width: 5rem;
 }
 
+/* Open Matters section on the Details tab */
+
+.contact-open-matters {
+  margin-top: 1.5rem;
+}
+
+.contact-open-matters thead th {
+  background: transparent;
+}
+
 .action-buttons {
   display: flex;
   flex-wrap: wrap;

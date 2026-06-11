@@ -189,4 +189,35 @@
   {% endif %}
   {# Notes #}
   {% if selected_contact.notes %}<div class="contact-notes">{{ selected_contact.notes|linebreaks }}</div>{% endif %}
+  {# Open Matters #}
+  {% if open_matters %}
+    <div class="contact-matters-section contact-open-matters">
+      <div class="table-container">
+        <table class="table contact-matters-list">
+          <thead>
+            <tr>
+              <th>Open Matters</th>
+              <th class="id">ID</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for relationship in open_matters %}
+              <tr id="matter-{{ relationship.matter.id }}">
+                <td class="name">
+                  <a href="{% url 'matters:contacts' id=relationship.matter.id %}">{{ relationship.matter.name }}</a>
+                </td>
+                <td class="id">
+                  {% if relationship.matter.client_reference_id %}
+                    {{ relationship.matter.client_reference_id }}
+                  {% else %}
+                    {{ relationship.matter.id }}
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endif %}
 </div>

@@ -36,27 +36,4 @@
       <p>This contact is not associated with any matters.</p>
     </div>
   {% endif %}
-  {# Matter Assignment Actions #}
-  <div class="contact-matter-actions">
-    <div class="action-buttons">
-      <a href="#"
-         class="btn btn-outline-primary"
-         hx-get="/contacts/{{ selected_contact.id }}/assign"
-         hx-target="#htmx-modal-container"
-         data-bs-toggle="modal"
-         data-bs-target="#htmx-modal-container">
-        <i class="icon-plus-circle"></i>
-        Assign to Matter
-      </a>
-      <a href="#"
-         class="btn btn-outline-primary"
-         hx-get="/contacts/{{ selected_contact.id }}/remove"
-         hx-target="#htmx-modal-container"
-         data-bs-toggle="modal"
-         data-bs-target="#htmx-modal-container">
-        <i class="icon-minus-circle"></i>
-        Remove from Matter
-      </a>
-    </div>
-  </div>
 </div>

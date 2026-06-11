@@ -51,9 +51,6 @@
       <li {% if not contact_subapp or contact_subapp == 'details' %}class="active"{% endif %}>
         <a href="{% url 'contacts:detail-details' selected_contact.id %}">Details</a>
       </li>
-      <li {% if contact_subapp == 'matters' %}class="active"{% endif %}>
-        <a href="{% url 'contacts:detail-matters' selected_contact.id %}">Matters</a>
-      </li>
       {% if selected_contact.client_status == 'Current' or selected_contact.client_status == 'Pending' or selected_contact.client_status == 'Former' %}
         <li {% if contact_subapp == 'trust' %}class="active"{% endif %}>
           <a href="{% url 'contacts:detail-trust' selected_contact.id %}">Trust</a>
@@ -62,6 +59,9 @@
           <a href="{% url 'contacts:detail-intake' selected_contact.id %}">Intake</a>
         </li>
       {% endif %}
+      <li {% if contact_subapp == 'matters' %}class="active"{% endif %}>
+        <a href="{% url 'contacts:detail-matters' selected_contact.id %}">All Matters</a>
+      </li>
     </ul>
   </nav>
   <div class="detail-body">
@@ -76,5 +76,28 @@
     {% else %}
       {% include "contacts/details/main.html" %}
     {% endif %}
+    {# Matter Assignment Actions #}
+    <div class="contact-matter-actions">
+      <div class="action-buttons">
+        <a href="#"
+           class="btn btn-outline-primary"
+           hx-get="/contacts/{{ selected_contact.id }}/assign"
+           hx-target="#htmx-modal-container"
+           data-bs-toggle="modal"
+           data-bs-target="#htmx-modal-container">
+          <i class="icon-plus-circle"></i>
+          Assign to Matter
+        </a>
+        <a href="#"
+           class="btn btn-outline-primary"
+           hx-get="/contacts/{{ selected_contact.id }}/remove"
+           hx-target="#htmx-modal-container"
+           data-bs-toggle="modal"
+           data-bs-target="#htmx-modal-container">
+          <i class="icon-minus-circle"></i>
+          Remove from Matter
+        </a>
+      </div>
+    </div>
   </div>
 </div>
