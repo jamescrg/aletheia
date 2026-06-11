@@ -22,6 +22,7 @@ from apps.invoicing.credits.models import Credit
 from apps.invoicing.invoices.models import Invoice
 from apps.invoicing.payments.models import Payment
 from apps.matters.models import Matter
+from apps.tasks.constants import ACTIVE_STATUSES
 from apps.tasks.models import Task
 from apps.trust.trust import get_confirmed_client_balance
 
@@ -44,7 +45,7 @@ def dash_index(request):
 
     # Tasks past due, due today, or due tomorrow, ordered by due date then importance
     urgent_tasks = Task.objects.filter(
-        status="Pending",
+        status__in=ACTIVE_STATUSES,
         date_due__lte=tomorrow,
     ).order_by("date_due", "importance")
 

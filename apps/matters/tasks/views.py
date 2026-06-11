@@ -3,7 +3,7 @@ from datetime import date
 from decimal import Decimal
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_POST
 
@@ -21,6 +21,14 @@ from apps.management.selection import (
     toggle_id,
 )
 from apps.matters.models import Matter
+from apps.tasks.constants import (
+    ACTIVE_STATUSES,
+    STATUS_BY_SLUG,
+    STATUS_COMPLETE,
+    STATUS_PENDING,
+    coerce_status,
+    status_is_custom,
+)
 from apps.tasks.filter import TasksFilter
 from apps.tasks.forms import BulkTasksForm, TaskForm
 from apps.tasks.models import (
@@ -49,7 +57,7 @@ def get_matter_tasks_data(request, matter_id):
     if has_existing_filter:
         filter_data = {
             **filter_data,
-            "status": filter_data.get("status", "Pending"),
+            "status": coerce_status(filter_data.get("status")) or ACTIVE_STATUSES,
             "order_by": filter_data.get("order_by", "date_due"),
             "matter": matter_id,
         }
@@ -59,9 +67,10 @@ def get_matter_tasks_data(request, matter_id):
         user_id = int(user_id) if user_id not in (None, "") else None
         focus = filter_data.get("focus")
     else:
-        # Default filter for matter tasks - show pending tasks, all users and all focus by default
+        # Default filter for matter tasks - show active (non-complete) tasks,
+        # all users and all focus by default
         default_filter = {
-            "status": "Pending",
+            "status": ACTIVE_STATUSES,
             "matter": matter_id,
             "order_by": "date_due",
             "user": None,  # All users
@@ -193,7 +202,7 @@ def get_matter_tasks_data(request, matter_id):
         "custom_filter_active": bool(filter_data)
         and any(
             [
-                filter_data.get("status") == "Complete",
+                status_is_custom(filter_data.get("status")),
                 filter_data.get("date_due_min") not in (None, ""),
                 filter_data.get("date_due_max") not in (None, ""),
                 filter_data.get("date_completed_min") not in (None, ""),
@@ -244,7 +253,7 @@ def tasks_add(request, id):
         form = TaskForm(request.POST, user=request.user, use_required_attribute=False)
         if form.is_valid():
             task = form.save(commit=False)
-            task.status = "Pending"
+            task.status = STATUS_PENDING
             task.matter = matter  # Automatically assign to the current matter
             task.save()
 
@@ -312,7 +321,7 @@ def tasks_add_quick(request, id):
 
     # set task description and some property values
     task.description = request.POST["description"]
-    task.status = "Pending"
+    task.status = STATUS_PENDING
     task.date_due = date.today()
     task.matter = matter  # Always assign to the current matter
 
@@ -357,7 +366,7 @@ def tasks_edit(request, id, task_id):
         form = TaskForm(request.POST, instance=task, user=request.user)
         if form.is_valid():
             task = form.save(commit=False)
-            if task.status == "Complete" and not can_complete_task(task):
+            if task.status == STATUS_COMPLETE and not can_complete_task(task):
                 form.add_error(
                     "status",
                     "Please complete all checklist items before marking this task as done.",
@@ -406,12 +415,14 @@ def tasks_filter(request, id):
 
     if request.method == "POST":
         # Merge into existing session so unmodified quick-filter state is
-        # preserved; skip the CSRF token explicitly.
+        # preserved; skip the CSRF token explicitly. status is multi-valued, so
+        # read it via getlist (the items() loop would keep only the last box).
         filter_data = dict(request.session.get("matter_tasks_filter", {}))
         for key, val in request.POST.items():
-            if key == "csrfmiddlewaretoken":
+            if key in ("csrfmiddlewaretoken", "status"):
                 continue
             filter_data[key] = val
+        filter_data["status"] = request.POST.getlist("status")
         filter_data["matter"] = id  # Ensure matter is always set
         request.session["matter_tasks_filter"] = filter_data
         return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
@@ -420,12 +431,17 @@ def tasks_filter(request, id):
         filter_data["matter"] = id  # Ensure matter is always set
 
         if filter_data:
+            # Coerce status to a list so the multi-select binds and pre-checks
+            # the right boxes; legacy single-string sessions self-heal here.
+            filter_data["status"] = (
+                coerce_status(filter_data.get("status")) or ACTIVE_STATUSES
+            )
             # Create a queryset filtered by matter
             queryset = Task.objects.filter(matter=matter)
             filter = TasksFilter(filter_data, queryset=queryset)
         else:
             default_filter = {
-                "status": "Pending",
+                "status": ACTIVE_STATUSES,
                 "matter": id,
                 "order_by": "date_due",
                 "user": None,  # All users by default
@@ -486,8 +502,8 @@ def tasks_status(request, id, task_id):
     matter = get_object_or_404(Matter, pk=id)
     task = get_object_or_404(Task, pk=task_id, matter=matter)
 
-    if task.status == "Complete":
-        task.status = "Pending"
+    if task.status == STATUS_COMPLETE:
+        task.status = STATUS_PENDING
     else:
         if not can_complete_task(task):
             response = HttpResponse(status=204)
@@ -498,7 +514,7 @@ def tasks_status(request, id, task_id):
                 }
             )
             return response
-        task.status = "Complete"
+        task.status = STATUS_COMPLETE
     task.save()
     return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
 
@@ -509,7 +525,12 @@ def tasks_set_status(request, id, task_id, status):
     """Set task status for a matter"""
     matter = get_object_or_404(Matter, pk=id)
     task = get_object_or_404(Task, pk=task_id, matter=matter)
-    if status == "Complete" and not can_complete_task(task):
+    # status arrives as a slug ("in-progress") so spaced labels never travel in
+    # the URL path; map it back to the stored display value.
+    status = STATUS_BY_SLUG.get(status)
+    if status is None:
+        raise Http404("Unknown status")
+    if status == STATUS_COMPLETE and not can_complete_task(task):
         response = HttpResponse(status=204)
         response["HX-Toast"] = json.dumps(
             {
@@ -793,7 +814,7 @@ def tasks_bulk_set_status(request, id):
     status = request.POST.get("status")
     if status:
         tasks = Task.objects.filter(id__in=selected_tasks, matter_id=id)
-        if status == "Complete":
+        if status == STATUS_COMPLETE:
             skipped = 0
             for task in tasks:
                 if can_complete_task(task):

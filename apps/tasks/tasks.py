@@ -9,6 +9,7 @@ from apps.management.selection import (
     get_session_key,
 )
 from apps.matters.models import Matter
+from apps.tasks.constants import ACTIVE_STATUSES, coerce_status, status_is_custom
 from apps.tasks.filter import TasksFilter
 from apps.tasks.models import (
     Task,
@@ -34,7 +35,7 @@ def get_list_data(request):
     if filter_data:
         filter_data = {
             **filter_data,
-            "status": filter_data.get("status", "Pending"),
+            "status": coerce_status(filter_data.get("status")) or ACTIVE_STATUSES,
             "order_by": filter_data.get("order_by", "date_due"),
         }
 
@@ -55,7 +56,7 @@ def get_list_data(request):
     else:
         default_filter = {
             "filter_label": "today",
-            "status": "Pending",
+            "status": ACTIVE_STATUSES,
             "date_due_max": today.strftime("%Y-%m-%d"),
             "date_due_min": "",
             "has_due_date": "",
@@ -191,7 +192,7 @@ def get_list_data(request):
         "custom_filter_active": bool(filter_data)
         and any(
             [
-                filter_data.get("status") == "Complete",
+                status_is_custom(filter_data.get("status")),
                 filter_data.get("matter") not in (None, ""),
                 filter_data.get("date_completed_min") not in (None, ""),
                 filter_data.get("date_completed_max") not in (None, ""),

@@ -3,7 +3,7 @@ from datetime import date, datetime, timedelta
 
 import markdown
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
@@ -19,6 +19,13 @@ from apps.management.selection import (
     toggle_id,
 )
 from apps.matters.models import Matter
+from apps.tasks.constants import (
+    ACTIVE_STATUSES,
+    STATUS_BY_SLUG,
+    STATUS_COMPLETE,
+    STATUS_PENDING,
+    coerce_status,
+)
 from apps.tasks.filter import TasksFilter
 from apps.tasks.forms import BulkTasksForm, TaskForm, TaskNoteForm
 from apps.tasks.models import (
@@ -59,7 +66,7 @@ def tasks_add(request):
         form = TaskForm(request.POST, user=request.user, use_required_attribute=False)
         if form.is_valid():
             task = form.save(commit=False)
-            task.status = "Pending"
+            task.status = STATUS_PENDING
             task.save()
 
             # Store new task ID for force-show in filtered lists
@@ -150,7 +157,7 @@ def tasks_add_quick(request):
 
     # set task description and some property values
     task.description = description
-    task.status = "Pending"
+    task.status = STATUS_PENDING
     task.date_due = date.today()
 
     # auto populate importance from filter
@@ -213,7 +220,7 @@ def tasks_edit(request, id):
         form = TaskForm(request.POST, instance=task, user=request.user)
         if form.is_valid():
             task = form.save(commit=False)
-            if task.status == "Complete" and not can_complete_task(task):
+            if task.status == STATUS_COMPLETE and not can_complete_task(task):
                 form.add_error(
                     "status",
                     "Please complete all checklist items before marking this task as done.",
@@ -293,12 +300,14 @@ def _detect_filter_label(filter_data, today):
 def tasks_filter(request, user=None):
     if request.method == "POST":
         # Merge into existing session so unmodified quick-filter state is
-        # preserved; skip the CSRF token explicitly.
+        # preserved; skip the CSRF token explicitly. status is multi-valued, so
+        # read it via getlist (the items() loop would keep only the last box).
         filter_data = dict(request.session.get("tasks_filter", {}))
         for key, val in request.POST.items():
-            if key == "csrfmiddlewaretoken":
+            if key in ("csrfmiddlewaretoken", "status"):
                 continue
             filter_data[key] = val
+        filter_data["status"] = request.POST.getlist("status")
         filter_data["filter_label"] = _detect_filter_label(filter_data, date.today())
         request.session["tasks_filter"] = filter_data
         return HttpResponse(status=204, headers={"HX-Trigger": "tasksListChanged"})
@@ -337,6 +346,12 @@ def tasks_filter(request, user=None):
                 except (ValueError, TypeError):
                     sanitized_data["matter"] = ""
 
+            # Coerce status to a list so the multi-select binds and pre-checks
+            # the right boxes; legacy single-string sessions self-heal here.
+            sanitized_data["status"] = (
+                coerce_status(sanitized_data.get("status")) or ACTIVE_STATUSES
+            )
+
             # Persist the cleanup so legacy poisoned sessions self-heal.
             if sanitized_data != filter_data:
                 request.session["tasks_filter"] = sanitized_data
@@ -346,7 +361,7 @@ def tasks_filter(request, user=None):
             # If the filter is invalid, reset to defaults
             if not filter.form.is_valid():
                 default_filter = {
-                    "status": "Pending",
+                    "status": ACTIVE_STATUSES,
                     "matter": None,
                     "order_by": "date_due",
                     "user": request.user.id,
@@ -354,7 +369,7 @@ def tasks_filter(request, user=None):
                 filter = TasksFilter(default_filter, queryset=Task.objects.all())
         else:
             default_filter = {
-                "status": "Pending",
+                "status": ACTIVE_STATUSES,
                 "matter": None,
                 "order_by": "date_due",
                 "user": request.user.id,
@@ -452,7 +467,7 @@ def tasks_filter_importance(request, importance_value):
 def tasks_filter_default(request):
     filter_data = {
         "filter_label": "today",
-        "status": "Pending",
+        "status": ACTIVE_STATUSES,
         "date_due_max": date.today().strftime("%Y-%m-%d"),
         "date_due_min": "",
         "has_due_date": "",
@@ -470,8 +485,8 @@ def tasks_filter_default(request):
 @login_required
 def tasks_status(request, id):
     task = get_object_or_404(Task, pk=id)
-    if task.status == "Complete":
-        task.status = "Pending"
+    if task.status == STATUS_COMPLETE:
+        task.status = STATUS_PENDING
     else:
         if not can_complete_task(task):
             response = HttpResponse(status=204)
@@ -482,7 +497,7 @@ def tasks_status(request, id):
                 }
             )
             return response
-        task.status = "Complete"
+        task.status = STATUS_COMPLETE
     task.save()
     return redirect("tasks:list")
 
@@ -490,7 +505,12 @@ def tasks_status(request, id):
 @login_required
 def tasks_set_status(request, task_id, status):
     task = get_object_or_404(Task, pk=task_id)
-    if status == "Complete" and not can_complete_task(task):
+    # status arrives as a slug ("in-progress") so spaced labels never travel in
+    # the URL path; map it back to the stored display value.
+    status = STATUS_BY_SLUG.get(status)
+    if status is None:
+        raise Http404("Unknown status")
+    if status == STATUS_COMPLETE and not can_complete_task(task):
         response = HttpResponse(status=204)
         response["HX-Toast"] = json.dumps(
             {
@@ -590,9 +610,12 @@ def tasks_filter_sort(request, order):
 @login_required
 def clear_tasks(request):
     # Delete all the tasks from the filter that are marked as complete
-    filter_data = request.session.get("tasks_filter", {})
+    filter_data = dict(request.session.get("tasks_filter", {}))
+    # Coerce status to a list so a legacy single-string session doesn't trip the
+    # MultipleChoiceFilter validation when the filter is bound here.
+    filter_data["status"] = coerce_status(filter_data.get("status")) or ACTIVE_STATUSES
     filter = TasksFilter(filter_data)
-    filter.qs.filter(status="Complete").delete()
+    filter.qs.filter(status=STATUS_COMPLETE).delete()
     return redirect("tasks:list")
 
 
@@ -886,7 +909,7 @@ def tasks_bulk_set_status(request):
     status = request.POST.get("status")
     if status:
         tasks = Task.objects.filter(id__in=selected_tasks)
-        if status == "Complete":
+        if status == STATUS_COMPLETE:
             skipped = 0
             for task in tasks:
                 if can_complete_task(task):

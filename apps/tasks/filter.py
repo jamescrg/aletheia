@@ -1,14 +1,11 @@
 import django_filters
+from django import forms
 from django.db.models import F, Q
 
 from apps.accounts.models import CustomUser
 from apps.matters.models import Matter
+from apps.tasks.constants import STATUS_CHOICES
 from apps.tasks.models import Task
-
-STATUS_CHOICES = (
-    ("Pending", "Pending"),
-    ("Complete", "Complete"),
-)
 
 IMPORTANCE_CHOICES = (
     (7, "Highest"),
@@ -79,7 +76,9 @@ class TasksOrderingFilter(django_filters.OrderingFilter):
 
 
 class TasksFilter(django_filters.FilterSet):
-    status = django_filters.ChoiceFilter(choices=STATUS_CHOICES, empty_label="All")
+    status = django_filters.MultipleChoiceFilter(
+        choices=STATUS_CHOICES, widget=forms.CheckboxSelectMultiple
+    )
     date_due = django_filters.DateFromToRangeFilter(
         widget=django_filters.widgets.RangeWidget(attrs={"type": "date"})
     )

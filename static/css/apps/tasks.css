@@ -267,6 +267,30 @@ tr > td.importance.complete .button-link {
   width: 7rem;
 }
 
+/* Multi-select status checkboxes in the Filter modal */
+.filter #id_status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+}
+
+.filter #id_status > div {
+  margin: 0;
+}
+
+.filter #id_status label {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  font-weight: 400;
+  gap: 0.4rem;
+  margin: 0;
+}
+
+.filter #id_status input[type="checkbox"] {
+  margin: 0;
+}
+
 .tasks-table .user {
   width: 7rem;
 }

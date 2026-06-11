@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from apps.accounts.models import CustomUser
 from apps.calendar.models import Event
+from apps.tasks.constants import ACTIVE_STATUSES
 from apps.tasks.models import Task
 
 LOOKAHEAD_DAYS = 3
@@ -71,18 +72,18 @@ def send_digest_for_user(user):
 
     overdue_tasks = tasks_qs.filter(
         date_due__lt=today,
-        status="Pending",
+        status__in=ACTIVE_STATUSES,
     ).order_by("date_due", "-importance")
 
     today_tasks = tasks_qs.filter(
         date_due=today,
-        status="Pending",
+        status__in=ACTIVE_STATUSES,
     ).order_by("-importance")
 
     upcoming_tasks = tasks_qs.filter(
         date_due__gt=today,
         date_due__lte=upcoming_end,
-        status="Pending",
+        status__in=ACTIVE_STATUSES,
     ).order_by("date_due", "-importance")
 
     has_content = (

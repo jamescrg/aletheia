@@ -8,13 +8,25 @@
     <li>
       <a class="dropdown-item"
          href="#"
-         hx-get="{% url 'tasks:set-status' task_id=task.id status='Pending' %}"
+         hx-get="{% url 'tasks:set-status' task_id=task.id status='pending' %}"
          hx-target="#tasks">Pending</a>
     </li>
     <li>
       <a class="dropdown-item"
          href="#"
-         hx-get="{% url 'tasks:set-status' task_id=task.id status='Complete' %}"
+         hx-get="{% url 'tasks:set-status' task_id=task.id status='in-progress' %}"
+         hx-target="#tasks">In progress</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
+         hx-get="{% url 'tasks:set-status' task_id=task.id status='on-hold' %}"
+         hx-target="#tasks">On hold</a>
+    </li>
+    <li>
+      <a class="dropdown-item"
+         href="#"
+         hx-get="{% url 'tasks:set-status' task_id=task.id status='complete' %}"
          hx-target="#tasks">Complete</a>
     </li>
   </ul>

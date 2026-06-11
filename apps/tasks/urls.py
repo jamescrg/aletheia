@@ -50,7 +50,7 @@ urlpatterns = [
     path("tasks/<int:id>/delete", tasks_delete, name="delete"),
     path("tasks/<int:id>/task-status", tasks_status, name="task-status"),
     path(
-        "tasks/<int:task_id>/task-status/<str:status>",
+        "tasks/<int:task_id>/task-status/<slug:status>",
         tasks_set_status,
         name="set-status",
     ),

@@ -201,7 +201,7 @@ urlpatterns = [
         name="tasks-status",
     ),
     path(
-        "matters/<int:id>/tasks/<int:task_id>/status/<str:status>",
+        "matters/<int:id>/tasks/<int:task_id>/status/<slug:status>",
         tasks.tasks_set_status,
         name="tasks-set-status",
     ),

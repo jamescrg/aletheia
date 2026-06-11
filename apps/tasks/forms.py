@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from apps.accounts.access import filter_matters_for_user
 from apps.accounts.models import CustomUser
 from apps.matters.models import Matter
+from apps.tasks.constants import BULK_STATUS_CHOICES, FORM_STATUS_CHOICES
 from apps.tasks.models import Task, TaskNote
 from config.settings import CustomFormRendererCompact
 
@@ -22,10 +23,7 @@ class TaskForm(forms.ModelForm):
             "date_completed",
         )
 
-        STATUSES = (
-            ("Pending", "Pending"),
-            ("Complete", "Complete"),
-        )
+        STATUSES = FORM_STATUS_CHOICES
 
         labels = {
             "description": "Task",
@@ -89,11 +87,7 @@ class TaskForm(forms.ModelForm):
 
 
 class BulkTasksForm(forms.Form):
-    STATUS_CHOICES = [
-        ("", "— No change —"),
-        ("Pending", "Pending"),
-        ("Complete", "Complete"),
-    ]
+    STATUS_CHOICES = BULK_STATUS_CHOICES
 
     IMPORTANCE_CHOICES = [
         ("", "— No change —"),
