@@ -42,6 +42,18 @@ body {
   text-align: center;
 }
 
+/* Brand monogram: ἀ (alpha + smooth breathing), first letter of ἀλήθεια.
+   Decorative — the title text provides the accessible name. */
+.auth-title::before {
+  content: "ἀ";
+  display: block;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 3rem;
+  font-weight: 600;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
 .auth-subtitle {
   font-size: 1em;
   margin-bottom: 2rem;
