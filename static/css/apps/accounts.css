@@ -50,7 +50,10 @@ body {
    name. */
 .auth-title::before {
   content: "ἀ";
-  font-family: Georgia, "Times New Roman", serif;
+  /* Georgia/Times lack the polytonic ἀ; name Liberation Serif explicitly so
+     the glyph renders as a serif in every browser (Chrome otherwise falls
+     back to a sans-serif). Matches the outlined favicon. */
+  font-family: "Liberation Serif", Georgia, "Times New Roman", serif;
   font-size: 2.5rem;
   font-weight: 600;
   line-height: 1;

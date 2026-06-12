@@ -50,7 +50,9 @@
    a touch larger than the nav icons so it carries as the logo. */
 .sidebar-brand-mark {
   flex-shrink: 0;
-  font-family: Georgia, "Times New Roman", serif;
+  /* Georgia/Times lack the polytonic ἀ; name Liberation Serif explicitly so
+     the glyph renders as a serif in every browser (matches the favicon). */
+  font-family: "Liberation Serif", Georgia, "Times New Roman", serif;
   font-size: 1.65rem;
   font-weight: 600;
   line-height: 1;
