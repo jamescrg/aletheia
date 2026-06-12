@@ -73,18 +73,18 @@
           '';
 
           db-psql = pkgs.writeShellScriptBin "db-psql" ''
-            PGPASSWORD="''${DB_PASSWORD:-vimlawpass}" exec ${pkgs.postgresql_16}/bin/psql \
+            PGPASSWORD="''${DB_PASSWORD:-aletheiapass}" exec ${pkgs.postgresql_16}/bin/psql \
               -h "''${DB_HOST:-localhost}" \
               -p "''${DB_PORT:-5433}" \
-              -U "''${DB_USER:-vimlawuser}" \
-              -d "''${DB_NAME:-vimlaw}" \
+              -U "''${DB_USER:-aletheiauser}" \
+              -d "''${DB_NAME:-aletheia}" \
               "$@"
           '';
 
           db-reset = pkgs.writeShellScriptBin "db-reset" ''
             set -e
-            DB="''${DB_NAME:-vimlaw}"
-            DB_USER="''${DB_USER:-vimlawuser}"
+            DB="''${DB_NAME:-aletheia}"
+            DB_USER="''${DB_USER:-aletheiauser}"
             echo "Resetting database $DB..."
 
             ${pkgs.postgresql_16}/bin/dropdb \
@@ -185,7 +185,7 @@
       in
       {
         devShells.default = pkgs.mkShell {
-          name = "vimlaw-dev";
+          name = "aletheia-dev";
 
           buildInputs = systemDeps ++ runtimeDeps ++ [ python ] ++ (builtins.attrValues scripts);
 

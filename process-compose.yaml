@@ -35,9 +35,9 @@ processes:
   setup-db:
     command: |
       # Create role if it doesn't exist (uses .env values)
-      DB_USER="${DB_USER:-vimlawuser}"
-      DB_PASSWORD="${DB_PASSWORD:-vimlawpass}"
-      DB_NAME="${DB_NAME:-vimlaw}"
+      DB_USER="${DB_USER:-aletheiauser}"
+      DB_PASSWORD="${DB_PASSWORD:-aletheiapass}"
+      DB_NAME="${DB_NAME:-aletheia}"
 
       psql -h localhost -p 5433 -d postgres -tc \
         "SELECT 1 FROM pg_roles WHERE rolname='$DB_USER'" | grep -q 1 || \

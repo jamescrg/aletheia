@@ -2486,7 +2486,7 @@ wheels = [
 ]
 
 [[package]]
-name = "vimlaw"
+name = "aletheia"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
