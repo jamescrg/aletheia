@@ -49,7 +49,18 @@ def render_markdown(text):
             "tables",
             "nl2br",
             "pymdownx.mark",
+            "smarty",
             NoteReferenceExtension(),
-        ]
+        ],
+        # Curl quotes/apostrophes so copied text is typographically clean, but
+        # leave dashes and ellipses straight — legal quotations use the Bluebook
+        # ". . ." ellipsis, which auto-collapsing would break. smarty skips code.
+        extension_configs={
+            "smarty": {
+                "smart_quotes": True,
+                "smart_dashes": False,
+                "smart_ellipses": False,
+            }
+        },
     )
     return mark_safe(md.convert(text))
