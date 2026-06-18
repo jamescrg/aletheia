@@ -21,6 +21,28 @@
   padding: 0.5rem 0.75rem;
 }
 
+/* Connected button group — buttons sit flush with a single shared divider
+   instead of the toolbar's inter-item gap. */
+.toolbar .btn-group {
+  display: inline-flex;
+}
+
+.toolbar .btn-group > button {
+  border-radius: 0;
+}
+
+.toolbar .btn-group > button:not(:last-child) {
+  border-right: none;
+}
+
+.toolbar .btn-group > button:first-child {
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+}
+
+.toolbar .btn-group > button:last-child {
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
 .toolbar-left {
   align-items: center;
   display: flex;

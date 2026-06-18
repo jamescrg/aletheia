@@ -113,6 +113,22 @@
             </li>
           </ul>
         </div>
+        <div class="btn-group">
+          <button type="button"
+                  class="btn-icon {% if user_id == request.user.id %}toggle-active{% endif %}"
+                  title="My tasks"
+                  hx-post="{% url 'tasks:filter-user' request.user.id %}"
+                  hx-target="#tasks">
+            <i class="icon-user"></i>
+          </button>
+          <button type="button"
+                  class="btn-icon"
+                  title="Next user"
+                  hx-post="{% url 'tasks:cycle-user' %}"
+                  hx-target="#tasks">
+            <i class="icon-list-restart"></i>
+          </button>
+        </div>
         <div class="dropdown" x-data="dropdown()">
           <button type="button"
                   id="tasks-user-filter"
@@ -148,20 +164,6 @@
             {% endfor %}
           </ul>
         </div>
-        <button type="button"
-                class="btn-icon {% if user_id == request.user.id %}toggle-active{% endif %}"
-                title="My tasks"
-                hx-post="{% url 'tasks:filter-user' request.user.id %}"
-                hx-target="#tasks">
-          <i class="icon-user"></i>
-        </button>
-        <button type="button"
-                class="btn-icon"
-                title="Next user"
-                hx-post="{% url 'tasks:cycle-user' %}"
-                hx-target="#tasks">
-          <i class="icon-arrow-right"></i>
-        </button>
       </div>
     {% endif %}
   </div>
