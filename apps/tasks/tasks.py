@@ -52,7 +52,7 @@ def resolve_task_filter(request):
         }
 
         filter = TasksFilter(filter_data)
-        tasks = filter.qs
+        tasks = filter.qs.select_related("matter", "user")
 
         user_id = filter_data.get("user")
         user_id = int(user_id) if user_id not in (None, "") else None
@@ -80,7 +80,7 @@ def resolve_task_filter(request):
         request.session.modified = True
 
         filter = TasksFilter(default_filter)
-        tasks = filter.qs
+        tasks = filter.qs.select_related("matter", "user")
 
         user_id = request.user.id
         matter_id = None
@@ -97,14 +97,31 @@ def enrich_tasks(request, task_list):
     has_new_notes, has_checklist, checklist_total, checklist_done,
     checklist_complete, and has_unviewed_checklist.
     """
+    task_ids = [t.id for t in task_list]
+
     # Get user's note view history for badge notification system
-    user_note_views = UserTaskNoteView.objects.filter(user=request.user).values(
-        "task_id", "last_viewed_at"
-    )
+    user_note_views = UserTaskNoteView.objects.filter(
+        user=request.user, task_id__in=task_ids
+    ).values("task_id", "last_viewed_at")
     view_times = {v["task_id"]: v["last_viewed_at"] for v in user_note_views}
 
+    # Notes: which tasks have any note, and which have an "unread" one — created
+    # by another user after this user last viewed (or ever, if never viewed).
+    # Two set-based queries instead of two .exists() per task (was N+1).
+    tasks_with_notes = set(
+        TaskNote.objects.filter(task_id__in=task_ids).values_list("task_id", flat=True)
+    )
+    tasks_with_new_notes = set()
+    for tid, created_at in (
+        TaskNote.objects.filter(task_id__in=task_ids)
+        .exclude(user=request.user)
+        .values_list("task_id", "created_at")
+    ):
+        last_viewed = view_times.get(tid)
+        if last_viewed is None or created_at > last_viewed:
+            tasks_with_new_notes.add(tid)
+
     # Bulk-prefetch checklists to avoid N+1
-    task_ids = [t.id for t in task_list]
     checklists = Checklist.objects.filter(task_id__in=task_ids).prefetch_related(
         "items"
     )
@@ -117,25 +134,8 @@ def enrich_tasks(request, task_list):
     viewed_checklist_task_ids = set(checklist_views)
 
     for task in task_list:
-        task.has_notes = task.notes.exists()
-        if task.has_notes:
-            last_viewed = view_times.get(task.id)
-            if last_viewed:
-                # Check if there are notes created after last view by other users
-                task.has_new_notes = (
-                    TaskNote.objects.filter(task=task, created_at__gt=last_viewed)
-                    .exclude(user=request.user)
-                    .exists()
-                )
-            else:
-                # Never viewed - show as new if there are notes by other users
-                task.has_new_notes = (
-                    TaskNote.objects.filter(task=task)
-                    .exclude(user=request.user)
-                    .exists()
-                )
-        else:
-            task.has_new_notes = False
+        task.has_notes = task.id in tasks_with_notes
+        task.has_new_notes = task.id in tasks_with_new_notes
 
         cl = checklists_by_task.get(task.id)
         if cl:
@@ -262,8 +262,10 @@ def get_board_data(request):
     board_filter = {k: v for k, v in filter_data.items() if k != "order_by"}
     board_filter["status"] = [value for value, _ in STATUS_CHOICES]
 
-    tasks = TasksFilter(board_filter).qs.order_by(
-        F("custom_order").asc(nulls_last=True), "date_due", "id"
+    tasks = (
+        TasksFilter(board_filter)
+        .qs.select_related("matter", "user")
+        .order_by(F("custom_order").asc(nulls_last=True), "date_due", "id")
     )
 
     task_list = list(tasks)
