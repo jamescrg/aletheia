@@ -85,6 +85,8 @@
       board.dataset.clickInit = "1";
       board.addEventListener("click", function (e) {
         if (board._suppressClick) return;
+        // Let the checklist/notes buttons handle their own clicks.
+        if (e.target.closest("a, button")) return;
         var card = e.target.closest(".kanban-card");
         if (!card) return;
         var url = card.dataset.editUrl;
@@ -101,6 +103,10 @@
         ghostClass: "sortable-ghost",
         dragClass: "sortable-drag",
         draggable: ".kanban-card",
+        // Don't start a drag from the checklist/notes buttons; let their click
+        // (and htmx request) go through.
+        filter: ".kanban-card-btn",
+        preventOnFilter: false,
         // Sortable's own drag impl with a small pixel threshold so a click
         // (under 5px of movement) never registers as a drag.
         forceFallback: true,

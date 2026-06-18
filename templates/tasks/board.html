@@ -41,15 +41,21 @@
             <div class="kanban-card-meta">
               {% if task.user %}<span class="kanban-card-user">{{ task.user.username|title }}</span>{% endif %}
               {% if task.date_due %}
-                <span class="kanban-card-date"><i class="icon-calendar"></i> {{ task.date_due|date:'Y-m-d' }}</span>
+                <span class="kanban-card-date"><i class="icon-calendar"></i> {{ task.date_due|date:'m-d' }}</span>
               {% endif %}
               <span class="kanban-card-decorators">
-                {% if task.has_checklist %}
+                <a href="#"
+                   class="kanban-card-btn {% if task.has_checklist %}has-checklist{% endif %}"
+                   hx-get="{% if task.has_checklist %}{% url 'checklists:checklist-modal' task.id %}{% else %}{% url 'checklists:attach-checklist' task.id %}{% endif %}"
+                   hx-target="#htmx-modal-container">
                   <i class="icon-list-checks checklist-badge-icon {% if task.has_unviewed_checklist %}checklist-badge-new{% endif %}"></i>
-                {% endif %}
-                {% if task.has_notes %}
+                </a>
+                <a href="#"
+                   class="kanban-card-btn {% if task.has_notes %}has-notes{% endif %}"
+                   hx-get="{% url 'tasks:detail' id=task.id %}"
+                   hx-target="#htmx-modal-container">
                   <i class="icon-sticky-note note-badge-icon {% if task.has_new_notes %}note-badge-new{% endif %}"></i>
-                {% endif %}
+                </a>
               </span>
             </div>
           </div>

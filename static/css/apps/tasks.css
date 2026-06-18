@@ -941,11 +941,10 @@ body.kanban-dragging .kanban-card {
   gap: 0.5rem;
 }
 
-/* Case name sits first and reads as the card's heading; the colour goes to
-   the priority icon, so the name stays standard text. */
+/* Case name sits first; the colour goes to the priority icon, so the name
+   stays standard text. */
 .kanban-card-matter {
   flex: 1;
-  font-weight: 600;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -981,7 +980,22 @@ body.kanban-dragging .kanban-card {
 }
 
 .kanban-card-decorators {
+  display: inline-flex;
   margin-left: auto;
+}
+
+/* Checklist / notes buttons — clickable, open their own modals. The icon
+   colour (muted, or violet when unviewed) comes from the shared badge
+   classes; hover lifts it. */
+.kanban-card-btn {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+}
+
+.kanban-card-btn:hover .checklist-badge-icon,
+.kanban-card-btn:hover .note-badge-icon {
+  color: var(--color-primary);
 }
 
 /* Sortable drag states. forceFallback renders a floating clone
