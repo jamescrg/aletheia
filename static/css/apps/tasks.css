@@ -930,6 +930,12 @@ body.kanban-dragging .kanban-card {
   background: var(--past-due-bg);
 }
 
+/* Selected for a bulk action — tint matches the checkbox's checked colour.
+   After past-due so selection wins the fill; the importance rail is untouched. */
+.kanban-card.selected {
+  background: var(--selected-background);
+}
+
 .kanban-card.complete .kanban-card-description {
   color: var(--color-muted);
   text-decoration: line-through;

@@ -8,10 +8,12 @@
       </div>
       <div class="kanban-column-cards" data-status-slug="{{ column.slug }}">
         {% for task in column.tasks %}
-          <div class="kanban-card importance-{{ task.importance }}{% if task.status == 'Complete' %} complete{% endif %}{% if task.date_due and task.date_due < today and task.status != 'Complete' %} past-due{% endif %}"
+          <div class="kanban-card importance-{{ task.importance }}{% if task.id in selected_tasks %} selected{% endif %}{% if task.status == 'Complete' %} complete{% endif %}{% if task.date_due and task.date_due < today and task.status != 'Complete' %} past-due{% endif %}"
                data-task-id="{{ task.id }}"
                data-edit-url="{% url 'tasks:edit' id=task.id %}">
             <div class="kanban-card-top">
+              {% url 'tasks:toggle-select' task.id as toggle_url %}
+              {% include "selection/checkbox.html" with toggle_url=toggle_url obj_id=task.id selected_ids=selected_tasks %}
               <span class="kanban-card-matter">
                 {% if task.matter %}
                   {{ task.matter.name }}

@@ -25,6 +25,22 @@ def test_board_view_renders(client, task):
 
 
 @pytest.mark.django_db
+def test_board_card_selection(client, task):
+    client.post("/tasks/view-mode/board/")
+
+    # Unselected: select button present, card not marked selected.
+    body = client.get("/").content.decode()
+    assert f"/tasks/toggle-select/{task.id}/" in body
+    assert "importance-4 selected" not in body
+
+    # Toggle selection -> card carries the selected class + checked icon.
+    assert client.post(f"/tasks/toggle-select/{task.id}/").status_code == 204
+    body = client.get("/").content.decode()
+    assert "importance-4 selected" in body
+    assert "icon-square-check" in body
+
+
+@pytest.mark.django_db
 def test_board_move_changes_status_and_order(client, task):
     client.post("/tasks/view-mode/board/")
     resp = client.post(

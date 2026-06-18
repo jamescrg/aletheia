@@ -105,9 +105,10 @@
         ghostClass: "sortable-ghost",
         dragClass: "sortable-drag",
         draggable: ".kanban-card",
-        // Don't start a drag from the interactive controls (priority dropdown,
-        // checklist/notes buttons); let their click (and htmx request) through.
-        filter: ".kanban-card-btn, .kanban-card-priority",
+        // Don't start a drag from the interactive controls (select checkbox,
+        // priority dropdown, checklist/notes buttons); let their click (and
+        // htmx request) through.
+        filter: ".btn-check, .kanban-card-btn, .kanban-card-priority",
         preventOnFilter: false,
         // Sortable's own drag impl with a small pixel threshold so a click
         // (under 5px of movement) never registers as a drag.
