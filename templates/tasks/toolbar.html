@@ -1,0 +1,240 @@
+<div class="toolbar tasks-toolbar">
+  <div class="toolbar-left tasks-toolbar-left">
+    {% if selected_tasks %}
+      <div class="filter-tools">
+        <button type="button"
+                class="btn-icon toggle-active"
+                hx-post="{% url 'tasks:clear-selection' %}"
+                hx-swap="none">
+          {{ selected_tasks|length }} <i class="icon-x bulk-clear-icon"></i>
+        </button>
+        <button type="button"
+                class="btn-icon"
+                hx-get="{% url 'tasks:bulk-update' %}"
+                hx-target="#htmx-modal-container">
+          <i class="icon-pencil with-text"></i> Update
+        </button>
+        {% include "tasks/bulk-toolbar.html" %}
+        <button type="button"
+                class="btn-icon"
+                hx-post="{% url 'tasks:bulk-delete' %}"
+                hx-confirm="Delete {{ selected_tasks|length }} selected task(s)? This cannot be undone."
+                hx-swap="none">
+          <i class="icon-trash-2"></i>
+        </button>
+      </div>
+    {% else %}
+      {% include "tasks/form-quick.html" %}
+      <button hx-get="{% url 'tasks:add' %}" hx-target="#htmx-modal-container">
+        <i class="icon-plus"></i>
+      </button>
+      <div class="filter-tools">
+        <div class="view-toggle">
+          <button type="button"
+                  class="{% if view_mode != 'board' %}toggle-active{% endif %}"
+                  hx-post="{% url 'tasks:view-mode' 'list' %}"
+                  hx-swap="none"
+                  title="List view">
+            <i class="icon-list"></i>
+          </button>
+          <button type="button"
+                  class="{% if view_mode == 'board' %}toggle-active{% endif %}"
+                  hx-post="{% url 'tasks:view-mode' 'board' %}"
+                  hx-swap="none"
+                  title="Board view">
+            <i class="icon-kanban"></i>
+          </button>
+        </div>
+        <button type="button"
+                class="btn-icon {% if custom_filter_active %}toggle-active{% endif %}"
+                hx-get="{% url 'tasks:filter' %}"
+                hx-target="#htmx-modal-container"
+                hx-trigger="click"
+                hx-swap="#outerHTML">
+          <i class="icon-list-filter"></i>Filter
+        </button>
+        <div class="dropdown" x-data="dropdown()">
+          <button type="button"
+                  id="tasks-importance-filter"
+                  class="select-btn filter-dropdown-button importance-dropdown {% if importance_value %}toggle-active{% endif %}"
+                  x-ref="button"
+                  @click="toggle()"
+                  :aria-expanded="open">
+          <span><i class="icon-flag with-text"></i>
+          {% if importance_value == 7 %}
+            Highest
+          {% elif importance_value == 6 %}
+            Higher
+          {% elif importance_value == 5 %}
+            High
+          {% elif importance_value == 4 %}
+            Normal
+          {% elif importance_value == 3 %}
+            Low
+          {% elif importance_value == 2 %}
+            Lower
+          {% elif importance_value == 1 %}
+            Lowest
+          {% else %}
+            Importance
+          {% endif %}
+        </span>
+        <small>
+          <i class="icon-chevron-down"></i>
+        </small>
+      </button>
+      <ul class="dropdown-menu"
+          x-ref="menu"
+          x-show="open"
+          hx-target="#tasks-importance-filter"
+          hx-swap="outerHTML">
+        <li>
+          <a class="dropdown-item {% if importance_value == 7 %}active{% endif %}"
+             href="#"
+             hx-post="{% url 'tasks:filter-importance' 7 %}"
+             hx-target="#tasks"
+             hx-swap="#outerHTML"><i class="icon-chevrons-up importance-7"></i> Highest</a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if importance_value == 6 %}active{% endif %}"
+             href="#"
+             hx-post="{% url 'tasks:filter-importance' 6 %}"
+             hx-target="#tasks"
+             hx-swap="#outerHTML"><i class="icon-chevron-up importance-6"></i> Higher</a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if importance_value == 5 %}active{% endif %}"
+             href="#"
+             hx-post="{% url 'tasks:filter-importance' 5 %}"
+             hx-target="#tasks"
+             hx-swap="#outerHTML"><i class="icon-chevron-up importance-5"></i> High</a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if importance_value == 4 %}active{% endif %}"
+             href="#"
+             hx-post="{% url 'tasks:filter-importance' 4 %}"
+             hx-target="#tasks"
+             hx-swap="#outerHTML"><i class="icon-equal"></i> Normal</a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if importance_value == 3 %}active{% endif %}"
+             href="#"
+             hx-post="{% url 'tasks:filter-importance' 3 %}"
+             hx-target="#tasks"
+             hx-swap="#outerHTML"><i class="icon-chevron-down importance-3"></i> Low</a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if importance_value == 2 %}active{% endif %}"
+             href="#"
+             hx-post="{% url 'tasks:filter-importance' 2 %}"
+             hx-target="#tasks"
+             hx-swap="#outerHTML"><i class="icon-chevron-down importance-2"></i> Lower</a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if not importance_value %}active{% endif %}"
+             href="#"
+             hx-post="{% url 'tasks:filter-importance' 0 %}"
+             hx-target="#tasks"
+             hx-swap="#outerHTML"><i class="icon-flag"></i> All Levels</a>
+        </li>
+      </ul>
+    </div>
+    <div class="dropdown" x-data="dropdown()">
+      <button type="button"
+              id="tasks-user-filter"
+              class="select-btn filter-dropdown-button {% if user_id %}toggle-active{% endif %}"
+              x-ref="button"
+              @click="toggle()"
+              :aria-expanded="open">
+        <span><i class="icon-{% if user_id %}user{% else %}users{% endif %} with-text"></i>&nbsp;{{ selected_user|default:"All Users" }}</span>
+        <small>
+          <i class="icon-chevron-down"></i>
+        </small>
+      </button>
+      <ul class="dropdown-menu"
+          x-ref="menu"
+          x-show="open"
+          hx-target="#tasks-user-filter"
+          hx-swap="outerHTML">
+        <li>
+          <a class="dropdown-item"
+             href="#"
+             hx-post="{% url 'tasks:filter-user' 0 %}"
+             hx-target="#tasks"
+             hx-swap="#outerHTML"><i class="icon-users"></i> All Users</a>
+        </li>
+        {% for user in users %}
+          <li>
+            <a class="dropdown-item {% if user.id == user_id %}active{% endif %}"
+               href="#"
+               hx-post="{% url 'tasks:filter-user' user.id %}"
+               hx-target="#tasks"
+               hx-swap="#outerHTML"><i class="icon-user"></i> {{ user.username|title }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="dropdown" x-data="dropdown()">
+      <button type="button"
+              id="tasks-date-filter"
+              class="select-btn filter-dropdown-button {% if filter_label == 'today' or filter_label == 'week' or filter_label == 'unscheduled' or filter_label == 'custom' %}toggle-active{% endif %}"
+              x-ref="button"
+              @click="toggle()"
+              :aria-expanded="open">
+        <span>
+          <i class="icon-calendar with-text"></i>
+          {% if filter_label == "today" %}
+            Today
+          {% elif filter_label == "week" %}
+            This Week
+          {% elif filter_label == "unscheduled" %}
+            Unscheduled
+          {% elif filter_label == "custom" %}
+            Custom range
+          {% else %}
+            All Tasks
+          {% endif %}
+        </span>
+        <small>
+          <i class="icon-chevron-down"></i>
+        </small>
+      </button>
+      <ul class="dropdown-menu" x-ref="menu" x-show="open">
+        <li>
+          <a class="dropdown-item {% if not filter_label or filter_label == 'all' or filter_label == 'default' %}active{% endif %}"
+             href="#"
+             hx-post="{% url 'tasks:filter-quick' 'all' %}"
+             hx-target="#tasks">
+            <i class="icon-calendar"></i> All Tasks
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if filter_label == 'unscheduled' %}active{% endif %}"
+             href="#"
+             hx-post="{% url 'tasks:filter-quick' 'unscheduled' %}"
+             hx-target="#tasks">
+            <i class="icon-calendar"></i> Unscheduled
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if filter_label == 'today' %}active{% endif %}"
+             href="#"
+             hx-post="{% url 'tasks:filter-quick' 'today' %}"
+             hx-target="#tasks">
+            <i class="icon-calendar"></i> Today
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if filter_label == 'week' %}active{% endif %}"
+             href="#"
+             hx-post="{% url 'tasks:filter-quick' 'week' %}"
+             hx-target="#tasks">
+            <i class="icon-calendar"></i> This Week
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+{% endif %}
+</div>
+</div>

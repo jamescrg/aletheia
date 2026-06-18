@@ -1,0 +1,62 @@
+{% include "tasks/toolbar.html" %}
+<div id="tasks-board" class="kanban-board">
+  {% for column in columns %}
+    <div class="kanban-column" data-status-slug="{{ column.slug }}">
+      <div class="kanban-column-header">
+        <span class="kanban-column-title">{{ column.label }}</span>
+        <span class="kanban-column-count">{{ column.count }}</span>
+      </div>
+      <div class="kanban-column-cards" data-status-slug="{{ column.slug }}">
+        {% for task in column.tasks %}
+          <div class="kanban-card importance-{{ task.importance }}{% if task.status == 'Complete' %} complete{% endif %}{% if task.date_due and task.date_due < today and task.status != 'Complete' %} past-due{% endif %}"
+               data-task-id="{{ task.id }}"
+               data-edit-url="{% url 'tasks:edit' id=task.id %}">
+            <div class="kanban-card-top">
+              <span class="kanban-card-matter">
+                {% if task.matter %}
+                  {{ task.matter.name }}
+                {% else %}
+                  Admin
+                {% endif %}
+              </span>
+              <span class="kanban-card-priority" title="Priority {{ task.importance }}">
+                {% if task.importance == 7 %}
+                  <i class="icon-chevrons-up importance-7"></i>
+                {% elif task.importance == 6 %}
+                  <i class="icon-chevron-up importance-6"></i>
+                {% elif task.importance == 5 %}
+                  <i class="icon-chevron-up importance-5"></i>
+                {% elif task.importance == 4 %}
+                  <i class="icon-equal importance-4"></i>
+                {% elif task.importance == 3 %}
+                  <i class="icon-chevron-down importance-3"></i>
+                {% elif task.importance == 2 %}
+                  <i class="icon-chevron-down importance-2"></i>
+                {% else %}
+                  <i class="icon-chevrons-down importance-1"></i>
+                {% endif %}
+              </span>
+            </div>
+            <p class="kanban-card-description">{{ task.description }}</p>
+            <div class="kanban-card-meta">
+              {% if task.user %}<span class="kanban-card-user">{{ task.user.username|title }}</span>{% endif %}
+              {% if task.date_due %}
+                <span class="kanban-card-date"><i class="icon-calendar"></i> {{ task.date_due|date:'Y-m-d' }}</span>
+              {% endif %}
+              <span class="kanban-card-decorators">
+                {% if task.has_checklist %}
+                  <i class="icon-list-checks checklist-badge-icon {% if task.has_unviewed_checklist %}checklist-badge-new{% endif %}"></i>
+                {% endif %}
+                {% if task.has_notes %}
+                  <i class="icon-sticky-note note-badge-icon {% if task.has_new_notes %}note-badge-new{% endif %}"></i>
+                {% endif %}
+              </span>
+            </div>
+          </div>
+        {% empty %}
+          <p class="kanban-column-empty">No tasks</p>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+</div>

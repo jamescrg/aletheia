@@ -3,7 +3,7 @@ from datetime import date, datetime, timedelta
 
 import markdown
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
@@ -34,25 +34,98 @@ from apps.tasks.models import (
     UserTaskNoteView,
 )
 from apps.tasks.services import process_quick_task_description
-from apps.tasks.tasks import get_list_data
+from apps.tasks.tasks import get_board_data, get_list_data
 from utils.toasts import toast_warning
 
 TASKS_TRIGGER = "tasksListChanged"
 
 
+def _tasks_view_context(request):
+    """Pick the list or board view based on the session view mode.
+
+    Returns (inner_template, context). Both views share the #tasks container
+    and the tasksListChanged refresh loop, so the toggle just flips which
+    template this resolves to.
+    """
+    view_mode = request.session.get("tasks_view_mode", "list")
+    if view_mode == "board":
+        return "tasks/board.html", get_board_data(request)
+    context = get_list_data(request)
+    context["view_mode"] = "list"
+    return "tasks/list.html", context
+
+
 @login_required
 def tasks_index(request):
-    context = get_list_data(request)
+    inner_template, context = _tasks_view_context(request)
     context = context | {
         "app": "tasks",
+        "inner_template": inner_template,
     }
     return render(request, "tasks/tasks.html", context)
 
 
 @login_required
 def tasks_list(request):
-    context = get_list_data(request)
-    return render(request, "tasks/list.html", context)
+    inner_template, context = _tasks_view_context(request)
+    return render(request, inner_template, context)
+
+
+@login_required
+@require_POST
+def tasks_set_view_mode(request, mode):
+    """Toggle between the list and board (Kanban) views; persist in session."""
+    if mode not in ("list", "board"):
+        raise Http404("Unknown view mode")
+    request.session["tasks_view_mode"] = mode
+    request.session.modified = True
+    return HttpResponse(status=204, headers={"HX-Trigger": TASKS_TRIGGER})
+
+
+@login_required
+@require_POST
+def tasks_board_move(request):
+    """Persist a Kanban drag: set the card's status and the column's order.
+
+    Body JSON: {task_id, status_slug, ordered_ids}. ordered_ids is the full
+    top-to-bottom list of task ids in the destination column after the drop.
+    Returns {ok: bool, message?}; the client reverts the board (re-render) on
+    a falsy ok, e.g. when an incomplete checklist blocks Completion.
+    """
+    try:
+        payload = json.loads(request.body)
+    except (ValueError, TypeError):
+        return JsonResponse({"ok": False, "message": "Invalid request."}, status=400)
+
+    task = get_object_or_404(Task, pk=payload.get("task_id"))
+    status = STATUS_BY_SLUG.get(payload.get("status_slug"))
+    if status is None:
+        return JsonResponse({"ok": False, "message": "Unknown status."}, status=400)
+
+    if status == STATUS_COMPLETE and not can_complete_task(task):
+        return JsonResponse(
+            {
+                "ok": False,
+                "message": "Please complete all checklist items before "
+                "marking this task as done.",
+            }
+        )
+
+    if task.status != status:
+        task.status = status
+        task.save()
+
+    # Persist the destination column's order as sequential custom_order values.
+    id_to_order = {
+        int(tid): index for index, tid in enumerate(payload.get("ordered_ids", []))
+    }
+    for t in Task.objects.filter(id__in=id_to_order.keys()):
+        new_order = id_to_order[t.id]
+        if t.custom_order != new_order:
+            t.custom_order = new_order
+            t.save(update_fields=["custom_order"])
+
+    return JsonResponse({"ok": True})
 
 
 @login_required
@@ -425,8 +498,10 @@ def tasks_filter_quick(request, quick_filter):
     request.session["tasks_filter"] = filter_data
     request.session.modified = True
 
-    context = get_list_data(request)
-    return render(request, "tasks/list.html", context)
+    # Honour the active view mode so a date filter doesn't bounce a board
+    # user back to the list.
+    inner_template, context = _tasks_view_context(request)
+    return render(request, inner_template, context)
 
 
 @login_required

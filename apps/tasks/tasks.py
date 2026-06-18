@@ -1,5 +1,7 @@
 from datetime import date
 
+from django.db.models import F
+
 from apps.accounts.models import CustomUser
 from apps.checklists.models import Checklist, UserChecklistView
 from apps.management.pagination import CustomPaginator
@@ -9,7 +11,13 @@ from apps.management.selection import (
     get_session_key,
 )
 from apps.matters.models import Matter
-from apps.tasks.constants import ACTIVE_STATUSES, coerce_status, status_is_custom
+from apps.tasks.constants import (
+    ACTIVE_STATUSES,
+    STATUS_BY_SLUG,
+    STATUS_CHOICES,
+    coerce_status,
+    status_is_custom,
+)
 from apps.tasks.filter import TasksFilter
 from apps.tasks.models import (
     Task,
@@ -18,9 +26,13 @@ from apps.tasks.models import (
 )
 
 
-def get_list_data(request):
-    list_data = {}
+def resolve_task_filter(request):
+    """Resolve the session task filter into a queryset and selected dimensions.
 
+    Shared by the list view and the board view so both honour the same active
+    filters. Seeds a default "today" filter in the session on first visit.
+    Returns (tasks, filter_data, user_id, matter_id, importance_value).
+    """
     today = date.today()
 
     filter_data = request.session.get("tasks_filter", {})
@@ -75,30 +87,21 @@ def get_list_data(request):
         importance_value = None
         filter_data = default_filter
 
-    # Force-show newly created tasks at the top regardless of filters
-    new_task_ids = request.session.pop("new_task_ids", [])
-    edited_task_ids = request.session.pop("edited_task_ids", [])
+    return tasks, filter_data, user_id, matter_id, importance_value
 
-    # Exclude new tasks from main queryset to avoid duplicates
-    if new_task_ids:
-        tasks = tasks.exclude(id__in=new_task_ids)
 
-    pagination = CustomPaginator(
-        tasks, per_page=20, request=request, session_key="tasks_pagination"
-    )
+def enrich_tasks(request, task_list):
+    """Attach note + checklist badge state to each task in place.
 
+    Shared by the list and board views. Sets, per task: has_notes,
+    has_new_notes, has_checklist, checklist_total, checklist_done,
+    checklist_complete, and has_unviewed_checklist.
+    """
     # Get user's note view history for badge notification system
     user_note_views = UserTaskNoteView.objects.filter(user=request.user).values(
         "task_id", "last_viewed_at"
     )
     view_times = {v["task_id"]: v["last_viewed_at"] for v in user_note_views}
-
-    # Prepend new tasks to the top of the page
-    if new_task_ids:
-        new_tasks = list(Task.objects.filter(id__in=new_task_ids))
-        task_list = new_tasks + list(pagination.get_object_list())
-    else:
-        task_list = pagination.get_object_list()
 
     # Bulk-prefetch checklists to avoid N+1
     task_ids = [t.id for t in task_list]
@@ -145,6 +148,39 @@ def get_list_data(request):
         else:
             task.has_checklist = False
             task.has_unviewed_checklist = False
+
+    return task_list
+
+
+def get_list_data(request):
+    list_data = {}
+
+    today = date.today()
+
+    tasks, filter_data, user_id, matter_id, importance_value = resolve_task_filter(
+        request
+    )
+
+    # Force-show newly created tasks at the top regardless of filters
+    new_task_ids = request.session.pop("new_task_ids", [])
+    edited_task_ids = request.session.pop("edited_task_ids", [])
+
+    # Exclude new tasks from main queryset to avoid duplicates
+    if new_task_ids:
+        tasks = tasks.exclude(id__in=new_task_ids)
+
+    pagination = CustomPaginator(
+        tasks, per_page=20, request=request, session_key="tasks_pagination"
+    )
+
+    # Prepend new tasks to the top of the page
+    if new_task_ids:
+        new_tasks = list(Task.objects.filter(id__in=new_task_ids))
+        task_list = new_tasks + list(pagination.get_object_list())
+    else:
+        task_list = pagination.get_object_list()
+
+    enrich_tasks(request, task_list)
 
     selected_matter = None
     if matter_id:
@@ -206,3 +242,79 @@ def get_list_data(request):
     }
 
     return list_data
+
+
+def get_board_data(request):
+    """Context for the Kanban board view.
+
+    Honours the same session filters as the list view (user, matter,
+    importance, date) but ignores the saved *status* filter — the board's
+    columns are the status dimension, so every status is always shown. Tasks
+    are grouped into one column per STATUS_CHOICES entry and ordered within a
+    column by custom_order (manual drag order) then due date.
+    """
+    today = date.today()
+
+    _, filter_data, user_id, matter_id, importance_value = resolve_task_filter(request)
+
+    # Replace the status filter with the full set so all four columns render;
+    # keep every other active filter intact.
+    board_filter = {k: v for k, v in filter_data.items() if k != "order_by"}
+    board_filter["status"] = [value for value, _ in STATUS_CHOICES]
+
+    tasks = TasksFilter(board_filter).qs.order_by(
+        F("custom_order").asc(nulls_last=True), "date_due", "id"
+    )
+
+    task_list = list(tasks)
+    enrich_tasks(request, task_list)
+
+    grouped = {value: [] for value, _ in STATUS_CHOICES}
+    for task in task_list:
+        if task.status in grouped:
+            grouped[task.status].append(task)
+
+    slug_by_status = {value: slug for slug, value in STATUS_BY_SLUG.items()}
+    columns = [
+        {
+            "label": label,
+            "slug": slug_by_status[value],
+            "tasks": grouped[value],
+            "count": len(grouped[value]),
+        }
+        for value, label in STATUS_CHOICES
+    ]
+
+    selected_matter = Matter.objects.filter(id=matter_id).first() if matter_id else None
+    selected_user = CustomUser.objects.filter(id=user_id).first() if user_id else None
+
+    selected_session_key = get_session_key("selected_tasks")
+    selected_tasks = get_selected_ids(request, selected_session_key)
+
+    return {
+        "columns": columns,
+        "view_mode": "board",
+        "trigger_key": "tasksListChanged",
+        "today": today,
+        "users": CustomUser.objects.filter(is_active=True).order_by("username"),
+        "importances": list(range(7, 0, -1)),
+        "user_id": user_id,
+        "matter_id": matter_id,
+        "importance_value": importance_value,
+        "selected_matter": selected_matter.name if selected_matter else "",
+        "selected_user": selected_user.username.capitalize() if selected_user else "",
+        "selected_importance": f"Priority {importance_value}"
+        if importance_value
+        else "",
+        "filter_label": filter_data.get("filter_label", None) if filter_data else None,
+        "custom_filter_active": bool(filter_data)
+        and any(
+            [
+                status_is_custom(filter_data.get("status")),
+                filter_data.get("matter") not in (None, ""),
+                filter_data.get("date_completed_min") not in (None, ""),
+                filter_data.get("date_completed_max") not in (None, ""),
+            ]
+        ),
+        "selected_tasks": selected_tasks,
+    }
