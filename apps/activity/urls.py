@@ -24,6 +24,7 @@ from apps.activity.flat_fees.views import (
     flat_fees_bulk_update_comp,
     flat_fees_bulk_update_matter,
     flat_fees_clear_selection,
+    flat_fees_cycle_user,
     flat_fees_delete,
     flat_fees_edit,
     flat_fees_export_to_csv,
@@ -270,6 +271,11 @@ urlpatterns = [
         "activity/flat-fees/filter/user/<int:user_id>/",
         flat_fees_filter_user,
         name="flat-fees-filter-user",
+    ),
+    path(
+        "activity/flat-fees/cycle-user/<str:direction>/",
+        flat_fees_cycle_user,
+        name="flat-fees-cycle-user",
     ),
     path(
         "activity/flat-fees/filter/order_by/<str:order>",

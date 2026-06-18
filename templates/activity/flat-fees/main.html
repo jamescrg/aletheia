@@ -4,5 +4,9 @@
   <div id="flat-fees"
        hx-trigger="flatFeesChanged from:body"
        hx-get="{% url 'activity:flat-fees-list' %}"
-       hx-target="this">{% include "activity/flat-fees/list.html" %}</div>
+       hx-target="this"
+       data-cycle-next-url="{% url 'activity:flat-fees-cycle-user' 'next' %}"
+       data-cycle-prev-url="{% url 'activity:flat-fees-cycle-user' 'prev' %}">
+    {% include "activity/flat-fees/list.html" %}
+  </div>
 {% endblock subcontent %}
