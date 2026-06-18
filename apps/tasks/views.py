@@ -18,6 +18,7 @@ from apps.management.selection import (
     selection_response,
     toggle_id,
 )
+from apps.management.user_filter import cycle_user_filter
 from apps.matters.models import Matter
 from apps.tasks.constants import (
     ACTIVE_STATUSES,
@@ -540,6 +541,14 @@ def tasks_filter_user(request, user_id):
     request.session["tasks_filter"] = filter_data
 
     return _render_tasks(request)
+
+
+@login_required
+@require_POST
+def tasks_cycle_user(request, direction):
+    """Cycle the task user filter (u / U keyboard shortcut)."""
+    cycle_user_filter(request, "tasks_filter", direction)
+    return HttpResponse(status=204, headers={"HX-Trigger": TASKS_TRIGGER})
 
 
 @login_required

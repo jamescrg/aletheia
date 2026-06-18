@@ -15,6 +15,7 @@ from apps.management.selection import (
     selection_response,
     toggle_id,
 )
+from apps.management.user_filter import cycle_user_filter
 from apps.matters.models import Matter
 
 from .export import write_clio_csv, write_standard_csv
@@ -198,6 +199,14 @@ def expenses_filter_user(request, user_id):
 
     request.session["expenses_filter"] = filter_data
 
+    return HttpResponse(status=204, headers={"HX-Trigger": "expensesChanged"})
+
+
+@login_required
+@require_POST
+def expenses_cycle_user(request, direction):
+    """Cycle the expenses user filter (u / U keyboard shortcut)."""
+    cycle_user_filter(request, "expenses_filter", direction)
     return HttpResponse(status=204, headers={"HX-Trigger": "expensesChanged"})
 
 

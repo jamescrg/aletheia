@@ -14,6 +14,7 @@ from apps.tasks.views import (
     tasks_bulk_set_user,
     tasks_bulk_update,
     tasks_clear_selection,
+    tasks_cycle_user,
     tasks_date,
     tasks_delete,
     tasks_delete_note,
@@ -100,6 +101,11 @@ urlpatterns = [
         "tasks/filter/user/<int:user_id>/",
         tasks_filter_user,
         name="filter-user",
+    ),
+    path(
+        "tasks/cycle-user/<str:direction>/",
+        tasks_cycle_user,
+        name="cycle-user",
     ),
     path(
         "tasks/filter/importance/<int:importance_value>/",

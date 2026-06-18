@@ -5,6 +5,8 @@
     <div id="tasks"
          hx-trigger="tasksListChanged from:body"
          hx-get="{% url 'tasks:list' %}"
-         hx-target="this">{% include inner_template %}</div>
+         hx-target="this"
+         data-cycle-next-url="{% url 'tasks:cycle-user' 'next' %}"
+         data-cycle-prev-url="{% url 'tasks:cycle-user' 'prev' %}">{% include inner_template %}</div>
   </div>
 {% endblock content %}

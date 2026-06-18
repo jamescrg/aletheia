@@ -4,5 +4,9 @@
   <div id="payments"
        hx-trigger="expensesChanged from:body"
        hx-get="{% url 'activity:expenses-list' %}"
-       hx-target="this">{% include "activity/expenses/list.html" %}</div>
+       hx-target="this"
+       data-cycle-next-url="{% url 'activity:expenses-cycle-user' 'next' %}"
+       data-cycle-prev-url="{% url 'activity:expenses-cycle-user' 'prev' %}">
+    {% include "activity/expenses/list.html" %}
+  </div>
 {% endblock subcontent %}

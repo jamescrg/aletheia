@@ -5,6 +5,7 @@ from apps.activity.expenses.views import (
     expenses_bulk_update_comp,
     expenses_bulk_update_matter,
     expenses_clear_selection,
+    expenses_cycle_user,
     expenses_delete,
     expenses_edit,
     expenses_export_to_csv,
@@ -65,6 +66,7 @@ from apps.activity.time.views import (
     time_bulk_update_comp,
     time_bulk_update_matter,
     time_clear_selection,
+    time_cycle_user,
     time_delete,
     time_edit,
     time_export_to_csv,
@@ -110,6 +112,11 @@ urlpatterns = [
         "activity/time/filter/user/<int:user_id>/",
         time_filter_user,
         name="time-filter-user",
+    ),
+    path(
+        "activity/time/cycle-user/<str:direction>/",
+        time_cycle_user,
+        name="time-cycle-user",
     ),
     path(
         "activity/time/filter/order_by/<str:order>", order_by_time, name="time-order-by"
@@ -183,6 +190,11 @@ urlpatterns = [
         "activity/expenses/filter/user/<int:user_id>/",
         expenses_filter_user,
         name="expenses-filter-user",
+    ),
+    path(
+        "activity/expenses/cycle-user/<str:direction>/",
+        expenses_cycle_user,
+        name="expenses-cycle-user",
     ),
     path(
         "activity/expenses/filter/order_by/<str:order>",

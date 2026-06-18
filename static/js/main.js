@@ -684,6 +684,19 @@ document.addEventListener('keydown', function(event) {
     }
   }
 
+  // u / Shift+U — cycle the user filter (next / previous) on any page that
+  // exposes one. The container declares its endpoints via data attributes;
+  // a 204 + HX-Trigger refreshes the list.
+  if (event.key === 'u' || event.key === 'U') {
+    const host = document.querySelector('[data-cycle-next-url]');
+    if (host) {
+      event.preventDefault();
+      const url = event.key === 'U' ? host.dataset.cyclePrevUrl : host.dataset.cycleNextUrl;
+      if (url) htmx.ajax('POST', url, { source: host });
+      return;
+    }
+  }
+
   // Bare keys (no leader prefix) — only on matter/case pages
   const matterId = getMatterId();
   if (!matterId) return;
@@ -695,16 +708,30 @@ document.addEventListener('keydown', function(event) {
   }
 });
 
-// Autofocus the quick-add task input whenever the tasks list (re)renders, so
-// tasks can be typed back-to-back. The #tasks container swaps in a fresh input
-// on every tasksListChanged, which is why the autofocus attribute alone isn't
-// enough. Skip when focus is already in another field so we don't steal it.
+// Re-focus the quick-add input ONLY after a quick-add submission, so tasks can
+// be typed back-to-back. The list re-renders on lots of events (status changes,
+// the u/U user cycle, etc.) — we must not steal focus on those, or the page
+// would be stuck in "insert mode" and bare-key shortcuts wouldn't work. So we
+// flag the submission and consume it on the next swap. Tasks otherwise lands in
+// command mode; press i to focus the quick-add, Esc to leave it.
+let refocusQuickAdd = false;
+document.body.addEventListener('htmx:beforeRequest', function(e) {
+  if (e.target && e.target.classList && e.target.classList.contains('tasks-add-quick-input')) {
+    refocusQuickAdd = true;
+  }
+});
 document.body.addEventListener('htmx:afterSwap', function(e) {
+  if (!refocusQuickAdd) return;
+  refocusQuickAdd = false;
   const input = e.target.querySelector && e.target.querySelector('.tasks-add-quick-input');
-  if (!input) return;
-  const active = document.activeElement;
-  if (!active || active === document.body) {
-    input.focus();
+  if (input) input.focus();
+});
+
+// Esc leaves the quick-add input (vim-style: back to command mode) so the
+// bare-key shortcuts work without reaching for the mouse.
+document.body.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && e.target.classList && e.target.classList.contains('tasks-add-quick-input')) {
+    e.target.blur();
   }
 });
 
