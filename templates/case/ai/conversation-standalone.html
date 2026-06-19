@@ -145,6 +145,20 @@
       }, 50);
     }
 
+    // Auto-scroll should only "stick" to the bottom when the user is already
+    // there. Once they scroll up to read earlier turns, stop yanking the view
+    // down on every status poll; resume automatically when they return to the
+    // bottom (or send a new prompt).
+    let aiStickToBottom = true;
+    (function watchChatScroll() {
+      const container = document.querySelector('.ai-chat-scroll');
+      if (!container) return;
+      container.addEventListener('scroll', function () {
+        aiStickToBottom =
+          container.scrollHeight - container.scrollTop - container.clientHeight < 80;
+      });
+    })();
+
     function clearChatInput() {
       document.getElementById('aiMessageInput').value = '';
     }
@@ -154,6 +168,8 @@
       clearChatInput();
       updatePromptList();
       handleConversationCreated(event);
+      // Sending a prompt always returns you to the bottom.
+      aiStickToBottom = true;
       scrollMessagesToBottom();
     });
 
@@ -237,7 +253,7 @@
     document.body.addEventListener('htmx:afterSwap', function(e) {
       if (e.target.closest('[data-no-auto-scroll]')) return;
       if (e.target.id === 'messageContainer' || e.target.closest('#messageContainer')) {
-        scrollMessagesToBottom();
+        if (aiStickToBottom) scrollMessagesToBottom();
         updatePromptList();
       }
     });
