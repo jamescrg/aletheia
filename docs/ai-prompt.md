@@ -111,6 +111,7 @@ At the start of this chat, please review all higlights, notes, and facts entries
 - You do not need to reach that length. The goal is a complete treatment of the
   issues, not a word count. But do not arbitrarily cut the response below that
   range where a more thorough treatment would be helpful.
+- For Complaints and Petitions, number individual counts with arabic numbers, not roman numerals. Also, for exhibits, number them with arabic numbers, not letters, and do not surround the arabic number with quotes. The word "Exhibit" should be bold, and so should the number.
 
 #### When Highlighting Text
 
