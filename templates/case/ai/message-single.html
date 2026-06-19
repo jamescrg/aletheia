@@ -12,12 +12,35 @@
       clone
         .querySelectorAll(".citation-vetting, .citation-badge-wrapper")
         .forEach((n) => n.remove());
-      navigator.clipboard.writeText(clone.innerText).then(() => {
+      // Drop chat-specific attributes so only structural tags reach the
+      // word processor.
+      clone.querySelectorAll("[class], [style], [id]").forEach((n) => {
+        n.removeAttribute("class");
+        n.removeAttribute("style");
+        n.removeAttribute("id");
+      });
+      const showCopied = () => {
         buttonEl.innerHTML = "<i class='icon-check'></i>";
         setTimeout(() => {
           buttonEl.innerHTML = "<i class='icon-copy'></i>";
         }, 2000);
-      });
+      };
+      const text = clone.innerText;
+      // Write rich HTML so numbered lists paste as real auto-numbered lists
+      // (LibreOffice, Word, etc.), with a plain-text flavor for plain targets.
+      // Fall back to plain text where ClipboardItem isn't supported.
+      if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+        const item = new ClipboardItem({
+          "text/html": new Blob([clone.innerHTML], { type: "text/html" }),
+          "text/plain": new Blob([text], { type: "text/plain" }),
+        });
+        navigator.clipboard
+          .write([item])
+          .then(showCopied)
+          .catch(() => navigator.clipboard.writeText(text).then(showCopied));
+      } else {
+        navigator.clipboard.writeText(text).then(showCopied);
+      }
     };
   }
 </script>
