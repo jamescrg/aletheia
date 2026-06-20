@@ -905,17 +905,25 @@ tr > td.importance.complete .button-link {
   text-decoration: underline;
 }
 
-/* Faint "+" beside the column label opens the add modal pre-set to that status. */
+/* Muted-gray "+" beside the column label opens the add modal pre-set to that
+   status. Nudged down 2px to sit on the label's optical centre. The icon colour
+   is set on the .icon-plus itself to beat the global `.icon-plus { color: --add }`
+   accent rule. */
 .kanban-column-add-btn {
   background: none;
   border: none;
-  color: var(--color-muted-more);
   cursor: pointer;
   display: inline-flex;
   padding: 0;
+  position: relative;
+  top: 2px;
 }
 
-.kanban-column-add-btn:hover {
+.kanban-column-add-btn .icon-plus {
+  color: var(--color-muted);
+}
+
+.kanban-column-add-btn:hover .icon-plus {
   color: var(--link);
 }
 
