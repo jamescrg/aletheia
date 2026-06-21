@@ -17,7 +17,9 @@ from apps.accounts.models import CustomUser
 from apps.activity.time.models import TimeEntry
 
 # Number of distinct matters charted before the rest roll up into "Other".
-TOP_MATTERS = 8
+# Kept small: a stacked bar with many categories is both hard to colour
+# distinctly and hard to read, so beyond the top few "Other" is more honest.
+TOP_MATTERS = 4
 
 
 def _resolve_months(filter_data):
