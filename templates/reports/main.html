@@ -11,6 +11,9 @@
           <li {% if subapp == "revenue" %}class="active"{% endif %}>
             <a href="{% url 'reports:revenue-index' %}">Revenue</a>
           </li>
+          <li {% if subapp == "wip" %}class="active"{% endif %}>
+            <a href="{% url 'reports:wip-index' %}">Unbilled WIP</a>
+          </li>
           <li {% if subapp == "clients" %}class="active"{% endif %}>
             <a href="{% url 'reports:clients-index' %}">Clients</a>
           </li>
@@ -22,9 +25,6 @@
           </li>
           <li {% if subapp == "aging" %}class="active"{% endif %}>
             <a href="{% url 'reports:aging-index' %}">AR Aging</a>
-          </li>
-          <li {% if subapp == "wip" %}class="active"{% endif %}>
-            <a href="{% url 'reports:wip-index' %}">Unbilled WIP</a>
           </li>
           <li {% if subapp == "matters" %}class="active"{% endif %}>
             <a href="{% url 'reports:matters-index' %}">Matter Summary</a>

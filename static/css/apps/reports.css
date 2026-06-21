@@ -143,6 +143,12 @@
   min-width: 20rem;
 }
 
+/* Give the matter/user name column the slack; keep the numeric columns tight. */
+.wip-table .table th.numeric,
+.wip-table .table td.numeric {
+  width: 9rem;
+}
+
 /* 1rem of breathing room below the chart and above the table. */
 .activity-chart-canvas-wrap {
   position: relative;
