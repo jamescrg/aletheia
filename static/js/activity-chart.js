@@ -61,7 +61,7 @@ window.AletheiaActivityChart = (function () {
       const { ctx, scales } = chart;
       ctx.save();
       ctx.fillStyle = opts.color || "#666";
-      ctx.font = "600 12px " + ((Chart.defaults.font && Chart.defaults.font.family) || "sans-serif");
+      ctx.font = "12px " + ((Chart.defaults.font && Chart.defaults.font.family) || "sans-serif");
       ctx.textAlign = "center";
       ctx.textBaseline = "bottom";
       const n = chart.data.labels.length;
@@ -80,14 +80,20 @@ window.AletheiaActivityChart = (function () {
 
   function buildDatasets(payload, state, theme) {
     const series = (payload.series && payload.series[state.dimension]) || [];
+    const palette = window.AletheiaChartPalette;
     const isMatter = state.dimension === "matter";
-    const otherLast =
-      isMatter && series.length > 0 && series[series.length - 1].label === "Other";
-    const colors = window.AletheiaChartPalette.make(series.length, theme, { otherLast });
+    // A series is neutral (grey) if flagged, or the matter view's trailing "Other".
+    const isNeutral = (s, i) =>
+      s.neutral === true ||
+      (isMatter && s.label === "Other" && i === series.length - 1);
+    const coloredCount = series.filter((s, i) => !isNeutral(s, i)).length || 1;
+    const colors = palette.make(coloredCount, theme);
+    const grey = palette.neutral(theme);
+    let ci = 0;
     return series.map((s, i) => ({
       label: s.label,
       data: s[state.metric] || [],
-      backgroundColor: colors[i],
+      backgroundColor: isNeutral(s, i) ? grey : colors[ci++],
       borderWidth: 0,
       borderRadius: 2,
       stack: "activity",
@@ -142,7 +148,9 @@ window.AletheiaActivityChart = (function () {
             },
             title: {
               display: true,
-              text: state.metric === "fees" ? "Fees ($)" : "Hours",
+              text:
+                state.metricLabel ||
+                (state.metric === "fees" ? "Fees ($)" : "Hours"),
               color: themed.tick,
             },
           },

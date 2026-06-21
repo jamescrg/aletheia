@@ -60,5 +60,16 @@ window.AletheiaChartPalette = (function () {
     return { grid: t.grid, tick: t.tick };
   }
 
-  return { make, axes };
+  // A muted grey for catch-all / residual series ("Other"), per theme.
+  const NEUTRAL = {
+    light: "oklch(0.74 0.004 286)",
+    dark: "oklch(0.60 0.006 70)",
+    cosmic: "oklch(0.62 0.006 250)",
+  };
+
+  function neutral(theme) {
+    return NEUTRAL[theme] || NEUTRAL.light;
+  }
+
+  return { make, axes, neutral };
 })();

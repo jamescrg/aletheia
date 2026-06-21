@@ -23,7 +23,7 @@ urlpatterns = [
     # Revenue
     path("reports/revenue/", revenue.revenue_index, name="revenue-index"),
     path("reports/revenue/list/", revenue.revenue_list, name="revenue"),
-    path("reports/revenue/filter/", revenue.revenue_filter, name="revenue-filter"),
+    path("reports/revenue/period/", revenue.revenue_period, name="revenue-period"),
     # Clients
     path("reports/clients/", clients.clients_index, name="clients-index"),
     path("reports/clients/list/", clients.clients_list, name="clients"),

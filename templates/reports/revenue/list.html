@@ -1,99 +1,90 @@
 {% load humanize %}
 <div class="toolbar">
   <div class="toolbar-left">
-    <h1>Revenue Report</h1>
-    <div class="filter-tools">
+    <div class="period-nav">
       <button type="button"
-              class="btn-icon"
-              hx-get="{% url 'reports:revenue-filter' %}"
-              hx-target="#htmx-modal-container"
-              hx-trigger="click"
-              data-bs-toggle="modal"
-              data-bs-target="#htmx-modal-container">
-        <i class="icon-list-filter with-text"></i> Filter
+              class="period-nav-arrow"
+              hx-post="{% url 'reports:revenue-period' %}"
+              hx-vals='{"direction": "prev"}'
+              aria-label="Previous month">
+        <i class="icon-chevron-left"></i>
+      </button>
+      <span class="period-nav-label">{{ period_label }}</span>
+      <button type="button"
+              class="period-nav-arrow"
+              hx-post="{% url 'reports:revenue-period' %}"
+              hx-vals='{"direction": "next"}'
+              {% if not can_go_next %}disabled{% endif %}
+              aria-label="Next month">
+        <i class="icon-chevron-right"></i>
       </button>
     </div>
   </div>
-  <div class="toolbar-right">
-    {% if date_from or date_to %}
-      <div class="date-range-display">
-        <strong>Date Range:</strong>
-        {% if date_from and date_to %}
-          {{ date_from }} to {{ date_to }}
-        {% elif date_from %}
-          From {{ date_from }}
-        {% elif date_to %}
-          Up to {{ date_to }}
-        {% endif %}
-      </div>
-    {% endif %}
-  </div>
 </div>
-{% if date_from or date_to %}
-  <div class="table-container">
-    <table class="table">
+<div class="activity-chart-canvas-wrap">
+  <canvas id="revenue-chart" data-chart-data="revenue-chart-data"></canvas>
+</div>
+{{ chart_payload|json_script:"revenue-chart-data" }}
+<script>
+  window.AletheiaActivityChart &&
+    window.AletheiaActivityChart.render('revenue-chart', 'revenue-chart-data',
+      { dimension: 'user', metric: 'fees', metricLabel: 'Revenue ($)' });
+</script>
+<br />
+<div class="table-container">
+  <table class="table activity-table">
+    <thead>
       <tr>
-        <th>Month</th>
-        <th class="numeric">Payments</th>
-        <th class="numeric">Revenue</th>
+        <th>User</th>
+        {% for m in months %}<th class="numeric">{{ m.name }}</th>{% endfor %}
+        <th class="numeric">Total</th>
       </tr>
-      {% for month_data in revenue_data %}
+    </thead>
+    <tbody>
+      {% for row in revenue_rows %}
         <tr>
           <td>
-            <strong>{{ month_data.name }}</strong>
+            <strong>{{ row.label }}</strong>
           </td>
-          <td class="numeric">{{ month_data.payments_count }}</td>
+          {% for cell in row.cells %}
+            <td class="numeric">
+              {% if cell.amount %}
+                ${{ cell.amount|floatformat:2|intcomma }}
+                <br>
+                <small class="text-muted">{{ cell.pct|floatformat:1 }}%</small>
+              {% else %}
+                -
+              {% endif %}
+            </td>
+          {% endfor %}
           <td class="numeric">
-            {% if month_data.revenue > 0 %}
-              ${{ month_data.revenue|floatformat:2|intcomma }}
-            {% else %}
-              $0.00
-            {% endif %}
+            <strong>${{ row.total|floatformat:2|intcomma }}</strong>
+            <br>
+            <small class="text-muted">{{ row.pct|floatformat:1 }}%</small>
           </td>
         </tr>
       {% empty %}
         <tr>
-          <td colspan="3">No revenue data available for the last 6 months.</td>
+          <td colspan="{{ months|length|add:2 }}" class="empty-entries">No revenue in this period.</td>
         </tr>
       {% endfor %}
-      <tr class="table-total">
-        <td>
-          <strong>Total</strong>
-        </td>
-        <td class="numeric">
-          <strong>-</strong>
-        </td>
-        <td class="numeric">
-          <strong>${{ total_revenue|floatformat:2|intcomma }}</strong>
-        </td>
-      </tr>
-      <tr class="table-average">
-        <td>
-          <strong>Average per Month</strong>
-        </td>
-        <td class="numeric">
-          <strong>-</strong>
-        </td>
-        <td class="numeric">
-          <strong>${{ average_revenue|floatformat:2|intcomma }}</strong>
-        </td>
-      </tr>
-    </table>
-  </div>
-{% else %}
-  <div class="no-filter-message">
-    <div class="alert alert-info">
-      <h4>Select a Date Range</h4>
-      <p>Please use the Filter button to select a date range to view revenue data.</p>
-      <button type="button"
-              class="btn btn-success"
-              hx-get="{% url 'reports:revenue-filter' %}"
-              hx-target="#htmx-modal-container"
-              hx-trigger="click"
-              data-bs-toggle="modal"
-              data-bs-target="#htmx-modal-container">
-        <i class="icon-list-filter with-text"></i> Select Date Range
-      </button>
-    </div>
-  </div>
-{% endif %}
+    </tbody>
+    {% if revenue_rows %}
+      <tfoot>
+        <tr class="table-total">
+          <td>
+            <strong>Total</strong>
+          </td>
+          {% for mt in month_totals %}
+            <td class="numeric">
+              <strong>${{ mt.amount|floatformat:2|intcomma }}</strong>
+            </td>
+          {% endfor %}
+          <td class="numeric">
+            <strong>${{ grand_total|floatformat:2|intcomma }}</strong>
+          </td>
+        </tr>
+      </tfoot>
+    {% endif %}
+  </table>
+</div>
