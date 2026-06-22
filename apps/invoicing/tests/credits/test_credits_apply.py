@@ -37,6 +37,13 @@ class TestCreditsApplyGet:
         response = client.get(url)
         assert response.status_code == 404
 
+    def test_deferred_invoice_is_eligible(self, client, credit, deferred_invoice):
+        """Deferred invoices can receive credit applications (e.g. sanctions)."""
+        url = reverse("invoicing:credits-apply", args=[credit.id])
+        response = client.get(url)
+        invoice_ids = [d["invoice"].id for d in response.context["invoice_data"]]
+        assert deferred_invoice.id in invoice_ids
+
 
 # -----------------------------------------------------------
 # credits_apply POST - successful application

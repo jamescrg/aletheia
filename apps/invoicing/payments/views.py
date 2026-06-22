@@ -71,7 +71,9 @@ def payments_delete(_, pk):
 def payments_edit(request, pk):
     payment = get_object_or_404(Payment, pk=pk)
 
-    matter_ids = Invoice.objects.filter(status="SENT").values_list("matter", flat=True)
+    matter_ids = Invoice.objects.filter(status__in=["SENT", "DEFERRED"]).values_list(
+        "matter", flat=True
+    )
     matters = Matter.objects.filter(id__in=matter_ids) | Matter.objects.filter(
         id=payment.matter.id
     )
@@ -108,7 +110,7 @@ def payments_apply(request, pk):
 
     # Get unpaid invoices for this payment's matter
     unpaid_invoices = (
-        Invoice.objects.filter(matter=payment.matter, status="SENT")
+        Invoice.objects.filter(matter=payment.matter, status__in=["SENT", "DEFERRED"])
         .select_related("matter")
         .order_by("date_issued")
     )
@@ -246,7 +248,7 @@ def payments_delete_application(request, pk):
 
     # Get updated data for the modal
     unpaid_invoices = (
-        Invoice.objects.filter(matter=payment.matter, status="SENT")
+        Invoice.objects.filter(matter=payment.matter, status__in=["SENT", "DEFERRED"])
         .select_related("matter")
         .order_by("date_issued")
     )

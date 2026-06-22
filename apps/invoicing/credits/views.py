@@ -150,7 +150,7 @@ def credits_apply(request, pk):
 
     # Get unpaid invoices for this credit's matter
     unpaid_invoices = (
-        Invoice.objects.filter(matter=credit.matter, status="SENT")
+        Invoice.objects.filter(matter=credit.matter, status__in=["SENT", "DEFERRED"])
         .select_related("matter")
         .order_by("date_issued")
     )
@@ -288,7 +288,7 @@ def credits_delete_application(request, pk):
 
     # Get updated data for the modal
     unpaid_invoices = (
-        Invoice.objects.filter(matter=credit.matter, status="SENT")
+        Invoice.objects.filter(matter=credit.matter, status__in=["SENT", "DEFERRED"])
         .select_related("matter")
         .order_by("date_issued")
     )

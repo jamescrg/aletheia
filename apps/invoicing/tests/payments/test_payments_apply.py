@@ -101,6 +101,30 @@ def sent_invoice_small(user, matter):
 
 
 @pytest.fixture
+def deferred_invoice(user, matter):
+    """A DEFERRED invoice with $1000 total (2h @ $500/hr)."""
+    invoice = Invoice.objects.create(
+        created_by=user,
+        matter=matter,
+        date_limit="2024-10-31",
+        date_issued="2024-10-01",
+        status="DEFERRED",
+    )
+    TimeEntry.objects.create(
+        user=user,
+        matter=matter,
+        date="2024-01-03",
+        actions="Deferred work",
+        hours=Decimal("2.0"),
+        rate=500,
+        comp=False,
+        entered=False,
+        invoice=invoice,
+    )
+    return invoice
+
+
+@pytest.fixture
 def payment_1000(matter):
     return Payment.objects.create(
         matter=matter,
@@ -148,6 +172,13 @@ class TestPaymentsApplyGet:
         response = client.get(url)
         assert response.status_code == 404
 
+    def test_deferred_invoice_is_eligible(self, client, payment_1000, deferred_invoice):
+        """Deferred invoices can receive payment applications."""
+        url = reverse("invoicing:payments-apply", args=[payment_1000.id])
+        response = client.get(url)
+        invoice_ids = [d["invoice"].id for d in response.context["invoice_data"]]
+        assert deferred_invoice.id in invoice_ids
+
 
 # -----------------------------------------------------------
 # payments_apply POST - successful application
@@ -172,6 +203,23 @@ class TestPaymentsApplyPost:
         # Invoice should still be SENT (not fully paid)
         sent_invoice.refresh_from_db()
         assert sent_invoice.status == "SENT"
+
+    def test_apply_partial_payment_to_deferred_stays_deferred(
+        self, client, payment_500, deferred_invoice
+    ):
+        """A partial payment against a deferred invoice keeps it DEFERRED."""
+        url = reverse("invoicing:payments-apply", args=[payment_500.id])
+        response = client.post(url, {f"amount_{deferred_invoice.id}": "500.00"})
+        assert response.status_code == 204
+
+        app = PaymentApplication.objects.get(
+            payment=payment_500, invoice=deferred_invoice
+        )
+        assert app.amount_applied == Decimal("500.00")
+
+        deferred_invoice.refresh_from_db()
+        assert deferred_invoice.status == "DEFERRED"
+        assert deferred_invoice.amount_remaining == Decimal("500.00")
 
     def test_full_payment_sets_invoice_paid(self, client, payment_1000, sent_invoice):
         url = reverse("invoicing:payments-apply", args=[payment_1000.id])

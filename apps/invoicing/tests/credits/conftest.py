@@ -88,6 +88,30 @@ def sent_invoice(user, matter):
 
 
 @pytest.fixture
+def deferred_invoice(user, matter):
+    """A DEFERRED invoice with $1000 total (2h @ $500/hr)."""
+    invoice = Invoice.objects.create(
+        created_by=user,
+        matter=matter,
+        date_limit="2024-10-31",
+        date_issued="2024-10-01",
+        status="DEFERRED",
+    )
+    TimeEntry.objects.create(
+        user=user,
+        matter=matter,
+        date="2024-01-03",
+        actions="Deferred work",
+        hours=Decimal("2.0"),
+        rate=500,
+        comp=False,
+        entered=False,
+        invoice=invoice,
+    )
+    return invoice
+
+
+@pytest.fixture
 def sent_invoice_small(user, matter):
     """A second SENT invoice with $200 total (1h @ $200/hr)."""
     invoice = Invoice.objects.create(

@@ -11,7 +11,7 @@
         <h1>Invoice {{ invoice.id }} - {{ invoice.matter.name }}</h1>
         <div class="filter-tools">
           {% include "invoicing/invoices/status.html" %}
-          {% if invoice.status == 'SENT' %}
+          {% if invoice.status == 'SENT' or invoice.status == 'DEFERRED' %}
             <button class="accent-link"
                     hx-get="{% url 'invoicing:quick-invoice-payment' pk=invoice.id payment_type='direct' %}"
                     hx-target="#htmx-modal-container">+ Card</button>
