@@ -166,8 +166,10 @@ def dash_collections_context(request):
         )
         .filter(Q(unbilled_fees__gt=0) | Q(unbilled_expenses__gt=0))
         # Matters on a deferred-fee arrangement have waived/irrelevant retainers,
-        # so the low-clearance alarm does not apply to them.
-        .exclude(has_deferred=True)
+        # so the low-clearance alarm does not apply to them. Driven by the
+        # matter-level flag (consistent before a matter is ever invoiced); the
+        # DEFERRED-invoice check is a backstop for any matter not yet flagged.
+        .exclude(Q(deferred_fees=True) | Q(has_deferred=True))
     )
 
     # Convert to list and calculate clearance

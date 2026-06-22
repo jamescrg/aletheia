@@ -87,3 +87,13 @@ class TestLowClearanceDeferredExclusion:
         context = _context(admin_user)
         ids = [m.id for m in context["low_clearance_matters"]]
         assert low_clearance_matter.id not in ids
+
+    def test_matter_excluded_with_deferred_fees_flag(
+        self, admin_user, low_clearance_matter
+    ):
+        """A deferred-fee matter is excluded even before it has any invoice."""
+        low_clearance_matter.deferred_fees = True
+        low_clearance_matter.save()
+        context = _context(admin_user)
+        ids = [m.id for m in context["low_clearance_matters"]]
+        assert low_clearance_matter.id not in ids

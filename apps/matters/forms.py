@@ -21,6 +21,7 @@ class MatterForm(forms.ModelForm):
             "billable",
             "billing_type",
             "flat_fee_amount",
+            "deferred_fees",
         )
 
         STATUSES = (
@@ -70,6 +71,9 @@ class MatterForm(forms.ModelForm):
             "flat_fee_amount": forms.NumberInput(
                 attrs={"step": "0.01"},
             ),
+            "deferred_fees": forms.Select(
+                choices=((False, "No"), (True, "Yes")),
+            ),
         }
 
         labels = {
@@ -79,6 +83,7 @@ class MatterForm(forms.ModelForm):
             "practice_area": "Practice Area",
             "billing_type": "Billing Type",
             "flat_fee_amount": "Flat Fee Amount",
+            "deferred_fees": "Deferred Fee Arrangement",
         }
 
     def __init__(self, *args, **kwargs):

@@ -46,6 +46,10 @@ class Matter(AuditMixin, models.Model):
     flat_fee_amount = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True
     )
+    # Deferred-fee arrangement (e.g. hybrid agreements): fees accrue but are not
+    # currently collectible, and the retainer is waived. Drives the low-clearance
+    # exclusion regardless of whether the matter has been invoiced yet.
+    deferred_fees = models.BooleanField(default=False)
     members = models.ManyToManyField(
         "accounts.CustomUser",
         related_name="assigned_matters",
