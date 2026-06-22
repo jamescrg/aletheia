@@ -33,16 +33,22 @@ from apps.reports.wip.aggregation import (
 from apps.trust.trust import get_confirmed_client_balance
 
 
-def _nth_working_day(start, count):
-    """Date of the `count`-th working day (Mon–Fri) on or after `start`."""
-    day = start
-    seen = 0
-    while True:
-        if day.weekday() < 5:
-            seen += 1
-            if seen == count:
-                return day
-        day += timedelta(days=1)
+def dash_events_context(request):
+    """The next five upcoming pending events (today onward)."""
+    today = date.today()
+    return {
+        "upcoming_events": Event.objects.filter(
+            status="Pending", date__gte=today
+        ).order_by("date", "start_time", "party")[:5],
+        "today": today,
+        "tomorrow": today + timedelta(days=1),
+    }
+
+
+@login_required
+def events_section(request):
+    """Render just the dash upcoming-events grid (reloaded on eventsChanged)."""
+    return render(request, "dash/events_section.html", dash_events_context(request))
 
 
 def dash_wip_context(request):
@@ -101,16 +107,15 @@ def set_wip_period(request, period):
     return HttpResponse(status=204, headers={"HX-Trigger": "wipChanged"})
 
 
-@login_required
-def dash_index(request):
-    today = date.today()
-
-    # Upcoming events: pending events from today through the 3rd working day
-    # (weekends in between still show). The table is hidden when empty.
-    window_end = _nth_working_day(today, 3)
-    upcoming_events = Event.objects.filter(
-        status="Pending", date__gte=today, date__lte=window_end
-    ).order_by("date", "start_time", "party")
+def dash_collections_context(request):
+    """Past-due and low-clearance matters for the admin-only Collections section.
+    Skipped (and the section hidden) for non-admins."""
+    if not request.user.is_admin:
+        return {
+            "show_collections": False,
+            "balance_due_matters": [],
+            "low_clearance_matters": [],
+        }
 
     # Matters with low clearance (< $1000)
     # Use subqueries to calculate unbilled amounts
@@ -290,17 +295,20 @@ def dash_index(request):
         .order_by("-balance_due")[:10]
     )
 
-    # Open intakes
-    open_intakes = Intake.objects.filter(status="Open").order_by("-date")[:10]
-
-    context = {
-        "app": "dash",
-        "upcoming_events": upcoming_events,
-        "low_clearance_matters": low_clearance_matters,
+    return {
+        "show_collections": True,
         "balance_due_matters": balance_due_matters,
-        "open_intakes": open_intakes,
-        "today": today,
-        **dash_wip_context(request),
+        "low_clearance_matters": low_clearance_matters,
     }
 
+
+@login_required
+def dash_index(request):
+    context = {
+        "app": "dash",
+        "open_intakes": Intake.objects.filter(status="Open").order_by("-date")[:10],
+        **dash_events_context(request),
+        **dash_wip_context(request),
+        **dash_collections_context(request),
+    }
     return render(request, "dash/dash.html", context)

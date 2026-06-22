@@ -21,6 +21,109 @@
   min-width: 20rem;
 }
 
+/* On the dash the WIP section is single, so drop its report-only bottom margin
+   and let the .dashboard row gap alone separate it from Upcoming Events. */
+#dash-wip .wip-section {
+  margin-bottom: 0;
+}
+
+/* ==========================================================================
+ Upcoming events — card grid (reuses the kanban-card visual language)
+========================================================================== */
+
+.events-header {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.events-header h2 {
+  margin: 0;
+}
+
+.event-cards-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+}
+
+.event-card {
+  background: var(--background-body);
+  border: solid 1px var(--border-medium);
+  border-left: 3px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 6%);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.75rem;
+}
+
+.event-card:hover {
+  box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
+}
+
+/* Due status — light mode tints the whole card (like the kanban past-due
+   cards); dark mode uses a left rail instead, per the light-fill / dark-rail
+   convention. Today = red, tomorrow = yellow. */
+.event-card.is-today {
+  background: var(--hl-red);
+}
+
+.event-card.is-tomorrow {
+  background: var(--hl-yellow);
+}
+
+:is([data-theme="dark"], [data-theme="cosmic"]) .event-card.is-today {
+  background: var(--background-body);
+  border-left-color: var(--red-400);
+}
+
+:is([data-theme="dark"], [data-theme="cosmic"]) .event-card.is-tomorrow {
+  background: var(--background-body);
+  border-left-color: var(--yellow-400);
+}
+
+.event-card-when {
+  color: var(--color-muted);
+  font-weight: 600;
+}
+
+.event-card-matter {
+  color: var(--color-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.event-card-title {
+  color: var(--color-primary);
+  font-weight: 500;
+  margin: 0;
+}
+
+.event-card-meta {
+  align-items: center;
+  color: var(--color-muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+}
+
+.event-card-type {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.25rem;
+}
+
+.event-card-location {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* ==========================================================================
  Dashboard
 ========================================================================== */

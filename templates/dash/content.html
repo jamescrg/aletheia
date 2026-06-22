@@ -7,97 +7,75 @@
          hx-get="{% url 'dash:wip-section' %}{% if wip_preview_user %}?view=user{% endif %}"
          hx-target="this">{% include "dash/wip_section.html" %}</div>
   </div>
-  {# Row 2: Upcoming events — full width, only when there are any in the window #}
-  {% if upcoming_events %}
+  {# Row 2: Upcoming events — card grid, reloads on event edits, hidden when empty #}
+  <div id="dash-events"
+       hx-trigger="eventsChanged from:body"
+       hx-get="{% url 'dash:events-section' %}"
+       hx-target="this">{% include "dash/events_section.html" %}</div>
+  {# Row 3: Collections — past due | low clearance, admins only #}
+  {% if show_collections %}
     <div class="dash-row">
-      <div class="dashboard-card">
-        <table class="dashboard-table events">
-          <thead>
-            <tr>
-              <th colspan="4">
-                Upcoming Events
-                <a href="{% url 'calendar:index' %}" class="btn-ghost"><i class="icon-arrow-up-right"></i></a>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for event in upcoming_events %}
+      <div class="events-header">
+        <h2>Collections</h2>
+      </div>
+      <div class="dash-split">
+        <div class="dashboard-card">
+          <table class="dashboard-table">
+            <thead>
               <tr>
-                <td class="date">
-                  {{ event.date|date:"Y-m-d" }}
-                  {% if event.start_time %}{{ event.start_time|time:"g:i A" }}{% endif %}
-                </td>
-                <td class="matter">
-                  {% if event.matter %}
-                    <a href="{% url 'matters:events-index' id=event.matter.id %}">{{ event.matter.name }}</a>
-                  {% endif %}
-                </td>
-                <td class="description">{{ event.description }}</td>
-                <td class="location">{{ event.location|default:'' }}</td>
+                <th colspan="2">
+                  Past Due
+                  <a href="{% url 'invoicing:collection-index' %}" class="btn-ghost"><i class="icon-arrow-up-right"></i></a>
+                </th>
               </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {% if balance_due_matters %}
+                {% for matter in balance_due_matters %}
+                  <tr>
+                    <td>
+                      <a href="{% url 'matters:ledger' id=matter.id %}">{{ matter.name }}</a>
+                    </td>
+                    <td class="numeric">${{ matter.balance_due|floatformat:2|intcomma }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="2" class="empty-message">No outstanding balances</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+        <div class="dashboard-card">
+          <table class="dashboard-table">
+            <thead>
+              <tr>
+                <th colspan="2">
+                  Low Clearance
+                  <a href="{% url 'invoicing:unbilled-index' %}" class="btn-ghost"><i class="icon-arrow-up-right"></i></a>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if low_clearance_matters %}
+                {% for matter in low_clearance_matters %}
+                  <tr {% if matter.clearance < 0 %}class="hl-yellow"{% endif %}>
+                    <td>
+                      <a href="{% url 'matters:ledger' id=matter.id %}">{{ matter.name }}</a>
+                    </td>
+                    <td class="numeric">${{ matter.clearance|floatformat:2|intcomma }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="2" class="empty-message">No low clearance matters</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   {% endif %}
-  {# Row 3: Past due | Low clearance — side by side #}
-  <div class="dash-row dash-split">
-    <div class="dashboard-card">
-      <table class="dashboard-table">
-        <thead>
-          <tr>
-            <th colspan="2">
-              Past Due
-              <a href="{% url 'invoicing:collection-index' %}" class="btn-ghost"><i class="icon-arrow-up-right"></i></a>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {% if balance_due_matters %}
-            {% for matter in balance_due_matters %}
-              <tr>
-                <td>
-                  <a href="{% url 'matters:ledger' id=matter.id %}">{{ matter.name }}</a>
-                </td>
-                <td class="numeric">${{ matter.balance_due|floatformat:2|intcomma }}</td>
-              </tr>
-            {% endfor %}
-          {% else %}
-            <tr>
-              <td colspan="2" class="empty-message">No outstanding balances</td>
-            </tr>
-          {% endif %}
-        </tbody>
-      </table>
-    </div>
-    <div class="dashboard-card">
-      <table class="dashboard-table">
-        <thead>
-          <tr>
-            <th colspan="2">
-              Low Clearance
-              <a href="{% url 'invoicing:unbilled-index' %}" class="btn-ghost"><i class="icon-arrow-up-right"></i></a>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {% if low_clearance_matters %}
-            {% for matter in low_clearance_matters %}
-              <tr {% if matter.clearance < 0 %}class="hl-yellow"{% endif %}>
-                <td>
-                  <a href="{% url 'matters:ledger' id=matter.id %}">{{ matter.name }}</a>
-                </td>
-                <td class="numeric">${{ matter.clearance|floatformat:2|intcomma }}</td>
-              </tr>
-            {% endfor %}
-          {% else %}
-            <tr>
-              <td colspan="2" class="empty-message">No low clearance matters</td>
-            </tr>
-          {% endif %}
-        </tbody>
-      </table>
-    </div>
-  </div>
 </div>
