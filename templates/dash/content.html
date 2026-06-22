@@ -132,6 +132,10 @@
         </div>
         {{ user_donut|json_script:"wip-admin-user-data" }}
         {{ matter_donut|json_script:"wip-admin-matter-data" }}
+        <script>
+          window.AletheiaActivityChart &&
+            window.AletheiaActivityChart.renderDonut('wip-admin-chart', 'wip-admin-matter-data', { metric: 'net' });
+        </script>
       </div>
     {% else %}
       <div class="toolbar">
