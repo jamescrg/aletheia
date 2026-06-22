@@ -4,9 +4,11 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeGroupSortable();
 });
 
-// Re-initialize after HTMX swaps content
+// Re-initialize after HTMX swaps in the groups list (e.g. when a group is
+// added/edited and #groups reloads, replacing the sortable tbody).
 document.body.addEventListener('htmx:afterSwap', function(event) {
-    if (event.target.id === 'groups-table' || event.target.closest('#groups-table')) {
+    const target = event.target;
+    if (target && target.querySelector && target.querySelector('#groups-sortable')) {
         initializeGroupSortable();
     }
 });
@@ -32,6 +34,12 @@ function initializeGroupSortable() {
 
     if (!groupsTbody) {
         return; // Table not found on this page
+    }
+
+    // Avoid stacking instances if this runs again on the same element.
+    const existing = Sortable.get(groupsTbody);
+    if (existing) {
+        existing.destroy();
     }
 
     // Initialize SortableJS

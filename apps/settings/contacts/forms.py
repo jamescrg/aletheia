@@ -19,6 +19,19 @@ class GroupForm(forms.ModelForm):
         model = Group
         fields = ["name", "is_active"]
 
+        ACTIVE_CHOICES = (
+            (True, "Active"),
+            (False, "Inactive"),
+        )
+
+        widgets = {
+            "is_active": forms.Select(choices=ACTIVE_CHOICES),
+        }
+
+        labels = {
+            "is_active": "Status",
+        }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.renderer = CustomFormRendererCompact()
