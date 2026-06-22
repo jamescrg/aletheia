@@ -4,7 +4,12 @@ from simple_history.models import HistoricalRecords
 from apps.matters.models import Matter
 from utils.models import AuditMixin
 
-PAYMENT_METHOD_CHOICES = (("CHECK", "Check"), ("CARD", "Card"), ("TRUST", "Trust"))
+PAYMENT_METHOD_CHOICES = (
+    ("CHECK", "Check"),
+    ("CARD", "Card"),
+    ("TRUST", "Trust"),
+    ("WIRE", "Wire"),
+)
 
 
 class Payment(AuditMixin, models.Model):
