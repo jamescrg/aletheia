@@ -607,49 +607,21 @@ tr > td.importance.complete .button-link {
 
 /* ==========================================================================
  Mobile Card Layout
+
+ The generic table->cards transform lives in tables.css (.card-table); the
+ tasks table opts in via `card-table` + `card-title`/`card-desc`/`card-hide`
+ (templates/tasks/list.html). Only the task-specific bits live here: column
+ order, the importance accent rail, the priority badge, and disabling the
+ inline dropdowns/date-picker.
 ========================================================================== */
-
 @media (width <= 768px) {
-  /* Disable horizontal scroll on container */
-  #tasks .table-container {
-    overflow-x: visible;
-  }
-
-  /* Reset table structure to block */
-  .tasks-table {
-    border: none;
-    display: block;
-    min-width: 0;
-  }
-
-  .tasks-table thead {
-    display: none;
-  }
-
-  .tasks-table tbody {
-    display: block;
-  }
-
-  /* Hide multi-select checkbox */
-  .tasks-table td.col-select {
-    display: none;
-  }
-
-  /* Card rows — mirror .kanban-card (board view). */
-  .tasks-table tbody tr {
-    background: var(--background-body);
-    border: solid 1px var(--border-medium);
-    border-left-width: 3px;
-    border-radius: var(--radius-md);
-    box-shadow: 0 1px 2px rgb(0 0 0 / 6%);
-    cursor: pointer;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem 0.5rem;
-    margin-bottom: 0.625rem;
-    padding: 0.625rem 0.75rem;
-    position: relative;
-  }
+  /* Card order: matter + priority on top, description, then a meta row. */
+  .tasks-table td.matter { order: 1; }
+  .tasks-table td.importance { order: 2; }
+  .tasks-table td.description { order: 3; }
+  .tasks-table td.user { order: 4; }
+  .tasks-table td.date { order: 5; }
+  .tasks-table td.status { order: 6; }
 
   /* Importance accent rail — same palette as the board's cards. */
   .tasks-table tbody tr.importance-7,
@@ -664,43 +636,9 @@ tr > td.importance.complete .button-link {
     background: var(--past-due-bg);
   }
 
-  /* Reset all td styles */
-  .tasks-table tbody td {
-    border: none;
-    overflow: visible;
-    padding: 0;
-    text-overflow: unset;
-    white-space: normal;
-  }
-
-  /* Remove individual cell highlights - card bg handles it */
+  /* Cell-level highlight is redundant with the card bg / rail. */
   .tasks-table tbody td.hl-yellow {
     background: transparent !important;
-  }
-
-  /* Layout: matter + priority on top, description, then a meta row — the same
-     arrangement as a .kanban-card. */
-  .tasks-table td.matter { order: 1; }
-  .tasks-table td.importance { order: 2; }
-  .tasks-table td.description { order: 3; }
-  .tasks-table td.user { order: 4; }
-  .tasks-table td.date { order: 5; }
-  .tasks-table td.status { order: 6; }
-
-  /* Matter: case name as plain text, ellipsised (like .kanban-card-matter). */
-  .tasks-table td.matter {
-    color: var(--color-primary);
-    flex: 1 1 auto;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .tasks-table td.matter a {
-    color: inherit;
-    pointer-events: none;
-    text-decoration: none;
   }
 
   /* Priority: the colour accent, top-right (like .kanban-card-priority). The
@@ -709,45 +647,11 @@ tr > td.importance.complete .button-link {
     flex: 0 0 auto;
     font-size: 1.125rem;
     margin-left: auto;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* Description: prominent, full width (like .kanban-card-description). */
-  .tasks-table td.description {
-    color: var(--color-primary);
-    flex: 0 0 100%;
-    font-weight: 500;
-  }
-
-  /* Stretched link: the edit link covers the whole card. */
-  .tasks-table td.description > a:first-child::after {
-    content: "";
-    inset: 0;
-    position: absolute;
-    z-index: 0;
-  }
-
-  /* Meta row: user / due / status, muted (like .kanban-card-meta). */
-  .tasks-table td.user,
-  .tasks-table td.date,
-  .tasks-table td.status {
-    align-items: center;
-    color: var(--color-muted);
-    display: flex;
-    flex: 0 0 auto;
-    position: relative;
-    z-index: 1;
-  }
-
-
-  /* Priority column width reset */
-  .tasks-table .importance {
     text-align: left;
-    width: auto;
   }
 
-  /* Disable dropdowns and date picker on mobile */
+  /* Disable the inline dropdowns and date picker on mobile (the whole card taps
+     through to edit instead). */
   .tasks-table td.importance .dropdown-menu,
   .tasks-table td.status .dropdown-menu,
   .tasks-table td.user .dropdown-menu,
@@ -766,21 +670,11 @@ tr > td.importance.complete .button-link {
     text-decoration: none;
   }
 
-  /* Other column width resets */
-  .tasks-table .matter,
-  .tasks-table .description,
-  .tasks-table .status,
-  .tasks-table .user,
-  .tasks-table .date {
-    min-width: 0;
-    width: auto;
-  }
-
   .task-date {
     width: auto;
   }
 
-  /* Hide notes and checklist icons on mobile */
+  /* Hide notes and checklist icons on mobile (covers other contexts too). */
   .task-decorators {
     display: none;
   }
@@ -788,22 +682,6 @@ tr > td.importance.complete .button-link {
   /* Empty date icon always visible */
   .tasks-table .date .empty-date-icon {
     opacity: 1;
-  }
-
-  /* Empty state — not a card. */
-  .tasks-table tbody tr:has(.empty-message) {
-    background: none;
-    border: none;
-    box-shadow: none;
-    cursor: default;
-    display: block;
-    padding: 1rem 0;
-    text-align: center;
-  }
-
-  .tasks-table td.empty-message {
-    display: block;
-    width: 100%;
   }
 }
 

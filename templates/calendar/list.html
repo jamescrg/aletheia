@@ -40,7 +40,7 @@
     </div>
   </div>
   <div class="table-container">
-    <table class="table full-width-table events-table">
+    <table class="table full-width-table events-table card-table">
       <thead>
         <tr>
           <th class="date">
@@ -99,12 +99,12 @@
               {{ event.date|date:"Y-m-d" }}
               {% if event.start_time %}{{ event.start_time|time:"g:i A" }}{% endif %}
             </td>
-            <td class="matter">
+            <td class="matter card-title">
               {% if event.matter %}
                 <a href="{% url 'matters:events-index' id=event.matter.id %}">{{ event.matter.name }}</a>
               {% endif %}
             </td>
-            <td class="description">
+            <td class="description card-desc">
               <a href="#"
                  type="button"
                  class="btn-icon"

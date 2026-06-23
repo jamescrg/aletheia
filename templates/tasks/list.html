@@ -1,6 +1,6 @@
 {% include "tasks/toolbar.html" %}
 <div class="table-container">
-  <table class="table tasks-table">
+  <table class="table tasks-table card-table">
     <thead>
       <tr>
         <th class="col-select">
@@ -65,15 +65,15 @@
     <tbody>
       {% for task in objects %}
         <tr class="importance-{{ task.importance }}{% if task.id in new_task_ids or task.id in edited_task_ids %} task-new-highlight{% endif %}{% if task.date_due and task.date_due < today and task.status != 'Complete' %} past-due{% endif %}">
-          <td class="col-select">
+          <td class="col-select card-hide">
             {% url 'tasks:toggle-select' task.id as toggle_url %}
             {% include "selection/checkbox.html" with toggle_url=toggle_url obj_id=task.id selected_ids=selected_tasks %}
           </td>
           <td class="importance dropdown-cell {% if task.status == 'Complete' %}complete{% endif %}"
               data-label="Importance">{% include "tasks/importance.html" %}</td>
-          <td class="matter {% if task.status == 'Complete' %}complete{% endif %}"
+          <td class="matter card-title {% if task.status == 'Complete' %}complete{% endif %}"
               data-label="Matter">{% include "tasks/matter.html" %}</td>
-          <td class="description {% if task.status == 'Complete' %}complete{% endif %}"
+          <td class="description card-desc {% if task.status == 'Complete' %}complete{% endif %}"
               data-label="Description">
             <a href="#"
                hx-get="{% url 'tasks:edit' id=task.id %}"

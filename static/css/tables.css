@@ -196,6 +196,142 @@ tr.total td {
   }
 }
 
+
+/* ==========================================================================
+   Responsive cards
+
+   Opt in by adding `card-table` to a <table>. At <=768px the table collapses
+   into a stack of cards (one per row). In the row template, tag the title cell
+   `card-title` and the prominent/description cell `card-desc`; every other cell
+   is treated as a muted meta chip automatically. The description's first link
+   is stretched over the whole card, so tapping anywhere opens it.
+
+   Per table you still add, under a `@media (width <= 768px)` block:
+     - column `order:` rules (mobile card order usually differs from the desktop
+       column order, and the <td> DOM order can't change without moving desktop
+       columns);
+     - an accent-rail colour on flagged rows (the card's 3px left border is a
+       neutral rail by default — recolour it, e.g. by status/urgency);
+     - `card-hide` on any cell to drop on mobile (select boxes, icon clusters).
+   See apps/tasks.css and apps/calendar.css for worked examples.
+   ========================================================================== */
+
+@media (width <= 768px) {
+  .table-container:has(.card-table) {
+    overflow-x: visible;
+  }
+
+  .card-table {
+    border: none;
+    display: block;
+    min-width: 0;
+  }
+
+  .card-table thead {
+    display: none;
+  }
+
+  .card-table tbody {
+    display: block;
+  }
+
+  /* Card row. The 1px border colour doubles as the default (neutral) left
+     rail; per-table rules recolour the rail on flagged rows. */
+  .card-table tbody tr {
+    background: var(--background-body);
+    border: solid 1px var(--border-medium);
+    border-left-width: 3px;
+    border-radius: var(--radius-md);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 6%);
+    cursor: pointer;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.5rem;
+    margin-bottom: 0.625rem;
+    padding: 0.625rem 0.75rem;
+    position: relative;
+  }
+
+  /* Default cell = muted meta chip. */
+  .card-table tbody td {
+    align-items: center;
+    border: none;
+    color: var(--color-muted);
+    display: flex;
+    flex: 0 0 auto;
+    overflow: visible;
+    padding: 0;
+    text-overflow: unset;
+    white-space: normal;
+    width: auto;
+  }
+
+  /* Drop empty meta chips so they don't add stray gaps. */
+  .card-table tbody td:empty:not(.card-title):not(.card-desc) {
+    display: none;
+  }
+
+  /* Opt-in: hide a cell on mobile (e.g. select checkbox, decorators). */
+  .card-table .card-hide {
+    display: none;
+  }
+
+  /* Title: primary colour, ellipsised, takes the row. display:block (not the
+     default flex) so text-overflow: ellipsis applies. */
+  .card-table td.card-title {
+    color: var(--color-primary);
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* A secondary link in the title must not intercept the card's stretched
+     link, so it's made non-interactive. */
+  .card-table td.card-title a {
+    color: inherit;
+    pointer-events: none;
+    text-decoration: none;
+  }
+
+  /* Description: prominent, full width; its first link covers the whole card. */
+  .card-table td.card-desc {
+    color: var(--color-primary);
+    display: block;
+    flex: 0 0 100%;
+    font-weight: 500;
+  }
+
+  .card-table td.card-desc > a:first-child {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .card-table td.card-desc > a:first-child::after {
+    content: "";
+    inset: 0;
+    position: absolute;
+  }
+
+  /* Empty state — a plain centered message, not a card. */
+  .card-table tbody tr:has(.empty-message) {
+    background: none;
+    border: none;
+    box-shadow: none;
+    cursor: default;
+    display: block;
+    padding: 1rem 0;
+    text-align: center;
+  }
+
+  .card-table td.empty-message {
+    display: block;
+    width: 100%;
+  }
+}
+
 .td-date {
   width: 7.5rem;
 }

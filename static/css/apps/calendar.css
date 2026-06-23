@@ -374,49 +374,23 @@
 
 
 /* ==========================================================================
-   Mobile — explode the events list table into cards
+   Mobile — events list as cards
 
-   Mirrors the Tasks tab pattern (static/css/apps/tasks.css): the table goes
-   display:block, each row becomes a flex card, columns are reordered, and the
-   description's edit link is stretched over the whole card. Scoped to
-   .events-table so it can't affect other tables.
+   The generic table->cards transform lives in tables.css (.card-table); the
+   events table opts in via `card-table` + `card-title`/`card-desc` on its cells
+   (templates/calendar/list.html). Only the event-specific bits live here:
+   column order, the due-soon urgency rail, and hiding the view toggle.
    ========================================================================== */
 
 @media (width <= 768px) {
-  .table-container:has(.events-table) {
-    overflow-x: visible;
-  }
-
-  .events-table {
-    border: none;
-    display: block;
-    min-width: 0;
-  }
-
-  .events-table thead {
-    display: none;
-  }
-
-  .events-table tbody {
-    display: block;
-  }
-
-  /* Card rows. The 1px border's colour also supplies the default (neutral)
-     left rail; due-soon rows override the rail colour below. */
-  .events-table tbody tr {
-    background: var(--background-body);
-    border: solid 1px var(--border-medium);
-    border-left-width: 3px;
-    border-radius: var(--radius-md);
-    box-shadow: 0 1px 2px rgb(0 0 0 / 6%);
-    cursor: pointer;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem 0.5rem;
-    margin-bottom: 0.625rem;
-    padding: 0.625rem 0.75rem;
-    position: relative;
-  }
+  /* Card order: matter title, description, then the meta row. */
+  .events-table td.matter { order: 1; }
+  .events-table td.description { order: 2; }
+  .events-table td.date { order: 3; }
+  .events-table td.location { order: 4; }
+  .events-table td.party { order: 5; }
+  .events-table td.duration { order: 6; }
+  .events-table td.status { order: 7; }
 
   /* Urgency: due-soon events (hl-yellow) get a coloured left rail instead of
      the full-row yellow fill the .hl-yellow utility applies. */
@@ -426,96 +400,6 @@
 
   .events-table tbody tr.hl-yellow {
     border-left-color: var(--yellow-600);
-  }
-
-  .events-table tbody td {
-    border: none;
-    overflow: visible;
-    padding: 0;
-    white-space: normal;
-    width: auto;
-  }
-
-  /* Layout: matter title, description, then a muted meta row. */
-  .events-table td.matter { order: 1; }
-  .events-table td.description { order: 2; }
-  .events-table td.date { order: 3; }
-  .events-table td.location { order: 4; }
-  .events-table td.party { order: 5; }
-  .events-table td.duration { order: 6; }
-  .events-table td.status { order: 7; }
-
-  /* Matter: case name as the card title, ellipsised. */
-  .events-table td.matter {
-    color: var(--color-primary);
-    flex: 1 1 auto;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  /* Secondary link — don't let it intercept the card's stretched edit link. */
-  .events-table td.matter a {
-    color: inherit;
-    pointer-events: none;
-    text-decoration: none;
-  }
-
-  /* Description: prominent, full width; its link covers the whole card. */
-  .events-table td.description {
-    color: var(--color-primary);
-    flex: 0 0 100%;
-    font-weight: 500;
-  }
-
-  .events-table td.description > a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .events-table td.description > a::after {
-    content: "";
-    inset: 0;
-    position: absolute;
-    z-index: 0;
-  }
-
-  /* Meta row: date/time · type · party · duration · status, muted. Left
-     unpositioned so the stretched edit link covers them — the whole card taps
-     through to edit (these cells are plain text, not interactive controls). */
-  .events-table td.date,
-  .events-table td.location,
-  .events-table td.party,
-  .events-table td.duration,
-  .events-table td.status {
-    align-items: center;
-    color: var(--color-muted);
-    display: flex;
-    flex: 0 0 auto;
-  }
-
-  /* Hide empty meta cells so they don't add stray gaps. */
-  .events-table td.location:empty,
-  .events-table td.party:empty,
-  .events-table td.duration:empty {
-    display: none;
-  }
-
-  /* Empty state — not a card. */
-  .events-table tbody tr:has(.empty-message) {
-    background: none;
-    border: none;
-    box-shadow: none;
-    cursor: default;
-    display: block;
-    padding: 1rem 0;
-    text-align: center;
-  }
-
-  .events-table td.empty-message {
-    display: block;
-    width: 100%;
   }
 
   /* Dark/cosmic: a brighter rail reads better on the dark card, and suppress
