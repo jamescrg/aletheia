@@ -365,9 +365,13 @@
     font-size: 1rem;
   }
 
-  /* The grid is replaced by the card list on mobile (events-calendar.js forces
-     list view), so the List/Calendar toggle has nothing to switch to. */
-  .view-toggle {
+  /* Pare the toolbar to just Add + Filter on mobile. The grid is replaced by
+     the card list (events-calendar.js forces list view), so the List/Calendar
+     toggle has nothing to switch to; the status/assigned/matter filter
+     dropdowns and the Deadline Calculator are dropped to avoid crowding. */
+  .view-toggle,
+  #events .toolbar .filter-tools .dropdown,
+  #events .toolbar-right {
     display: none;
   }
 }
