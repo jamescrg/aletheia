@@ -225,55 +225,58 @@
 </div>
 </div>
 <div class="table-container">
-  <table class="table activity">
-    <tr>
-      {% if user.is_admin or user.perm_financial %}
-        <th class="col-select">
-          {% url 'activity:time-select-all' as select_all_url %}
-          {% include "selection/select-all-btn.html" with select_all_url=select_all_url all_selected=all_selected %}
-        </th>
-      {% endif %}
-      <th class="date">
-        Date
-        <button class="btn-sort {% if current_order == 'date' %}active{% endif %}"
-                hx-post="{% url 'activity:time-order-by' 'date' %}">
-          <i class="icon-chevrons-up-down"></i>
-        </button>
-      </th>
-      <th class="user">User</th>
-      <th class="matter">
-        Matter
-        <button class="btn-sort {% if current_order == 'matter' %}active{% endif %}"
-                hx-post="{% url 'activity:time-order-by' 'matter' %}">
-          <i class="icon-chevrons-up-down"></i>
-        </button>
-      </th>
-      <th class="actions">
-        Actions
-        <button class="btn-sort {% if current_order == 'actions' %}active{% endif %}"
-                hx-post="{% url 'activity:time-order-by' 'actions' %}">
-          <i class="icon-chevrons-up-down"></i>
-        </button>
-      </th>
-      <th class="numeric hours">Hours</th>
-      <th class="numeric rate">Rate</th>
-      <th class="numeric fee">Fee</th>
-    </tr>
-    <tr id="time-table"></tr>
-    {% for entry in objects %}
-      <tr id="time-{{ entry.id }}">
-        {% if user.is_admin or user.perm_financial %}
-          {% include "activity/time/table-row.html" with show_select=True %}
-        {% else %}
-          {% include "activity/time/table-row.html" %}
-        {% endif %}
-      </tr>
-    {% empty %}
+  <table class="table activity card-table">
+    <thead>
       <tr>
-        <td colspan="{% if user.is_admin or user.perm_financial %}8{% else %}7{% endif %}"
-            class="empty-message">No time entries found.</td>
+        {% if user.is_admin or user.perm_financial %}
+          <th class="col-select">
+            {% url 'activity:time-select-all' as select_all_url %}
+            {% include "selection/select-all-btn.html" with select_all_url=select_all_url all_selected=all_selected %}
+          </th>
+        {% endif %}
+        <th class="date">
+          Date
+          <button class="btn-sort {% if current_order == 'date' %}active{% endif %}"
+                  hx-post="{% url 'activity:time-order-by' 'date' %}">
+            <i class="icon-chevrons-up-down"></i>
+          </button>
+        </th>
+        <th class="user">User</th>
+        <th class="matter">
+          Matter
+          <button class="btn-sort {% if current_order == 'matter' %}active{% endif %}"
+                  hx-post="{% url 'activity:time-order-by' 'matter' %}">
+            <i class="icon-chevrons-up-down"></i>
+          </button>
+        </th>
+        <th class="actions">
+          Actions
+          <button class="btn-sort {% if current_order == 'actions' %}active{% endif %}"
+                  hx-post="{% url 'activity:time-order-by' 'actions' %}">
+            <i class="icon-chevrons-up-down"></i>
+          </button>
+        </th>
+        <th class="numeric hours">Hours</th>
+        <th class="numeric rate">Rate</th>
+        <th class="numeric fee">Fee</th>
       </tr>
-    {% endfor %}
+    </thead>
+    <tbody id="time-table">
+      {% for entry in objects %}
+        <tr id="time-{{ entry.id }}">
+          {% if user.is_admin or user.perm_financial %}
+            {% include "activity/time/table-row.html" with show_select=True %}
+          {% else %}
+            {% include "activity/time/table-row.html" %}
+          {% endif %}
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="{% if user.is_admin or user.perm_financial %}8{% else %}7{% endif %}"
+              class="empty-message">No time entries found.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
   </table>
 </div>
 <div class="flex-start-space">

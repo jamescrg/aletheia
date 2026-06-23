@@ -304,12 +304,15 @@ tr.total td {
     text-decoration: none;
   }
 
-  /* Description: prominent, full width; its first link covers the whole card. */
+  /* Description: prominent, full width; its first link covers the whole card.
+     min-width:0 so a table's own desktop column min-width can't force the card
+     wider than the viewport on narrow phones. */
   .card-table td.card-desc {
     color: var(--color-primary);
     display: block;
     flex: 0 0 100%;
     font-weight: 500;
+    min-width: 0;
   }
 
   .card-table td.card-desc > a:first-child {

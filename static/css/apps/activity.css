@@ -129,3 +129,31 @@ Codes Table Action Icons
   color: var(--color-darker);
   font-weight: 500;
 }
+
+
+/* ==========================================================================
+   Mobile — Time entries as cards
+
+   The generic table->cards transform lives in tables.css (.card-table); the
+   time table opts in via `card-table` + `card-title`/`card-desc`/`card-hide`
+   (templates/activity/time/). Only the time-specific bits live here: card
+   column order and paring the toolbar to Add + Filter.
+   ========================================================================== */
+
+@media (width <= 768px) {
+  /* Card order: matter title, actions/description, then a muted meta row. */
+  #time .activity td.matter { order: 1; }
+  #time .activity td.actions { order: 2; }
+  #time .activity td.date { order: 3; }
+  #time .activity td.user { order: 4; }
+  #time .activity td.hours { order: 5; }
+  #time .activity td.rate { order: 6; }
+  #time .activity td.fee { order: 7; }
+
+  /* Pare the toolbar to Add + Filter: drop the date/user (and bulk) dropdowns,
+     and the Codes + Download controls (both in toolbar-right). */
+  #time .toolbar .filter-tools .dropdown,
+  #time .toolbar-right {
+    display: none;
+  }
+}
