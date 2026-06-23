@@ -216,17 +216,44 @@
 
 
 /* ==========================================================================
-   Mobile Hamburger Trigger
+   Mobile Top Bar (brand + hamburger trigger)
+
+   Hidden on desktop; shown only in the <= 768px block below, where the sidebar
+   becomes an off-canvas drawer. The bar sits in normal flow as the first child
+   of .main-content (sticky, not fixed) so content can't slide under it and it
+   stacks below the dev banner.
    ========================================================================== */
+
+.mobile-topbar {
+  display: none;
+}
 
 .sidebar-mobile-trigger {
   background: none;
   border: none;
   color: var(--color-primary);
   cursor: pointer;
-  display: none;
   font-size: 1.25rem;
   padding: 0.75rem 1rem;
+}
+
+/* Centered brand: absolutely centered so the leading hamburger doesn't push it
+   off-centre. Mirrors the sidebar brand (icon-atom mark + Kosmos wordmark). */
+.mobile-topbar-brand {
+  align-items: center;
+  color: var(--link);
+  display: flex;
+  font-size: 1.3rem;
+  gap: 0.75rem;
+  left: 50%;
+  position: absolute;
+  text-decoration: none;
+  transform: translateX(-50%);
+}
+
+.mobile-topbar-brand .sidebar-brand-mark {
+  flex-shrink: 0;
+  font-size: 1.5rem;
 }
 
 
@@ -285,8 +312,26 @@
     display: none;
   }
 
-  .sidebar-mobile-trigger {
-    display: block;
+  /* The top bar carries the brand on mobile, so the drawer's own header is
+     redundant — drop it for a cleaner drawer top. The nav then needs its own
+     top padding so the first item isn't flush against the window edge. */
+  .sidebar-header {
+    display: none;
+  }
+
+  .sidebar-nav {
+    padding-top: 1rem;
+  }
+
+  .mobile-topbar {
+    align-items: center;
+    background: var(--background-sidebar);
+    box-shadow: inset 0 -1px 0 var(--border-medium-dark);
+    display: flex;
+    height: var(--topnav-height);
+    position: sticky;
+    top: 0;
+    z-index: 90;
   }
 
   .main-content {

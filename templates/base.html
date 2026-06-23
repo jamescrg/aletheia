@@ -114,9 +114,17 @@
   {% endif %}
   {% include "sidebar.html" %}
   <div class="main-content" id="main-content">
-    <button class="sidebar-mobile-trigger" id="sidebar-mobile-trigger">
-      <i class="icon-menu"></i>
-    </button>
+    <header class="mobile-topbar">
+      <button class="sidebar-mobile-trigger"
+              id="sidebar-mobile-trigger"
+              aria-label="Open navigation menu">
+        <i class="icon-menu" aria-hidden="true"></i>
+      </button>
+      <a href="{% url 'tasks-index' %}" class="mobile-topbar-brand">
+        <i class="icon-atom sidebar-brand-mark" aria-hidden="true"></i>
+        <span class="sidebar-label">Kosmos</span>
+      </a>
+    </header>
     <div id="toast-container"
          class="toast-container position-fixed top-0 end-0 p-3"></div>
     {% block content %}
