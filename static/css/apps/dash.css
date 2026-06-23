@@ -284,3 +284,11 @@
     min-width: 37.5rem;
   }
 }
+
+@media (width <= 768px) {
+  /* Drop the period dropdown on mobile so it doesn't compete for space with
+     the By User / By Matter toggle. The .chart-toggle group is left intact. */
+  #dash-wip .toolbar-right .dropdown {
+    display: none;
+  }
+}
