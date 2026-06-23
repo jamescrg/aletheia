@@ -32,23 +32,10 @@
   margin-bottom: 0;
 }
 
-/* Mirror the wip-section's two columns in the toolbar above it: the heading sits
-   over the donut (fixed 300px), and the toggle/period buttons left-align with the
-   table's left edge (300px donut + 2rem gap). padding-bottom adds 0.25rem of
-   breathing room below the heading row. */
+/* Heading on the left, toggle/period controls pushed to the far right.
+   padding-bottom adds 0.25rem of breathing room below the heading row. */
 #dash-wip .toolbar {
-  gap: 2rem;
   padding-bottom: 1.5rem;
-}
-
-#dash-wip .toolbar-left {
-  flex: none;
-  width: 300px;
-}
-
-#dash-wip .toolbar-right {
-  flex: 1;
-  justify-content: flex-start;
 }
 
 /* ==========================================================================
