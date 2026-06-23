@@ -10,7 +10,7 @@
 
 /* Slightly larger section headings (Unbilled Time, Upcoming Events, Collections). */
 .dashboard h2 {
-  font-size: 1.4rem;
+  font-size: 1.45rem;
 }
 
 /* Two equal columns (Past Due | Low Clearance), stacking on narrow screens. */
