@@ -396,13 +396,12 @@
   .events-table td.duration { order: 6; }
   .events-table td.status { order: 7; }
 
-  /* Urgency: due-soon events (hl-yellow) get a coloured left rail instead of
-     the full-row yellow fill the .hl-yellow utility applies. */
-  .events-table tbody tr.hl-yellow > td {
-    background: transparent !important;
-  }
-
+  /* Urgency: due-soon events (hl-yellow) get a coloured left rail on a clean
+     card — matching the task cards — instead of the pale yellow-100 full-row
+     fill the .hl-yellow utility applies. (--background-body == --background-td,
+     so the card stays uniform without touching the cells.) */
   .events-table tbody tr.hl-yellow {
+    background: var(--background-body) !important;
     border-left-color: var(--yellow-600);
   }
 

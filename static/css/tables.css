@@ -221,7 +221,11 @@ tr.total td {
     overflow-x: visible;
   }
 
-  .card-table {
+  /* `table.card-table` (not `.card-table`) so this min-width reset outranks a
+     table's own single-class width rule (e.g. .events-table { min-width: 69rem }),
+     which loads after tables.css and would otherwise win on source order and
+     leave the card stack overflowing the viewport. */
+  table.card-table {
     border: none;
     display: block;
     min-width: 0;
