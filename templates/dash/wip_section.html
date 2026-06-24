@@ -10,10 +10,14 @@
           <div class="chart-toggle" role="group" aria-label="Group by">
             <button type="button"
                     :class="{ 'toggle-active': dim === 'user' }"
-                    @click="setDim('user')">By User</button>
+                    @click="setDim('user')">
+              <span class="by-prefix">By&nbsp;</span>User
+            </button>
             <button type="button"
                     :class="{ 'toggle-active': dim === 'matter' }"
-                    @click="setDim('matter')">By Matter</button>
+                    @click="setDim('matter')">
+              <span class="by-prefix">By&nbsp;</span>Matter
+            </button>
           </div>
         {% endif %}
         {% include "dash/wip_period_dropdown.html" %}

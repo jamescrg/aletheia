@@ -291,4 +291,16 @@
   #dash-wip .toolbar-right .dropdown {
     display: none;
   }
+
+  /* Shorten the toggle labels to "User" / "Matter". */
+  #dash-wip .chart-toggle .by-prefix {
+    display: none;
+  }
+
+  /* The WIP table is table-layout:fixed with four 9rem numeric columns (36rem),
+     which collapsed the name column to nothing on a phone. Give the table a
+     min-width so the name keeps ~12rem and the container scrolls instead. */
+  #dash-wip .wip-table .table {
+    min-width: 48rem;
+  }
 }
