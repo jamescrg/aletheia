@@ -375,7 +375,17 @@ def edit(request, id):
             matter = form.save(commit=False)
             matter.user_id = request.user.id
             matter.save()
-            return HttpResponse(status=204, headers={"HX-Trigger": "mattersChanged"})
+            # Refresh the matter name in the detail header out-of-band (the
+            # detail page doesn't listen for mattersChanged), close the modal,
+            # and refresh the matters list. On the list page there's no
+            # #matter-switcher, so the OOB swap is simply skipped there.
+            response = render(
+                request,
+                "matters/includes/switcher.html",
+                {"matter": matter, "oob": True},
+            )
+            response["HX-Trigger"] = "closeModal, mattersChanged"
+            return response
 
     else:
         form = MatterForm(instance=matter)
