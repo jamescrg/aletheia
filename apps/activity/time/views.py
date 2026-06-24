@@ -288,6 +288,16 @@ def order_by_time(request, order):
     return HttpResponse(status=204, headers={"HX-Trigger": "timeChanged"})
 
 
+def _apply_abbreviation_codes(text):
+    """Expand active abbreviation codes within a time entry's actions text.
+    Used by both add and edit when the form's 'apply_codes' checkbox is set."""
+    if not text:
+        return text
+    for code in AbbreviationCode.objects.filter(is_active=True):
+        text = text.replace(code.code, code.expansion)
+    return text
+
+
 @login_required
 def time_add(request, id=None, request_app="activity"):
     # if applicable, process any post data submitted by user
@@ -297,10 +307,8 @@ def time_add(request, id=None, request_app="activity"):
             entry = form.save(commit=False)
             entry.user_id = request.user.id
 
-            # Apply abbreviation codes from database
-            codes = AbbreviationCode.objects.filter(is_active=True)
-            for code in codes:
-                entry.actions = entry.actions.replace(code.code, code.expansion)
+            if form.cleaned_data.get("apply_codes"):
+                entry.actions = _apply_abbreviation_codes(entry.actions)
 
             entry.save()
 
@@ -407,6 +415,9 @@ def time_edit(request, id):
             # because editing will be locked at that point
             if original_entry.matter != entry.matter:
                 entry.invoice = None
+
+            if form.cleaned_data.get("apply_codes"):
+                entry.actions = _apply_abbreviation_codes(entry.actions)
 
             entry.save()
 

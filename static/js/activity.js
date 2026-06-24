@@ -37,6 +37,7 @@ function initAbbreviationPreview() {
     const actionsTextarea = document.getElementById('id_actions');
     const previewContainer = document.getElementById('actions-preview');
     const previewText = document.getElementById('actions-preview-text');
+    const applyCheckbox = document.getElementById('id_apply_codes');
 
     if (!actionsTextarea || !previewContainer || !previewText) {
         return; // Elements not found, exit early
@@ -58,6 +59,12 @@ function initAbbreviationPreview() {
     // Function to update the preview
     function updatePreview() {
         if (!abbreviationCodes) return;
+
+        // When expansion is turned off, there's nothing to preview.
+        if (applyCheckbox && !applyCheckbox.checked) {
+            previewContainer.style.display = 'none';
+            return;
+        }
 
         const originalText = actionsTextarea.value;
 
@@ -84,6 +91,11 @@ function initAbbreviationPreview() {
 
     // Add event listener for input changes
     actionsTextarea.addEventListener('input', updatePreview);
+
+    // Toggle the preview when the apply-codes checkbox changes
+    if (applyCheckbox) {
+        applyCheckbox.addEventListener('change', updatePreview);
+    }
 
     // Update preview on initial load (for edit mode)
     updatePreview();

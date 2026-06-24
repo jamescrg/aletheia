@@ -7,6 +7,14 @@ from .models import AbbreviationCode, TimeEntry
 
 
 class TimeEntryForm(forms.ModelForm):
+    # Non-model field: when checked, abbreviation codes in `actions` are expanded
+    # on save (applied equally on add and edit). Checked by default.
+    apply_codes = forms.BooleanField(
+        required=False,
+        initial=True,
+        label="Expand abbreviations",
+    )
+
     class Meta:
         model = TimeEntry
 

@@ -32,6 +32,11 @@
           <label for="{{ form.actions.id_for_label }}">{{ form.actions.label }}</label>
           <div>{{ form.actions }}{{ form.actions.errors }}</div>
         </div>
+        <div class="form-group span2 apply-codes-field">
+          <label for="{{ form.apply_codes.id_for_label }}" class="apply-codes-label">
+            {{ form.apply_codes }} {{ form.apply_codes.label }}
+          </label>
+        </div>
         <div id="actions-preview" class="actions-preview span2">
           <small class="text-muted">Preview:</small>
           <div id="actions-preview-text"></div>
