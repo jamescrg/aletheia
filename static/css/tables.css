@@ -274,6 +274,14 @@ tr.total td {
     width: auto;
   }
 
+  /* Card cells size to content, never to their desktop column width. The class
+     is doubled so this beats a table's own `.<name> .<col> { width: … }` rule
+     (specificity 0,2,0); otherwise oversized cells leave dead space (a gap when
+     the row uses justify-content) instead of hugging their content. */
+  .card-table.card-table tbody td {
+    width: auto;
+  }
+
   /* Drop empty meta chips so they don't add stray gaps. */
   .card-table tbody td:empty:not(.card-title):not(.card-desc) {
     display: none;

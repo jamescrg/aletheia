@@ -89,15 +89,10 @@ table.matter-contacts {
 
   /* The table's own `table.matter-contacts { min-width: 65rem }` ties the base
      `table.card-table` reset on specificity and loads later, so it won the
-     cascade and pushed the cards past the viewport. Reset it here, and let the
-     meta cells size to content instead of their desktop column widths. */
+     cascade and pushed the cards past the viewport. Reset it here. (Cell widths
+     are handled by the base .card-table content-sizing reset.) */
   table.matter-contacts {
     min-width: 0;
-  }
-
-  .matter-contacts td.group,
-  .matter-contacts td.role {
-    width: auto;
   }
 
   /* Card order: name (prominent, full width) then group · role. */

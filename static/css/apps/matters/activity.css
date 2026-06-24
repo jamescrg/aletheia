@@ -51,19 +51,10 @@
    the hours/rate/fee row both get gaps; the full-width description is
    unaffected. */
 @media (width <= 768px) {
+  /* Cells size to content via the base .card-table reset, so space-between
+     seats the initials / fee flush to the card edge. */
   .matter-activity tbody tr {
     justify-content: space-between;
-  }
-
-  /* Shrink cells to their content so space-between pushes the initials / fee to
-     the card edge. Their desktop fixed widths (user 6rem, etc.) otherwise left
-     empty space inside the cell that read as a gap on the right. */
-  .matter-activity td.date,
-  .matter-activity td.user,
-  .matter-activity td.hours,
-  .matter-activity td.rate,
-  .matter-activity td.fee {
-    width: auto;
   }
 
   .matter-activity td.date { order: 1; }
