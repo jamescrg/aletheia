@@ -186,6 +186,57 @@ tr > td.importance.complete .button-link {
   padding-right: 0.5rem;
 }
 
+/* Mobile: lay the toolbar out as a tidy 2-column grid — Add | Filter on the top
+   row, the date | user dropdowns below, and the list/board toggle on its own
+   row. (The default flex `wrap-reverse` dropped Add awkwardly beneath the
+   filters.) The inline quick-add input is hidden; the Add button covers it. */
+@media (width <= 768px) {
+  .tasks-toolbar .tasks-add-quick-input {
+    display: none;
+  }
+
+  .tasks-toolbar-left {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Flatten .filter-tools so Filter, the dropdowns and the toggle become grid
+     cells alongside the Add button (a direct child of .tasks-toolbar-left). */
+  .tasks-toolbar .filter-tools {
+    display: contents;
+  }
+
+  /* Cell order: Add, Filter, date, user, then the view toggle. */
+  .tasks-toolbar-left > button {
+    justify-content: center;
+    order: 1;
+  }
+
+  .tasks-toolbar .filter-tools > .btn-icon {
+    justify-content: center;
+    order: 2;
+  }
+
+  .tasks-toolbar .filter-tools > .dropdown:has(#tasks-date-filter) {
+    order: 3;
+  }
+
+  .tasks-toolbar .filter-tools > .dropdown:has(#tasks-user-filter) {
+    order: 4;
+  }
+
+  .tasks-toolbar .view-toggle {
+    order: 5;
+  }
+
+  /* Let the dropdown buttons fill their grid cell. */
+  .tasks-toolbar .filter-tools .filter-dropdown-button {
+    max-width: none;
+    width: 100%;
+  }
+}
+
 
 .tasks-add-quick-input {
   background: var(--background-light);
