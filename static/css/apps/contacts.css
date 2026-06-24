@@ -264,6 +264,19 @@
   .contacts-detail .detail-header .toolbar {
     align-items: flex-start;
   }
+
+  /* The <=1000px rules force each title onto its own full-width row with a 1rem
+     margin, and the folders headers carry a desktop-only height spacer — these
+     made the detail headers very tall on phones. Let titles size to content
+     (badge/button sit beside them) and drop the spacer. */
+  .contacts-page .detail-header .toolbar-left h1 {
+    flex: 0 1 auto;
+    margin-bottom: 0;
+  }
+
+  .contacts-page .card > .folders > .detail-header .toolbar-left::after {
+    content: none;
+  }
 }
 
 .contact-tab-content .contact-item {
