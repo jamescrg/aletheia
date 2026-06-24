@@ -43,3 +43,28 @@ display
 .events-list .status {
   width: 8.75rem;
 }
+
+
+/* Mobile — events as cards (.card-table base in tables.css). Mirrors the
+   calendar cards: description prominent, the rest as meta, and due-soon
+   (hl-yellow) events flagged with the --past-due-bg treatment. */
+@media (width <= 768px) {
+  .events-list td.description { order: 1; }
+  .events-list td.date { order: 2; }
+  .events-list td.party { order: 3; }
+  .events-list td.duration { order: 4; }
+  .events-list td.location { order: 5; }
+  .events-list td.status { order: 6; }
+
+  .events-list tbody tr.hl-yellow {
+    background: var(--past-due-bg) !important;
+  }
+
+  :is([data-theme="dark"], [data-theme="cosmic"]) .events-list tbody tr.hl-yellow {
+    border-left-color: var(--past-due-rail);
+  }
+
+  :is([data-theme="dark"], [data-theme="cosmic"]) .events-list tbody tr[class*="hl-"] > td:first-child {
+    box-shadow: none;
+  }
+}

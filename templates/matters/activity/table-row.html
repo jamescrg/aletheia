@@ -1,5 +1,5 @@
 {% load humanize %}
-<td class="col-select">
+<td class="col-select card-hide">
   <button class="btn-check"
           hx-post="{% url 'matters:activity-toggle-select' matter.id entry.id %}"
           hx-swap="none">
@@ -8,7 +8,7 @@
 </td>
 <td class="date">{{ entry.date|date:'Y-m-d' }}</td>
 <td class="user">{{ entry.user.initials }}</td>
-<td class="actions">
+<td class="actions card-desc">
   {% if entry.invoice and not entry.invoice.status == 'DRAFT' %}
     {{ entry.actions }}
   {% else %}

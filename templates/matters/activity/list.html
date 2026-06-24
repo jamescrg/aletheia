@@ -1,6 +1,6 @@
 {% block subcontent %}
   {% load humanize %}
-  <div class="toolbar">
+  <div class="toolbar mobile-min-toolbar">
     <div class="toolbar-left">
       {% if selected_entries %}
         <div class="filter-tools">
@@ -76,38 +76,42 @@
   </div>
   <div id="matterActivityTable">
     <div class="table-container">
-      <table class="table matter-activity">
-        <tr>
-          <th class="col-select">
-            <button class="btn-check"
-                    hx-post="{% url 'matters:activity-select-all' matter.id %}"
-                    hx-swap="none"
-                    title="Select all">
-              <i class="icon-square{% if all_selected %}-check{% endif %}"></i>
-            </button>
-          </th>
-          <th class="date">
-            Date
-            <a href="#"
-               hx-post="{% url 'matters:activity-sort' matter.id %}"
-               hx-target="#matterActivityTable"
-               hx-swap="outerHTML">
-              <i class="icon-chevrons-up-down"></i>
-            </a>
-          </th>
-          <th class="user">User</th>
-          <th class="actions">Actions</th>
-          <th class="numeric hours">Hours</th>
-          <th class="numeric rate">Rate</th>
-          <th class="numeric fee">Fee</th>
-        </tr>
-        {% for entry in entries %}
-          <tr id="time-{{ entry.id }}">{% include "matters/activity/table-row.html" %}</tr>
-        {% empty %}
+      <table class="table matter-activity card-table">
+        <thead>
           <tr>
-            <td colspan="7" class="empty-message">No time entries found for this matter.</td>
+            <th class="col-select">
+              <button class="btn-check"
+                      hx-post="{% url 'matters:activity-select-all' matter.id %}"
+                      hx-swap="none"
+                      title="Select all">
+                <i class="icon-square{% if all_selected %}-check{% endif %}"></i>
+              </button>
+            </th>
+            <th class="date">
+              Date
+              <a href="#"
+                 hx-post="{% url 'matters:activity-sort' matter.id %}"
+                 hx-target="#matterActivityTable"
+                 hx-swap="outerHTML">
+                <i class="icon-chevrons-up-down"></i>
+              </a>
+            </th>
+            <th class="user">User</th>
+            <th class="actions">Actions</th>
+            <th class="numeric hours">Hours</th>
+            <th class="numeric rate">Rate</th>
+            <th class="numeric fee">Fee</th>
           </tr>
-        {% endfor %}
+        </thead>
+        <tbody>
+          {% for entry in entries %}
+            <tr id="time-{{ entry.id }}">{% include "matters/activity/table-row.html" %}</tr>
+          {% empty %}
+            <tr>
+              <td colspan="7" class="empty-message">No time entries found for this matter.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
       </table>
     </div>
     <div class="flex-start-space">

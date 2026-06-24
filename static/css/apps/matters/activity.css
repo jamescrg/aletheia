@@ -40,3 +40,14 @@
 .matter-activity .fee {
   width: 7rem;
 }
+
+
+/* Mobile — time entries as cards (.card-table base in tables.css). */
+@media (width <= 768px) {
+  .matter-activity td.actions { order: 1; }
+  .matter-activity td.date { order: 2; }
+  .matter-activity td.user { order: 3; }
+  .matter-activity td.hours { order: 4; }
+  .matter-activity td.rate { order: 5; }
+  .matter-activity td.fee { order: 6; }
+}

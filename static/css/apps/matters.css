@@ -158,6 +158,18 @@ Matter Switcher
   }
 }
 
+/* Mobile: subtab toolbars marked `mobile-min-toolbar` collapse to just their
+   Add + Filter buttons (plain buttons in .filter-tools). Everything else —
+   filter dropdowns, toolbar-right links (reports, deadline calc, view-all),
+   and the tasks "back to agenda" link — is hidden. */
+@media (width <= 768px) {
+  .mobile-min-toolbar .dropdown,
+  .mobile-min-toolbar .toolbar-right,
+  .mobile-min-toolbar .return-to-agenda {
+    display: none;
+  }
+}
+
 .toolbar .matter-switcher > button {
   background: none;
   border: none;
