@@ -51,12 +51,12 @@
   {% if pagination.paginator.num_pages > 1 %}
     <div class="pagination-row">
       <a href="#"
-         hx-get="{% url 'activity:codes-list' %}?page=1{% if search_query %}&q={{ search_query }}{% endif %}"
+         hx-get="{% url 'activity:codes-list' %}?partial=1&page=1{% if search_query %}&q={{ search_query }}{% endif %}"
          hx-target="#codes-results"
          hx-swap="outerHTML"
          class="{% if not pagination.has_previous %}pagination-disabled{% endif %}">&lt;&lt;</a>
       <a href="#"
-         {% if pagination.has_previous %}hx-get="{% url 'activity:codes-list' %}?page={{ pagination.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}
+         {% if pagination.has_previous %}hx-get="{% url 'activity:codes-list' %}?partial=1&page={{ pagination.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}
          "
          {% endif %}
          hx-target="#codes-results"
@@ -64,14 +64,14 @@
          class="{% if not pagination.has_previous %}pagination-disabled{% endif %}">&lt;</a>
       <p>Page {{ pagination.number }} of {{ pagination.paginator.num_pages }}</p>
       <a href="#"
-         {% if pagination.has_next %}hx-get="{% url 'activity:codes-list' %}?page={{ pagination.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}
+         {% if pagination.has_next %}hx-get="{% url 'activity:codes-list' %}?partial=1&page={{ pagination.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}
          "
          {% endif %}
          hx-target="#codes-results"
          hx-swap="outerHTML"
          class="{% if not pagination.has_next %}pagination-disabled{% endif %}">&gt;</a>
       <a href="#"
-         {% if pagination.has_next %}hx-get="{% url 'activity:codes-list' %}?page={{ pagination.paginator.num_pages }}{% if search_query %}&q={{ search_query }}{% endif %}
+         {% if pagination.has_next %}hx-get="{% url 'activity:codes-list' %}?partial=1&page={{ pagination.paginator.num_pages }}{% if search_query %}&q={{ search_query }}{% endif %}
          "
          {% endif %}
          hx-target="#codes-results"
