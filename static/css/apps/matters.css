@@ -41,9 +41,11 @@ Matter List
 ========================================================================== */
 
 .matter-list {
-  /* Sum of the fixed column widths below (name 18 + work-status 22 + case-no
-     15). Keeps every column at its intended size and lets .table-container
-     scroll sideways on narrow screens rather than squashing work-status. */
+  /* name (18) + case-no (15) are fixed; work-status is the flexible column
+     that absorbs the remaining width, so on desktop matter and proceeding keep
+     their tight defined widths instead of all three ballooning equally. This
+     min-width (18 + 22 + 15) gives work-status a 22rem floor: below it the
+     table scrolls sideways rather than squashing. Mobile renders as cards. */
   min-width: 55rem;
 }
 
@@ -69,11 +71,9 @@ Matter List
   width: 18rem;
 }
 
-.matter-list .work-status {
-  /* Explicit width, not min-width: under table-layout: fixed (tables.css) a
-     cell's min-width is ignored, so min-width let this column collapse. */
-  width: 22rem;
-}
+/* work-status intentionally has no width: under table-layout: fixed it's the
+   sole auto column, so it takes the leftover space and keeps name/case-no at
+   their exact widths. Its floor comes from the table min-width above. */
 
 .matter-list .unbilled {
   width: 9.5rem;
