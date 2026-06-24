@@ -36,6 +36,11 @@ class Event(AuditMixin, models.Model):
     location = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=50, blank=True, null=True)
     google_id = models.CharField(max_length=255, blank=True, null=True)
+    # When this event was last successfully pushed to Google Calendar. NULL means
+    # never pushed. The push is needed whenever this is NULL or older than
+    # updated_at (a local edit since the last sync) — that single comparison
+    # drives create, update, first-connect backfill, and retry-after-failure.
+    google_synced_at = models.DateTimeField(null=True, blank=True)
     history = HistoricalRecords(table_name="agenda_historicalevent")
 
     def __str__(self):
@@ -61,3 +66,19 @@ class CalendarSyncState(models.Model):
 
     class Meta:
         db_table = "app_calendar_sync_state"
+
+
+class PendingGoogleDeletion(models.Model):
+    """A Google Calendar event that must be deleted remotely after a local
+    delete whose push failed. The Event row is gone, so the marker can't live on
+    it; reconcile() drains this and removes the record once Google confirms."""
+
+    google_id = models.CharField(max_length=255, unique=True)
+    calendar_id = models.CharField(max_length=255)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Pending deletion of {self.google_id}"
+
+    class Meta:
+        db_table = "app_calendar_pending_deletion"
