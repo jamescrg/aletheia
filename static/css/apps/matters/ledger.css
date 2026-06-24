@@ -89,3 +89,17 @@
 .totals-table .total {
   width: 12.5rem;
 }
+
+
+/* Mobile: stack the two summary tables so the Unbilled Activity table wraps
+   under the Balance Due table instead of sitting beside it. The charges/credits
+   list below is left as-is (scrolls horizontally). */
+@media (width <= 768px) {
+  .ledger-summary {
+    flex-direction: column;
+  }
+
+  .ledger-summary .ledger-totals {
+    width: 100%;
+  }
+}
