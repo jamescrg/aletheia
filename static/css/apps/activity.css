@@ -189,3 +189,36 @@ Codes Table Action Icons
     display: none;
   }
 }
+
+
+/* ==========================================================================
+   Mobile — Expense entries as cards
+
+   Same conventions as the time table above: opts in via `card-table` +
+   `card-title`/`card-desc`/`card-hide` (templates/activity/expenses/). Only the
+   expense-specific bits live here.
+   ========================================================================== */
+
+@media (width <= 768px) {
+  /* These two desktop rules outrank the shared .card-table resets on
+     specificity (.activity.expenses-list is 0,2,0; its .amount is 0,3,0), so
+     reset them here or the card stack keeps the table min-width and the amount
+     column's fixed width. */
+  #payments .activity.expenses-list {
+    min-width: 0;
+  }
+
+  /* Card order: matter title, description, then a muted meta row. */
+  #payments .activity td.matter { order: 1; }
+  #payments .activity td.actions { order: 2; }
+  #payments .activity td.date { order: 3; }
+  #payments .activity td.user { order: 4; }
+  #payments .activity td.amount { order: 5; width: auto; }
+
+  /* Pare the toolbar to Add + Filter: drop the date/bulk dropdowns and the
+     Download control (toolbar-right). */
+  #payments .toolbar .filter-tools .dropdown,
+  #payments .toolbar-right {
+    display: none;
+  }
+}

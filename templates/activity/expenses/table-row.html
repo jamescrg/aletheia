@@ -1,16 +1,16 @@
 {% load humanize %}
 {% if show_select %}
-  <td class="col-select">
+  <td class="col-select card-hide">
     {% url 'activity:expenses-toggle-select' expense.id as toggle_url %}
     {% include "selection/checkbox.html" with toggle_url=toggle_url obj_id=expense.id selected_ids=selected_expenses %}
   </td>
 {% endif %}
 <td class="date">{{ expense.date|date:'Y-m-d' }}</td>
 <td class="user">{{ expense.user.initials }}</td>
-<td class="matter">
+<td class="matter card-title">
   <a href={% url 'matters:activity-index' id=expense.matter.id %}>{{ expense.matter.name }}</a>
 </td>
-<td class="actions">
+<td class="actions card-desc">
   {% if expense.invoice and not expense.invoice.status == 'DRAFT' %}
     {% if expense.category %}{{ expense.category }} -{% endif %}
     {{ expense.description }}
