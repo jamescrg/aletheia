@@ -13,8 +13,27 @@ from apps.calendar.forms import EventForm
 from apps.calendar.models import Event
 from apps.management.filter_manager import FilterManager
 from apps.matters.models import Matter
+from utils.toasts import toast_warning
 
 from .events import get_table_data
+
+# Shown when Google Calendar is connected but a sync push fails (e.g. an
+# expired/revoked token). The local save still succeeds — see
+# google.best_effort — so this is a non-blocking warning, not an error.
+GOOGLE_SYNC_FAILED_MSG = (
+    "Event saved, but couldn't sync to Google Calendar — reconnect it in Settings."
+)
+
+
+def _event_change_response(
+    trigger, sync_failed=False, sync_message=GOOGLE_SYNC_FAILED_MSG
+):
+    """A 204 + HX-Trigger response for an event change, plus a warning toast
+    when the (best-effort) Google sync reported failure."""
+    response = HttpResponse(status=204, headers={"HX-Trigger": trigger})
+    if sync_failed:
+        toast_warning(response, sync_message)
+    return response
 
 
 @login_required
@@ -322,18 +341,16 @@ def events_add(request, matter_id=None, origin="events"):
                 event.end_time = end_datetime.time()
 
             # add to google account
+            sync_failed = False
             if google.check_credentials():
                 event.google_id = google.add_event(event)
+                sync_failed = event.google_id is None
 
             # save event to database with google id
             event.save()
 
-            if origin == "matters":
-                return HttpResponse(
-                    status=204, headers={"HX-Trigger": "matterEventChanged"}
-                )
-            else:
-                return HttpResponse(status=204, headers={"HX-Trigger": "eventsChanged"})
+            trigger = "matterEventChanged" if origin == "matters" else "eventsChanged"
+            return _event_change_response(trigger, sync_failed)
 
     # if no post data has been submitted, show the contact form
     else:
@@ -427,17 +444,14 @@ def events_edit(request, id, origin="events"):
                 end_datetime = start_datetime + timedelta(hours=1)
                 event.end_time = end_datetime.time()
 
+            sync_failed = False
             if google.check_credentials() and event.google_id:
-                google.edit_event(event)
+                sync_failed = not google.edit_event(event)
 
             event.save()
 
-            if origin == "matters":
-                return HttpResponse(
-                    status=204, headers={"HX-Trigger": "matterEventChanged"}
-                )
-            else:
-                return HttpResponse(status=204, headers={"HX-Trigger": "eventsChanged"})
+            trigger = "matterEventChanged" if origin == "matters" else "eventsChanged"
+            return _event_change_response(trigger, sync_failed)
 
     else:
         form = EventForm(
@@ -485,15 +499,18 @@ def events_delete(request, id, origin="events"):
 
     event = get_object_or_404(Event, pk=id)
 
+    sync_failed = False
     if google.check_credentials() and event.google_id:
-        google.delete_event(event)
+        sync_failed = not google.delete_event(event)
 
     event.delete()
 
-    if origin == "matters":
-        return HttpResponse(status=204, headers={"HX-Trigger": "matterEventChanged"})
-    else:
-        return HttpResponse(status=204, headers={"HX-Trigger": "eventsChanged"})
+    trigger = "matterEventChanged" if origin == "matters" else "eventsChanged"
+    return _event_change_response(
+        trigger,
+        sync_failed,
+        "Event deleted, but couldn't remove it from Google Calendar.",
+    )
 
 
 @login_required
@@ -688,10 +705,11 @@ def events_quick_update(request, id):
     event.save()
 
     # Sync to Google Calendar
+    sync_failed = False
     if google.check_credentials() and event.google_id:
-        google.edit_event(event)
+        sync_failed = not google.edit_event(event)
 
-    return HttpResponse(status=204, headers={"HX-Trigger": "eventsChanged"})
+    return _event_change_response("eventsChanged", sync_failed)
 
 
 @login_required
