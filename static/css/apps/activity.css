@@ -5,8 +5,12 @@ Time entry form
 
 /* styles set on forms.css to allow rendering from matter detail */
 
+/* Hidden until there are codes to expand; the JS shows it as a flex row with
+   the (caption-less) apply-codes checkbox to the left of the preview text. */
 .actions-preview {
+  align-items: flex-start;
   display: none;
+  gap: 0.5rem;
 }
 
 

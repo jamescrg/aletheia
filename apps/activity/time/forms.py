@@ -13,6 +13,9 @@ class TimeEntryForm(forms.ModelForm):
         required=False,
         initial=True,
         label="Expand abbreviations",
+        # Rendered caption-less beside the preview; the title keeps it
+        # discoverable on hover and for screen readers.
+        widget=forms.CheckboxInput(attrs={"title": "Expand abbreviations"}),
     )
 
     class Meta:

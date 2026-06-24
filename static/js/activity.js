@@ -36,10 +36,11 @@ let abbreviationCodes = null;
 function initAbbreviationPreview() {
     const actionsTextarea = document.getElementById('id_actions');
     const previewContainer = document.getElementById('actions-preview');
+    const previewBody = document.getElementById('actions-preview-body');
     const previewText = document.getElementById('actions-preview-text');
     const applyCheckbox = document.getElementById('id_apply_codes');
 
-    if (!actionsTextarea || !previewContainer || !previewText) {
+    if (!actionsTextarea || !previewContainer || !previewBody || !previewText) {
         return; // Elements not found, exit early
     }
 
@@ -60,32 +61,29 @@ function initAbbreviationPreview() {
     function updatePreview() {
         if (!abbreviationCodes) return;
 
-        // When expansion is turned off, there's nothing to preview.
-        if (applyCheckbox && !applyCheckbox.checked) {
-            previewContainer.style.display = 'none';
-            return;
-        }
-
         const originalText = actionsTextarea.value;
 
-        if (!originalText.trim()) {
-            previewContainer.style.display = 'none';
-            return;
-        }
-
         let expandedText = originalText;
-
-        // Apply all abbreviation codes
         for (const [code, expansion] of Object.entries(abbreviationCodes)) {
             expandedText = expandedText.replaceAll(code, expansion);
         }
 
-        // Show preview only if text changed
-        if (expandedText !== originalText) {
-            previewText.textContent = expandedText;
-            previewContainer.style.display = 'block';
-        } else {
+        // The whole row (checkbox + preview) only appears when there's actually
+        // something to expand.
+        const hasCodes = originalText.trim() && expandedText !== originalText;
+        if (!hasCodes) {
             previewContainer.style.display = 'none';
+            return;
+        }
+        previewContainer.style.display = 'flex';
+
+        // The expanded text shows only when expansion is enabled; the checkbox
+        // stays visible either way so it can be toggled back on.
+        if (applyCheckbox && !applyCheckbox.checked) {
+            previewBody.style.display = 'none';
+        } else {
+            previewText.textContent = expandedText;
+            previewBody.style.display = '';
         }
     }
 
