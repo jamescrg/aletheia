@@ -213,3 +213,19 @@
   margin: 0 -1.5rem -1.5rem;
   padding: 0.5rem 1.5rem;
 }
+
+
+/* ==========================================================================
+   Mobile — simplified modal
+
+   The category sub-tabs overflowed the modal edges on phones. Since results are
+   grouped by type, drop the tabs and search globally (form.html resets the
+   scope to "all" on mobile). The keyboard-shortcut hint is desktop-only too.
+   ========================================================================== */
+
+@media (width <= 768px) {
+  .search .search-tabs,
+  .search .search-hint {
+    display: none;
+  }
+}

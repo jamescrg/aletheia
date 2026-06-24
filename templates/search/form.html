@@ -59,4 +59,12 @@
     </div>
   </div>
 </div>
-<script>document.getElementById('search-text').focus();</script>
+<script>
+  document.getElementById('search-text').focus();
+  // Mobile: the category tabs are hidden, so force global search — otherwise a
+  // session-remembered scope would silently limit results with no way to change
+  // it. The hidden #search-scope input still submits via hx-include.
+  if (window.innerWidth <= 768) {
+    document.getElementById('search-scope').value = 'all';
+  }
+</script>
