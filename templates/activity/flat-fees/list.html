@@ -76,7 +76,7 @@
                     :aria-expanded="open">
             <span><i class="icon-calendar with-text"></i>
             {% if filter_label == "unbilled" %}
-              Unbilled
+              Work in Progress
             {% elif filter_label == "today" %}
               Today
             {% elif filter_label == "yesterday" %}
@@ -120,7 +120,7 @@
           <li>
             <a class="dropdown-item"
                href="#"
-               hx-post="{% url 'activity:flat-fees-filter-quick' 'unbilled' %}">Unbilled</a>
+               hx-post="{% url 'activity:flat-fees-filter-quick' 'unbilled' %}">Work in Progress</a>
           </li>
         </ul>
       </div>

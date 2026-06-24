@@ -12,7 +12,7 @@
             <a href="{% url 'reports:revenue-index' %}">Revenue</a>
           </li>
           <li {% if subapp == "wip" %}class="active"{% endif %}>
-            <a href="{% url 'reports:wip-index' %}">Unbilled WIP</a>
+            <a href="{% url 'reports:wip-index' %}">Work in Progress</a>
           </li>
           <li {% if subapp == "clients" %}class="active"{% endif %}>
             <a href="{% url 'reports:clients-index' %}">Clients</a>

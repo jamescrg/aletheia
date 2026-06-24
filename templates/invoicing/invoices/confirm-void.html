@@ -11,7 +11,7 @@
     <div class="modal-body">
       <p>Are you sure you want to void this invoice?</p>
       <p>
-        Voiding this invoice will release all time and expense entries back to unbilled status and remove any payment or credit applications. The invoice record and PDF will be preserved for audit purposes, but the invoice will no longer affect the account balance. This action cannot be undone.
+        Voiding this invoice will release all time and expense entries back to work-in-progress status and remove any payment or credit applications. The invoice record and PDF will be preserved for audit purposes, but the invoice will no longer affect the account balance. This action cannot be undone.
       </p>
       <form id="void-invoice-form"
             hx-post="{% url 'invoicing:invoices-void' invoice.id %}"

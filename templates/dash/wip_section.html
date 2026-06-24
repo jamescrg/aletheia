@@ -28,7 +28,7 @@
         {% if user_rows %}
           <canvas id="wip-admin-chart" data-donut-data="wip-admin-matter-data"></canvas>
         {% else %}
-          <div class="wip-placeholder">No unbilled time</div>
+          <div class="wip-placeholder">No work in progress</div>
         {% endif %}
       </div>
       <div class="table-container wip-table{% if not user_rows %} is-empty{% endif %}">
@@ -57,7 +57,7 @@
               </tr>
             {% empty %}
               <tr>
-                <td colspan="5" class="empty-entries">No unbilled time.</td>
+                <td colspan="5" class="empty-entries">No work in progress.</td>
               </tr>
             {% endfor %}
           </tbody>
@@ -112,7 +112,7 @@
               </tr>
             {% empty %}
               <tr>
-                <td colspan="5" class="empty-entries">No unbilled time.</td>
+                <td colspan="5" class="empty-entries">No work in progress.</td>
               </tr>
             {% endfor %}
           </tbody>
@@ -161,7 +161,7 @@
       {% if user_self_matters %}
         <canvas id="wip-self-chart" data-donut-data="wip-self-data"></canvas>
       {% else %}
-        <div class="wip-placeholder">No unbilled time</div>
+        <div class="wip-placeholder">No work in progress</div>
       {% endif %}
     </div>
     <div class="table-container wip-table{% if not user_self_matters %} is-empty{% endif %}">
@@ -194,7 +194,7 @@
             </tr>
           {% empty %}
             <tr>
-              <td colspan="5" class="empty-entries">No unbilled time.</td>
+              <td colspan="5" class="empty-entries">No work in progress.</td>
             </tr>
           {% endfor %}
         </tbody>
