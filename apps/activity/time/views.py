@@ -288,13 +288,24 @@ def order_by_time(request, order):
     return HttpResponse(status=204, headers={"HX-Trigger": "timeChanged"})
 
 
+def abbreviation_codes_in_order():
+    """Active codes ordered longest-first (ties alphabetical). Applying longer
+    codes first stops a code that is a substring of another from pre-empting the
+    longer match. The JS preview (codes/json) uses this exact order so the
+    preview and the saved text always agree."""
+    codes = AbbreviationCode.objects.filter(is_active=True)
+    return sorted(
+        codes.values("code", "expansion"), key=lambda c: (-len(c["code"]), c["code"])
+    )
+
+
 def _apply_abbreviation_codes(text):
     """Expand active abbreviation codes within a time entry's actions text.
     Used by both add and edit when the form's 'apply_codes' checkbox is set."""
     if not text:
         return text
-    for code in AbbreviationCode.objects.filter(is_active=True):
-        text = text.replace(code.code, code.expansion)
+    for code in abbreviation_codes_in_order():
+        text = text.replace(code["code"], code["expansion"])
     return text
 
 
@@ -831,17 +842,14 @@ def abbreviation_code_delete(request, id):
 
 @login_required
 def abbreviation_codes_json(request):
-    """Return abbreviation codes as JSON for client-side preview"""
-    from django.http import JsonResponse
+    """Return abbreviation codes for the client-side preview as an ordered list
+    of [code, expansion] pairs (longest-first, matching the save-time expansion
+    in abbreviation_codes_in_order) so the preview and the saved text always
+    agree. A list — not a dict — because JS object key order isn't preserved for
+    purely-numeric codes, which would otherwise diverge from the save order."""
+    pairs = [[c["code"], c["expansion"]] for c in abbreviation_codes_in_order()]
 
-    codes = (
-        AbbreviationCode.objects.filter(is_active=True)
-        .values("code", "expansion")
-        .order_by("code")
-    )
-    codes_dict = {code["code"]: code["expansion"] for code in codes}
-
-    return JsonResponse(codes_dict)
+    return JsonResponse(pairs, safe=False)
 
 
 @login_required

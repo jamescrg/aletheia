@@ -94,8 +94,11 @@ function initAbbreviationPreview() {
 
         const originalText = actionsTextarea.value;
 
+        // abbreviationCodes is an ordered list of [code, expansion] pairs
+        // (longest-first), matching the server's save-time order so the preview
+        // and the saved text always agree.
         let expandedText = originalText;
-        for (const [code, expansion] of Object.entries(abbreviationCodes)) {
+        for (const [code, expansion] of abbreviationCodes) {
             expandedText = expandedText.replaceAll(code, expansion);
         }
 
