@@ -18,6 +18,18 @@
                   hx-get="{% url 'invoicing:credits-filter' %}">
             <i class="icon-list-filter with-text"></i>Filter
           </button>
+          <a type="button"
+             href="#"
+             class="btn-icon {% if not selected_application %}toggle-active{% endif %}"
+             hx-post="{% url 'invoicing:credits-filter-application' 'all' %}">All</a>
+          <a type="button"
+             href="#"
+             class="btn-icon {% if selected_application == 'applied' %}toggle-active{% endif %}"
+             hx-post="{% url 'invoicing:credits-filter-application' 'applied' %}">Applied</a>
+          <a type="button"
+             href="#"
+             class="btn-icon {% if selected_application == 'unapplied' %}toggle-active{% endif %}"
+             hx-post="{% url 'invoicing:credits-filter-application' 'unapplied' %}">Unapplied</a>
         </div>
       </div>
     </div>

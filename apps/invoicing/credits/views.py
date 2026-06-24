@@ -39,6 +39,20 @@ def credits_list(request):
 
 
 @login_required
+def credits_filter_application(request, applied):
+    """Quick-filter credits by application status: 'applied', 'unapplied', or
+    'all' (clears the filter)."""
+    filter_data = request.session.get("credits_filter", {})
+    if applied == "all":
+        filter_data.pop("applied", None)
+    else:
+        filter_data["applied"] = applied
+    request.session["credits_filter"] = filter_data
+    request.session.modified = True
+    return HttpResponse(status=204, headers={"HX-Trigger": "creditsChanged"})
+
+
+@login_required
 def credits_add(request):
     matters = Matter.objects.exclude(status__in=["Pending", "Closed"]).order_by("name")
 

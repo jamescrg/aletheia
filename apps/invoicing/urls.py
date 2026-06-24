@@ -8,6 +8,7 @@ from apps.invoicing.credits.views import (
     credits_delete_application,
     credits_edit,
     credits_filter,
+    credits_filter_application,
     credits_index,
     credits_list,
     order_by_credits,
@@ -291,4 +292,9 @@ urlpatterns = [
         name="order-by-credits",
     ),
     path("invoicing/credits-filter/", credits_filter, name="credits-filter"),
+    path(
+        "invoicing/credits/filter/application/<str:applied>",
+        credits_filter_application,
+        name="credits-filter-application",
+    ),
 ]
