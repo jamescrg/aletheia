@@ -26,3 +26,6 @@ result
 # Claude
 CLAUDE.md
 .claude/
+
+# dev-only on-disk sessions (survive the nightly prod DB import)
+.dev-sessions/

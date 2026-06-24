@@ -249,6 +249,17 @@ SESSION_COOKIE_AGE = 1209600 * 4
 
 SESSION_SAVE_EVERY_REQUEST = True
 
+# On dev, keep sessions off the database. The nightly prod-snapshot import drops
+# and recreates the DB, which would wipe the default db-backed django_session
+# table and log us out on every device. Storing sessions as files on disk keeps
+# them across the refresh (the user row is reimported unchanged, so the session
+# auth hash still validates). Gated on ENV, which is stable — unlike DEBUG,
+# which we sometimes toggle for testing.
+if ENV == "dev":
+    SESSION_ENGINE = "django.contrib.sessions.backends.file"
+    SESSION_FILE_PATH = os.path.join(BASE_DIR, ".dev-sessions")
+    os.makedirs(SESSION_FILE_PATH, exist_ok=True)
+
 prepare_path(f"{BASE_DIR}/logs/debug.log")
 
 LOGGING = {
