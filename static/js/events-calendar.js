@@ -54,18 +54,23 @@ document.addEventListener("alpine:init", () => {
     calendar: null,
 
     initCalendar() {
-      // On mobile the grid is unusable — flip to the card list instead of
-      // building FullCalendar. Clicking the existing List View toggle reuses
-      // the normal view-mode machinery (POST -> HX-Trigger: eventsViewChanged
-      // -> #events re-fetches list.html). The session then persists 'list' for
-      // this (independent) mobile browser, so later loads render list.html
-      // server-side directly: no calendar built, no flash. Desktop is
-      // unaffected (separate session).
+      // On mobile the FullCalendar grid is unusable, so render the card list
+      // instead. Switch the saved view to "list" with htmx.ajax (the 204
+      // response's HX-Trigger: eventsViewChanged makes #events re-fetch
+      // list.html; the session then persists 'list', so later loads render it
+      // directly). We issue the request ourselves rather than clicking the
+      // hidden toggle button — that relied on htmx having already wired the
+      // button up, which races with this x-init and left the panel blank. If
+      // the toggle can't be found we fall through and build the grid, so events
+      // are never missing.
       if (window.innerWidth <= 768) {
-        document
+        const listUrl = document
           .querySelector('.view-toggle button[title="List View"]')
-          ?.click();
-        return;
+          ?.getAttribute("hx-post");
+        if (listUrl) {
+          window.htmx.ajax("POST", listUrl, { swap: "none" });
+          return;
+        }
       }
 
       const calendarEl = this.$el;
