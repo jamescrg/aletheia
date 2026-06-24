@@ -259,10 +259,15 @@
    (Map / Call), so keep it inline to the right of its content — the base row
    layout — instead of stacking it full-width above (which looked stranded). */
 @media (width <= 768px) {
-  /* Pin the header actions (cloud / edit) to the top-right so the status badge
-     sits under the name rather than floating beside the buttons. */
+  /* Pin the header actions (cloud / edit) to the top-right so they sit beside
+     or under the name. */
   .contacts-detail .detail-header .toolbar {
     align-items: flex-start;
+  }
+
+  /* Drop the client-status badge on phones — it only forced extra wrapping. */
+  .contacts-detail .detail-header .toolbar-left .filter-tools {
+    display: none;
   }
 
   /* The <=1000px rules force each title onto its own full-width row with a 1rem
@@ -449,8 +454,11 @@
     z-index: 1000;
   }
 
+  /* `none`, not translateX(0): a resting transform rasterizes the cards on a
+     composited layer and drops their hairline left border. Still animates the
+     slide (translateX(100%) -> none interpolates through translateX(0)). */
   #folders.contacts-sidebar.drawer-open {
-    transform: translateX(0);
+    transform: none;
   }
 
   .folders-overlay.visible {
