@@ -221,7 +221,7 @@ def invoice_history_index(request, pk):
         "view": "detail",
     }
 
-    return render(request, "invoicing/invoices/detail/history.html", context)
+    return render(request, "invoicing/invoices/detail/detail-index.html", context)
 
 
 @login_required
