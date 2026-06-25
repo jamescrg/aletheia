@@ -384,7 +384,12 @@ def edit(request, id):
                 "matters/includes/switcher.html",
                 {"matter": matter, "oob": True},
             )
-            response["HX-Trigger"] = "closeModal, mattersChanged"
+            response["HX-Trigger"] = "mattersChanged"
+            # Close the modal after the swap (not before): the modal's afterSwap
+            # handler re-opens it for any content response, so closing earlier
+            # leaves the backdrop behind. By then the modal is still open, so
+            # that re-open is a no-op and this close cleanly removes the backdrop.
+            response["HX-Trigger-After-Swap"] = "closeModal"
             return response
 
     else:
