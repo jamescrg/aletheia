@@ -46,6 +46,8 @@ urlpatterns = [
     path("", include("apps.settings.urls")),
     # Billing App
     path("", include("apps.invoicing.urls")),
+    # Public, tokenized invoice payment page (no login)
+    path("", include("apps.invoicing.pay.urls")),
     # Reports App
     path("", include("apps.reports.urls")),
     # Management App

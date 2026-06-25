@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from simple_history.models import HistoricalRecords
 
@@ -21,6 +23,9 @@ INVOICE_STATUS = (
 
 
 class Invoice(AuditMixin, models.Model):
+    # Opaque public identifier for tokenized payment links (never expose the
+    # sequential pk publicly). Rotating it invalidates outstanding links.
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, null=True, unique=True)
     matter = models.ForeignKey(Matter, on_delete=models.SET_NULL, null=True, blank=True)
     date_limit = models.DateField()
     date_issued = models.DateField()

@@ -1,0 +1,365 @@
+{% extends "base-minimal.html" %}
+{% load humanize %}
+{% block title %}
+  Pay Invoice #{{ invoice.id }}
+{% endblock title %}
+{% block content %}
+  <style>
+    .pay-wrap {
+      max-width: 30rem;
+      margin: 3rem auto;
+      padding: 0 1rem;
+    }
+
+    .pay-card {
+      background: #ffffff;
+      border: 1px solid #e7e5e4;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    .pay-head {
+      background: #eeeeec;
+      color: #57534e;
+      padding: 1.25rem 1.5rem;
+    }
+
+    .pay-head h1 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #292524;
+    }
+
+    .pay-head p {
+      margin: 0.25rem 0 0;
+      font-size: 1rem;
+      color: #78716c;
+    }
+
+    .pay-body {
+      padding: 1.5rem;
+    }
+
+    .pay-summary {
+      width: 100%;
+      border: 1px solid #e7e5e4;
+      border-radius: 6px;
+      border-collapse: separate;
+      margin-bottom: 1.5rem;
+    }
+
+    .pay-summary td {
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+    }
+
+    .pay-summary tr+tr td {
+      border-top: 1px solid #e7e5e4;
+    }
+
+    .pay-summary .label {
+      color: #78716c;
+    }
+
+    .pay-summary .value {
+      text-align: right;
+      color: #292524;
+    }
+
+    .pay-summary .total .label,
+    .pay-summary .total .value {
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+
+    .pay-methods {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .pay-method {
+      flex: 1;
+      padding: 0.75rem;
+      border: 1px solid #d6d3d1;
+      border-radius: 8px;
+      background: #fafaf9;
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+    }
+
+    .pay-method[aria-pressed="true"] {
+      border-color: #1d4ed8;
+      background: #eff6ff;
+      box-shadow: inset 0 0 0 1px #1d4ed8;
+    }
+
+    .pay-method .pm-title {
+      display: block;
+      font-weight: 600;
+      color: #292524;
+    }
+
+    .pay-method .pm-note {
+      display: block;
+      font-size: 1rem;
+      color: #78716c;
+      margin-top: 0.15rem;
+    }
+
+    .pay-field {
+      margin-bottom: 1rem;
+    }
+
+    .pay-field label {
+      display: block;
+      font-size: 1rem;
+      color: #57534e;
+      margin-bottom: 0.35rem;
+    }
+
+    .pay-field input,
+    .pay-field select {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      font: inherit;
+      border: 1px solid #d6d3d1;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    .pay-btn {
+      width: 100%;
+      padding: 0.8rem;
+      background: #1d4ed8;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .pay-btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .pay-alert {
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .pay-alert.error {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .pay-alert.ok {
+      background: #f0fdf4;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .pay-alert.info {
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+
+    .pay-dev {
+      background: #fffbeb;
+      border: 1px dashed #f59e0b;
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .pay-foot {
+      margin-top: 1rem;
+      font-size: 1rem;
+      color: #78716c;
+      text-align: center;
+    }
+  </style>
+  <div class="pay-wrap">
+    <div class="pay-card">
+      <div class="pay-head">
+        <h1>{{ firm_name|default:"Pay Invoice" }}</h1>
+        <p>Invoice #{{ invoice.id }} &middot; {{ invoice.date_issued|date:"F j, Y" }}</p>
+      </div>
+      <div class="pay-body">
+        <table class="pay-summary" role="presentation">
+          {% if matter_name %}
+            <tr>
+              <td class="label">Matter</td>
+              <td class="value">{{ matter_name }}</td>
+            </tr>
+          {% endif %}
+          <tr>
+            <td class="label">Invoice</td>
+            <td class="value">#{{ invoice.id }}</td>
+          </tr>
+          <tr class="total">
+            <td class="label">Amount Due</td>
+            <td class="value">${{ amount_due|floatformat:2|intcomma }}</td>
+          </tr>
+        </table>
+        {% if is_paid %}
+          <div class="pay-alert ok">This invoice is paid in full. Thank you.</div>
+        {% else %}
+          <div x-data='payForm({ chargeUrl: "{{ charge_url|escapejs }}", dev: {{ dev_mode|yesno:"true,false" }} })'>
+            <!-- Result states -->
+            <template x-if="done && !pending">
+              <div class="pay-alert ok">Payment received. Thank you — a receipt will follow by email.</div>
+            </template>
+            <template x-if="done && pending">
+              <div class="pay-alert info">
+                Payment submitted. Bank (eCheck) payments take 1–2 business days to
+                clear; we'll email you once it settles.
+              </div>
+            </template>
+            <div x-show="!done">
+              <template x-if="error">
+                <div class="pay-alert error" x-text="error"></div>
+              </template>
+              <!-- Method selector: eCheck encouraged (default) -->
+              <div class="pay-methods" role="group" aria-label="Payment method">
+                <button type="button"
+                        class="pay-method"
+                        :aria-pressed="method === 'bank'"
+                        @click="method = 'bank'">
+                  <span class="pm-title">Bank (eCheck)</span>
+                  <span class="pm-note">Recommended · no processing fee</span>
+                </button>
+                <button type="button"
+                        class="pay-method"
+                        :aria-pressed="method === 'card'"
+                        @click="method = 'card'">
+                  <span class="pm-title">Card</span>
+                  <span class="pm-note">Credit or debit</span>
+                </button>
+              </div>
+              {% if dev_mode %}
+                <!-- DEV / FakeProcessor: choose a simulated outcome -->
+                <div class="pay-dev">
+                  <strong>Simulated payment (dev).</strong> No real charge occurs.
+                </div>
+                <div class="pay-field">
+                  <label for="dev-outcome">Simulated outcome</label>
+                  <select id="dev-outcome" x-model="outcome">
+                    <option value="fake-ok">Success</option>
+                    <option value="fake-ach-return">ACH accepted, will return later</option>
+                    <option value="fake-ach-fail">ACH accepted, will fail (NSF)</option>
+                    <option value="fake-decline">Declined at submit</option>
+                  </select>
+                </div>
+              {% else %}
+                <!-- LIVE: AffiniPay hosted fields (card/bank data never hits us).
+                     SANDBOX-VERIFY: exercised once test deposit accounts exist. -->
+                <div x-show="method === 'card'">
+                  <div class="pay-field">
+                    <label>Card number</label>
+                    <div id="hf-card-number"></div>
+                  </div>
+                  <div class="pay-field">
+                    <label>CVV</label>
+                    <div id="hf-card-cvv"></div>
+                  </div>
+                  <div class="pay-field">
+                    <label>Expiration</label>
+                    <input type="text" x-model="exp" placeholder="MM / YYYY">
+                  </div>
+                  <div class="pay-field">
+                    <label>Billing ZIP</label>
+                    <input type="text" x-model="postalCode">
+                  </div>
+                </div>
+                <div x-show="method === 'bank'">
+                  <div class="pay-field">
+                    <label>Routing number</label>
+                    <div id="hf-bank-routing"></div>
+                  </div>
+                  <div class="pay-field">
+                    <label>Account number</label>
+                    <div id="hf-bank-account"></div>
+                  </div>
+                  <div class="pay-field">
+                    <label>Account holder name</label>
+                    <input type="text" x-model="accountName">
+                  </div>
+                </div>
+              {% endif %}
+              <button type="button" class="pay-btn" :disabled="submitting" @click="pay()">
+                <span x-show="!submitting">Pay ${{ amount_due|floatformat:2|intcomma }}</span>
+                <span x-show="submitting">Processing…</span>
+              </button>
+            </div>
+          </div>
+        {% endif %}
+        <p class="pay-foot">Secured payment. Questions? Reply to the invoice email.</p>
+      </div>
+    </div>
+  </div>
+  {% if not dev_mode and not is_paid %}<script src="{{ config.hosted_fields_url }}"></script>{% endif %}
+  <script>
+    function payForm(opts) {
+      return {
+        method: 'bank',          // eCheck encouraged by default
+        outcome: 'fake-ok',      // dev only
+        exp: '', postalCode: '', accountName: '',
+        submitting: false, done: false, pending: false, status: '', error: '',
+
+        async pay() {
+          this.error = '';
+          this.submitting = true;
+          let tokenId;
+          try {
+            tokenId = opts.dev ? this.outcome : await this.tokenize();
+          } catch (e) {
+            this.error = (e && e.message) || 'Could not read payment details.';
+            this.submitting = false;
+            return;
+          }
+          try {
+            const resp = await fetch(opts.chargeUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ token: tokenId, method: this.method }),
+            });
+            const data = await resp.json();
+            if (!data.success) {
+              this.error = data.error || 'Payment could not be completed.';
+            } else {
+              this.done = true;
+              this.status = data.status;
+              this.pending = data.pending;
+            }
+          } catch (e) {
+            this.error = 'Network error. Please try again.';
+          }
+          this.submitting = false;
+        },
+
+        // LIVE tokenization via AffiniPay hosted fields. SANDBOX-VERIFY.
+        async tokenize() {
+          const HF = window.AffiniPay && window.AffiniPay.HostedFields;
+          if (!HF) throw new Error('Payment form failed to load. Please refresh.');
+          const extra = this.method === 'card'
+            ? { postal_code: this.postalCode,
+                exp_month: (this.exp.split('/')[0] || '').trim(),
+                exp_year: (this.exp.split('/')[1] || '').trim() }
+            : { name: this.accountName };
+          const result = await this._fields.getPaymentToken(extra);
+          return result.id;
+        },
+      };
+    }
+  </script>
+{% endblock content %}

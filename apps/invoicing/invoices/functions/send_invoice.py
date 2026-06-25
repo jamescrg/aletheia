@@ -13,6 +13,7 @@ from django.utils import timezone
 
 from apps.invoicing.invoices.functions.generate_invoice import store_invoice_pdf
 from apps.invoicing.invoices.models import InvoiceTransmission
+from apps.invoicing.pay.links import payment_url
 
 
 class InvoiceSendError(Exception):
@@ -69,7 +70,7 @@ def send_invoice(
             "amount_due": invoice.amount_remaining,
             "cover_message": cover,
             "firm_name": getattr(settings, "FIRM_NAME", ""),
-            "pay_url": None,  # Phase 2: tokenized online-payment link
+            "pay_url": payment_url(invoice, request),  # tokenized payment link
         }
         subject = f"Invoice #{invoice.id}"
         if matter:

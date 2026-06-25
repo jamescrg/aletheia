@@ -347,3 +347,12 @@ LAWPAY_PUBLIC_KEY = env("LAWPAY_PUBLIC_KEY", default="")
 LAWPAY_SECRET_KEY = env("LAWPAY_SECRET_KEY", default="")
 LAWPAY_OPERATING_ACCOUNT_ID = env("LAWPAY_OPERATING_ACCOUNT_ID", default="")
 LAWPAY_API_BASE = env("LAWPAY_API_BASE", default="https://api.8am.com")
+# How long a tokenized public payment link stays valid (seconds). Default 90
+# days; staff can resend an invoice to mint a fresh link.
+INVOICE_PAY_LINK_MAX_AGE = env.int(
+    "INVOICE_PAY_LINK_MAX_AGE", default=60 * 60 * 24 * 90
+)
+# Absolute base URL (scheme + host) for links built outside a request context,
+# e.g. payment links in emails sent via async_task. Blank → fall back to the
+# sending request's host when available.
+PUBLIC_BASE_URL = env("PUBLIC_BASE_URL", default="")
