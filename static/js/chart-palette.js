@@ -62,9 +62,10 @@ window.AletheiaChartPalette = (function () {
     return { grid: t.grid, tick: t.tick };
   }
 
-  // A muted grey for catch-all / residual series ("Other"), per theme.
+  // Catch-all / residual series ("Other"). Light uses a soft warm cream (sits in
+  // the stone family, lighter than the old mid-grey, warm against the cool series).
   const NEUTRAL = {
-    light: "oklch(0.74 0.004 286)",
+    light: "oklch(0.90 0.022 85)",
     dark: "oklch(0.60 0.006 70)",
     cosmic: "oklch(0.62 0.006 250)",
   };
