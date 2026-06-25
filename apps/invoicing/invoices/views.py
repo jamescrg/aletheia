@@ -211,6 +211,20 @@ def invoice_details_index(request, pk):
 
 
 @login_required
+def invoice_history_index(request, pk):
+    invoice = get_object_or_404(Invoice, pk=pk)
+
+    context = {
+        "app": "invoicing",
+        "subapp": "history",
+        "invoice": invoice,
+        "view": "detail",
+    }
+
+    return render(request, "invoicing/invoices/detail/history.html", context)
+
+
+@login_required
 def pdf_preview_index(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
 

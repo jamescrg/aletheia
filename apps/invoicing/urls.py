@@ -20,6 +20,7 @@ from apps.invoicing.invoices.views import (
     invoice_expense_order_by,
     invoice_flat_fee_entries,
     invoice_flat_fee_entries_index,
+    invoice_history_index,
     invoice_ledes_98b,
     invoice_tab_content,
     invoice_time_bulk_update_comp,
@@ -171,6 +172,11 @@ urlpatterns = [
         "invoicing/invoices-detail/<int:pk>/details-index/",
         invoice_details_index,
         name="invoice-details-index",
+    ),
+    path(
+        "invoicing/invoices-detail/<int:pk>/history-index/",
+        invoice_history_index,
+        name="invoice-history-index",
     ),
     path(
         "invoicing/invoices-detail/<int:pk>/pdf-preview-index/",

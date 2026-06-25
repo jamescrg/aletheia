@@ -38,26 +38,3 @@
     </table>
   {% endif %}
 </div>
-{% if invoice.transmissions.all %}
-  <div class="invoices-table-container">
-    <table class="invoices-detail-table">
-      <tr>
-        <th colspan="2">Delivery history</th>
-      </tr>
-      {% for t in invoice.transmissions.all %}
-        <tr>
-          <th>{{ t.sent_at|date:"Y-m-d H:i" }}</th>
-          <td>
-            {{ t.get_status_display }} &rarr; {{ t.to_email }}
-            {% if t.cc_email %}, cc {{ t.cc_email }}{% endif %}
-            {% if t.sent_by %}<span class="text-muted">({{ t.sent_by.username }})</span>{% endif %}
-            {% if t.status == 'failed' and t.error %}
-              <br>
-              <span class="text-muted">{{ t.error }}</span>
-            {% endif %}
-          </td>
-        </tr>
-      {% endfor %}
-    </table>
-  </div>
-{% endif %}
