@@ -26,14 +26,16 @@ window.AletheiaChartPalette = (function () {
     // (chroma ~0.09) so bars read on a near-white page while staying on-aesthetic.
     // Ordered so the highlight set's warm cluster (red/orange/yellow) isn't
     // adjacent in the stack; teal is the one non-highlight hue, added for a 7th.
+    // The Tailwind 100 level — these are literally the app's highlight fills
+    // (hl-violet=violet-100, hl-orange=orange-100, …). Very pale; max consistency.
     light: [
-      "oklch(0.87 0.078 294)", // violet (hl-violet)
-      "oklch(0.88 0.080 70)", // orange (hl-orange)
-      "oklch(0.86 0.070 256)", // blue (hl-blue)
-      "oklch(0.88 0.078 125)", // green (hl-green / lime)
-      "oklch(0.86 0.082 20)", // red (hl-red)
-      "oklch(0.87 0.065 190)", // teal (complement for a 7th hue)
-      "oklch(0.91 0.085 100)", // yellow (hl-yellow)
+      "oklch(94.3% 0.028 294.6deg)", // violet-100 (hl-violet)
+      "oklch(95.4% 0.037 75.2deg)", // orange-100 (hl-orange)
+      "oklch(93.2% 0.032 255.6deg)", // blue-100 (hl-blue)
+      "oklch(96.7% 0.066 122.3deg)", // lime-100 (hl-green)
+      "oklch(93.6% 0.031 17.7deg)", // red-100 (hl-red)
+      "oklch(95.3% 0.05 180.8deg)", // teal-100 (complement for a 7th hue)
+      "oklch(97.3% 0.069 103.2deg)", // yellow-100 (hl-yellow)
     ],
     // Muted Gruvbox family: same hues as the bright accents but chroma pulled
     // down (~0.08, was up to 0.22) so they're soft on the dark surface, distinct
