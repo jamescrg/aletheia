@@ -24,3 +24,41 @@
     {% endfor %}
   </table>
 </div>
+<div class="invoices-table-container">
+  <table class="invoices-detail-table">
+    <tr>
+      <th colspan="2">Payment history</th>
+    </tr>
+    {% for app in invoice.applications.all %}
+      <tr>
+        <th>{{ app.payment.date|date:"Y-m-d" }} &middot; {{ app.payment.method_display }}</th>
+        <td>
+          ${{ app.amount_applied|floatformat:2|intcomma }} applied
+          {% if app.payment.detail %}
+            <br>
+            <span class="text-muted">{{ app.payment.detail }}</span>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    {% for capp in invoice.credit_applications.all %}
+      <tr>
+        <th>{{ capp.credit.date|date:"Y-m-d" }} &middot; Credit</th>
+        <td>${{ capp.amount_applied|floatformat:2|intcomma }} applied</td>
+      </tr>
+    {% endfor %}
+    {% if not invoice.applications.all and not invoice.credit_applications.all %}
+      <tr>
+        <td colspan="2" class="empty-message">No payments recorded for this invoice yet.</td>
+      </tr>
+    {% endif %}
+    <tr>
+      <th>Invoice total</th>
+      <td>${{ invoice.value.final_total|floatformat:2|intcomma }}</td>
+    </tr>
+    <tr>
+      <th>Outstanding</th>
+      <td>${{ invoice.amount_remaining|floatformat:2|intcomma }}</td>
+    </tr>
+  </table>
+</div>
