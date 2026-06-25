@@ -21,18 +21,19 @@ window.AletheiaChartPalette = (function () {
   // the themes' own accent tokens (static/css/palette.css + colors.css) so the
   // charts stay on-palette; charts here have < 8 series, so cycling is moot.
   const CATEGORICAL = {
-    // Muted pastels: distinction comes from hue, not saturation, so the bars
-    // stay soft and on-aesthetic (low, even chroma ~0.09; light, even L ~0.80)
-    // rather than the loud Tailwind-500 set. Hues track the project's ramps.
+    // Hues track the app's highlight set (--hl-violet/orange/blue/green/red/
+    // yellow), at a slightly deeper-than-the-pale-fills, even-and-soft level
+    // (chroma ~0.09) so bars read on a near-white page while staying on-aesthetic.
+    // Ordered so the highlight set's warm cluster (red/orange/yellow) isn't
+    // adjacent in the stack; teal is the one non-highlight hue, added for a 7th.
     light: [
-      "oklch(0.79 0.090 293)", // soft violet (brand accent)
-      "oklch(0.82 0.095 80)", // soft amber
-      "oklch(0.80 0.080 190)", // soft teal
-      "oklch(0.78 0.095 15)", // soft rose
-      "oklch(0.78 0.085 256)", // soft blue
-      "oklch(0.82 0.090 150)", // soft green
-      "oklch(0.78 0.090 325)", // soft fuchsia
-      "oklch(0.80 0.075 220)", // soft cyan
+      "oklch(0.80 0.090 294)", // violet (hl-violet)
+      "oklch(0.82 0.090 70)", // orange (hl-orange)
+      "oklch(0.79 0.085 256)", // blue (hl-blue)
+      "oklch(0.82 0.090 125)", // green (hl-green / lime)
+      "oklch(0.78 0.095 20)", // red (hl-red)
+      "oklch(0.80 0.078 190)", // teal (complement for a 7th hue)
+      "oklch(0.86 0.095 100)", // yellow (hl-yellow)
     ],
     // Muted Gruvbox family: same hues as the bright accents but chroma pulled
     // down (~0.08, was up to 0.22) so they're soft on the dark surface, distinct
