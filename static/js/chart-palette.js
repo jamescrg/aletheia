@@ -62,11 +62,11 @@ window.AletheiaChartPalette = (function () {
     return { grid: t.grid, tick: t.tick };
   }
 
-  // Catch-all / residual series ("Other"). Light matches the table header grey
-  // (--background-control = stone-200). Dark/cosmic keep a mid-grey that stays
-  // visible on the dark surface.
+  // Catch-all / residual series ("Other"). Light is stone-250 — one step below
+  // the table-header grey (stone-200), to offset the chart's lighter surround so
+  // it reads the same. Dark/cosmic keep a mid-grey visible on the dark surface.
   const NEUTRAL = {
-    light: "oklch(92.4% 0 none)",
+    light: "oklch(88.5% 0 none)",
     dark: "oklch(0.60 0.006 70)",
     cosmic: "oklch(0.62 0.006 250)",
   };
