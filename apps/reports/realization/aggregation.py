@@ -312,6 +312,8 @@ def build_realization_context(request):
         "realization_rows": rows,
         "month_totals": [{"amount": v} for v in month_totals],
         "grand_total": grand_total,
+        "collected_cells": [{"amount": v} for v in collected],
+        "collected_total": sum(collected, Decimal(0)),
         "realization_cells": realization_cells,
         "overall_realization": overall_realization,
         "period_label": end.strftime("%b %Y"),

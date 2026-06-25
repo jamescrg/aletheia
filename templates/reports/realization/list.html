@@ -89,6 +89,13 @@
           </td>
         </tr>
         <tr>
+          <td>Realized (collected)</td>
+          {% for c in collected_cells %}<td class="numeric">${{ c.amount|floatformat:2|intcomma }}</td>{% endfor %}
+          <td class="numeric">
+            <strong>${{ collected_total|floatformat:2|intcomma }}</strong>
+          </td>
+        </tr>
+        <tr>
           <td>Realization rate (hourly)</td>
           {% for r in realization_cells %}
             <td class="numeric">{{ r.pct|floatformat:1 }}%</td>
