@@ -73,12 +73,13 @@ window.AletheiaChartPalette = (function () {
     return NEUTRAL[theme] || NEUTRAL.light;
   }
 
-  // Matches the table border token (--border-medium): stone-300 in light,
-  // gb-dark2 in dark, nord2 in cosmic. Outlines donut slices and bar segments.
+  // Matches the surface the charts sit on (--background-body): stone-125 in
+  // light, gb-dark in dark, nord0 in cosmic. Outlining slices/bars in the
+  // background colour reads as clean gaps between segments.
   const BORDER = {
-    light: "oklch(86.9% 0 none)",
-    dark: "oklch(0.411 0.011 52)",
-    cosmic: "#434c5e",
+    light: "oklch(95.4% 0 none)",
+    dark: "oklch(0.277 0 263)",
+    cosmic: "#2e3440",
   };
 
   function border(theme) {
