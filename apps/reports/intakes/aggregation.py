@@ -1,20 +1,20 @@
 """Intakes report context — shared by the index/list views.
 
-Builds the existing per-month practice-area and status tables plus three chart
-payloads: a month-over-month volume bar, a practice-area donut, and an outcomes
-(conversion) donut. Defaults to a rolling 6-month window (like the other
-reports) so the month-over-month chart is meaningful out of the box; the date
-filter still overrides it.
+Builds per-month practice-area and status tables plus three chart payloads (a
+month-over-month volume bar, a practice-area donut, and an outcomes/conversion
+donut) over a rolling 6-month window. The window's end month is held in the
+session ("intakes_end") and stepped by the intakes_period view, mirroring the
+Revenue / Realization reports.
 """
 
 from collections import defaultdict
-from datetime import date, datetime
 
 from dateutil.relativedelta import relativedelta
 from django.db.models import Count
 from django.db.models.functions import TruncMonth
 
 from apps.intakes.models import Intake
+from apps.reports.activity.aggregation import _window_months, resolve_end
 
 # Practice areas / statuses to match the intake form choices.
 PRACTICE_AREAS = [
@@ -40,55 +40,21 @@ INTAKE_STATUSES = [
 CONVERTED_STATUS = "Accepted"
 
 
-def _parse(d):
-    try:
-        return datetime.strptime(d, "%Y-%m-%d").date()
-    except (ValueError, TypeError):
-        return None
-
-
 def build_intakes_context(request):
-    filter_data = request.session.get("intakes_filter", {})
-    date_from = filter_data.get("date_from")
-    date_to = filter_data.get("date_to")
-    date_from_obj = _parse(date_from)
-    date_to_obj = _parse(date_to)
+    end, current_first = resolve_end(request.session.get("intakes_end"))
+    months = _window_months(end)
+    window_start = months[0]["date"]
+    window_end = months[-1]["date"] + relativedelta(months=1)
+    intakes = Intake.objects.filter(date__gte=window_start, date__lt=window_end)
 
-    # Default to a rolling 6 months (first of the month, 5 months back).
-    if not date_from_obj and not date_to_obj:
-        date_from_obj = date.today().replace(day=1) - relativedelta(months=5)
-        date_from = date_from_obj.strftime("%Y-%m-%d")
-
-    intakes = Intake.objects.all()
-    if date_from_obj:
-        intakes = intakes.filter(date__gte=date_from_obj)
-    if date_to_obj:
-        intakes = intakes.filter(date__lte=date_to_obj)
-
-    months = (
-        intakes.annotate(month=TruncMonth("date"))
-        .values("month")
-        .distinct()
-        .order_by("month")
-    )
-
-    # --- Per-month practice-area table ---
+    # --- Per-month practice-area table (contiguous window months) ---
     intake_data = []
     totals_by_practice_area = defaultdict(int)
-    for md in months:
-        if not md["month"]:
-            continue
-        row = {
-            "month": md["month"].strftime("%B %Y"),
-            "month_sort": md["month"],
-            "practice_areas": {},
-            "total": 0,
-        }
+    for m in months:
+        row = {"month": m["date"].strftime("%B %Y"), "practice_areas": {}, "total": 0}
         for pa in PRACTICE_AREAS:
             count = intakes.filter(
-                date__year=md["month"].year,
-                date__month=md["month"].month,
-                practice_area__name=pa,
+                date__year=m["year"], date__month=m["month"], practice_area__name=pa
             ).count()
             row["practice_areas"][pa] = count
             row["total"] += count
@@ -116,20 +82,11 @@ def build_intakes_context(request):
     # --- Per-month status table ---
     status_data = []
     totals_by_status = defaultdict(int)
-    for md in months:
-        if not md["month"]:
-            continue
-        row = {
-            "month": md["month"].strftime("%B %Y"),
-            "month_sort": md["month"],
-            "statuses": {},
-            "total": 0,
-        }
+    for m in months:
+        row = {"month": m["date"].strftime("%B %Y"), "statuses": {}, "total": 0}
         for st in INTAKE_STATUSES:
             count = intakes.filter(
-                date__year=md["month"].year,
-                date__month=md["month"].month,
-                status=st,
+                date__year=m["year"], date__month=m["month"], status=st
             ).count()
             row["statuses"][st] = count
             row["total"] += count
@@ -153,23 +110,22 @@ def build_intakes_context(request):
         else {}
     )
 
-    # --- Charts ---
-    # Month-over-month volume (true totals: every intake with a date in range).
-    monthly = list(
-        intakes.exclude(date=None)
+    # --- Month-over-month volume bar (0 for empty months) ---
+    counts_by_month = {
+        (r["m"].year, r["m"].month): r["c"]
+        for r in intakes.exclude(date=None)
         .annotate(m=TruncMonth("date"))
         .values("m")
         .annotate(c=Count("id"))
-        .order_by("m")
-    )
-    flow_counts = [r["c"] for r in monthly]
+    }
+    flow_counts = [counts_by_month.get((m["year"], m["month"]), 0) for m in months]
     flow_chart = {
-        "months": [r["m"].strftime("%b ’%y") for r in monthly],
+        "months": [m["name"] for m in months],
         "series": {"flow": [{"label": "Intakes", "count": flow_counts}]},
         "top_labels": [str(c) for c in flow_counts],
     }
 
-    # Practice-area distribution (no practice area -> trailing grey "Unspecified").
+    # --- Practice-area distribution donut (no area -> trailing grey "Unspecified") ---
     pa_rows = list(intakes.values("practice_area__name").annotate(c=Count("id")))
     named = sorted(
         (r for r in pa_rows if r["practice_area__name"]), key=lambda r: -r["c"]
@@ -186,7 +142,7 @@ def build_intakes_context(request):
         "hasOther": bool(unspecified),
     }
 
-    # Outcomes / conversion, ordered by the canonical status list (present only).
+    # --- Outcomes / conversion donut ---
     st_counts = {
         r["status"]: r["c"] for r in intakes.values("status").annotate(c=Count("id"))
     }
@@ -212,12 +168,12 @@ def build_intakes_context(request):
         "percentages_by_status": percentages_by_status,
         "practice_areas": PRACTICE_AREAS,
         "intake_statuses": INTAKE_STATUSES,
-        "date_from": date_from,
-        "date_to": date_to,
         "flow_chart": flow_chart,
         "practice_donut": practice_donut,
         "conversion_donut": conversion_donut,
         "conversion_rate": conversion_rate,
         "converted_count": converted_count,
         "intakes_total_all": total_all,
+        "period_label": end.strftime("%b %Y"),
+        "can_go_next": end < current_first,
     }

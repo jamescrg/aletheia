@@ -1,12 +1,14 @@
 import os
 from datetime import datetime
 
+from dateutil.relativedelta import relativedelta
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
 
 from apps.management.filter_manager import FilterManager
+from apps.reports.activity.aggregation import resolve_end
 
 from .aggregation import build_intakes_context
 from .filters import IntakeReportFilter
@@ -23,6 +25,22 @@ def intakes_index(request):
 @staff_member_required
 def intakes_list(request):
     return render(request, "reports/intakes/list.html", build_intakes_context(request))
+
+
+@login_required
+@staff_member_required
+def intakes_period(request):
+    """Step the rolling window's end month (held in the session) one month back
+    or forward, capped at the current month, then re-render the report."""
+    end, current_first = resolve_end(request.session.get("intakes_end"))
+    direction = request.POST.get("direction")
+    if direction == "prev":
+        end = end - relativedelta(months=1)
+    elif direction == "next":
+        end = min(end + relativedelta(months=1), current_first)
+    request.session["intakes_end"] = end.strftime("%Y-%m")
+    request.session.modified = True
+    return HttpResponse(status=204, headers={"HX-Trigger": "intakesChanged"})
 
 
 @login_required

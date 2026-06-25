@@ -54,6 +54,7 @@ urlpatterns = [
     path("reports/intakes/", intakes.intakes_index, name="intakes-index"),
     path("reports/intakes/list/", intakes.intakes_list, name="intakes"),
     path("reports/intakes/filter/", intakes.intakes_filter, name="intakes-filter"),
+    path("reports/intakes/period/", intakes.intakes_period, name="intakes-period"),
     path("reports/intakes/pdf/", intakes.intakes_pdf, name="intakes-pdf"),
     # AR Aging
     path("reports/aging/", aging.aging_index, name="aging-index"),
