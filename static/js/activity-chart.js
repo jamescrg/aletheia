@@ -112,7 +112,8 @@ window.AletheiaActivityChart = (function () {
       label: s.label,
       data: s[state.metric] || [],
       backgroundColor: isNeutral(s, i) ? grey : colors[ci++],
-      borderWidth: 0,
+      borderColor: palette.border(theme),
+      borderWidth: 1,
       borderRadius: 2,
       stack: "activity",
     }));

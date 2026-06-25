@@ -1,87 +1,70 @@
 /**
  * AletheiaChartPalette
  * ---------------------
- * Theme-aware *categorical* series colours for Chart.js. The earlier scheme was
- * a single accent hue + lightness ramp, which left adjacent stacked segments too
- * close to tell apart. This uses a distinct hue per series, drawn from each
- * theme's own accent family so the charts stay on-palette across all three
- * themes while reading as clearly multi-colour:
- *   - light  : the project's Tailwind accent ramps (violet brand + complements)
- *   - dark   : Gruvbox bright accents (the --gb-bright-* family)
- *   - cosmic : Nord Aurora + Frost accents (--nord*)
+ * Generates muted, theme-aware series colours for Chart.js so charts blend with
+ * the project's monochrome + two-accent aesthetic instead of reading as a loud
+ * rainbow. Colours are built in OKLCH at low, constant chroma, anchored on each
+ * theme's accent hue (violet / gruvbox aqua / Nord frost); a gentle hue arc plus
+ * a lightness ramp keeps adjacent stacked segments distinguishable. Chart.js v4
+ * accepts oklch(...) strings directly as fill / grid / tick colours.
  *
- * make(n, theme)  -> array of n colour strings (cycles only if n exceeds the set)
+ * make(n, theme)  -> array of n oklch() strings
+ * axes(theme)     -> { grid, tick } oklch() strings for scales / legend
  * neutral(theme)  -> muted grey for catch-all / residual ("Other" / WIP) series
- * axes(theme)     -> { grid, tick } for scales / legend
- *
- * Chart.js v4 accepts oklch(...) and hex strings directly as fill colours.
+ * border(theme)   -> table-border colour (--border-medium) for outlining slices/bars
  */
 window.AletheiaChartPalette = (function () {
-  // Ordered for maximum contrast between adjacent stacked segments. Values are
-  // the themes' own accent tokens (static/css/palette.css + colors.css) so the
-  // charts stay on-palette; charts here have < 8 series, so cycling is moot.
-  const CATEGORICAL = {
-    // Hues track the app's highlight set (--hl-violet/orange/blue/green/red/
-    // yellow), at a slightly deeper-than-the-pale-fills, even-and-soft level
-    // (chroma ~0.09) so bars read on a near-white page while staying on-aesthetic.
-    // Ordered so the highlight set's warm cluster (red/orange/yellow) isn't
-    // adjacent in the stack; teal is the one non-highlight hue, added for a 7th.
-    // ~Tailwind 175 — interpolated halfway between each hue's -150 and -200 (the
-    // ramps don't ship a 175 step). Still soft and in the highlight family, a
-    // touch more presence than 150 so adjacent bars separate.
-    light: [
-      "oklch(90.7% 0.048 293.7deg)", // violet ~175 (hl-violet family)
-      "oklch(91.5% 0.064 71.9deg)", // orange ~175
-      "oklch(89.5% 0.051 254.5deg)", // blue ~175
-      "oklch(93.5% 0.072 156.2deg)", // green ~175
-      "oklch(89.8% 0.052 18.2deg)", // red ~175
-      "oklch(92.0% 0.077 180.7deg)", // teal ~175 (complement for a 7th hue)
-      "oklch(95.2% 0.110 102.0deg)", // yellow ~175 (hl-yellow family)
-    ],
-    // Muted Gruvbox family: same hues as the bright accents but chroma pulled
-    // down (~0.08, was up to 0.22) so they're soft on the dark surface, distinct
-    // by hue rather than intensity.
-    dark: [
-      "oklch(0.72 0.075 165)", // muted aqua (signature)
-      "oklch(0.73 0.085 60)", // muted orange
-      "oklch(0.70 0.078 350)", // muted purple
-      "oklch(0.70 0.068 240)", // muted blue
-      "oklch(0.75 0.080 130)", // muted green
-      "oklch(0.66 0.090 28)", // muted red
-      "oklch(0.81 0.080 92)", // muted yellow
-    ],
-    cosmic: [
-      "#88c0d0", // nord8  Frost cyan (signature)
-      "#d08770", // nord12 Aurora orange
-      "#b48ead", // nord15 Aurora purple
-      "#a3be8c", // nord14 Aurora green
-      "#81a1c1", // nord9  Frost blue
-      "#bf616a", // nord11 Aurora red
-      "#ebcb8b", // nord13 Aurora yellow
-      "#8fbcbb", // nord7  Frost teal
-    ],
+  const THEME = {
+    // otherL = lightness of the near-neutral "Other" bucket. In light it sits
+    // well above the series ramp so it recedes toward the page; in dark/cosmic
+    // it stays mid so it recedes toward the dark surface.
+    light: {
+      // Violet family anchored on the --violet ramp (hue ~293, the app's
+      // selection accent). Soft chroma so it reads as muted violet, not loud.
+      hue: 293, hueSpan: 42, chroma: 0.07, lMin: 0.6, lMax: 0.82, otherL: 0.88,
+      grid: "oklch(0.90 0 0)", tick: "oklch(0.45 0 0)",
+    },
+    dark: {
+      hue: 142, hueSpan: 80, chroma: 0.06, lMin: 0.52, lMax: 0.76, otherL: 0.52,
+      grid: "oklch(0.41 0.011 52)", tick: "oklch(0.69 0.035 76)",
+    },
+    cosmic: {
+      hue: 210, hueSpan: 90, chroma: 0.055, lMin: 0.55, lMax: 0.8, otherL: 0.55,
+      grid: "oklch(0.37 0.02 250)", tick: "oklch(0.78 0.03 250)",
+    },
   };
 
-  function make(n, theme) {
-    const list = CATEGORICAL[theme] || CATEGORICAL.light;
+  function params(theme) {
+    return THEME[theme] || THEME.light;
+  }
+
+  function make(n, theme, opts) {
+    const t = params(theme);
+    const otherLast = opts && opts.otherLast;
+    const colored = otherLast ? Math.max(n - 1, 1) : n;
     const out = [];
-    for (let i = 0; i < n; i++) out.push(list[i % list.length]);
+    for (let i = 0; i < n; i++) {
+      // The trailing "Other" bucket reads as a light, near-neutral residual.
+      if (otherLast && i === n - 1) {
+        out.push(`oklch(${t.otherL.toFixed(3)} 0.012 ${t.hue.toFixed(1)})`);
+        continue;
+      }
+      const f = colored === 1 ? 0.5 : i / (colored - 1);
+      const hue = t.hue - t.hueSpan / 2 + f * t.hueSpan;
+      const l = t.lMin + f * (t.lMax - t.lMin);
+      out.push(`oklch(${l.toFixed(3)} ${t.chroma} ${hue.toFixed(1)})`);
+    }
     return out;
   }
 
-  const AXES = {
-    light: { grid: "oklch(0.90 0 0)", tick: "oklch(0.45 0 0)" },
-    dark: { grid: "oklch(0.41 0.011 52)", tick: "oklch(0.69 0.035 76)" },
-    cosmic: { grid: "oklch(0.37 0.02 250)", tick: "oklch(0.78 0.03 250)" },
-  };
-
   function axes(theme) {
-    return AXES[theme] || AXES.light;
+    const t = params(theme);
+    return { grid: t.grid, tick: t.tick };
   }
 
-  // A muted grey for catch-all / residual series ("Other" / Unbilled WIP).
+  // A muted grey for catch-all / residual series ("Other"), per theme.
   const NEUTRAL = {
-    light: "oklch(94.7% 0 none)", // stone-150 — light grey to match the 150 pastels
+    light: "oklch(0.74 0.004 286)",
     dark: "oklch(0.60 0.006 70)",
     cosmic: "oklch(0.62 0.006 250)",
   };
@@ -91,7 +74,7 @@ window.AletheiaChartPalette = (function () {
   }
 
   // Matches the table border token (--border-medium): stone-300 in light,
-  // gb-dark2 in dark, nord2 in cosmic. Used to outline donut slices.
+  // gb-dark2 in dark, nord2 in cosmic. Outlines donut slices and bar segments.
   const BORDER = {
     light: "oklch(86.9% 0 none)",
     dark: "oklch(0.411 0.011 52)",
