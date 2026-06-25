@@ -13,6 +13,10 @@ fee-share of any invoice discount are write-downs; payments and credits are
 pro-rated back to each entry's accrual month by the entry's share of its
 invoice's net billable value (the same engine the Revenue report uses).
 
+Non-billable matters (internal/admin, ``matter.billable=False``) are excluded
+entirely, matching the Activity report — their tracked time is never meant to be
+collected and shouldn't drag the realization rate down.
+
 Accrual basis: a month column counts time entries by their own ``date``. The
 window's end month is held in the session ("realization_end") and stepped by
 ``realization_period``.
@@ -176,9 +180,9 @@ def build_realization_context(request):
     buckets = {seg: [Decimal(0)] * n for seg in SEGMENTS}
 
     entries = list(
-        TimeEntry.objects.filter(date__gte=window_start, date__lt=window_end).values(
-            "date", "hours", "rate", "comp", "invoice_id"
-        )
+        TimeEntry.objects.filter(
+            date__gte=window_start, date__lt=window_end, matter__billable=True
+        ).values("date", "hours", "rate", "comp", "invoice_id")
     )
     invoice_ids = {
         e["invoice_id"] for e in entries if not e["comp"] and e["invoice_id"]
@@ -211,9 +215,9 @@ def build_realization_context(request):
     # Flat fees: their own band (accrued value), kept out of the hourly
     # disposition. Comp (no-charge) flat fees are write-downs, like comp time.
     flat_entries = list(
-        FlatFeeEntry.objects.filter(date__gte=window_start, date__lt=window_end).values(
-            "date", "amount", "comp"
-        )
+        FlatFeeEntry.objects.filter(
+            date__gte=window_start, date__lt=window_end, matter__billable=True
+        ).values("date", "amount", "comp")
     )
     for fe in flat_entries:
         amt = Decimal(fe["amount"] or 0)
