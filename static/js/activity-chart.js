@@ -182,7 +182,7 @@ window.AletheiaActivityChart = (function () {
       data: {
         labels: labels,
         datasets: [{ data: values, backgroundColor: sliceColors,
-          borderColor: palette.border(theme), borderWidth: 2 }],
+          borderColor: palette.border(theme), borderWidth: 1 }],
       },
       options: {
         responsive: true,
