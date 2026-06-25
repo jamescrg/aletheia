@@ -27,13 +27,13 @@ window.AletheiaChartPalette = (function () {
     // Ordered so the highlight set's warm cluster (red/orange/yellow) isn't
     // adjacent in the stack; teal is the one non-highlight hue, added for a 7th.
     light: [
-      "oklch(0.80 0.090 294)", // violet (hl-violet)
-      "oklch(0.82 0.090 70)", // orange (hl-orange)
-      "oklch(0.79 0.085 256)", // blue (hl-blue)
-      "oklch(0.82 0.090 125)", // green (hl-green / lime)
-      "oklch(0.78 0.095 20)", // red (hl-red)
-      "oklch(0.80 0.078 190)", // teal (complement for a 7th hue)
-      "oklch(0.86 0.095 100)", // yellow (hl-yellow)
+      "oklch(0.87 0.078 294)", // violet (hl-violet)
+      "oklch(0.88 0.080 70)", // orange (hl-orange)
+      "oklch(0.86 0.070 256)", // blue (hl-blue)
+      "oklch(0.88 0.078 125)", // green (hl-green / lime)
+      "oklch(0.86 0.082 20)", // red (hl-red)
+      "oklch(0.87 0.065 190)", // teal (complement for a 7th hue)
+      "oklch(0.91 0.085 100)", // yellow (hl-yellow)
     ],
     // Muted Gruvbox family: same hues as the bright accents but chroma pulled
     // down (~0.08, was up to 0.22) so they're soft on the dark surface, distinct
