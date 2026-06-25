@@ -15,84 +15,98 @@
     </div>
   </div>
 </div>
-<div class="table-container">
-  <table class="table">
-    <tr>
-      <th>
-        Client
-        <a href="?sort=client_name&direction={% if current_sort == 'client_name' and current_direction == 'asc' %}desc{% else %}asc{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
-          <i class="icon-chevrons-up-down"></i>
-        </a>
-      </th>
-      <th class="numeric">
-        Hours
-        <a href="?sort=total_hours&direction={% if current_sort == 'total_hours' and current_direction == 'desc' %}asc{% else %}desc{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
-          <i class="icon-chevrons-up-down"></i>
-        </a>
-      </th>
-      <th class="numeric">
-        Fees
-        <a href="?sort=total_fees&direction={% if current_sort == 'total_fees' and current_direction == 'desc' %}asc{% else %}desc{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
-          <i class="icon-chevrons-up-down"></i>
-        </a>
-      </th>
-      <th class="numeric">
-        Invoices
-        <a href="?sort=total_invoices&direction={% if current_sort == 'total_invoices' and current_direction == 'desc' %}asc{% else %}desc{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
-          <i class="icon-chevrons-up-down"></i>
-        </a>
-      </th>
-      <th class="numeric">
-        Payments
-        <a href="?sort=total_payments&direction={% if current_sort == 'total_payments' and current_direction == 'desc' %}asc{% else %}desc{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
-          <i class="icon-chevrons-up-down"></i>
-        </a>
-      </th>
-    </tr>
-    {% for client_info in client_data %}
+<div class="clients-section">
+  <div class="clients-donut">
+    <canvas id="clients-chart"
+            data-donut-data="clients-donut-data"
+            data-donut-metric="billed"
+            data-donut-metric-label="Billed"></canvas>
+  </div>
+  <div class="table-container">
+    <table class="table">
       <tr>
-        <td>
-          <a href="{% url 'contacts:select' contact_id=client_info.client.id %}?from=reports">{{ client_info.client.name }}</a>
-        </td>
-        <td class="numeric">
-          {% if client_info.total_hours > 0 %}
-            {{ client_info.total_hours|floatformat:1 }}h
-            <br>
-            <small class="text-muted">({{ client_info.time_entries_count }} entries)</small>
-          {% else %}
-            -
-          {% endif %}
-        </td>
-        <td class="numeric">
-          {% if client_info.total_fees > 0 %}
-            ${{ client_info.total_fees|floatformat:2|intcomma }}
-          {% else %}
-            $0.00
-          {% endif %}
-        </td>
-        <td class="numeric">
-          {% if client_info.total_invoices > 0 %}
-            ${{ client_info.total_invoices|floatformat:2|intcomma }}
-            <br>
-            <small class="text-muted">({{ client_info.invoices_count }} invoices)</small>
-          {% else %}
-            $0.00
-          {% endif %}
-        </td>
-        <td class="numeric">
-          {% if client_info.total_payments > 0 %}
-            ${{ client_info.total_payments|floatformat:2|intcomma }}
-            <br>
-            <small class="text-muted">({{ client_info.payments_count }} payments)</small>
-          {% else %}
-            $0.00
-          {% endif %}
-        </td>
+        <th>
+          Client
+          <a href="?sort=client_name&direction={% if current_sort == 'client_name' and current_direction == 'asc' %}desc{% else %}asc{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
+            <i class="icon-chevrons-up-down"></i>
+          </a>
+        </th>
+        <th class="numeric">
+          Hours
+          <a href="?sort=total_hours&direction={% if current_sort == 'total_hours' and current_direction == 'desc' %}asc{% else %}desc{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
+            <i class="icon-chevrons-up-down"></i>
+          </a>
+        </th>
+        <th class="numeric">
+          Fees
+          <a href="?sort=total_fees&direction={% if current_sort == 'total_fees' and current_direction == 'desc' %}asc{% else %}desc{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
+            <i class="icon-chevrons-up-down"></i>
+          </a>
+        </th>
+        <th class="numeric">
+          Invoices
+          <a href="?sort=total_invoices&direction={% if current_sort == 'total_invoices' and current_direction == 'desc' %}asc{% else %}desc{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
+            <i class="icon-chevrons-up-down"></i>
+          </a>
+        </th>
+        <th class="numeric">
+          Payments
+          <a href="?sort=total_payments&direction={% if current_sort == 'total_payments' and current_direction == 'desc' %}asc{% else %}desc{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
+            <i class="icon-chevrons-up-down"></i>
+          </a>
+        </th>
       </tr>
-    {% empty %}
-      <tr>
-        <td colspan="5">No current clients found.</td>
-      </tr>
-    {% endfor %}
-  </table>
+      {% for client_info in client_data %}
+        <tr>
+          <td>
+            <a href="{% url 'contacts:select' contact_id=client_info.client.id %}?from=reports">{{ client_info.client.name }}</a>
+          </td>
+          <td class="numeric">
+            {% if client_info.total_hours > 0 %}
+              {{ client_info.total_hours|floatformat:1 }}h
+              <br>
+              <small class="text-muted">({{ client_info.time_entries_count }} entries)</small>
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td class="numeric">
+            {% if client_info.total_fees > 0 %}
+              ${{ client_info.total_fees|floatformat:2|intcomma }}
+            {% else %}
+              $0.00
+            {% endif %}
+          </td>
+          <td class="numeric">
+            {% if client_info.total_invoices > 0 %}
+              ${{ client_info.total_invoices|floatformat:2|intcomma }}
+              <br>
+              <small class="text-muted">({{ client_info.invoices_count }} invoices)</small>
+            {% else %}
+              $0.00
+            {% endif %}
+          </td>
+          <td class="numeric">
+            {% if client_info.total_payments > 0 %}
+              ${{ client_info.total_payments|floatformat:2|intcomma }}
+              <br>
+              <small class="text-muted">({{ client_info.payments_count }} payments)</small>
+            {% else %}
+              $0.00
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5">No current clients found.</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
 </div>
+{{ clients_donut|json_script:"clients-donut-data" }}
+<script>
+  window.KosmosActivityChart &&
+    window.KosmosActivityChart.renderDonut('clients-chart', 'clients-donut-data',
+      { metric: 'billed', metricLabel: 'Billed' });
+</script>

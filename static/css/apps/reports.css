@@ -184,6 +184,28 @@
   margin-top: 0;
 }
 
+/* Clients report: a top-clients donut to the left of the breakdown table,
+   wrapping on narrow screens. */
+.clients-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.clients-donut {
+  position: relative;
+  flex: none;
+  width: 300px;
+  height: 300px;
+}
+
+.clients-section .table-container {
+  flex: 1;
+  min-width: 28rem;
+}
+
 /* Intakes report: two distribution donuts side by side under the volume bar,
    wrapping on narrow screens. */
 .intake-donut-row {
