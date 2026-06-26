@@ -7,11 +7,11 @@
   {% if env == 'dev' %}
     <link rel="icon"
           type="image/svg+xml"
-          href="{% static 'images/kosmos-mark-dev.svg' %}" />
+          href="{% static_v 'images/kosmos-mark-dev.svg' %}" />
   {% else %}
     <link rel="icon"
           type="image/svg+xml"
-          href="{% static 'images/kosmos-mark.svg' %}" />
+          href="{% static_v 'images/kosmos-mark.svg' %}" />
   {% endif %}
   <!-- set viewport for mobile devices -->
   <meta name="viewport" content="width = device-width, initial-scale = 1" />
