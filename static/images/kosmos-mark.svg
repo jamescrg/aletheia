@@ -1,6 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#466f11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- stroke is set as a presentation attribute (above) so rasterizers that
+       ignore <style> (e.g. building a mobile home-screen icon) still get a
+       colour; the <style> only upgrades the browser-tab icon for dark mode. -->
   <style>
-    circle, path { stroke: oklch(49.3% 0.127 131.3deg); }
     @media (prefers-color-scheme: dark) { circle, path { stroke: oklch(0.756 0.108 138); } }
   </style>
   <circle cx="12" cy="12" r="1"/>
