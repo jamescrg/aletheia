@@ -20,6 +20,8 @@
       <form id="invoice-send-form"
             hx-post="{% url 'invoicing:invoices-send' pk=invoice.id %}"
             hx-target="#htmx-modal-container"
+            hx-indicator="#invoice-send-submit"
+            hx-disabled-elt="#invoice-send-submit"
             class="form-compact">
         {% csrf_token %}
         <div class="form-group">
@@ -62,12 +64,18 @@
       <button type="button"
               class="btn btn-secondary"
               @click="$dispatch('close-modal')">Cancel</button>
-      <button type="submit" form="invoice-send-form" class="btn btn-success">
-        {% if invoice.date_sent %}
-          Resend
-        {% else %}
-          Send
-        {% endif %}
+      <button type="submit"
+              form="invoice-send-form"
+              id="invoice-send-submit"
+              class="btn btn-success">
+        <span class="send-label">
+          {% if invoice.date_sent %}
+            Resend
+          {% else %}
+            Send
+          {% endif %}
+        </span>
+        <span class="send-sending"><span class="send-spinner"></span> Sending…</span>
       </button>
     </div>
   </div>

@@ -87,6 +87,35 @@ Send modal
   font-variant-numeric: tabular-nums;
 }
 
+/* Send button: swap the label for a spinner while the request is in flight
+   (htmx adds .htmx-request via the form's hx-indicator). */
+#invoice-send-submit .send-sending {
+  display: none;
+}
+
+#invoice-send-submit.htmx-request {
+  pointer-events: none;
+}
+
+#invoice-send-submit.htmx-request .send-label {
+  display: none;
+}
+
+#invoice-send-submit.htmx-request .send-sending {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.4rem;
+}
+
+.send-spinner {
+  width: 0.85em;
+  height: 0.85em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
 .invoices-delete,
 .invoices-delete:hover {
   color: var(--urgent);

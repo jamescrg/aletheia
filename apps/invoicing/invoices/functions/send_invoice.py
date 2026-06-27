@@ -96,9 +96,11 @@ def send_invoice(
         raise InvoiceSendError(error)
 
     try:
-        # Always regenerate so the attached PDF reflects the invoice's current
-        # state (it may have been edited since the last APPROVED/SENT render).
-        store_invoice_pdf(invoice, request)
+        # The PDF is (re)generated on every create / edit / approve, so the
+        # stored file is already current — generate here only if it is somehow
+        # missing, rather than paying the WeasyPrint cost on every send.
+        if not invoice.pdf_file:
+            store_invoice_pdf(invoice, request)
 
         cover = message if message is not None else (invoice.message or "")
         context = {
