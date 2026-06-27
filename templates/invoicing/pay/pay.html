@@ -223,7 +223,7 @@
         {% if is_paid %}
           <div class="pay-alert ok">This invoice is paid in full. Thank you.</div>
         {% else %}
-          <div x-data='payForm({ chargeUrl: "{{ charge_url|escapejs }}", dev: {{ dev_mode|yesno:"true,false" }} })'>
+          <div x-data='payForm({ chargeUrl: "{{ charge_url|escapejs }}", dev: {{ dev_mode|yesno:"true,false" }}, publicKey: "{{ config.public_key|escapejs }}" })'>
             <!-- Result states -->
             <template x-if="done && !pending">
               <div class="pay-alert ok">Payment received. Thank you — a receipt will follow by email.</div>
@@ -327,6 +327,22 @@
                   <label>Account holder name</label>
                   <input type="text" x-model="accountName" placeholder="Jane Q. Client">
                 </div>
+                <div class="pay-row">
+                  <div class="pay-field">
+                    <label>Account type</label>
+                    <select x-model="accountType">
+                      <option value="checking">Checking</option>
+                      <option value="savings">Savings</option>
+                    </select>
+                  </div>
+                  <div class="pay-field">
+                    <label>Account holder</label>
+                    <select x-model="holderType">
+                      <option value="individual">Individual</option>
+                      <option value="business">Business</option>
+                    </select>
+                  </div>
+                </div>
               </div>
               <button type="button" class="pay-btn" :disabled="submitting" @click="pay()">
                 <span x-show="!submitting">Pay ${{ amount_due|floatformat:2|intcomma }}</span>
@@ -348,7 +364,35 @@
         cardNumber: '', exp: '', cvv: '', postalCode: '',
         // bank / eCheck
         routingNumber: '', accountNumber: '', accountName: '',
+        accountType: 'checking', holderType: 'individual',
         submitting: false, done: false, pending: false, status: '', error: '',
+        // Live hosted-fields handles. AffiniPay requires SEPARATE
+        // initializeFields/getPaymentToken calls for card vs eCheck, so we keep
+        // one handle per method.
+        _cardFields: null, _bankFields: null,
+
+        // Mount AffiniPay hosted fields once, in live mode only. Dev mode uses
+        // plain inputs + magic tokens, so this is skipped there.
+        init() {
+          if (opts.dev) return;
+          const HF = window.AffiniPay && window.AffiniPay.HostedFields;
+          if (!HF) { this.error = 'Payment form failed to load. Please refresh.'; return; }
+          const noop = function () {};
+          this._cardFields = HF.initializeFields({
+            publicKey: opts.publicKey,
+            fields: [
+              { selector: '#hf-card-number', input: { type: 'credit_card_number' } },
+              { selector: '#hf-card-cvv', input: { type: 'cvv' } },
+            ],
+          }, noop);
+          this._bankFields = HF.initializeFields({
+            publicKey: opts.publicKey,
+            fields: [
+              { selector: '#hf-bank-routing', input: { type: 'routing_number' } },
+              { selector: '#hf-bank-account', input: { type: 'bank_account_number' } },
+            ],
+          }, noop);
+        },
 
         validate() {
           if (this.method === 'card') {
@@ -406,16 +450,31 @@
           this.submitting = false;
         },
 
-        // LIVE tokenization via AffiniPay hosted fields. SANDBOX-VERIFY.
+        // LIVE tokenization via AffiniPay hosted fields. Card number/CVV and
+        // bank routing/account live in AffiniPay iframes; we only add the
+        // non-sensitive fields here. SANDBOX-VERIFY: the eCheck holder/account
+        // type mapping against a real test account.
         async tokenize() {
-          const HF = window.AffiniPay && window.AffiniPay.HostedFields;
-          if (!HF) throw new Error('Payment form failed to load. Please refresh.');
-          const extra = this.method === 'card'
-            ? { postal_code: this.postalCode,
-                exp_month: (this.exp.split('/')[0] || '').trim(),
-                exp_year: (this.exp.split('/')[1] || '').trim() }
-            : { name: this.accountName };
-          const result = await this._fields.getPaymentToken(extra);
+          if (this.method === 'card') {
+            const result = await this._cardFields.getPaymentToken({
+              postal_code: this.postalCode,
+              exp_month: (this.exp.split('/')[0] || '').trim(),
+              exp_year: (this.exp.split('/')[1] || '').trim(),
+            });
+            return result.id;
+          }
+          const name = this.accountName.trim();
+          const extra = { account_type: this.accountType };
+          if (this.holderType === 'business') {
+            extra.account_holder_type = 'business';
+            extra.name = name;
+          } else {
+            extra.account_holder_type = 'individual';
+            const parts = name.split(/\s+/);
+            extra.given_name = parts.shift() || name;
+            extra.surname = parts.join(' ') || extra.given_name;
+          }
+          const result = await this._bankFields.getPaymentToken(extra);
           return result.id;
         },
       };
