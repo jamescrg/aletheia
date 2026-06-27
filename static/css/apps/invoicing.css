@@ -41,24 +41,32 @@ List View
   width: 9rem;
 }
 
-/* Actions column (download + send). Left-aligned so the download stays put and
-   the send link, when present, sits to its right. */
+/* Actions column (download + send), centered. */
 .invoices .actions {
-  text-align: left;
+  text-align: center;
   width: 5.5rem;
 }
 
-/* Header: space the download and send label icons apart. */
+/* Header: small space between the download and send label icons. */
 .invoices th.actions i + i {
-  margin-left: 0.6rem;
+  margin-left: 0.25rem;
 }
 
-/* Row cell: the download dropdown and (for approved/sent invoices) the
-   link-styled send button, side by side. */
+/* Row cell: the download dropdown and (for approved/sent invoices) the send
+   button, side by side. */
 .invoices .actions-cell {
   align-items: center;
   display: inline-flex;
-  gap: 0.6rem;
+  gap: 0.25rem;
+}
+
+/* Muted-gray icon buttons (like the ghost buttons, but always visible). */
+.invoices .actions-cell .button-link {
+  color: var(--icon-muted);
+}
+
+.invoices .actions-cell .button-link:hover {
+  color: var(--color-primary);
 }
 
 /* ==========================================================================
