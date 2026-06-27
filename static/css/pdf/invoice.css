@@ -28,6 +28,20 @@ Header
   margin-bottom: 12pt;
 }
 
+/* Header: split the address (left) and invoice/matter info (right) 50/50.
+   .header is a wrapping flex row (general.css) with the logo on its own line.
+   Pinning both columns keeps the right block beside the address — a long matter
+   name wraps inside its column rather than widening it and dropping the whole
+   block below the address. */
+.header-left {
+  width: 50%;
+}
+
+.header-right {
+  overflow-wrap: break-word;
+  width: 50%;
+}
+
 /* ==========================================================================
 Content
 ========================================================================== */
