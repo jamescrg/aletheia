@@ -26,23 +26,27 @@
       <tr>
         <td style="padding: 24px 32px;">
           <p style="margin: 0 0 16px; font-size: 14px; color: #57534e;">
-            Dear {{ client_name|default:"Client" }},
+            Dear Client,
           </p>
           {% if cover_message %}
             <p style="margin: 0 0 16px; font-size: 14px; color: #57534e; white-space: pre-line;">{{ cover_message }}</p>
           {% else %}
             <p style="margin: 0 0 16px; font-size: 14px; color: #57534e;">
               Please find attached your invoice for Matter {{ matter_number }}.
-              The invoice detail is included as a PDF attachment.
+              The invoice details are included in the PDF attachment.
             </p>
           {% endif %}
+
+          <p style="margin: 0 0 16px; font-size: 14px; color: #57534e;">
+            If you have any questions about this invoice, please reply to this email{% if firm_email %} or contact us at <a href="mailto:{{ firm_email }}" style="color: #15803d;">{{ firm_email }}</a>{% endif %}.
+          </p>
 
           <!-- Summary -->
           <table role="presentation"
                  width="300"
                  cellpadding="0"
                  cellspacing="0"
-                 style="margin: 8px 0 20px; max-width: 300px; border: 1px solid #e7e5e4; border-radius: 6px;">
+                 style="margin: 8px 0 20px; max-width: 300px; border: 1px solid #e7e5e4; border-radius: 4px;">
             <tr>
               <td style="padding: 12px 16px; font-size: 14px; color: #78716c;">Matter</td>
               <td style="padding: 12px 16px; font-size: 14px; color: #292524; text-align: right;">{{ matter_number }}</td>
@@ -60,17 +64,13 @@
           {% if pay_url %}
             <table role="presentation" cellpadding="0" cellspacing="0" style="margin: 0 0 20px;">
               <tr>
-                <td style="background-color: #15803d; border-radius: 6px;">
+                <td style="background-color: #15803d; border-radius: 4px;">
                   <a href="{{ pay_url }}"
                      style="display: inline-block; padding: 12px 24px; font-size: 14px; font-weight: 600; color: #ffffff; text-decoration: none;">Pay now</a>
                 </td>
               </tr>
             </table>
           {% endif %}
-
-          <p style="margin: 0; font-size: 13px; color: #78716c;">
-            If you have any questions about this invoice, please reply to this email{% if firm_email %} or contact us at <a href="mailto:{{ firm_email }}" style="color: #15803d;">{{ firm_email }}</a>{% endif %}.
-          </p>
         </td>
       </tr>
     </table>
