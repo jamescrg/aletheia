@@ -58,6 +58,7 @@ List View
 }
 
 .invoices .action-send {
+  overflow: visible; /* else the td's text-overflow ellipsizes the icon */
   padding-left: 0.5rem;
 }
 
