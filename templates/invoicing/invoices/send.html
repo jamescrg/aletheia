@@ -29,6 +29,8 @@
                  name="to"
                  value="{{ default_to }}"
                  autocomplete="off"
+                 multiple
+                 placeholder="name@example.com, name2@example.com"
                  required>
         </div>
         <div class="form-group">
@@ -37,7 +39,9 @@
                  id="invoice-send-cc"
                  name="cc"
                  value="{{ default_cc }}"
-                 autocomplete="off">
+                 autocomplete="off"
+                 multiple
+                 placeholder="name@example.com, name2@example.com">
         </div>
         <div class="form-group"
              x-data="{ max: 500, count: {{ default_message|length }} }">

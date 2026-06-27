@@ -219,8 +219,10 @@ class InvoiceTransmission(AuditMixin, models.Model):
         Invoice, on_delete=models.CASCADE, related_name="transmissions"
     )
     sent_at = models.DateTimeField()
-    to_email = models.EmailField(max_length=255)
-    cc_email = models.EmailField(max_length=255, blank=True, default="")
+    # May hold several comma-separated addresses, so CharField rather than
+    # EmailField (which validates a single address).
+    to_email = models.CharField(max_length=500)
+    cc_email = models.CharField(max_length=500, blank=True, default="")
     sent_by = models.ForeignKey(
         "accounts.CustomUser", on_delete=models.SET_NULL, null=True, blank=True
     )
