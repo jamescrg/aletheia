@@ -406,14 +406,28 @@
             const Stripe = window.Stripe;
             if (!Stripe) { this.error = 'Payment form failed to load. Please refresh.'; return; }
             this._stripe = Stripe(opts.publicKey);
-            // Hand the Element a theme-resolved text colour. Reading it off the
-            // mounted field gives an rgb() string (which Stripe accepts); the raw
-            // token would resolve to oklch(), which it would not. Without this the
-            // digits are dark-on-dark for a client in dark mode.
+            // Hand the Element theme-resolved colours. Stripe accepts rgb() but
+            // not the oklch() the tokens resolve to, so read them off real
+            // elements (the browser normalises `color` to rgb): the field's own
+            // colour for the digits, a probe for the muted colour the placeholder
+            // text and brand icon use. Without this they're dark-on-dark for a
+            // client in dark mode.
             const mount = document.getElementById('stripe-card');
-            const color = getComputedStyle(mount).color;
+            const probe = document.createElement('span');
+            probe.style.cssText = 'color: var(--color-muted); display: none;';
+            mount.appendChild(probe);
+            const text = getComputedStyle(mount).color;
+            const muted = getComputedStyle(probe).color;
+            probe.remove();
             this._stripeCard = this._stripe.elements().create('card', {
-              style: { base: { color: color, fontSize: '16px' } },
+              style: {
+                base: {
+                  color: text,
+                  fontSize: '16px',
+                  iconColor: muted,
+                  '::placeholder': { color: muted },
+                },
+              },
             });
             this._stripeCard.mount(mount);
             return;
