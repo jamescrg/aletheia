@@ -11,8 +11,29 @@
                   hx-trigger="click"
                   data-bs-toggle="modal"
                   data-bs-target="#htmx-modal-container">
-            <i class="icon-plus with-text"></i>Request Payment
+            <i class="icon-plus"></i>
           </button>
+          <button type="button"
+                  class="btn-icon{% if filter_active %} toggle-active{% endif %}"
+                  hx-get="{% url 'invoicing:requests-filter' %}"
+                  hx-target="#htmx-modal-container"
+                  hx-trigger="click"
+                  data-bs-toggle="modal"
+                  data-bs-target="#htmx-modal-container">
+            <i class="icon-list-filter with-text"></i>Filter
+          </button>
+          <a type="button"
+             href="#"
+             class="btn-icon {% if current_status == 'SENT' %}toggle-active{% endif %}"
+             hx-post="{% url 'invoicing:requests-filter-status' 'SENT' %}">Sent</a>
+          <a type="button"
+             href="#"
+             class="btn-icon {% if current_status == 'PAID' %}toggle-active{% endif %}"
+             hx-post="{% url 'invoicing:requests-filter-status' 'PAID' %}">Paid</a>
+          <a type="button"
+             href="#"
+             class="btn-icon {% if current_status == 'CANCELED' %}toggle-active{% endif %}"
+             hx-post="{% url 'invoicing:requests-filter-status' 'CANCELED' %}">Canceled</a>
         </div>
       </div>
     </div>
@@ -30,7 +51,7 @@
           {% include "invoicing/requests/row.html" %}
         {% empty %}
           <tr>
-            <td colspan="6" class="empty-message">No payment requests yet.</td>
+            <td colspan="6" class="empty-message">No payment requests found.</td>
           </tr>
         {% endfor %}
       </table>

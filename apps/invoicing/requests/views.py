@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
 from apps.invoicing.pay.balance import matter_balance_cents
+from apps.invoicing.requests.filters import PaymentRequestFilter
 from apps.invoicing.requests.models import PaymentRequest
 from apps.invoicing.requests.send import (
     PaymentRequestSendError,
@@ -15,13 +16,29 @@ from apps.management.pagination import CustomPaginator
 from apps.matters.models import Matter
 from utils.toasts import toast_success
 
+# Filter keys that don't count toward the "filter is active" toolbar highlight:
+# status has its own quick-buttons, and the POST carries the CSRF token.
+_NON_FILTER_KEYS = ("status", "order_by", "csrfmiddlewaretoken")
+
 
 def _requests_context(request):
-    requests = PaymentRequest.objects.select_related("matter", "payment").order_by(
+    filter_data = request.session.get("requests_filter", {})
+    base = PaymentRequest.objects.select_related("matter", "payment").order_by(
         "-created_at"
+    )
+    requests = (
+        PaymentRequestFilter(filter_data, queryset=base).qs if filter_data else base
     )
     pagination = CustomPaginator(
         requests, per_page=10, request=request, session_key="requests_pagination"
+    )
+    filter_active = bool(
+        filter_data
+        and any(
+            v
+            for k, v in filter_data.items()
+            if k not in _NON_FILTER_KEYS and v not in (None, "")
+        )
     )
     return {
         "app": "invoicing",
@@ -30,6 +47,8 @@ def _requests_context(request):
         "session_key": "requests_pagination",
         "trigger_key": "requestsChanged",
         "objects": pagination.get_object_list(),
+        "current_status": filter_data.get("status", ""),
+        "filter_active": filter_active,
     }
 
 
@@ -41,6 +60,37 @@ def requests_index(request):
 @login_required
 def requests_list(request):
     return render(request, "invoicing/requests/list.html", _requests_context(request))
+
+
+@login_required
+def requests_filter(request):
+    """Filter modal: matter / date / status. POST stores the cleaned filter in
+    the session; GET renders the modal bound to the current filter."""
+    if request.method == "POST":
+        request.session["requests_filter"] = {
+            k: v for k, v in request.POST.items() if k != "csrfmiddlewaretoken"
+        }
+        return HttpResponse(status=204, headers={"HX-Trigger": "requestsChanged"})
+    filter_data = request.session.get("requests_filter")
+    base = PaymentRequest.objects.select_related("matter").order_by("-created_at")
+    payment_request_filter = PaymentRequestFilter(filter_data or None, queryset=base)
+    return render(
+        request, "invoicing/requests/filter.html", {"filter": payment_request_filter}
+    )
+
+
+@login_required
+def requests_filter_status(request, status):
+    """Quick status filter (Sent / Paid / Canceled). Toggling the active one or
+    passing 'all' clears it. Shares the session filter dict with the modal."""
+    filter_data = dict(request.session.get("requests_filter", {}))
+    if status == "all" or filter_data.get("status") == status:
+        filter_data.pop("status", None)
+    else:
+        filter_data["status"] = status
+    request.session["requests_filter"] = filter_data
+    request.session.modified = True
+    return HttpResponse(status=204, headers={"HX-Trigger": "requestsChanged"})
 
 
 def _open_matters():

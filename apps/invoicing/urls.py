@@ -64,6 +64,8 @@ from apps.invoicing.payments.views import (
 )
 from apps.invoicing.requests.views import (
     requests_cancel,
+    requests_filter,
+    requests_filter_status,
     requests_index,
     requests_list,
     requests_matter_email,
@@ -302,6 +304,12 @@ urlpatterns = [
         "invoicing/requests-cancel/<int:pk>/",
         requests_cancel,
         name="requests-cancel",
+    ),
+    path("invoicing/requests-filter/", requests_filter, name="requests-filter"),
+    path(
+        "invoicing/requests/filter/status/<str:status>",
+        requests_filter_status,
+        name="requests-filter-status",
     ),
     # Credits
     path("invoicing/credits/", credits_index, name="credits-index"),
