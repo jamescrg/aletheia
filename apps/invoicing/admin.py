@@ -5,6 +5,7 @@ from apps.invoicing.applications.models import CreditApplication, PaymentApplica
 from apps.invoicing.credits.models import Credit
 from apps.invoicing.invoices.models import Invoice
 from apps.invoicing.payments.models import Payment
+from apps.invoicing.requests.models import PaymentRequest
 
 
 class InvoiceAdmin(SimpleHistoryAdmin):
@@ -70,8 +71,24 @@ class CreditApplicationAdmin(SimpleHistoryAdmin):
     autocomplete_fields = ["credit", "invoice"]
 
 
+class PaymentRequestAdmin(SimpleHistoryAdmin):
+    list_display = [
+        "id",
+        "matter",
+        "amount_requested",
+        "recipient_email",
+        "status",
+        "created_at",
+        "created_by",
+    ]
+    list_filter = ["status", "matter"]
+    search_fields = ["matter__name", "recipient_email"]
+    ordering = ["-created_at"]
+
+
 admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(Payment, PaymentAdmin)
 admin.site.register(Credit, CreditsAdmin)
 admin.site.register(PaymentApplication, PaymentApplicationAdmin)
 admin.site.register(CreditApplication, CreditApplicationAdmin)
+admin.site.register(PaymentRequest, PaymentRequestAdmin)
