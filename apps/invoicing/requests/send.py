@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
 from django.core.validators import validate_email
 from django.template.loader import render_to_string
+from django.utils import timezone
 
 from apps.invoicing.pay.links import request_pay_url
 from apps.matters.ledger.generate_ledger import generate_ledger
@@ -95,11 +96,10 @@ def send_payment_request(
         )
         # Attach the matter ledger statement (current account activity + balance).
         pdf_tmp = generate_ledger(matter.id, request)
+        filename = f"Matter Ledger {matter.id} {timezone.localdate():%Y-%m-%d}.pdf"
         try:
             with open(pdf_tmp.name, "rb") as f:
-                email.attach(
-                    f"statement_matter_{matter.id}.pdf", f.read(), "application/pdf"
-                )
+                email.attach(filename, f.read(), "application/pdf")
         finally:
             os.unlink(pdf_tmp.name)
         email.send()
