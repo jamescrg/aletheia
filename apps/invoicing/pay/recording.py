@@ -18,10 +18,11 @@ from apps.invoicing.processors import CARD
 def record_payment(invoice, result):
     """Create (idempotently) a Payment for `result` and apply it to `invoice`.
 
-    Returns the Payment, or None if it could not be recorded (no matter on the
-    invoice — Payment requires one).
+    Returns the Payment, or None if it could not be recorded — the invoice's
+    matter must have a client, since payments are client-scoped.
     """
-    if not invoice.matter_id:
+    client_id = invoice.matter.client_id if invoice.matter_id else None
+    if not client_id:
         return None
 
     existing = Payment.objects.filter(
@@ -33,7 +34,7 @@ def record_payment(invoice, result):
     amount = Decimal(result.amount_cents) / Decimal(100)
     method = "CARD" if result.method == CARD else "ACH"
     payment = Payment.objects.create(
-        matter=invoice.matter,
+        client_id=client_id,
         date=timezone.localdate(),
         amount=amount,
         payment_method=method,

@@ -14,10 +14,11 @@ PAYMENT_METHOD_CHOICES = (
 
 
 class Payment(AuditMixin, models.Model):
-    matter = models.ForeignKey(Matter, on_delete=models.CASCADE)
-    # Payments are client-scoped (a payment can be applied across the client's
-    # matters via PaymentApplication). `matter` is being retired in favour of
-    # `client`; it is kept nullable through the migration and dropped after.
+    # `matter` is being retired in favour of `client`; nullable through the
+    # transition (code reads/writes `client`) and dropped in a later migration.
+    matter = models.ForeignKey(Matter, on_delete=models.CASCADE, null=True, blank=True)
+    # Payments are client-scoped: one payment can be applied across the client's
+    # matters via PaymentApplication.
     client = models.ForeignKey(
         "contacts.Contact", on_delete=models.PROTECT, null=True, blank=True
     )
@@ -35,7 +36,7 @@ class Payment(AuditMixin, models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return f"Payment #{self.id} - {self.matter}"
+        return f"Payment #{self.id} - {self.client}"
 
     class Meta:
         indexes = [models.Index(fields=["matter"])]

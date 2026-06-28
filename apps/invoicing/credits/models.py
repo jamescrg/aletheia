@@ -6,8 +6,9 @@ from utils.models import AuditMixin
 
 
 class Credit(AuditMixin, models.Model):
-    matter = models.ForeignKey(Matter, on_delete=models.CASCADE)
-    # Client-scoped (see Payment.client). `matter` is retired after the migration.
+    # `matter` retired in favour of `client` (nullable through the transition,
+    # dropped later). See Payment for the rationale.
+    matter = models.ForeignKey(Matter, on_delete=models.CASCADE, null=True, blank=True)
     client = models.ForeignKey(
         "contacts.Contact", on_delete=models.PROTECT, null=True, blank=True
     )
@@ -17,7 +18,7 @@ class Credit(AuditMixin, models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return f"Credit #{self.id} - {self.matter}"
+        return f"Credit #{self.id} - {self.client}"
 
     class Meta:
         indexes = [models.Index(fields=["matter"])]
