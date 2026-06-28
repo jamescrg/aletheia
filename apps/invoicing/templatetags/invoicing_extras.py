@@ -20,15 +20,21 @@ _ENTITY_RE = re.compile(
 
 
 @register.filter
-def firm_entity(name):
-    """Wrap a trailing legal-entity designation (LLC, PLLC, P.C., LLP, PA, …) in
-    ``<span class="firm-suffix">`` so it can be styled (e.g. smaller). The name is
-    HTML-escaped; names with no recognized suffix pass straight through. Returns
-    safe HTML."""
+def firm_entity(name, size=None):
+    """Wrap a trailing legal-entity designation (LLC, PLLC, P.C., LLP, PA, LPA,
+    PLC, Chartered) so it can be styled smaller. With no argument the suffix gets
+    ``class="firm-suffix"`` (styled via a stylesheet — e.g. the pay page); pass a
+    size like ``"0.5em"`` to get an inline ``font-size`` instead, which HTML email
+    needs since it can't rely on classes. The name is HTML-escaped; names with no
+    recognized suffix pass straight through. Returns safe HTML."""
     if not name:
         return ""
     m = _ENTITY_RE.match(str(name).strip())
     if not m:
         return conditional_escape(name)
     base, sep, suffix = m.groups()
-    return format_html('{}{}<span class="firm-suffix">{}</span>', base, sep, suffix)
+    if size:
+        span = format_html('<span style="font-size: {}">{}</span>', size, suffix)
+    else:
+        span = format_html('<span class="firm-suffix">{}</span>', suffix)
+    return format_html("{}{}{}", base, sep, span)
