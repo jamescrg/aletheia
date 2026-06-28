@@ -15,6 +15,12 @@ PAYMENT_METHOD_CHOICES = (
 
 class Payment(AuditMixin, models.Model):
     matter = models.ForeignKey(Matter, on_delete=models.CASCADE)
+    # Payments are client-scoped (a payment can be applied across the client's
+    # matters via PaymentApplication). `matter` is being retired in favour of
+    # `client`; it is kept nullable through the migration and dropped after.
+    client = models.ForeignKey(
+        "contacts.Contact", on_delete=models.PROTECT, null=True, blank=True
+    )
     date = models.DateField()
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_method = models.CharField(max_length=10, choices=PAYMENT_METHOD_CHOICES)
