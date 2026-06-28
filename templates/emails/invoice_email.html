@@ -5,82 +5,160 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice {{ invoice.id }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+      /* Authored as a normal stylesheet; premailer inlines this onto the elements
+         at send time (see utils.mail.render_inlined). Keep colours/structure in
+         sync with the pay page. */
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #e2e8f0;
+        color: #57534e;
+        font-family: 'Noto Serif', Georgia, 'Times New Roman', serif;
+      }
+
+      /* Page: a lighter slate gradient than the pay page (solid #e2e8f0 fallback). */
+      .page {
+        background-color: #e2e8f0;
+        background-image: linear-gradient(180deg, #e2e8f0 0%, #f1f5f9 70%, #f1f5f9 100%);
+      }
+
+      /* A little space above the card so it sits off the top of the message. */
+      .wrap-cell {
+        padding: 32px 16px 48px;
+      }
+
+      /* Card: slate-50 panel with the pay page's soft shadow. */
+      .card {
+        width: 100%;
+        max-width: 480px;
+        background-color: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.1);
+      }
+
+      .card-head {
+        padding: 24px 24px 16px;
+      }
+
+      .firm-name {
+        margin: 0;
+        font-size: 26px;
+        font-weight: normal;
+        color: #292524;
+      }
+
+      .firm-suffix {
+        font-size: 0.5em;
+      }
+
+      .meta {
+        margin: 8px 0 0;
+        font-size: 15px;
+        color: #78716c;
+      }
+
+      .card-body {
+        padding: 0 24px 24px;
+      }
+
+      .para {
+        margin: 0 0 16px;
+        font-size: 15px;
+        color: #57534e;
+      }
+
+      .para a {
+        color: #475569;
+      }
+
+      .summary {
+        margin: 8px 0 20px;
+        border: 1px solid #cbd5e1;
+        border-radius: 3px;
+        border-collapse: separate;
+        border-spacing: 0;
+      }
+
+      .summary td {
+        padding: 12px 16px;
+        font-size: 15px;
+      }
+
+      .summary tr + tr td {
+        border-top: 1px solid #cbd5e1;
+      }
+
+      .summary .label {
+        color: #78716c;
+      }
+
+      .summary .value {
+        color: #292524;
+        text-align: right;
+      }
+
+      /* Slate button, matching the pay page .btn-primary. */
+      .btn {
+        background-color: #cbd5e1;
+        border-radius: 8px;
+      }
+
+      .btn a {
+        display: inline-block;
+        padding: 10px 22px;
+        font-size: 15px;
+        font-weight: 500;
+        color: #57534e;
+        text-decoration: none;
+      }
+    </style>
   </head>
-  <body style="margin: 0;
-               padding: 0;
-               background-color: #e2e8f0;
-               color: #57534e;
-               font-family: 'Noto Serif', Georgia, 'Times New Roman', serif">
-    <!-- Page: a lighter slate gradient than the pay page (solid #e2e8f0 fallback
-         for clients that ignore gradients) -->
-    <table role="presentation"
-           width="100%"
-           cellpadding="0"
-           cellspacing="0"
-           style="background-color: #e2e8f0; background-image: linear-gradient(180deg, #e2e8f0 0%, #f1f5f9 70%, #f1f5f9 100%);">
+  <body>
+    <table role="presentation" class="page" width="100%" cellpadding="0" cellspacing="0">
       <tr>
-        <td align="center" style="padding: 32px 16px 48px;">
-          <!-- Card: slate-50 panel on the gradient, with a little space above it
-               and the same soft shadow as the pay page -->
-          <table role="presentation"
-                 width="480"
-                 cellpadding="0"
-                 cellspacing="0"
-                 style="width: 100%; max-width: 480px; background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.1);">
-            <!-- Header -->
+        <td class="wrap-cell" align="center">
+          <table role="presentation" class="card" width="480" cellpadding="0" cellspacing="0">
             <tr>
-              <td style="padding: 24px 24px 16px; color: #57534e;">
-                <h1 style="margin: 0; font-size: 26px; font-weight: normal; color: #292524;">{{ firm_name|default:"Invoice"|firm_entity:"0.5em" }}</h1>
-                <p style="margin: 8px 0 0; font-size: 14px; color: #78716c;">
-                  Invoice {{ invoice.id }} &middot; {{ invoice.date_issued|date:"F j, Y" }}
-                </p>
+              <td class="card-head">
+                <h1 class="firm-name">{{ firm_name|default:"Invoice"|firm_entity }}</h1>
+                <p class="meta">Invoice {{ invoice.id }} &middot; {{ invoice.date_issued|date:"F j, Y" }}</p>
               </td>
             </tr>
-            <!-- Body -->
             <tr>
-              <td style="padding: 0 24px 24px;">
-                <p style="margin: 0 0 16px; font-size: 14px; color: #57534e;">
-                  Dear Client,
-                </p>
+              <td class="card-body">
+                <p class="para">Dear Client,</p>
                 {% if cover_message %}
-                  <p style="margin: 0 0 16px; font-size: 14px; color: #57534e; white-space: pre-line;">{{ cover_message }}</p>
+                  <p class="para" style="white-space: pre-line;">{{ cover_message }}</p>
                 {% else %}
-                  <p style="margin: 0 0 16px; font-size: 14px; color: #57534e;">
+                  <p class="para">
                     Please find attached your invoice for Matter {{ matter_number }}.
                     The invoice details are included in the PDF attachment.
                   </p>
                 {% endif %}
-
-                <p style="margin: 0 0 16px; font-size: 14px; color: #57534e;">
-                  If you have any questions about this invoice, please reply to this email{% if firm_email %} or contact us at <a href="mailto:{{ firm_email }}" style="color: #475569;">{{ firm_email }}</a>{% endif %}.
+                <p class="para">
+                  If you have any questions about this invoice, please reply to this email{% if firm_email %} or contact us at <a href="mailto:{{ firm_email }}">{{ firm_email }}</a>{% endif %}.
                 </p>
-
-                <!-- Summary -->
-                <table role="presentation"
-                       width="100%"
-                       cellpadding="0"
-                       cellspacing="0"
-                       style="margin: 8px 0 20px; border: 1px solid #cbd5e1; border-radius: 3px; border-collapse: separate;">
+                <table role="presentation" class="summary" width="100%" cellpadding="0" cellspacing="0">
                   <tr>
-                    <td style="padding: 12px 16px; font-size: 14px; color: #78716c;">Matter</td>
-                    <td style="padding: 12px 16px; font-size: 14px; color: #292524; text-align: right;">{{ matter_number }}</td>
+                    <td class="label">Matter</td>
+                    <td class="value">{{ matter_number }}</td>
                   </tr>
                   <tr>
-                    <td style="padding: 12px 16px; font-size: 14px; color: #78716c; border-top: 1px solid #cbd5e1;">Invoice</td>
-                    <td style="padding: 12px 16px; font-size: 14px; color: #292524; text-align: right; border-top: 1px solid #cbd5e1;">{{ invoice.id }}</td>
+                    <td class="label">Invoice</td>
+                    <td class="value">{{ invoice.id }}</td>
                   </tr>
                   <tr>
-                    <td style="padding: 12px 16px; font-size: 14px; color: #78716c; border-top: 1px solid #cbd5e1;">Amount Due</td>
-                    <td style="padding: 12px 16px; font-size: 14px; color: #292524; text-align: right; border-top: 1px solid #cbd5e1;">${{ amount_due|floatformat:2|intcomma }}</td>
+                    <td class="label">Amount Due</td>
+                    <td class="value">${{ amount_due|floatformat:2|intcomma }}</td>
                   </tr>
                 </table>
-
                 {% if pay_url %}
-                  <table role="presentation" cellpadding="0" cellspacing="0" style="margin: 4px 0 0;">
+                  <table role="presentation" class="btn" cellpadding="0" cellspacing="0" style="margin: 4px 0 0;">
                     <tr>
-                      <td style="background-color: #cbd5e1; border-radius: 8px;">
-                        <a href="{{ pay_url }}"
-                           style="display: inline-block; padding: 10px 22px; font-size: 14px; font-weight: 500; color: #57534e; text-decoration: none;">Pay now</a>
+                      <td>
+                        <a href="{{ pay_url }}">Pay now</a>
                       </td>
                     </tr>
                   </table>

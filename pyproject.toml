@@ -48,6 +48,7 @@ dependencies = [
     "gunicorn>=25.1.0",
     "requests>=2.33.0",
     "stripe>=15.3.0",
+    "premailer>=3.10.0",
 ]
 
 [dependency-groups]

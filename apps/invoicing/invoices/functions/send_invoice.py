@@ -16,6 +16,7 @@ from apps.invoicing.invoices.functions.generate_invoice import store_invoice_pdf
 from apps.invoicing.invoices.models import InvoiceTransmission
 from apps.invoicing.pay.links import payment_url
 from apps.settings.models import Company
+from utils.mail import render_inlined
 
 
 class InvoiceSendError(Exception):
@@ -138,7 +139,7 @@ def send_invoice(
             reply_to=[company.email] if company and company.email else None,
         )
         email.attach_alternative(
-            render_to_string("emails/invoice_email.html", context), "text/html"
+            render_inlined("emails/invoice_email.html", context), "text/html"
         )
         with invoice.pdf_file.open("rb") as f:
             email.attach(f"invoice_{invoice.id}.pdf", f.read(), "application/pdf")
