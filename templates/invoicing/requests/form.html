@@ -15,6 +15,7 @@
             hx-target="#htmx-modal-container"
             hx-indicator="#request-submit"
             hx-disabled-elt="#request-submit"
+            hx-disinherit="hx-indicator hx-disabled-elt"
             class="form-compact">
         {% csrf_token %}
         <div class="form-group">
