@@ -99,7 +99,8 @@ def _open_matters():
 
 @login_required
 def requests_new(request):
-    """Create + send a payment request for a matter's full open balance."""
+    """Create + send a payment request for a firm-set amount (defaulting to the
+    matter's full open balance, adjustable down for a partial payment)."""
     if request.method == "POST":
         matter_id = request.POST.get("matter") or ""
         to = (request.POST.get("to") or "").strip()

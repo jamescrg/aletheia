@@ -77,9 +77,11 @@ def send_payment_request(
         "firm_email": company.email if company else "",
         "pay_url": request_pay_url(payment_request, request),
     }
-    subject = "Payment request"
+    firm = company.name if company else ""
+    subject = f"{firm} - " if firm else ""
+    subject += "Payment request"
     if matter:
-        subject += f" — Matter {matter.id}"
+        subject += f" - Matter {matter.id}"
 
     try:
         email = EmailMultiAlternatives(

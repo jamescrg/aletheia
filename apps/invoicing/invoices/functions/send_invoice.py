@@ -119,11 +119,13 @@ def send_invoice(
             "firm_email": company.email if company else "",
             "pay_url": payment_url(invoice, request),  # tokenized payment link
         }
-        # Client-facing: identify by number, not matter name (which is internal
-        # and subject to change).
-        subject = f"Invoice {invoice.id}"
+        # Client-facing: lead with the firm name, then identify by number (not
+        # matter name, which is internal and subject to change). Plain hyphens.
+        firm = company.name if company else ""
+        subject = f"{firm} - " if firm else ""
+        subject += f"Invoice {invoice.id}"
         if matter:
-            subject += f" — Matter {matter.id}"
+            subject += f" - Matter {matter.id}"
 
         email = EmailMultiAlternatives(
             subject=subject,
