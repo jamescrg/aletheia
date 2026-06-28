@@ -74,7 +74,7 @@
       }
 
       .summary {
-        margin: 8px 0 20px;
+        margin: 16px 0 28px;
         border: 1px solid #cbd5e1;
         border-radius: 3px;
         border-collapse: separate;
@@ -136,6 +136,9 @@
                 {% endif %}
                 {% if attach_statement %}
                   <p class="para">You will find attached to this email a PDF file containing a comprehensive matter statement.</p>
+                {% endif %}
+                {% if attach_invoices %}
+                  <p class="para">You will find attached courtesy copies of all invoices that have not yet been paid in full.</p>
                 {% endif %}
                 <p class="para">
                   If you have any questions, please reply to this email{% if firm_email %} or contact us at <a href="mailto:{{ firm_email }}">{{ firm_email }}</a>{% endif %}.

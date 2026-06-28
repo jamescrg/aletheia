@@ -89,6 +89,7 @@ def send_payment_request(
         "firm_email": company.email if company else "",
         "pay_url": request_pay_url(payment_request, request),
         "attach_statement": attach_statement,
+        "attach_invoices": attach_invoices,
     }
     firm = company.name if company else ""
     subject = f"{firm} - " if firm else ""

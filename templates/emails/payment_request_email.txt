@@ -7,6 +7,9 @@ Dear Client,
 {% if attach_statement %}
 You will find attached to this email a PDF file containing a comprehensive matter statement.
 {% endif %}
+{% if attach_invoices %}
+You will find attached courtesy copies of all invoices that have not yet been paid in full.
+{% endif %}
 If you have any questions, please reply to this email{% if firm_email %} or contact us at {{ firm_email }}{% endif %}.
 
 Matter:           {{ matter_number }}
