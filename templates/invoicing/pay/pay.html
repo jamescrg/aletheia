@@ -1,5 +1,5 @@
 {% extends "base-minimal.html" %}
-{% load humanize %}
+{% load humanize invoicing_extras %}
 {% block title %}
   Pay Invoice {{ invoice.id }}
 {% endblock title %}
@@ -45,6 +45,10 @@
       color: #292524;
     }
 
+    .pay-head h1 .firm-suffix {
+      font-size: 0.5em;
+    }
+
     .pay-head p {
       margin: 0.5rem 0 0;
       font-size: 1rem;
@@ -74,7 +78,7 @@
     }
 
     .pay-summary tr+tr td {
-      border-top: 1px solid #e2e8f0;
+      border-top: 1px solid #cbd5e1;
     }
 
     .pay-summary .label {
@@ -168,6 +172,7 @@
     /* Slate button, matching the website's .btn-primary. */
     .pay-btn {
       width: 100%;
+      margin-top: 0.5rem;
       padding: 0.6rem 1.3rem;
       background: #cbd5e1;
       color: #57534e;
@@ -220,7 +225,7 @@
   <div class="pay-wrap">
     <div class="pay-card">
       <div class="pay-head">
-        <h1>{{ firm_name|default:"Pay Invoice" }}</h1>
+        <h1>{{ firm_name|default:"Pay Invoice"|firm_entity }}</h1>
         <p>Invoice {{ invoice.id }} &middot; {{ invoice.date_issued|date:"F j, Y" }}</p>
       </div>
       <div class="pay-body">
