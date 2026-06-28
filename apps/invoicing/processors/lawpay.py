@@ -111,7 +111,7 @@ class LawPayProcessor(PaymentProcessor):
             processor=self.name,
             public_key=self.public_key,
             amount_cents=_to_cents(invoice.amount_remaining),
-            reference=f"invoice:{invoice.id}",
+            reference=f"Invoice {invoice.id}",
             methods=[CARD, BANK],
             hosted_fields_url=HOSTED_FIELDS_URL,
         )

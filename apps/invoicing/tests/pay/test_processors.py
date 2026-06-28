@@ -54,7 +54,7 @@ class TestGetProcessor:
 
     def test_unknown_name_raises(self):
         with pytest.raises(ProcessorConfigError):
-            get_processor("stripe")
+            get_processor("bogus")
 
 
 # ---------------------------------------------------------------------------

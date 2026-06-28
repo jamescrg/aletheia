@@ -74,7 +74,7 @@ class FakeProcessor(PaymentProcessor):
             processor=self.name,
             public_key="fake_public_key",
             amount_cents=amount_cents,
-            reference=f"invoice:{invoice.id}",
+            reference=f"Invoice {invoice.id}",
             methods=[CARD, BANK],
             hosted_fields_url=self.HOSTED_FIELDS_URL,
         )
