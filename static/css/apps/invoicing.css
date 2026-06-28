@@ -75,6 +75,41 @@ List View
 }
 
 /* ==========================================================================
+Requests table — same column conventions as .invoices: fixed widths for id /
+date / amount / status, the text columns (matter, recipient) flex via min-width,
+and the amount is right-aligned.
+========================================================================== */
+
+.requests {
+  min-width: 66rem;
+}
+
+.requests .id {
+  width: 5rem;
+}
+
+.requests .date {
+  width: 9.5rem;
+}
+
+.requests .matter {
+  min-width: 18rem;
+}
+
+.requests .recipient {
+  min-width: 16rem;
+}
+
+.requests .amount {
+  text-align: right;
+  width: 9.5rem;
+}
+
+.requests .status {
+  width: 8rem;
+}
+
+/* ==========================================================================
 Send modal
 ========================================================================== */
 
