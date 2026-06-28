@@ -82,6 +82,22 @@ def requests_new(request):
 
 
 @login_required
+def requests_matter_email(request):
+    """Return the recipient_email input pre-filled with the selected matter's
+    client email — htmx swaps it in when the matter dropdown changes."""
+    matter_id = request.GET.get("matter")
+    email = ""
+    if matter_id:
+        matter = Matter.objects.filter(pk=matter_id).select_related("client").first()
+        if matter and matter.client:
+            email = matter.client.email or ""
+    form = PaymentRequestForm(
+        use_required_attribute=False, initial={"recipient_email": email}
+    )
+    return HttpResponse(str(form["recipient_email"]))
+
+
+@login_required
 def requests_cancel(request, pk):
     payment_request = get_object_or_404(PaymentRequest, pk=pk)
     if payment_request.status == "SENT":
