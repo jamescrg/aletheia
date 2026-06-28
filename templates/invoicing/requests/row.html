@@ -30,7 +30,7 @@
   <td class="matter">
     <a href="{% url 'matters:ledger' id=payment_request.matter.id %}">{{ payment_request.matter.name }}</a>
   </td>
+  <td class="status">{{ payment_request.get_status_display }}</td>
   <td class="recipient">{{ payment_request.recipient_email }}</td>
   <td class="amount">${{ payment_request.amount_requested|floatformat:2|intcomma }}</td>
-  <td class="status">{{ payment_request.get_status_display }}</td>
 </tr>
