@@ -160,6 +160,20 @@ class LawPayProcessor(PaymentProcessor):
         self._raise_for_status(resp, data, "Fetch failed")
         return self._result(data)
 
+    def list_merchant_accounts(self) -> dict:
+        """GET /v1/merchant → the merchant and its deposit accounts.
+
+        Read-only. Each entry in the ``merchant_accounts`` array carries ``id``,
+        ``name`` and a ``trust_account`` boolean (true → trust, false →
+        operating); ``ach_accounts`` lists eCheck accounts. Used to discover the
+        account ids to pin as LAWPAY_OPERATING_ACCOUNT_ID / a trust id so a charge
+        can target the right account. A test key returns test accounts only.
+        """
+        resp = self._request("GET", "/v1/merchant")
+        data = self._json(resp)
+        self._raise_for_status(resp, data, "Could not list merchant accounts")
+        return data
+
     def verify_and_parse_webhook(self, request) -> WebhookEvent:
         """Untrusted payload in → authoritative event out.
 
