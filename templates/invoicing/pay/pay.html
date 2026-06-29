@@ -117,6 +117,10 @@
                   </div>
                 {% else %}
                   <div class="pay-field">
+                    <label>Name on card</label>
+                    <input type="text" x-model="cardName" placeholder="Jane Q. Client">
+                  </div>
+                  <div class="pay-field">
                     <label>Card number</label>
                     {% if dev_mode %}
                       <input type="text"
@@ -219,7 +223,7 @@
       return {
         method: opts.processor === 'stripe' ? 'card' : 'bank',  // Stripe v1: card-only
         // card
-        cardNumber: '', exp: '', cvv: '', postalCode: '',
+        cardName: '', cardNumber: '', exp: '', cvv: '', postalCode: '',
         // bank / eCheck
         routingNumber: '', accountNumber: '', accountName: '',
         accountType: 'checking', holderType: 'individual',
@@ -292,6 +296,7 @@
         validate() {
           if (opts.processor === 'stripe') return '';  // the Stripe Element validates itself
           if (this.method === 'card') {
+            if (!this.cardName.trim()) return 'Please enter the name on the card.';
             if (!this.exp.trim() || !this.postalCode.trim()) return 'Please complete the card details.';
             if (opts.dev && (!this.cardNumber.trim() || !this.cvv.trim())) return 'Please complete the card details.';
           } else {
@@ -359,6 +364,7 @@
           }
           if (this.method === 'card') {
             const result = await this._cardFields.getPaymentToken({
+              name: this.cardName.trim(),
               postal_code: this.postalCode,
               exp_month: (this.exp.split('/')[0] || '').trim(),
               exp_year: (this.exp.split('/')[1] || '').trim(),
