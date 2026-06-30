@@ -343,7 +343,12 @@ def requests_resend(request, pk):
             response = HttpResponse(
                 status=204, headers={"HX-Trigger": "requestsChanged"}
             )
-            toast_success(response, f"Payment request resent to {to}.")
+            label = (
+                "Trust deposit request"
+                if payment_request.is_trust
+                else "Payment request"
+            )
+            toast_success(response, f"{label} resent to {to}.")
             return response
         context = {
             "payment_request": payment_request,

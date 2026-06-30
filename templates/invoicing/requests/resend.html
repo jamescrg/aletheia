@@ -1,7 +1,15 @@
 <div class="modal-dialog modal-md">
   <div class="modal-content">
     <div class="modal-header">
-      <h1 class="modal-title">Resend Payment Request</h1>
+      <h1 class="modal-title">
+        Resend
+        {% if payment_request.is_trust %}
+          Trust Deposit
+        {% else %}
+          Payment
+        {% endif %}
+        Request
+      </h1>
       <div>
         <button type="button" @click="$dispatch('close-modal')">
           <i class="icon-x"></i>
@@ -43,20 +51,22 @@
                     placeholder="Enter a message to the client."
                     @input="count = $event.target.value.length">{{ message }}</textarea>
         </div>
-        <div class="checkbox-group">
-          <label class="checkbox-label">
-            <input type="checkbox"
-                   name="attach_statement"
-                   {% if attach_statement %}checked{% endif %}>
-            Attach matter statement
-          </label>
-          <label class="checkbox-label">
-            <input type="checkbox"
-                   name="attach_invoices"
-                   {% if attach_invoices %}checked{% endif %}>
-            Attach unpaid invoices
-          </label>
-        </div>
+        {% if not payment_request.is_trust %}
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox"
+                     name="attach_statement"
+                     {% if attach_statement %}checked{% endif %}>
+              Attach matter statement
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox"
+                     name="attach_invoices"
+                     {% if attach_invoices %}checked{% endif %}>
+              Attach unpaid invoices
+            </label>
+          </div>
+        {% endif %}
       </form>
     </div>
     <div class="modal-footer">
