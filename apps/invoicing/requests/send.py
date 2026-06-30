@@ -15,7 +15,7 @@ from apps.invoicing.pay.balance import matter_open_invoices
 from apps.invoicing.pay.links import request_pay_url
 from apps.matters.ledger.generate_ledger import generate_ledger
 from apps.settings.models import Company
-from utils.mail import render_inlined
+from utils.mail import firm_from_email, render_inlined
 
 
 class PaymentRequestSendError(Exception):
@@ -58,8 +58,12 @@ def send_payment_request(
     Returns True; raises PaymentRequestSendError on a bad/empty address list or
     send failure.
     """
-    matter = payment_request.matter
-    client = matter.client if matter else None
+    is_trust = payment_request.is_trust
+    matter = None if is_trust else payment_request.matter
+    client = payment_request.client if is_trust else (matter.client if matter else None)
+    if is_trust:
+        # Trust requests are client-level with no matter → no statement/invoices.
+        attach_statement = attach_invoices = False
 
     to_list = _parse_recipients(to) or _parse_recipients(
         payment_request.recipient_email
@@ -90,10 +94,11 @@ def send_payment_request(
         "pay_url": request_pay_url(payment_request, request),
         "attach_statement": attach_statement,
         "attach_invoices": attach_invoices,
+        "is_trust": is_trust,
     }
     firm = company.name if company else ""
     subject = f"{firm} - " if firm else ""
-    subject += "Payment Request"
+    subject += "Trust Deposit Request" if is_trust else "Payment Request"
     if matter:
         subject += f" - Matter {matter.id}"
 
@@ -101,7 +106,7 @@ def send_payment_request(
         email = EmailMultiAlternatives(
             subject=subject,
             body=render_to_string("emails/payment_request_email.txt", context),
-            from_email=None,  # falls back to DEFAULT_FROM_EMAIL
+            from_email=firm_from_email(company),  # "<Firm>" <no-reply addr>
             to=to_list,
             cc=cc_list or None,
             bcc=bcc_list or None,

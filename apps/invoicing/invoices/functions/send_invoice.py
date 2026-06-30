@@ -16,7 +16,7 @@ from apps.invoicing.invoices.functions.generate_invoice import store_invoice_pdf
 from apps.invoicing.invoices.models import InvoiceTransmission
 from apps.invoicing.pay.links import payment_url
 from apps.settings.models import Company
-from utils.mail import render_inlined
+from utils.mail import firm_from_email, render_inlined
 
 
 class InvoiceSendError(Exception):
@@ -130,7 +130,7 @@ def send_invoice(
         email = EmailMultiAlternatives(
             subject=subject,
             body=render_to_string("emails/invoice_email.txt", context),
-            from_email=None,  # falls back to DEFAULT_FROM_EMAIL
+            from_email=firm_from_email(company),  # "<Firm>" <no-reply addr>
             to=to_list,
             cc=cc_list,
             # Firm archive copy (Company.invoice_bcc); the BCC'd mailbox retains

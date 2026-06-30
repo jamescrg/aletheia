@@ -159,6 +159,31 @@ body {
   border-radius: 3px;
 }
 
+/* AffiniPay hosted fields render an <iframe> into these boxes. An iframe with no
+   CSS height defaults to ~150px (the "big text area"), so give the container the
+   same field box as the plain inputs and pin the iframe to a single line. */
+#hf-card-number,
+#hf-card-cvv,
+#hf-bank-routing,
+#hf-bank-account {
+  padding: 0.55rem 0.6rem;
+  background: #ffffff;
+  border: 1px solid #d6d3d1;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+
+#hf-card-number iframe,
+#hf-card-cvv iframe,
+#hf-bank-routing iframe,
+#hf-bank-account iframe {
+  display: block;
+  width: 100%;
+  /* !important to beat any inline height AffiniPay sets on the iframe. */
+  height: 1.4rem !important;
+  border: 0;
+}
+
 /* Slate button, matching the website's .btn-primary. */
 .pay-btn {
   width: 100%;

@@ -4,15 +4,35 @@
     <div class="toolbar">
       <div class="toolbar-left">
         <div class="filter-tools">
-          <button type="button"
-                  class="btn-icon"
-                  hx-get="{% url 'invoicing:requests-new' %}"
-                  hx-target="#htmx-modal-container"
-                  hx-trigger="click"
-                  data-bs-toggle="modal"
-                  data-bs-target="#htmx-modal-container">
-            <i class="icon-plus"></i>
-          </button>
+          <div class="dropdown" x-data="dropdown()">
+            <button type="button"
+                    class="btn-icon"
+                    x-ref="button"
+                    @click="toggle()"
+                    :aria-expanded="open">
+              <i class="icon-plus"></i>
+            </button>
+            <ul class="dropdown-menu" x-ref="menu" x-show="open">
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-get="{% url 'invoicing:requests-new' %}"
+                   hx-target="#htmx-modal-container"
+                   hx-trigger="click"
+                   data-bs-toggle="modal"
+                   data-bs-target="#htmx-modal-container">Request Payment</a>
+              </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   hx-get="{% url 'invoicing:requests-new-trust' %}"
+                   hx-target="#htmx-modal-container"
+                   hx-trigger="click"
+                   data-bs-toggle="modal"
+                   data-bs-target="#htmx-modal-container">Request Trust Deposit</a>
+              </li>
+            </ul>
+          </div>
           <button type="button"
                   class="btn-icon{% if filter_active %} toggle-active{% endif %}"
                   hx-get="{% url 'invoicing:requests-filter' %}"
@@ -46,7 +66,8 @@
         <tr>
           <th class="id">ID</th>
           <th class="date">Sent</th>
-          <th class="matter">Matter</th>
+          <th class="matter">Matter / Client</th>
+          <th class="account">Account</th>
           <th class="status">Status</th>
           <th class="recipient">Recipients</th>
           <th class="amount">Amount</th>
@@ -58,7 +79,7 @@
           {% include "invoicing/requests/row.html" %}
         {% empty %}
           <tr>
-            <td colspan="7" class="empty-message">No payment requests found.</td>
+            <td colspan="8" class="empty-message">No payment requests found.</td>
           </tr>
         {% endfor %}
       </table>

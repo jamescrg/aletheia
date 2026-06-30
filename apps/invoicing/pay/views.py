@@ -30,6 +30,7 @@ from apps.invoicing.invoices.models import Invoice
 from apps.invoicing.pay.balance import (
     matter_open_invoices,
     record_matter_balance_payment,
+    record_trust_deposit,
     request_charge_cents,
 )
 from apps.invoicing.pay.recording import record_payment
@@ -231,22 +232,42 @@ def balance_pay_page(request, token):
             request, "This payment request is no longer active.", status=410
         )
 
-    matter = pay_request.matter
     processor = get_processor()
-    open_invoices = matter_open_invoices(matter)
     charge_cents = request_charge_cents(pay_request)
-    config = _balance_config(processor, open_invoices, charge_cents, matter)
     from apps.settings.models import Company
 
     company = Company.objects.first()
+    if pay_request.is_trust:
+        client = pay_request.client
+        config = processor.client_config_for(
+            amount_cents=charge_cents,
+            reference=f"Trust deposit · Client {client.id}",
+        )
+        page_title, subtitle, amount_label = "Trust Deposit", "Trust deposit", "Deposit"
+        matter_number, summary_label, summary_value = "", "Client", client.name
+    else:
+        matter = pay_request.matter
+        open_invoices = matter_open_invoices(matter)
+        config = _balance_config(processor, open_invoices, charge_cents, matter)
+        page_title, subtitle, amount_label = (
+            "Pay Account Balance",
+            "Account balance",
+            "Amount Due",
+        )
+        matter_number, summary_label, summary_value = (
+            matter.id,
+            "Open invoices",
+            len(open_invoices),
+        )
     context = {
         # No single invoice — the page renders in 'balance mode'.
         "invoice": None,
-        "page_title": "Pay Account Balance",
-        "subtitle": "Account balance",
-        "matter_number": matter.id,
-        "summary_label": "Open invoices",
-        "summary_value": len(open_invoices),
+        "page_title": page_title,
+        "subtitle": subtitle,
+        "amount_label": amount_label,
+        "matter_number": matter_number,
+        "summary_label": summary_label,
+        "summary_value": summary_value,
         "firm_name": company.name if company else "",
         "amount_due": Decimal(charge_cents) / 100,
         "config": config,
@@ -289,7 +310,6 @@ def balance_charge(request, token):
     try:
         with transaction.atomic():
             req = PaymentRequest.objects.select_for_update().get(pk=pay_request.pk)
-            matter = req.matter
             charge_cents = request_charge_cents(req)
             if req.status != "SENT" or charge_cents <= 0:
                 already_paid = True
@@ -299,25 +319,32 @@ def balance_charge(request, token):
                     req.save(update_fields=["status"])
             else:
                 already_paid = False
-                reference = f"Account balance · Matter {matter.id}"
+                if req.is_trust:
+                    reference = f"Trust deposit · Client {req.client_id}"
+                else:
+                    reference = f"Account balance · Matter {req.matter_id}"
                 result = processor.charge(
                     token=payment_token,
                     amount_cents=charge_cents,
                     reference=reference,
                     idempotency_key=f"request:{req.id}:{payment_token}",
                     method=method,
+                    trust=req.is_trust,
                 )
                 if result.accepted:
-                    payment = record_matter_balance_payment(matter, result)
+                    if req.is_trust:
+                        req.trust_transaction = record_trust_deposit(req.client, result)
+                    else:
+                        req.payment = record_matter_balance_payment(req.matter, result)
                     req.status = "PAID"
-                    req.payment = payment
-                    req.save(update_fields=["status", "payment"])
+                    req.save(update_fields=["status", "payment", "trust_transaction"])
     except ChargeError as exc:
         return JsonResponse({"success": False, "error": str(exc)}, status=402)
 
     if already_paid:
         return JsonResponse(
-            {"success": False, "error": "This balance is already paid."}, status=400
+            {"success": False, "error": "This request has already been paid."},
+            status=400,
         )
 
     return JsonResponse(

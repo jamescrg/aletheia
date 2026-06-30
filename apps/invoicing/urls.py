@@ -64,12 +64,14 @@ from apps.invoicing.payments.views import (
 )
 from apps.invoicing.requests.views import (
     requests_cancel,
+    requests_client_email,
     requests_filter,
     requests_filter_status,
     requests_index,
     requests_list,
     requests_matter_fields,
     requests_new,
+    requests_new_trust,
     requests_resend,
 )
 from apps.invoicing.unbilled.views import (
@@ -296,6 +298,16 @@ urlpatterns = [
     path("invoicing/requests/", requests_index, name="requests-index"),
     path("invoicing/requests/list/", requests_list, name="requests-list"),
     path("invoicing/requests-new/", requests_new, name="requests-new"),
+    path(
+        "invoicing/requests-new-trust/",
+        requests_new_trust,
+        name="requests-new-trust",
+    ),
+    path(
+        "invoicing/requests-client-email/",
+        requests_client_email,
+        name="requests-client-email",
+    ),
     path(
         "invoicing/requests-matter-fields/",
         requests_matter_fields,

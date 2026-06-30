@@ -50,7 +50,7 @@
             </td>
           </tr>
           <tr>
-            <td class="label">Amount Due</td>
+            <td class="label">{{ amount_label|default:"Amount Due" }}</td>
             <td class="value">${{ amount_due|floatformat:2|intcomma }}</td>
           </tr>
         </table>
@@ -64,7 +64,7 @@
             Thank you.
           </div>
         {% else %}
-          <div x-data='payForm({ chargeUrl: "{{ charge_url|escapejs }}", dev: {{ dev_mode|yesno:"true,false" }}, publicKey: "{{ config.public_key|escapejs }}", processor: "{{ config.processor|escapejs }}" })'>
+          <div x-data='payForm({ chargeUrl: "{{ charge_url|escapejs }}", dev: {{ dev_mode|yesno:"true,false" }}, publicKey: "{{ config.public_key|escapejs }}", processor: "{{ config.processor|escapejs }}", echeck: {{ config.echeck|yesno:"true,false" }} })'>
             <!-- Result states -->
             <template x-if="done && !pending">
               <div class="pay-alert ok">Payment received. Thank you.</div>
@@ -79,9 +79,9 @@
               <template x-if="error">
                 <div class="pay-alert error" x-text="error"></div>
               </template>
-              <!-- Method selector: eCheck encouraged (default). Stripe v1 is
-                   card-only, so the selector is hidden there. -->
-              {% if config.processor != 'stripe' %}
+              <!-- Method selector: only shown when eCheck is offered alongside
+                   card. Off → card-only form (no selector). -->
+              {% if config.echeck %}
                 <div class="pay-methods" role="group" aria-label="Payment method">
                   <button type="button"
                           class="pay-method"
@@ -117,7 +117,11 @@
                   </div>
                 {% else %}
                   <div class="pay-field">
-                    <label>Card number</label>
+                    <label>Name on Card</label>
+                    <input type="text" x-model="cardName">
+                  </div>
+                  <div class="pay-field">
+                    <label>Card Number</label>
                     {% if dev_mode %}
                       <input type="text"
                              inputmode="numeric"
@@ -143,14 +147,11 @@
                   </div>
                   <div class="pay-field">
                     <label>Billing ZIP</label>
-                    <input type="text"
-                           inputmode="numeric"
-                           x-model="postalCode"
-                           placeholder="78701">
+                    <input type="text" inputmode="numeric" x-model="postalCode">
                   </div>
                 {% endif %}
               </div>
-              {% if config.processor != 'stripe' %}
+              {% if config.echeck %}
                 <!-- Bank / eCheck fields. Live: routing + account are hosted fields. -->
                 <div x-show="method === 'bank'">
                   <div class="pay-field">
@@ -217,9 +218,9 @@
   <script>
     function payForm(opts) {
       return {
-        method: opts.processor === 'stripe' ? 'card' : 'bank',  // Stripe v1: card-only
+        method: opts.echeck ? 'bank' : 'card',  // card-only unless eCheck is offered
         // card
-        cardNumber: '', exp: '', cvv: '', postalCode: '',
+        cardName: '', cardNumber: '', exp: '', cvv: '', postalCode: '',
         // bank / eCheck
         routingNumber: '', accountNumber: '', accountName: '',
         accountType: 'checking', holderType: 'individual',
@@ -261,25 +262,40 @@
           const HF = window.AffiniPay && window.AffiniPay.HostedFields;
           if (!HF) { this.error = 'Payment form failed to load. Please refresh.'; return; }
           const noop = function () {};
+          // Style the in-iframe inputs to match the page's plain inputs. The
+          // iframe is cross-origin and can't load the page's Noto Serif webfont,
+          // so fall back to a web-safe serif. (AffiniPay: global input.css.)
+          const hfInput = {
+            css: {
+              'font-size': '16px',
+              'font-family': "Georgia, 'Times New Roman', serif",
+              'color': '#57534e',
+            },
+          };
           this._cardFields = HF.initializeFields({
             publicKey: opts.publicKey,
+            input: hfInput,
             fields: [
               { selector: '#hf-card-number', input: { type: 'credit_card_number' } },
               { selector: '#hf-card-cvv', input: { type: 'cvv' } },
             ],
           }, noop);
-          this._bankFields = HF.initializeFields({
-            publicKey: opts.publicKey,
-            fields: [
-              { selector: '#hf-bank-routing', input: { type: 'routing_number' } },
-              { selector: '#hf-bank-account', input: { type: 'bank_account_number' } },
-            ],
-          }, noop);
+          if (opts.echeck) {
+            this._bankFields = HF.initializeFields({
+              publicKey: opts.publicKey,
+              input: hfInput,
+              fields: [
+                { selector: '#hf-bank-routing', input: { type: 'routing_number' } },
+                { selector: '#hf-bank-account', input: { type: 'bank_account_number' } },
+              ],
+            }, noop);
+          }
         },
 
         validate() {
           if (opts.processor === 'stripe') return '';  // the Stripe Element validates itself
           if (this.method === 'card') {
+            if (!this.cardName.trim()) return 'Please enter the name on the card.';
             if (!this.exp.trim() || !this.postalCode.trim()) return 'Please complete the card details.';
             if (opts.dev && (!this.cardNumber.trim() || !this.cvv.trim())) return 'Please complete the card details.';
           } else {
@@ -347,6 +363,7 @@
           }
           if (this.method === 'card') {
             const result = await this._cardFields.getPaymentToken({
+              name: this.cardName.trim(),
               postal_code: this.postalCode,
               exp_month: (this.exp.split('/')[0] || '').trim(),
               exp_year: (this.exp.split('/')[1] || '').trim(),

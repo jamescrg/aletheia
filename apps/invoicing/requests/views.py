@@ -5,6 +5,7 @@ from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
+from apps.contacts.models import Contact
 from apps.invoicing.pay.balance import matter_balance_cents
 from apps.invoicing.requests.filters import PaymentRequestFilter
 from apps.invoicing.requests.models import PaymentRequest
@@ -23,9 +24,9 @@ _NON_FILTER_KEYS = ("status", "order_by", "csrfmiddlewaretoken")
 
 def _requests_context(request):
     filter_data = request.session.get("requests_filter", {})
-    base = PaymentRequest.objects.select_related("matter", "payment").order_by(
-        "-created_at"
-    )
+    base = PaymentRequest.objects.select_related(
+        "matter", "client", "payment"
+    ).order_by("-created_at")
     requests = (
         PaymentRequestFilter(filter_data, queryset=base).qs if filter_data else base
     )
@@ -212,6 +213,97 @@ def requests_matter_fields(request):
     )
 
 
+def _trust_clients():
+    return Contact.objects.filter(client_status__in=["Current", "Pending"]).order_by(
+        "name"
+    )
+
+
+@login_required
+def requests_new_trust(request):
+    """Create + send a trust deposit request for a client (firm-set amount,
+    deposited to the trust account)."""
+    if request.method == "POST":
+        client_id = request.POST.get("client") or ""
+        to = (request.POST.get("to") or "").strip()
+        cc = (request.POST.get("cc") or "").strip()
+        message = request.POST.get("message", "")
+        amount_raw = (request.POST.get("amount") or "").strip()
+        client = _trust_clients().filter(pk=client_id).first() if client_id else None
+
+        error = ""
+        amount = None
+        if not client:
+            error = "Please select a client."
+        elif not amount_raw:
+            error = "Enter a deposit amount."
+        else:
+            try:
+                amount = Decimal(amount_raw.replace("$", "").replace(",", ""))
+            except InvalidOperation:
+                error = "Enter a valid dollar amount."
+            else:
+                if amount <= 0:
+                    error = "Amount must be greater than zero."
+
+        if not error:
+            payment_request = PaymentRequest(
+                account="trust",
+                client=client,
+                amount_requested=amount,
+                recipient_email=to,
+                status="SENT",
+            )
+            try:
+                with transaction.atomic():
+                    payment_request.save()
+                    send_payment_request(
+                        payment_request, to=to, cc=cc, message=message, request=request
+                    )
+            except PaymentRequestSendError as exc:
+                error = str(exc)
+            else:
+                response = HttpResponse(
+                    status=204, headers={"HX-Trigger": "requestsChanged"}
+                )
+                toast_success(response, f"Trust deposit request sent to {to}.")
+                return response
+
+        context = {
+            "clients": _trust_clients(),
+            "client_id": client_id,
+            "to": to,
+            "cc": cc,
+            "message": message,
+            "amount": amount_raw,
+            "error": error,
+        }
+        return render(request, "invoicing/requests/trust_form.html", context)
+
+    context = {
+        "clients": _trust_clients(),
+        "client_id": "",
+        "to": "",
+        "cc": "",
+        "message": "",
+        "amount": "",
+        "error": "",
+    }
+    return render(request, "invoicing/requests/trust_form.html", context)
+
+
+@login_required
+def requests_client_email(request):
+    """On client change, return the To input pre-filled with the client's email."""
+    client_id = request.GET.get("client")
+    email = ""
+    if client_id:
+        client = Contact.objects.filter(pk=client_id).first()
+        if client:
+            email = client.email or ""
+    return render(request, "invoicing/requests/to_input.html", {"to": email})
+
+
 @login_required
 def requests_cancel(request, pk):
     payment_request = get_object_or_404(PaymentRequest, pk=pk)
@@ -251,7 +343,12 @@ def requests_resend(request, pk):
             response = HttpResponse(
                 status=204, headers={"HX-Trigger": "requestsChanged"}
             )
-            toast_success(response, f"Payment request resent to {to}.")
+            label = (
+                "Trust deposit request"
+                if payment_request.is_trust
+                else "Payment request"
+            )
+            toast_success(response, f"{label} resent to {to}.")
             return response
         context = {
             "payment_request": payment_request,

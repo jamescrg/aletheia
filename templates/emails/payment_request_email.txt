@@ -3,7 +3,7 @@ Outstanding balance
 
 Dear Client,
 
-{% if cover_message %}{{ cover_message }}{% else %}We are respectfully requesting payment of the amount below.{% endif %}
+{% if cover_message %}{{ cover_message }}{% else %}{% if is_trust %}We are requesting a trust deposit in the amount below.{% else %}We are respectfully requesting payment of the amount below.{% endif %}{% endif %}
 {% if attach_statement %}
 You will find attached a comprehensive matter statement.
 {% endif %}

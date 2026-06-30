@@ -80,38 +80,54 @@ def _to_cents(amount) -> int:
 class LawPayProcessor(PaymentProcessor):
     name = "lawpay"
 
-    def __init__(
-        self,
-        *,
-        secret_key=None,
-        public_key=None,
-        account_id=None,
-        api_base=None,
-    ):
+    def __init__(self, *, secret_key=None, public_key=None, api_base=None):
         self.secret_key = (
             secret_key if secret_key is not None else settings.LAWPAY_SECRET_KEY
         )
         self.public_key = (
             public_key if public_key is not None else settings.LAWPAY_PUBLIC_KEY
         )
-        # Blank account_id is valid — the gateway auto-selects the primary
-        # account by payment method. Pinned explicitly at go-live.
-        self.account_id = (
-            account_id
-            if account_id is not None
-            else settings.LAWPAY_OPERATING_ACCOUNT_ID
-        )
+        # Deposit account ids per (destination, method). A charge picks the right
+        # one so funds land in operating vs trust — and because AffiniPay keeps
+        # card and eCheck in separate accounts. Blank → the gateway auto-selects
+        # the primary account for the method.
+        self.operating_card_account_id = settings.LAWPAY_OPERATING_CARD_ACCOUNT_ID
+        self.operating_echeck_account_id = settings.LAWPAY_OPERATING_ECHECK_ACCOUNT_ID
+        self.trust_card_account_id = settings.LAWPAY_TRUST_CARD_ACCOUNT_ID
+        self.trust_echeck_account_id = settings.LAWPAY_TRUST_ECHECK_ACCOUNT_ID
         self.api_base = (api_base or settings.LAWPAY_API_BASE).rstrip("/")
         if not self.secret_key:
             raise ProcessorConfigError("LAWPAY_SECRET_KEY is not configured.")
 
+    def account_id_for(self, *, method, trust=False):
+        """Deposit account id for a charge: trust vs operating × card vs eCheck.
+        Invoices/balances are operating (trust=False); a trust deposit passes
+        trust=True. Returns "" to let the gateway auto-select."""
+        if trust:
+            return (
+                self.trust_echeck_account_id
+                if method == BANK
+                else self.trust_card_account_id
+            )
+        return (
+            self.operating_echeck_account_id
+            if method == BANK
+            else self.operating_card_account_id
+        )
+
     # --- contract --------------------------------------------------------
     def client_config(self, invoice) -> ClientConfig:
+        return self.client_config_for(
+            amount_cents=_to_cents(invoice.amount_remaining),
+            reference=f"Invoice {invoice.id}",
+        )
+
+    def client_config_for(self, *, amount_cents, reference) -> ClientConfig:
         return ClientConfig(
             processor=self.name,
             public_key=self.public_key,
-            amount_cents=_to_cents(invoice.amount_remaining),
-            reference=f"Invoice {invoice.id}",
+            amount_cents=amount_cents,
+            reference=reference,
             methods=[CARD, BANK],
             hosted_fields_url=HOSTED_FIELDS_URL,
         )
@@ -125,6 +141,7 @@ class LawPayProcessor(PaymentProcessor):
         method,
         idempotency_key=None,
         metadata=None,
+        trust=False,
     ) -> ChargeResult:
         payload = {
             "amount": int(amount_cents),
@@ -132,8 +149,10 @@ class LawPayProcessor(PaymentProcessor):
             "method": token,  # one-time hosted-fields token, bare string
             "reference": (reference or "")[:128],
         }
-        if self.account_id:
-            payload["account_id"] = self.account_id
+        # Invoices/balances deposit to operating; the method picks card vs eCheck.
+        account_id = self.account_id_for(method=method, trust=trust)
+        if account_id:
+            payload["account_id"] = account_id
 
         headers = {}
         if idempotency_key:
@@ -159,6 +178,21 @@ class LawPayProcessor(PaymentProcessor):
             )
         self._raise_for_status(resp, data, "Fetch failed")
         return self._result(data)
+
+    def list_merchant_accounts(self) -> dict:
+        """GET /v1/merchant → the merchant and its deposit accounts.
+
+        Read-only. Each entry in the ``merchant_accounts`` array carries ``id``,
+        ``name`` and a ``trust_account`` boolean (true → trust, false →
+        operating); ``ach_accounts`` lists eCheck accounts. Used to discover the
+        account ids to pin as LAWPAY_{OPERATING,TRUST}_{CARD,ECHECK}_ACCOUNT_ID
+        so a charge can target the right account. A test key returns test
+        accounts only.
+        """
+        resp = self._request("GET", "/v1/merchant")
+        data = self._json(resp)
+        self._raise_for_status(resp, data, "Could not list merchant accounts")
+        return data
 
     def verify_and_parse_webhook(self, request) -> WebhookEvent:
         """Untrusted payload in → authoritative event out.

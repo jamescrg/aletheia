@@ -351,7 +351,15 @@ PAYMENT_PROCESSOR = env("PAYMENT_PROCESSOR", default="fake")
 # operating (non-trust) account. Test-mode keys hit only sandbox accounts.
 LAWPAY_PUBLIC_KEY = env("LAWPAY_PUBLIC_KEY", default="")
 LAWPAY_SECRET_KEY = env("LAWPAY_SECRET_KEY", default="")
-LAWPAY_OPERATING_ACCOUNT_ID = env("LAWPAY_OPERATING_ACCOUNT_ID", default="")
+# Deposit accounts per (destination, method) — AffiniPay keeps card and eCheck
+# in separate accounts, each with an operating/trust pair. Discover the ids with
+# `manage.py lawpay_accounts`. Blank → the gateway auto-selects the primary.
+LAWPAY_OPERATING_CARD_ACCOUNT_ID = env("LAWPAY_OPERATING_CARD_ACCOUNT_ID", default="")
+LAWPAY_OPERATING_ECHECK_ACCOUNT_ID = env(
+    "LAWPAY_OPERATING_ECHECK_ACCOUNT_ID", default=""
+)
+LAWPAY_TRUST_CARD_ACCOUNT_ID = env("LAWPAY_TRUST_CARD_ACCOUNT_ID", default="")
+LAWPAY_TRUST_ECHECK_ACCOUNT_ID = env("LAWPAY_TRUST_ECHECK_ACCOUNT_ID", default="")
 LAWPAY_API_BASE = env("LAWPAY_API_BASE", default="https://api.8am.com")
 # Stripe credentials (direct, single-account: the self-hosting firm owns the
 # Stripe account and provides its own keys). Publishable key -> client-side

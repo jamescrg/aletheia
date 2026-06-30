@@ -43,6 +43,11 @@ class ClientConfig:
     reference: str
     methods: list  # subset of [CARD, BANK]
     hosted_fields_url: str = ""
+    # Offer eCheck/ACH in the payment form. Default off: the form is card-only
+    # unless a processor opts in (the bank charge/recording path stays intact —
+    # this only controls the visible form). LawPay's eCheck accounts are
+    # currently suspended, so it stays off there until they're reactivated.
+    echeck: bool = False
     extra: dict = field(default_factory=dict)
 
 
@@ -125,6 +130,7 @@ class PaymentProcessor(ABC):
         method: str,
         idempotency_key: str | None = None,
         metadata: dict | None = None,
+        trust: bool = False,
     ) -> ChargeResult:
         """Charge a one-time `token` for `amount_cents`. Raises `ChargeError`
         on decline/failure."""

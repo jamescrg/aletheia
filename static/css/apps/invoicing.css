@@ -81,7 +81,7 @@ and the amount is right-aligned.
 ========================================================================== */
 
 .requests {
-  min-width: 69rem;
+  min-width: 76rem;
 }
 
 .requests .id {
@@ -103,6 +103,10 @@ and the amount is right-aligned.
 .requests .amount {
   text-align: right;
   width: 9.5rem;
+}
+
+.requests .account {
+  width: 7rem;
 }
 
 .requests .status {

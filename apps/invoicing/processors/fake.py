@@ -68,13 +68,17 @@ class FakeProcessor(PaymentProcessor):
     HOSTED_FIELDS_URL = "https://example.test/fake-hosted-fields.js"
 
     def client_config(self, invoice) -> ClientConfig:
-        amount = invoice.amount_remaining
-        amount_cents = int(round(float(amount) * 100))
+        amount_cents = int(round(float(invoice.amount_remaining) * 100))
+        return self.client_config_for(
+            amount_cents=amount_cents, reference=f"Invoice {invoice.id}"
+        )
+
+    def client_config_for(self, *, amount_cents, reference) -> ClientConfig:
         return ClientConfig(
             processor=self.name,
             public_key="fake_public_key",
             amount_cents=amount_cents,
-            reference=f"Invoice {invoice.id}",
+            reference=reference,
             methods=[CARD, BANK],
             hosted_fields_url=self.HOSTED_FIELDS_URL,
         )
@@ -88,6 +92,7 @@ class FakeProcessor(PaymentProcessor):
         method,
         idempotency_key=None,
         metadata=None,
+        trust=False,
     ) -> ChargeResult:
         if token == _DECLINE_TOKEN:
             raise ChargeError(

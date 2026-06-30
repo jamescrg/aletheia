@@ -132,7 +132,9 @@
                 {% if cover_message %}
                   <p class="para" style="white-space: pre-line;">{{ cover_message }}</p>
                 {% else %}
-                  <p class="para">We are respectfully requesting payment of the amount below.</p>
+                  <p class="para">
+                    {% if is_trust %}We are requesting a trust deposit in the amount below.{% else %}We are respectfully requesting payment of the amount below.{% endif %}
+                  </p>
                 {% endif %}
                 {% if attach_statement %}
                   <p class="para">You will find attached to this email a PDF file containing a comprehensive matter statement.</p>
