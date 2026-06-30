@@ -37,12 +37,17 @@ from apps.trust.trust import get_confirmed_client_balance
 
 
 def dash_events_context(request):
-    """The next five upcoming pending events (today onward)."""
+    """The next upcoming pending events (today onward).
+
+    Seven fills the ~107.5rem usable width of the capped dash (16rem cards + 1rem
+    gaps) edge-to-edge; the event-cards row scrolls horizontally for any that
+    don't fit (e.g. when the sidebar is expanded). See static/css/apps/dash.css.
+    """
     today = date.today()
     return {
         "upcoming_events": Event.objects.filter(
             status="Pending", date__gte=today
-        ).order_by("date", "start_time", "party")[:5],
+        ).order_by("date", "start_time", "party")[:7],
         "today": today,
         "tomorrow": today + timedelta(days=1),
     }
