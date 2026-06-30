@@ -90,11 +90,17 @@ class StripeProcessor(PaymentProcessor):
 
     # --- contract --------------------------------------------------------
     def client_config(self, invoice) -> ClientConfig:
+        return self.client_config_for(
+            amount_cents=_to_cents(invoice.amount_remaining),
+            reference=f"Invoice {invoice.id}",
+        )
+
+    def client_config_for(self, *, amount_cents, reference) -> ClientConfig:
         return ClientConfig(
             processor=self.name,
             public_key=self.publishable_key,
-            amount_cents=_to_cents(invoice.amount_remaining),
-            reference=f"Invoice {invoice.id}",
+            amount_cents=amount_cents,
+            reference=reference,
             methods=[CARD, BANK],
         )
 
@@ -107,6 +113,7 @@ class StripeProcessor(PaymentProcessor):
         method,
         idempotency_key=None,
         metadata=None,
+        trust=False,
     ) -> ChargeResult:
         params = {
             "amount": int(amount_cents),

@@ -117,11 +117,17 @@ class LawPayProcessor(PaymentProcessor):
 
     # --- contract --------------------------------------------------------
     def client_config(self, invoice) -> ClientConfig:
+        return self.client_config_for(
+            amount_cents=_to_cents(invoice.amount_remaining),
+            reference=f"Invoice {invoice.id}",
+        )
+
+    def client_config_for(self, *, amount_cents, reference) -> ClientConfig:
         return ClientConfig(
             processor=self.name,
             public_key=self.public_key,
-            amount_cents=_to_cents(invoice.amount_remaining),
-            reference=f"Invoice {invoice.id}",
+            amount_cents=amount_cents,
+            reference=reference,
             methods=[CARD, BANK],
             hosted_fields_url=HOSTED_FIELDS_URL,
         )
@@ -135,6 +141,7 @@ class LawPayProcessor(PaymentProcessor):
         method,
         idempotency_key=None,
         metadata=None,
+        trust=False,
     ) -> ChargeResult:
         payload = {
             "amount": int(amount_cents),
@@ -143,7 +150,7 @@ class LawPayProcessor(PaymentProcessor):
             "reference": (reference or "")[:128],
         }
         # Invoices/balances deposit to operating; the method picks card vs eCheck.
-        account_id = self.account_id_for(method=method)
+        account_id = self.account_id_for(method=method, trust=trust)
         if account_id:
             payload["account_id"] = account_id
 

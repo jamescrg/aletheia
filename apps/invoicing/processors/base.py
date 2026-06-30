@@ -130,6 +130,7 @@ class PaymentProcessor(ABC):
         method: str,
         idempotency_key: str | None = None,
         metadata: dict | None = None,
+        trust: bool = False,
     ) -> ChargeResult:
         """Charge a one-time `token` for `amount_cents`. Raises `ChargeError`
         on decline/failure."""

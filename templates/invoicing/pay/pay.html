@@ -50,7 +50,7 @@
             </td>
           </tr>
           <tr>
-            <td class="label">Amount Due</td>
+            <td class="label">{{ amount_label|default:"Amount Due" }}</td>
             <td class="value">${{ amount_due|floatformat:2|intcomma }}</td>
           </tr>
         </table>
