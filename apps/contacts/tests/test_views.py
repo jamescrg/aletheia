@@ -64,7 +64,6 @@ def test_edit_post(client, folder, contact):
         "folder": folder.id,
         "name": "Descartes",
         "phone1": "440.555.6000",
-        "client_status": "Current",
     }
 
     response = client.post(f"/contacts/{contact.id}/edit", data)

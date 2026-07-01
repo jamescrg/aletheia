@@ -75,34 +75,8 @@ class Matter(AuditMixin, models.Model):
             # Mark all proceedings as concluded when matter is closed
             Proceeding.objects.filter(matter=self).update(status="Concluded")
 
-            # Mark client as former if client has no open matters
-            if (
-                not Matter.objects.filter(client=self.client, status="Open")
-                .exclude(pk=self.pk)
-                .exists()
-            ):
-                Contact.objects.filter(pk=self.client.pk).update(client_status="Former")
-        elif self.status == "Pending":
-            # Mark client as pending if they have no open/complete matters
-            if self.client and (
-                not Matter.objects.filter(
-                    client=self.client, status__in=["Open", "Complete"]
-                )
-                .exclude(pk=self.pk)
-                .exists()
-            ):
-                Contact.objects.filter(pk=self.client.pk).update(
-                    client_status="Pending"
-                )
-        elif self.status == "Open":
-            # Promote the client to Current when attached to an open matter —
-            # covers a brand-new/Nonclient contact assigned as a client as well as
-            # a reopened Former/Pending client. (Client status is a denormalized
-            # cache maintained here, not a purely manual field.)
-            if self.client and self.client.client_status != "Current":
-                Contact.objects.filter(pk=self.client.pk).update(
-                    client_status="Current"
-                )
+        # (Client status is no longer maintained here — it's derived from a
+        # contact's matters; see apps.contacts.models.derive_client_status.)
 
         # Document files are stored by matter ID (see case.models
         # document_upload_path: documents/{matter_id}/{document_id}.ext), so a

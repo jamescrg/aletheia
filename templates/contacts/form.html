@@ -23,7 +23,7 @@
         {% if intake_id %}<input type="hidden" name="intake_id" value="{{ intake_id }}" />{% endif %}
         <div class="contacts-form-left form-compact col2">
           {% for field in form %}
-            {% if field.name == 'client_status' or field.name == 'folder' or field.name == 'name' or field.name == 'company' or field.name == 'email' or field.name == 'email2' or field.name == 'address' %}
+            {% if field.name == 'folder' or field.name == 'name' or field.name == 'company' or field.name == 'email' or field.name == 'email2' or field.name == 'address' %}
               <div class="form-group field-{{ field.name }}">
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 <div>{{ field }}{{ field.errors }}</div>

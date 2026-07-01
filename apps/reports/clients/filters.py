@@ -25,7 +25,7 @@ class ClientReportFilter(django_filters.FilterSet):
 
 class ClientStatementFilter(django_filters.FilterSet):
     client = django_filters.ModelChoiceFilter(
-        queryset=Contact.objects.filter(client_status="Current").order_by("name"),
+        queryset=Contact.objects.current_clients().order_by("name"),
         empty_label="Select Client",
         label="Client",
     )

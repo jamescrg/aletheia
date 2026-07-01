@@ -49,11 +49,7 @@ def build_clients_context(request):
 
     # Actual clients only: marked Current AND the primary client of >=1 matter.
     # (Secondary contacts on a matter are excluded — they have no billings.)
-    current_clients = (
-        Contact.objects.filter(client_status="Current", client_matters__isnull=False)
-        .distinct()
-        .order_by("name")
-    )
+    current_clients = Contact.objects.current_clients().order_by("name")
 
     client_data = []
     for client in current_clients:
