@@ -295,6 +295,11 @@ class GroupQuerySet(models.QuerySet):
 
 
 class Group(AuditMixin, models.Model):
+    # Firm-wide (global) groups occupy the low order band (1, 2, 3, …); matter-
+    # specific categories are numbered from this base up, so ordering by `order`
+    # always sorts the firm groups first, then a matter's own categories.
+    MATTER_CATEGORY_ORDER_BASE = 1000
+
     name = models.CharField(max_length=50)
     order = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)

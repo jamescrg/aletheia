@@ -341,6 +341,46 @@ Mode Pills (Detail/Case toggle)
 }
 
 /* ==========================================================================
+Contacts tab — group section headers
+========================================================================== */
+
+/* When the list is grouped (the default group sort), each group gets a labelled
+   header row instead of repeating the group name per row. The neutral section
+   token is theme-aware, so no separate dark/cosmic rule is needed. */
+.matter-contacts .contact-group-header td {
+  background: var(--background-section);
+  border-top: 1px solid var(--border-medium);
+  color: var(--color-primary);
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+}
+
+/* The first group sits right under the table head, so it needs no divider. */
+.matter-contacts tbody tr.contact-group-header:first-child td {
+  border-top: none;
+}
+
+/* Mobile: the table renders as cards; show the header as a plain full-width
+   label between the cards rather than as a card of its own. */
+@media (width <= 768px) {
+  .card-table tbody tr.contact-group-header {
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    cursor: default;
+    margin-bottom: 0;
+    padding: 0.5rem 0 0.25rem;
+  }
+
+  .card-table tbody tr.contact-group-header td {
+    color: var(--color-primary);
+    font-weight: 600;
+    padding: 0;
+  }
+}
+
+/* ==========================================================================
  Matter-specific category management modal
 ========================================================================== */
 

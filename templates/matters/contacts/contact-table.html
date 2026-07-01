@@ -119,8 +119,15 @@
     </thead>
     <tbody>
       {% for item in contacts %}
+        {% if grouped and item.first_in_group %}
+          <tr class="contact-group-header">
+            <td colspan="5">{{ item.group }}</td>
+          </tr>
+        {% endif %}
         <tr>
-          <td class="group">{{ item.group }}</td>
+          <td class="group card-hide">
+            {% if not grouped %}{{ item.group }}{% endif %}
+          </td>
           <td class="role">
             {% if item.is_client %}
               Client

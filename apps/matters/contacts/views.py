@@ -66,16 +66,15 @@ def get_contact_list(request, matter):
     if isinstance(current_order, list):
         current_order = current_order[0] if current_order else "group"
 
-    # Add band index for visual grouping when sorted by group
+    # When sorted by group, flag the first row of each group so the template can
+    # emit a section-header row above it.
     order_field = current_order.lstrip("-")
-    if order_field == "group":
+    grouped = order_field == "group"
+    if grouped:
         current_group = None
-        band = 0
         for item in contact_list:
-            if item["group"] != current_group:
-                current_group = item["group"]
-                band = 1 - band
-            item["band"] = band
+            item["first_in_group"] = item["group"] != current_group
+            current_group = item["group"]
 
     # Get current filter values for dropdown display
     group_id = filter_data.get("group", "")
@@ -98,6 +97,7 @@ def get_contact_list(request, matter):
     return {
         "contacts": contact_list,
         "current_order": order_field,
+        "grouped": grouped,
         "session_key": session_key,
         "groups": Group.objects.for_matter(matter),
         "roles": Role.objects.filter(is_active=True).order_by("name"),
@@ -341,7 +341,12 @@ def category_add(request, id):
     matter = get_object_or_404(Matter, pk=id)
     name = (request.POST.get("name") or "").strip()
     if name:
-        max_order = matter.categories.aggregate(Max("order"))["order__max"] or 0
+        # Number categories from the matter-category band up so they always sort
+        # after the firm-wide groups (see Group.MATTER_CATEGORY_ORDER_BASE).
+        max_order = (
+            matter.categories.aggregate(Max("order"))["order__max"]
+            or Group.MATTER_CATEGORY_ORDER_BASE
+        )
         Group.objects.create(matter=matter, name=name, order=max_order + 1)
     response = render(
         request, "matters/contacts/category-list.html", _category_context(matter)
