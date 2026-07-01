@@ -117,7 +117,7 @@ Assign results list
   background: var(--background-light);
   border: solid 1px var(--border-medium);
   border-top: none;
-  color: var(--color-primary);
+  color: var(--link);
   cursor: pointer;
   display: flex;
   font: inherit;
@@ -134,6 +134,7 @@ Assign results list
 
 .combobox-action:hover {
   background: var(--background-section);
+  color: var(--link-hover);
 }
 
 /* Intake picker rows: name over muted meta. */

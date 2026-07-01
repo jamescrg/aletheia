@@ -403,9 +403,7 @@ def client_search(request):
         Contact.objects.filter(name__icontains=text).order_by("name") if text else None
     )
     return render(
-        request,
-        "matters/contacts/client-results.html",
-        {"contacts": contacts, "search_text": text},
+        request, "matters/contacts/client-results.html", {"contacts": contacts}
     )
 
 

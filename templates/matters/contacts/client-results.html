@@ -22,12 +22,7 @@ matter-detail assign-contact combobox uses the plain results.html instead.)
             hx-include="#matter-form"
             hx-target="#htmx-modal-container .modal-dialog"
             hx-swap="outerHTML">
-      <i class="icon-plus"></i>
-      {% if search_text %}
-        Create &ldquo;{{ search_text }}&rdquo;
-      {% else %}
-        New contact
-      {% endif %}
+      <i class="icon-plus"></i> Create new contact
     </button>
     <button type="button"
             class="combobox-action"
