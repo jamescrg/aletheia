@@ -303,20 +303,35 @@ def filter_role(request, id, role_id):
 # --- Matter-specific categories (Groups scoped to one matter) ----------------
 
 
-def _category_context(matter):
+def _category_context(matter, editing_id=None):
     categories = matter.categories.annotate(party_count=Count("relationship")).order_by(
         "order", "name"
     )
-    return {"matter": matter, "categories": categories}
+    return {"matter": matter, "categories": categories, "editing_id": editing_id}
 
 
 @login_required
 @matter_access_required
 def category_manage(request, id):
-    """Modal to add/remove categories scoped to this matter."""
+    """Modal to add/rename/remove categories scoped to this matter."""
     matter = get_object_or_404(Matter, pk=id)
     return render(
         request, "matters/contacts/category-modal.html", _category_context(matter)
+    )
+
+
+@login_required
+@matter_access_required
+def category_list(request, id):
+    """The list partial on its own — used to toggle a row into rename mode
+    (?edit=<pk>) and to cancel back out of it."""
+    matter = get_object_or_404(Matter, pk=id)
+    editing = request.GET.get("edit")
+    editing_id = int(editing) if editing and editing.isdigit() else None
+    return render(
+        request,
+        "matters/contacts/category-list.html",
+        _category_context(matter, editing_id),
     )
 
 
@@ -328,6 +343,23 @@ def category_add(request, id):
     if name:
         max_order = matter.categories.aggregate(Max("order"))["order__max"] or 0
         Group.objects.create(matter=matter, name=name, order=max_order + 1)
+    response = render(
+        request, "matters/contacts/category-list.html", _category_context(matter)
+    )
+    response.headers["HX-Trigger"] = "contactsReload"
+    return response
+
+
+@login_required
+@matter_access_required
+def category_edit(request, id, group_pk):
+    matter = get_object_or_404(Matter, pk=id)
+    name = (request.POST.get("name") or "").strip()
+    # Scoped to this matter so a global group can't be renamed from here.
+    group = Group.objects.filter(pk=group_pk, matter=matter).first()
+    if group and name:
+        group.name = name
+        group.save()
     response = render(
         request, "matters/contacts/category-list.html", _category_context(matter)
     )

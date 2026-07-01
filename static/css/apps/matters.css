@@ -367,10 +367,35 @@ Mode Pills (Detail/Case toggle)
   color: var(--color-muted);
 }
 
+.matter-category-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.matter-category-rename,
+.matter-category-cancel,
 .matter-category-delete {
   color: var(--color-muted-more);
 }
 
+.matter-category-rename:hover,
+.matter-category-cancel:hover {
+  color: var(--link);
+}
+
 .matter-category-delete:hover {
   color: var(--urgent);
+}
+
+/* Inline rename: the form replaces the whole row, so stretch it across the
+   flex li and let the field take the slack, with the save/cancel icons trailing. */
+.matter-category-edit-form {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  gap: 0.5rem;
+}
+
+.matter-category-edit-form input {
+  flex: 1;
 }

@@ -3,18 +3,55 @@
     <ul class="assign-results">
       {% for cat in categories %}
         <li>
-          <span class="matter-category-name">
-            {{ cat.name }}
-            {% if cat.party_count %}<span class="matter-category-count">({{ cat.party_count }})</span>{% endif %}
-          </span>
-          <button type="button"
-                  class="button-link matter-category-delete"
-                  hx-post="{% url 'matters:category-delete' id=matter.id group_pk=cat.id %}"
+          {% if cat.id == editing_id %}
+            <form class="matter-category-edit-form"
+                  hx-post="{% url 'matters:category-edit' id=matter.id group_pk=cat.id %}"
                   hx-target="#matter-category-list"
-                  hx-swap="outerHTML"
-                  hx-confirm="Delete &ldquo;{{ cat.name }}&rdquo;? This removes the category and unassigns any parties in it.">
-            <i class="icon-trash-2"></i>
-          </button>
+                  hx-swap="outerHTML">
+              {% csrf_token %}
+              <input type="text"
+                     name="name"
+                     value="{{ cat.name }}"
+                     autocomplete="off"
+                     autofocus
+                     required>
+              <button type="submit" class="button-link" title="Save rename">
+                <i class="icon-check"></i>
+              </button>
+              <button type="button"
+                      class="button-link matter-category-cancel"
+                      hx-get="{% url 'matters:category-list' id=matter.id %}"
+                      hx-target="#matter-category-list"
+                      hx-swap="outerHTML"
+                      title="Cancel">
+                <i class="icon-x"></i>
+              </button>
+            </form>
+          {% else %}
+            <span class="matter-category-name">
+              {{ cat.name }}
+              {% if cat.party_count %}<span class="matter-category-count">({{ cat.party_count }})</span>{% endif %}
+            </span>
+            <span class="matter-category-actions">
+              <button type="button"
+                      class="button-link matter-category-rename"
+                      hx-get="{% url 'matters:category-list' id=matter.id %}?edit={{ cat.id }}"
+                      hx-target="#matter-category-list"
+                      hx-swap="outerHTML"
+                      title="Rename">
+                <i class="icon-pencil"></i>
+              </button>
+              <button type="button"
+                      class="button-link matter-category-delete"
+                      hx-post="{% url 'matters:category-delete' id=matter.id group_pk=cat.id %}"
+                      hx-target="#matter-category-list"
+                      hx-swap="outerHTML"
+                      hx-confirm="Delete &ldquo;{{ cat.name }}&rdquo;? This removes the category and unassigns any parties in it."
+                      title="Delete">
+                <i class="icon-trash-2"></i>
+              </button>
+            </span>
+          {% endif %}
         </li>
       {% endfor %}
     </ul>

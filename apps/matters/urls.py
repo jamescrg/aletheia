@@ -89,9 +89,19 @@ urlpatterns = [
         name="category-manage",
     ),
     path(
+        "matters/<int:id>/contacts/categories/list",
+        contacts.category_list,
+        name="category-list",
+    ),
+    path(
         "matters/<int:id>/contacts/categories/add",
         contacts.category_add,
         name="category-add",
+    ),
+    path(
+        "matters/<int:id>/contacts/categories/<int:group_pk>/edit",
+        contacts.category_edit,
+        name="category-edit",
     ),
     path(
         "matters/<int:id>/contacts/categories/<int:group_pk>/delete",
