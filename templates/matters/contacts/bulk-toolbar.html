@@ -1,0 +1,42 @@
+<div class="dropdown" x-data="dropdown()">
+  <button type="button"
+          class="btn-icon"
+          x-ref="button"
+          @click="toggle()"
+          :aria-expanded="open">
+    <span><i class="icon-square-pen with-text"></i> Group</span>
+    <small><i class="icon-chevron-down"></i></small>
+  </button>
+  <ul class="dropdown-menu" x-ref="menu" x-show="open" @click="close()">
+    {% for group in groups %}
+      <li>
+        <a class="dropdown-item"
+           href="#"
+           hx-post="{% url 'matters:contacts-bulk-group' matter.id %}"
+           hx-vals='{"group_id": "{{ group.id }}"}'
+           hx-swap="none">{{ group.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+<div class="dropdown" x-data="dropdown()">
+  <button type="button"
+          class="btn-icon"
+          x-ref="button"
+          @click="toggle()"
+          :aria-expanded="open">
+    <span><i class="icon-list-filter with-text"></i> Role</span>
+    <small><i class="icon-chevron-down"></i></small>
+  </button>
+  <ul class="dropdown-menu" x-ref="menu" x-show="open" @click="close()">
+    {% for role in roles %}
+      <li>
+        <a class="dropdown-item"
+           href="#"
+           hx-post="{% url 'matters:contacts-bulk-role' matter.id %}"
+           hx-vals='{"role_id": "{{ role.id }}"}'
+           hx-swap="none">{{ role.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>

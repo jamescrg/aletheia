@@ -2,90 +2,113 @@
 <div class="toolbar matter-contacts-toolbar">
   <div class="toolbar-left">
     <h2>Related Contacts</h2>
-    <div class="filter-tools">
-      <a href="#"
-         class="accent-link"
-         hx-get="{% url 'matters:contacts-assign' id=matter.id %}"
-         hx-target="#htmx-modal-container"
-         hx-trigger="click">+ Assign</a>
-      <a href="#"
-         class="accent-link"
-         hx-get="{% url 'matters:group-manage' id=matter.id %}"
-         hx-target="#htmx-modal-container"
-         hx-trigger="click">
-        <i class="icon-square-pen with-text"></i>Groups</a>
-      <button type="button"
-              class="btn-icon"
-              hx-get="{% url 'matters:contacts-filter' id=matter.id %}"
-              hx-target="#htmx-modal-container"
-              hx-trigger="click">
-        <i class="icon-list-filter with-text"></i> Filter
-      </button>
-      <div class="dropdown" x-data="dropdown()">
+    {% if selected_ids %}
+      <div class="filter-tools">
         <button type="button"
-                id="contacts-group-filter"
-                class="select-btn filter-dropdown-button {% if group_id %}toggle-active{% endif %}"
-                x-ref="button"
-                @click="toggle()"
-                :aria-expanded="open">
-          {{ selected_group|default:"All Groups" }}
-          <small><i class="icon-chevron-down"></i></small>
+                class="btn-icon toggle-active"
+                hx-post="{% url 'matters:contacts-clear-selection' matter.id %}"
+                hx-swap="none">
+          {{ selected_ids|length }} <i class="icon-x bulk-clear-icon"></i>
         </button>
-        <ul class="dropdown-menu" x-ref="menu" x-show="open">
-          <li>
-            <a class="dropdown-item"
-               href="#"
-               hx-post="{% url 'matters:contacts-filter-group' matter.id 0 %}"
-               hx-target="#contacts"
-               hx-swap="innerHTML">All Groups</a>
-          </li>
-          {% for group in groups %}
-            <li>
-              <a class="dropdown-item {% if group.id == group_id %}active{% endif %}"
-                 href="#"
-                 hx-post="{% url 'matters:contacts-filter-group' matter.id group.id %}"
-                 hx-target="#contacts"
-                 hx-swap="innerHTML">{{ group.name }}</a>
-            </li>
-          {% endfor %}
-        </ul>
-      </div>
-      <div class="dropdown" x-data="dropdown()">
+        {% include "matters/contacts/bulk-toolbar.html" %}
         <button type="button"
-                id="contacts-role-filter"
-                class="select-btn filter-dropdown-button {% if role_id %}toggle-active{% endif %}"
-                x-ref="button"
-                @click="toggle()"
-                :aria-expanded="open">
-          {{ selected_role|default:"All Roles" }}
-          <small><i class="icon-chevron-down"></i></small>
+                class="btn-icon"
+                hx-post="{% url 'matters:contacts-bulk-remove' matter.id %}"
+                hx-confirm="Remove {{ selected_ids|length }} selected part{{ selected_ids|length|pluralize:'y,ies' }} from this matter?"
+                hx-swap="none">
+          <i class="icon-trash-2 with-text"></i> Remove
         </button>
-        <ul class="dropdown-menu" x-ref="menu" x-show="open">
-          <li>
-            <a class="dropdown-item"
-               href="#"
-               hx-post="{% url 'matters:contacts-filter-role' matter.id 0 %}"
-               hx-target="#contacts"
-               hx-swap="innerHTML">All Roles</a>
-          </li>
-          {% for role in roles %}
-            <li>
-              <a class="dropdown-item {% if role.id == role_id %}active{% endif %}"
-                 href="#"
-                 hx-post="{% url 'matters:contacts-filter-role' matter.id role.id %}"
-                 hx-target="#contacts"
-                 hx-swap="innerHTML">{{ role.name }}</a>
-            </li>
-          {% endfor %}
-        </ul>
       </div>
-    </div>
+    {% else %}
+      <div class="filter-tools">
+        <a href="#"
+           class="accent-link"
+           hx-get="{% url 'matters:contacts-assign' id=matter.id %}"
+           hx-target="#htmx-modal-container"
+           hx-trigger="click">+ Assign</a>
+        <a href="#"
+           class="accent-link"
+           hx-get="{% url 'matters:group-manage' id=matter.id %}"
+           hx-target="#htmx-modal-container"
+           hx-trigger="click">
+          <i class="icon-square-pen with-text"></i>Groups</a>
+        <button type="button"
+                class="btn-icon"
+                hx-get="{% url 'matters:contacts-filter' id=matter.id %}"
+                hx-target="#htmx-modal-container"
+                hx-trigger="click">
+          <i class="icon-list-filter with-text"></i> Filter
+        </button>
+        <div class="dropdown" x-data="dropdown()">
+          <button type="button"
+                  id="contacts-group-filter"
+                  class="select-btn filter-dropdown-button {% if group_id %}toggle-active{% endif %}"
+                  x-ref="button"
+                  @click="toggle()"
+                  :aria-expanded="open">
+            {{ selected_group|default:"All Groups" }}
+            <small><i class="icon-chevron-down"></i></small>
+          </button>
+          <ul class="dropdown-menu" x-ref="menu" x-show="open">
+            <li>
+              <a class="dropdown-item"
+                 href="#"
+                 hx-post="{% url 'matters:contacts-filter-group' matter.id 0 %}"
+                 hx-target="#contacts"
+                 hx-swap="innerHTML">All Groups</a>
+            </li>
+            {% for group in groups %}
+              <li>
+                <a class="dropdown-item {% if group.id == group_id %}active{% endif %}"
+                   href="#"
+                   hx-post="{% url 'matters:contacts-filter-group' matter.id group.id %}"
+                   hx-target="#contacts"
+                   hx-swap="innerHTML">{{ group.name }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="dropdown" x-data="dropdown()">
+          <button type="button"
+                  id="contacts-role-filter"
+                  class="select-btn filter-dropdown-button {% if role_id %}toggle-active{% endif %}"
+                  x-ref="button"
+                  @click="toggle()"
+                  :aria-expanded="open">
+            {{ selected_role|default:"All Roles" }}
+            <small><i class="icon-chevron-down"></i></small>
+          </button>
+          <ul class="dropdown-menu" x-ref="menu" x-show="open">
+            <li>
+              <a class="dropdown-item"
+                 href="#"
+                 hx-post="{% url 'matters:contacts-filter-role' matter.id 0 %}"
+                 hx-target="#contacts"
+                 hx-swap="innerHTML">All Roles</a>
+            </li>
+            {% for role in roles %}
+              <li>
+                <a class="dropdown-item {% if role.id == role_id %}active{% endif %}"
+                   href="#"
+                   hx-post="{% url 'matters:contacts-filter-role' matter.id role.id %}"
+                   hx-target="#contacts"
+                   hx-swap="innerHTML">{{ role.name }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    {% endif %}
   </div>
 </div>
 <div class="table-container">
   <table class="table matter-contacts card-table">
     <thead>
       <tr>
+        <th class="col-select card-hide">
+          {% url 'matters:contacts-select-all' matter.id as select_all_url %}
+          {% include "selection/select-all-btn.html" with select_all_url=select_all_url all_selected=all_selected %}
+        </th>
         <th class="group">
           Group
           <button class="btn-sort {% if current_order == 'group' %}active{% endif %}"
@@ -120,6 +143,12 @@
     <tbody>
       {% for item in contacts %}
         <tr>
+          <td class="col-select card-hide">
+            {% if not item.is_client %}
+              {% url 'matters:contacts-toggle-select' matter.id item.relationship_id as toggle_url %}
+              {% include "selection/checkbox.html" with toggle_url=toggle_url obj_id=item.relationship_id selected_ids=selected_ids %}
+            {% endif %}
+          </td>
           <td class="group">
             {% if item.is_client %}
               {{ item.group }}
@@ -179,7 +208,7 @@
         </tr>
       {% empty %}
         <tr>
-          <td colspan="5" class="empty-message">No contacts found.</td>
+          <td colspan="6" class="empty-message">No contacts found.</td>
         </tr>
       {% endfor %}
     </tbody>

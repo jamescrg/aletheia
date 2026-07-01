@@ -139,6 +139,37 @@ urlpatterns = [
         contacts.assign_delete,
         name="contacts-assign-delete",
     ),
+    # Multi-select bulk actions on the parties list
+    path(
+        "matters/<int:id>/contacts/select/<int:relationship_id>",
+        contacts.toggle_select,
+        name="contacts-toggle-select",
+    ),
+    path(
+        "matters/<int:id>/contacts/select-all",
+        contacts.select_all,
+        name="contacts-select-all",
+    ),
+    path(
+        "matters/<int:id>/contacts/clear-selection",
+        contacts.clear_selection,
+        name="contacts-clear-selection",
+    ),
+    path(
+        "matters/<int:id>/contacts/bulk-group",
+        contacts.bulk_group,
+        name="contacts-bulk-group",
+    ),
+    path(
+        "matters/<int:id>/contacts/bulk-role",
+        contacts.bulk_role,
+        name="contacts-bulk-role",
+    ),
+    path(
+        "matters/<int:id>/contacts/bulk-remove",
+        contacts.bulk_remove,
+        name="contacts-bulk-remove",
+    ),
     path(
         "matters/<int:id>/contacts/filter/group/<int:group_id>/",
         contacts.filter_group,

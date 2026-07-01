@@ -2,14 +2,42 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Max
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.views.decorators.http import require_POST
 
 from apps.accounts.access import matter_access_required
 from apps.contacts.functions.load_contacts import load_contacts
 from apps.contacts.models import Contact
+from apps.management.selection import (
+    all_visible_selected,
+    clear_selected_ids,
+    get_selected_ids,
+    get_session_key,
+    select_all_ids,
+    selection_response,
+    toggle_id,
+)
 from apps.matters.contacts.filters import MatterContactFilter
 from apps.matters.models import Group, Matter, Relationship, Role
 
 DEFAULT_MATTER_CONTACT_FILTER = {"order_by": "group"}
+
+# HX-Trigger that refreshes the #contacts panel.
+CONTACTS_TRIGGER = "contactsReload"
+
+
+def _selection_key(matter):
+    return get_session_key("selected_matter_contacts", matter.id)
+
+
+def _filtered_relationships(request, matter):
+    """The matter's party relationships with the current session filter/sort applied."""
+    filter_data = (
+        request.session.get(f"matter_contacts_filter_{matter.id}", {})
+        or DEFAULT_MATTER_CONTACT_FILTER
+    )
+    return MatterContactFilter(
+        filter_data, queryset=load_contacts(matter), matter=matter
+    ).qs
 
 
 def get_contact_list(request, matter):
@@ -17,16 +45,7 @@ def get_contact_list(request, matter):
     session_key = f"matter_contacts_filter_{matter.id}"
     filter_data = request.session.get(session_key, {})
 
-    contacts_qs = load_contacts(matter)
-
-    if filter_data:
-        contacts_qs = MatterContactFilter(
-            filter_data, queryset=contacts_qs, matter=matter
-        ).qs
-    else:
-        contacts_qs = MatterContactFilter(
-            DEFAULT_MATTER_CONTACT_FILTER, queryset=contacts_qs, matter=matter
-        ).qs
+    contacts_qs = _filtered_relationships(request, matter)
 
     # Build unified list with matter.client as first row if exists
     contact_list = []
@@ -95,6 +114,11 @@ def get_contact_list(request, matter):
         role_obj = Role.objects.filter(id=role_id).first()
         selected_role = role_obj.name if role_obj else None
 
+    # Multi-select state (the synthetic client row has no relationship, so it's
+    # never selectable).
+    selected_ids = get_selected_ids(request, _selection_key(matter))
+    visible_ids = [i["relationship_id"] for i in contact_list if i["relationship_id"]]
+
     return {
         "contacts": contact_list,
         "current_order": order_field,
@@ -105,6 +129,8 @@ def get_contact_list(request, matter):
         "role_id": int(role_id) if role_id else None,
         "selected_group": selected_group,
         "selected_role": selected_role,
+        "selected_ids": selected_ids,
+        "all_selected": all_visible_selected(selected_ids, visible_ids),
     }
 
 
@@ -381,3 +407,81 @@ def group_delete(request, id, group_pk):
     )
     response.headers["HX-Trigger"] = "contactsReload"
     return response
+
+
+# --- Multi-select bulk actions on the parties list ---------------------------
+
+
+@login_required
+@matter_access_required
+@require_POST
+def toggle_select(request, id, relationship_id):
+    """Toggle one party in the selection."""
+    matter = get_object_or_404(Matter, pk=id)
+    toggle_id(request, _selection_key(matter), relationship_id)
+    return selection_response(CONTACTS_TRIGGER)
+
+
+@login_required
+@matter_access_required
+@require_POST
+def select_all(request, id):
+    """Select/deselect every party currently visible under the active filter."""
+    matter = get_object_or_404(Matter, pk=id)
+    visible_ids = list(
+        _filtered_relationships(request, matter).values_list("id", flat=True)
+    )
+    select_all_ids(request, _selection_key(matter), visible_ids)
+    return selection_response(CONTACTS_TRIGGER)
+
+
+@login_required
+@matter_access_required
+@require_POST
+def clear_selection(request, id):
+    matter = get_object_or_404(Matter, pk=id)
+    clear_selected_ids(request, _selection_key(matter))
+    return selection_response(CONTACTS_TRIGGER)
+
+
+@login_required
+@matter_access_required
+@require_POST
+def bulk_group(request, id):
+    """Move the selected parties into one group. Selection is kept so a role
+    change can follow."""
+    matter = get_object_or_404(Matter, pk=id)
+    selected = get_selected_ids(request, _selection_key(matter))
+    group = (
+        Group.objects.for_matter(matter).filter(pk=request.POST.get("group_id")).first()
+    )
+    if selected and group:
+        Relationship.objects.filter(matter=matter, id__in=selected).update(group=group)
+    return selection_response(CONTACTS_TRIGGER)
+
+
+@login_required
+@matter_access_required
+@require_POST
+def bulk_role(request, id):
+    """Set the role on the selected parties. Selection is kept."""
+    matter = get_object_or_404(Matter, pk=id)
+    selected = get_selected_ids(request, _selection_key(matter))
+    role = Role.objects.filter(is_active=True, pk=request.POST.get("role_id")).first()
+    if selected and role:
+        Relationship.objects.filter(matter=matter, id__in=selected).update(role=role)
+    return selection_response(CONTACTS_TRIGGER)
+
+
+@login_required
+@matter_access_required
+@require_POST
+def bulk_remove(request, id):
+    """Remove the selected parties from the matter, then clear the selection."""
+    matter = get_object_or_404(Matter, pk=id)
+    key = _selection_key(matter)
+    selected = get_selected_ids(request, key)
+    if selected:
+        Relationship.objects.filter(matter=matter, id__in=selected).delete()
+    clear_selected_ids(request, key)
+    return selection_response(CONTACTS_TRIGGER)
