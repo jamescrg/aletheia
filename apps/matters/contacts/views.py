@@ -300,29 +300,27 @@ def filter_role(request, id, role_id):
     return HttpResponse(status=204, headers={"HX-Trigger": "contactsReload"})
 
 
-# --- Matter-specific categories (Groups scoped to one matter) ----------------
+# --- Matter-specific groups (Group rows scoped to one matter) ----------------
 
 
-def _category_context(matter, editing_id=None):
-    categories = matter.categories.annotate(party_count=Count("relationship")).order_by(
+def _group_context(matter, editing_id=None):
+    groups = matter.groups.annotate(party_count=Count("relationship")).order_by(
         "order", "name"
     )
-    return {"matter": matter, "categories": categories, "editing_id": editing_id}
+    return {"matter": matter, "groups": groups, "editing_id": editing_id}
 
 
 @login_required
 @matter_access_required
-def category_manage(request, id):
-    """Modal to add/rename/remove categories scoped to this matter."""
+def group_manage(request, id):
+    """Modal to add/rename/remove groups scoped to this matter."""
     matter = get_object_or_404(Matter, pk=id)
-    return render(
-        request, "matters/contacts/category-modal.html", _category_context(matter)
-    )
+    return render(request, "matters/contacts/group-modal.html", _group_context(matter))
 
 
 @login_required
 @matter_access_required
-def category_list(request, id):
+def group_list(request, id):
     """The list partial on its own — used to toggle a row into rename mode
     (?edit=<pk>) and to cancel back out of it."""
     matter = get_object_or_404(Matter, pk=id)
@@ -330,26 +328,26 @@ def category_list(request, id):
     editing_id = int(editing) if editing and editing.isdigit() else None
     return render(
         request,
-        "matters/contacts/category-list.html",
-        _category_context(matter, editing_id),
+        "matters/contacts/group-list.html",
+        _group_context(matter, editing_id),
     )
 
 
 @login_required
 @matter_access_required
-def category_add(request, id):
+def group_add(request, id):
     matter = get_object_or_404(Matter, pk=id)
     name = (request.POST.get("name") or "").strip()
     if name:
-        # Number categories from the matter-category band up so they always sort
-        # after the firm-wide groups (see Group.MATTER_CATEGORY_ORDER_BASE).
+        # Number matter groups from the matter-group band up so they always sort
+        # after the firm-wide groups (see Group.MATTER_GROUP_ORDER_BASE).
         max_order = (
-            matter.categories.aggregate(Max("order"))["order__max"]
-            or Group.MATTER_CATEGORY_ORDER_BASE
+            matter.groups.aggregate(Max("order"))["order__max"]
+            or Group.MATTER_GROUP_ORDER_BASE
         )
         Group.objects.create(matter=matter, name=name, order=max_order + 1)
     response = render(
-        request, "matters/contacts/category-list.html", _category_context(matter)
+        request, "matters/contacts/group-list.html", _group_context(matter)
     )
     response.headers["HX-Trigger"] = "contactsReload"
     return response
@@ -357,7 +355,7 @@ def category_add(request, id):
 
 @login_required
 @matter_access_required
-def category_edit(request, id, group_pk):
+def group_edit(request, id, group_pk):
     matter = get_object_or_404(Matter, pk=id)
     name = (request.POST.get("name") or "").strip()
     # Scoped to this matter so a global group can't be renamed from here.
@@ -366,7 +364,7 @@ def category_edit(request, id, group_pk):
         group.name = name
         group.save()
     response = render(
-        request, "matters/contacts/category-list.html", _category_context(matter)
+        request, "matters/contacts/group-list.html", _group_context(matter)
     )
     response.headers["HX-Trigger"] = "contactsReload"
     return response
@@ -374,12 +372,12 @@ def category_edit(request, id, group_pk):
 
 @login_required
 @matter_access_required
-def category_delete(request, id, group_pk):
+def group_delete(request, id, group_pk):
     matter = get_object_or_404(Matter, pk=id)
     # Scoped to this matter so a global group can't be deleted from here.
     Group.objects.filter(pk=group_pk, matter=matter).delete()
     response = render(
-        request, "matters/contacts/category-list.html", _category_context(matter)
+        request, "matters/contacts/group-list.html", _group_context(matter)
     )
     response.headers["HX-Trigger"] = "contactsReload"
     return response

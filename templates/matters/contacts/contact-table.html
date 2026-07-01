@@ -10,10 +10,10 @@
          hx-trigger="click">+ Assign</a>
       <a href="#"
          class="accent-link"
-         hx-get="{% url 'matters:category-manage' id=matter.id %}"
+         hx-get="{% url 'matters:group-manage' id=matter.id %}"
          hx-target="#htmx-modal-container"
          hx-trigger="click">
-        <i class="icon-square-pen with-text"></i>Categories</a>
+        <i class="icon-square-pen with-text"></i>Groups</a>
       <button type="button"
               class="btn-icon"
               hx-get="{% url 'matters:contacts-filter' id=matter.id %}"

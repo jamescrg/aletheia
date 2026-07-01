@@ -82,31 +82,31 @@ urlpatterns = [
     path("matters/<int:id>/print", print, name="print"),
     # Contacts
     path("matters/<int:id>/contacts", contacts.index, name="contacts"),
-    # Matter-specific party categories
+    # Matter-specific party groups
     path(
-        "matters/<int:id>/contacts/categories",
-        contacts.category_manage,
-        name="category-manage",
+        "matters/<int:id>/contacts/groups",
+        contacts.group_manage,
+        name="group-manage",
     ),
     path(
-        "matters/<int:id>/contacts/categories/list",
-        contacts.category_list,
-        name="category-list",
+        "matters/<int:id>/contacts/groups/list",
+        contacts.group_list,
+        name="group-list",
     ),
     path(
-        "matters/<int:id>/contacts/categories/add",
-        contacts.category_add,
-        name="category-add",
+        "matters/<int:id>/contacts/groups/add",
+        contacts.group_add,
+        name="group-add",
     ),
     path(
-        "matters/<int:id>/contacts/categories/<int:group_pk>/edit",
-        contacts.category_edit,
-        name="category-edit",
+        "matters/<int:id>/contacts/groups/<int:group_pk>/edit",
+        contacts.group_edit,
+        name="group-edit",
     ),
     path(
-        "matters/<int:id>/contacts/categories/<int:group_pk>/delete",
-        contacts.category_delete,
-        name="category-delete",
+        "matters/<int:id>/contacts/groups/<int:group_pk>/delete",
+        contacts.group_delete,
+        name="group-delete",
     ),
     path(
         "matters/<int:id>/contacts/list/", contacts.contact_list, name="contacts-list"

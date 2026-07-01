@@ -1,7 +1,7 @@
 <div class="modal-dialog modal-md">
   <div class="modal-content">
     <div class="modal-header">
-      <h1 class="modal-title">Matter Categories</h1>
+      <h1 class="modal-title">Matter Groups</h1>
       <div>
         <button type="button" @click="$dispatch('close-modal')">
           <i class="icon-x"></i>
@@ -9,16 +9,16 @@
       </div>
     </div>
     <div class="modal-body">
-      <form hx-post="{% url 'matters:category-add' id=matter.id %}"
-            hx-target="#matter-category-list"
+      <form hx-post="{% url 'matters:group-add' id=matter.id %}"
+            hx-target="#matter-group-list"
             hx-swap="outerHTML"
             hx-on::after-request="if (event.detail.successful) this.reset()"
-            class="form-compact matter-category-add">
+            class="form-compact matter-group-add">
         {% csrf_token %}
-        <label for="category-name">Add a category for this matter</label>
-        <div class="matter-category-add-row">
+        <label for="group-name">Add a group for this matter</label>
+        <div class="matter-group-add-row">
           <input type="text"
-                 id="category-name"
+                 id="group-name"
                  name="name"
                  placeholder="e.g. Smith Defendants"
                  autocomplete="off"
@@ -26,11 +26,11 @@
           <button type="submit" class="btn btn-success">Add</button>
         </div>
       </form>
-      {% include "matters/contacts/category-list.html" %}
+      {% include "matters/contacts/group-list.html" %}
     </div>
     <div class="modal-footer">
       <button type="button"
-              class="btn btn-secondary matter-category-done"
+              class="btn btn-secondary matter-group-done"
               @click="$dispatch('close-modal')">Done</button>
     </div>
   </div>

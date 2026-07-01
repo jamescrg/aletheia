@@ -341,25 +341,25 @@ Mode Pills (Detail/Case toggle)
 }
 
 /* ==========================================================================
- Matter-specific category management modal
+ Matter-specific group management modal
 ========================================================================== */
 
-.matter-category-add-row {
+.matter-group-add-row {
   display: flex;
   gap: 0.5rem;
 }
 
-.matter-category-add-row input {
+.matter-group-add-row input {
   flex: 1;
 }
 
-.matter-category-list {
+.matter-group-list {
   margin-bottom: 0.5rem;
   /* 0.5rem base + 0.75rem extra separation from the add input above. */
   margin-top: 1.25rem;
 }
 
-.matter-category-list .assign-results li {
+.matter-group-list .assign-results li {
   align-items: center;
   display: flex;
   justify-content: space-between;
@@ -368,48 +368,48 @@ Mode Pills (Detail/Case toggle)
 /* The shared .assign-results drops the top border/radius because in the combobox
    the list sits flush under the search input. Standing alone in this modal it
    needs its own top edge. */
-.matter-category-list .assign-results li:first-child {
+.matter-group-list .assign-results li:first-child {
   border-top: solid 1px var(--border-medium);
   border-top-left-radius: var(--radius-sm);
   border-top-right-radius: var(--radius-sm);
 }
 
-.matter-category-count {
+.matter-group-count {
   color: var(--color-muted);
 }
 
-.matter-category-actions {
+.matter-group-actions {
   display: flex;
   gap: 1.25rem;
 }
 
 /* Rest and :hover both muted — buttons.css's .button-link:hover would otherwise
    tint these green; we want no colour change on hover. */
-.matter-category-rename,
-.matter-category-cancel,
-.matter-category-delete,
-.matter-category-save,
-.matter-category-rename:hover,
-.matter-category-cancel:hover,
-.matter-category-delete:hover,
-.matter-category-save:hover {
+.matter-group-rename,
+.matter-group-cancel,
+.matter-group-delete,
+.matter-group-save,
+.matter-group-rename:hover,
+.matter-group-cancel:hover,
+.matter-group-delete:hover,
+.matter-group-save:hover {
   color: var(--color-muted-more);
 }
 
 /* icons.css paints .icon-trash-2 red globally; let it inherit the button's
    muted grey so it matches the pencil. */
-.matter-category-delete .icon-trash-2 {
+.matter-group-delete .icon-trash-2 {
   color: inherit;
 }
 
 /* Push the lone Done button to the right of the space-between footer. */
-.matter-category-done {
+.matter-group-done {
   margin-left: auto;
 }
 
 /* Inline rename: the form replaces the whole row, so stretch it across the
    flex li and let the field take the slack, with the save/cancel icons trailing. */
-.matter-category-edit-form {
+.matter-group-edit-form {
   align-items: center;
   display: flex;
   flex: 1;
@@ -417,10 +417,10 @@ Mode Pills (Detail/Case toggle)
 }
 
 /* A touch more room between Save and Cancel (adds to the form's 0.5rem gap). */
-.matter-category-edit-form .matter-category-cancel {
+.matter-group-edit-form .matter-group-cancel {
   margin-left: 0.5rem;
 }
 
-.matter-category-edit-form input {
+.matter-group-edit-form input {
   flex: 1;
 }

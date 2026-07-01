@@ -1,7 +1,7 @@
 from django.db import migrations
 from django.db.models import F
 
-# Keep in sync with Group.MATTER_CATEGORY_ORDER_BASE.
+# Keep in sync with Group.MATTER_GROUP_ORDER_BASE.
 BASE = 1000
 
 

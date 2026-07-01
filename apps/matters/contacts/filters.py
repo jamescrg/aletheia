@@ -28,6 +28,6 @@ class MatterContactFilter(django_filters.FilterSet):
 
     def __init__(self, *args, matter=None, **kwargs):
         super().__init__(*args, **kwargs)
-        # Offer the global groups plus this matter's own categories.
+        # Offer the global groups plus this matter's own groups.
         if matter is not None:
             self.filters["group"].queryset = Group.objects.for_matter(matter)

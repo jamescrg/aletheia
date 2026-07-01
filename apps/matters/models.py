@@ -286,7 +286,7 @@ class PracticeArea(AuditMixin, models.Model):
 class GroupQuerySet(models.QuerySet):
     def for_matter(self, matter):
         """Active groups available on a matter: the global (firm-wide) ones plus
-        that matter's own categories, in display order."""
+        that matter's own groups, in display order."""
         return (
             self.filter(is_active=True)
             .filter(models.Q(matter__isnull=True) | models.Q(matter=matter))
@@ -296,20 +296,20 @@ class GroupQuerySet(models.QuerySet):
 
 class Group(AuditMixin, models.Model):
     # Firm-wide (global) groups occupy the low order band (1, 2, 3, …); matter-
-    # specific categories are numbered from this base up, so ordering by `order`
-    # always sorts the firm groups first, then a matter's own categories.
-    MATTER_CATEGORY_ORDER_BASE = 1000
+    # specific groups are numbered from this base up, so ordering by `order`
+    # always sorts the firm groups first, then a matter's own groups.
+    MATTER_GROUP_ORDER_BASE = 1000
 
     name = models.CharField(max_length=50)
     order = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
-    # Null → a global (firm-wide) group; set → a category scoped to one matter.
+    # Null → a global (firm-wide) group; set → a group scoped to one matter.
     matter = models.ForeignKey(
         Matter,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name="categories",
+        related_name="groups",
     )
     history = HistoricalRecords()
 

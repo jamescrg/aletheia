@@ -1,0 +1,63 @@
+<div id="matter-group-list" class="matter-group-list">
+  {% if groups %}
+    <ul class="assign-results">
+      {% for group in groups %}
+        <li>
+          {% if group.id == editing_id %}
+            <form class="matter-group-edit-form"
+                  hx-post="{% url 'matters:group-edit' id=matter.id group_pk=group.id %}"
+                  hx-target="#matter-group-list"
+                  hx-swap="outerHTML">
+              {% csrf_token %}
+              <input type="text"
+                     name="name"
+                     value="{{ group.name }}"
+                     autocomplete="off"
+                     autofocus
+                     required>
+              <button type="submit"
+                      class="button-link matter-group-save"
+                      title="Save rename">
+                <i class="icon-check"></i>
+              </button>
+              <button type="button"
+                      class="button-link matter-group-cancel"
+                      hx-get="{% url 'matters:group-list' id=matter.id %}"
+                      hx-target="#matter-group-list"
+                      hx-swap="outerHTML"
+                      title="Cancel">
+                <i class="icon-x"></i>
+              </button>
+            </form>
+          {% else %}
+            <span class="matter-group-name">
+              {{ group.name }}
+              {% if group.party_count %}<span class="matter-group-count">({{ group.party_count }})</span>{% endif %}
+            </span>
+            <span class="matter-group-actions">
+              <button type="button"
+                      class="button-link matter-group-rename"
+                      hx-get="{% url 'matters:group-list' id=matter.id %}?edit={{ group.id }}"
+                      hx-target="#matter-group-list"
+                      hx-swap="outerHTML"
+                      title="Rename">
+                <i class="icon-pencil"></i>
+              </button>
+              <button type="button"
+                      class="button-link matter-group-delete"
+                      hx-post="{% url 'matters:group-delete' id=matter.id group_pk=group.id %}"
+                      hx-target="#matter-group-list"
+                      hx-swap="outerHTML"
+                      hx-confirm="Delete &ldquo;{{ group.name }}&rdquo;? This removes the group and unassigns any parties in it."
+                      title="Delete">
+                <i class="icon-trash-2"></i>
+              </button>
+            </span>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="empty-message">No matter-specific groups yet.</p>
+  {% endif %}
+</div>
