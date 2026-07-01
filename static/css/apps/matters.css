@@ -354,7 +354,7 @@ Mode Pills (Detail/Case toggle)
 }
 
 .matter-category-list {
-  margin-top: 1rem;
+  margin-block: 0.5rem;
 }
 
 .matter-category-list .assign-results li {
@@ -363,19 +363,34 @@ Mode Pills (Detail/Case toggle)
   justify-content: space-between;
 }
 
+/* The shared .assign-results drops the top border/radius because in the combobox
+   the list sits flush under the search input. Standing alone in this modal it
+   needs its own top edge. */
+.matter-category-list .assign-results li:first-child {
+  border-top: solid 1px var(--border-medium);
+  border-top-left-radius: var(--radius-sm);
+  border-top-right-radius: var(--radius-sm);
+}
+
 .matter-category-count {
   color: var(--color-muted);
 }
 
 .matter-category-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .matter-category-rename,
 .matter-category-cancel,
 .matter-category-delete {
   color: var(--color-muted-more);
+}
+
+/* icons.css paints .icon-trash-2 red globally; let it inherit the button's
+   muted grey so it matches the pencil at rest (and reddens on hover below). */
+.matter-category-delete .icon-trash-2 {
+  color: inherit;
 }
 
 .matter-category-rename:hover,
