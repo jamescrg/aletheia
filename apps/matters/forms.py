@@ -19,8 +19,8 @@ class MatterForm(forms.ModelForm):
             "work_status",
             "jurisdiction",
             "billable",
-            "deferred_fees",
             "billing_type",
+            "deferred_fees",
             "flat_fee_amount",
         )
 
