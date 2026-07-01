@@ -35,12 +35,12 @@ class MatterForm(forms.ModelForm):
             "name": forms.TextInput(
                 attrs={
                     "onfocus": "moveFocusToEnd(this)",
-                    "class": "span2",
+                    "class": "span3",
                 }
             ),
             "description": forms.TextInput(
                 attrs={
-                    "class": "span2",
+                    "class": "span3",
                 }
             ),
             "work_status": forms.TextInput(
@@ -51,17 +51,9 @@ class MatterForm(forms.ModelForm):
             "status": forms.Select(
                 choices=STATUSES,
             ),
-            "client": forms.Select(
-                attrs={
-                    "class": "span2",
-                }
-            ),
+            "client": forms.Select(),
             "date_start": forms.DateInput(attrs={"type": "date"}),
-            "jurisdiction": forms.TextInput(
-                attrs={
-                    "class": "span2",
-                }
-            ),
+            "jurisdiction": forms.TextInput(),
             "billable": forms.Select(
                 choices=((True, "Yes"), (False, "No (Administrative)")),
             ),

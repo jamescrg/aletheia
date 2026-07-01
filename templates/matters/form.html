@@ -1,4 +1,4 @@
-<div class="modal-dialog modal-md">
+<div class="modal-dialog modal-lg">
   <div class="modal-content">
     <div class="modal-header">
       <h1 class="modal-title">
@@ -19,7 +19,7 @@
             hx-post="{{ action }}"
             hx-target="#htmx-modal-container"
             role="form"
-            class="form-compact col2 matter-form">
+            class="form-compact col3 matter-form">
         {% csrf_token %}
         {{ form }}
       </form>
