@@ -93,6 +93,7 @@ class MatterForm(forms.ModelForm):
         }
 
         labels = {
+            "name": "Matter Name",
             "date_start": "Open Date",
             "clio_matter_id": "Clio Matter",
             "client_reference_id": "Client Reference",
@@ -106,11 +107,10 @@ class MatterForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.renderer = CustomFormRendererCompact()
 
-        # client and work_status are nullable on the model, so don't force them
-        # in the form — otherwise matters without them (e.g. administrative
-        # matters with no client) can't be saved at all.
+        # client is nullable on the model but not blank, so the form would force
+        # it; relax it here so administrative matters with no client can save.
+        # (name/description/work_status get their optionality from the model.)
         self.fields["client"].required = False
-        self.fields["work_status"].required = False
 
         # Any contact can be a matter's client (the typeahead searches all
         # contacts), so validate the submitted pk against the full set.

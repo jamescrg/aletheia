@@ -15,7 +15,7 @@ class Matter(AuditMixin, models.Model):
         "accounts.CustomUser", on_delete=models.SET_NULL, null=True, blank=True
     )
     name = models.CharField(max_length=50, null=True)
-    work_status = models.CharField(max_length=255, null=True)
+    work_status = models.CharField(max_length=255, null=True, blank=True)
     description = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=50, null=True)
     date_start = models.DateField(null=True)
