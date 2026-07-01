@@ -383,9 +383,16 @@ Mode Pills (Detail/Case toggle)
   gap: 1.25rem;
 }
 
+/* Rest and :hover both muted — buttons.css's .button-link:hover would otherwise
+   tint these green; we want no colour change on hover. */
 .matter-category-rename,
 .matter-category-cancel,
-.matter-category-delete {
+.matter-category-delete,
+.matter-category-save,
+.matter-category-rename:hover,
+.matter-category-cancel:hover,
+.matter-category-delete:hover,
+.matter-category-save:hover {
   color: var(--color-muted-more);
 }
 
