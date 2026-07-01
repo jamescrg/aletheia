@@ -11,6 +11,7 @@ from .tasks import views as tasks
 from .timeline import views as timeline
 from .views import (
     add,
+    client_search,
     delete,
     detail,
     edit,
@@ -40,6 +41,7 @@ urlpatterns = [
     path("matters/<int:id>/mode-content/", mode_content, name="mode-content"),
     path("matters/<int:id>/tab/<str:tab>/", tab_content, name="tab-content"),
     path("matters/add", add, name="add"),
+    path("matters/client-search", client_search, name="client-search"),
     path("matters/<int:id>/edit", edit, name="edit"),
     path("matters/<int:id>/switcher", switcher, name="switcher"),
     path("matters/<int:id>/delete", delete, name="delete"),

@@ -1,0 +1,24 @@
+<div class="combobox-container combobox-overlay">
+  <div class="combobox-input-wrapper">
+    <input type="search"
+           id="assign-search-input"
+           name="search_text"
+           hx-post="{% url 'matters:client-search' %}"
+           hx-trigger="keyup changed delay:500ms, search"
+           hx-target="#search-results"
+           autocomplete="off"
+           placeholder="Search contacts..."
+           value="{{ widget.selected_name }}"
+           {% if widget.value %}class="selected" readonly{% endif %}>
+    <button type="button"
+            id="combobox-clear"
+            class="combobox-clear{% if not widget.value %} hidden{% endif %}">
+      <i class="icon-x"></i>
+    </button>
+  </div>
+  <input type="hidden"
+         name="{{ widget.name }}"
+         id="contact_id"
+         value="{{ widget.value|default:'' }}">
+  <div id="search-results" class="matter-contacts"></div>
+</div>

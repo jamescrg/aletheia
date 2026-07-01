@@ -95,8 +95,11 @@ class Matter(AuditMixin, models.Model):
                     client_status="Pending"
                 )
         elif self.status == "Open":
-            # Mark client as current if the matter was reopened
-            if self.client and self.client.client_status in ["Former", "Pending"]:
+            # Promote the client to Current when attached to an open matter —
+            # covers a brand-new/Nonclient contact assigned as a client as well as
+            # a reopened Former/Pending client. (Client status is a denormalized
+            # cache maintained here, not a purely manual field.)
+            if self.client and self.client.client_status != "Current":
                 Contact.objects.filter(pk=self.client.pk).update(
                     client_status="Current"
                 )

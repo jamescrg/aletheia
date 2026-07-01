@@ -1,8 +1,32 @@
 from django import forms
 
+from apps.contacts.models import Contact
 from config.settings import CustomFormRendererCompact
 
 from .models import Matter, PracticeArea
+
+
+class ContactComboboxWidget(forms.Widget):
+    """Typeahead combobox for choosing a contact. Renders a search input plus a
+    hidden value input that carries the field's value on submit. Reuses
+    static/js/combobox.js and the contact-search results partial
+    (templates/matters/contacts/results.html, served by matters:client-search)."""
+
+    template_name = "matters/widgets/contact_combobox.html"
+
+    def id_for_label(self, id_):
+        # The label points at the visible search input (the id combobox.js binds
+        # to), not the hidden value input.
+        return "assign-search-input"
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        selected_name = ""
+        if value not in (None, ""):
+            contact = Contact.objects.filter(pk=value).first()
+            selected_name = contact.name if contact else ""
+        context["widget"]["selected_name"] = selected_name
+        return context
 
 
 class MatterForm(forms.ModelForm):
@@ -51,7 +75,7 @@ class MatterForm(forms.ModelForm):
             "status": forms.Select(
                 choices=STATUSES,
             ),
-            "client": forms.Select(),
+            "client": ContactComboboxWidget(),
             "date_start": forms.DateInput(attrs={"type": "date"}),
             "jurisdiction": forms.TextInput(),
             "billable": forms.Select(
@@ -87,6 +111,10 @@ class MatterForm(forms.ModelForm):
         # matters with no client) can't be saved at all.
         self.fields["client"].required = False
         self.fields["work_status"].required = False
+
+        # Any contact can be a matter's client (the typeahead searches all
+        # contacts), so validate the submitted pk against the full set.
+        self.fields["client"].queryset = Contact.objects.all()
 
         # Validate server-side (as the add view already does) rather than via
         # the HTML5 `required` attribute. Otherwise the browser silently refuses

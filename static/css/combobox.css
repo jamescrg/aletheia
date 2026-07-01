@@ -88,3 +88,18 @@ Assign results list
 .assign-results .empty-message:hover {
   background: var(--background-light);
 }
+
+/* Overlay variant: float the results over the form instead of pushing content
+   down. Used by the matter form's client picker, where inline results would
+   stretch a single grid cell and distort the row. */
+.combobox-overlay {
+  position: relative;
+}
+
+.combobox-overlay #search-results {
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 20;
+}
