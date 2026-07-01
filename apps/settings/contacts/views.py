@@ -16,7 +16,7 @@ def contacts_index(request):
     group_filter = request.session.get("settings_group_filter", "active")
     role_filter = request.session.get("settings_role_filter", "active")
 
-    groups = Group.objects.all().order_by("order")
+    groups = Group.objects.filter(matter__isnull=True).order_by("order")
     if group_filter == "active":
         groups = groups.filter(is_active=True)
     elif group_filter == "inactive":
@@ -117,7 +117,7 @@ def delete_role(request, role_id):
 def group_list(request):
     group_filter = request.session.get("settings_group_filter", "active")
 
-    groups = Group.objects.all().order_by("order")
+    groups = Group.objects.filter(matter__isnull=True).order_by("order")
     if group_filter == "active":
         groups = groups.filter(is_active=True)
     elif group_filter == "inactive":
@@ -145,7 +145,12 @@ def add_group(request):
         if form.is_valid():
             group = form.save(commit=False)
             # Auto-assign order: new groups go to the end
-            max_order = Group.objects.aggregate(models.Max("order"))["order__max"] or 0
+            max_order = (
+                Group.objects.filter(matter__isnull=True).aggregate(
+                    models.Max("order")
+                )["order__max"]
+                or 0
+            )
             group.order = max_order + 1
             group.save()
 

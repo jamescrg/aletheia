@@ -1,0 +1,37 @@
+<div class="modal-dialog modal-md">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Matter Categories</h1>
+      <div>
+        <button type="button" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <form hx-post="{% url 'matters:category-add' id=matter.id %}"
+            hx-target="#matter-category-list"
+            hx-swap="outerHTML"
+            hx-on::after-request="if (event.detail.successful) this.reset()"
+            class="form-compact matter-category-add">
+        {% csrf_token %}
+        <label for="category-name">Add a category for this matter</label>
+        <div class="matter-category-add-row">
+          <input type="text"
+                 id="category-name"
+                 name="name"
+                 placeholder="e.g. Smith Defendants"
+                 autocomplete="off"
+                 required>
+          <button type="submit" class="btn btn-success">Add</button>
+        </div>
+      </form>
+      {% include "matters/contacts/category-list.html" %}
+    </div>
+    <div class="modal-footer">
+      <button type="button"
+              class="btn btn-secondary"
+              @click="$dispatch('close-modal')">Done</button>
+    </div>
+  </div>
+</div>

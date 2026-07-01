@@ -25,3 +25,9 @@ class MatterContactFilter(django_filters.FilterSet):
     class Meta:
         model = Relationship
         fields = ["group", "role"]
+
+    def __init__(self, *args, matter=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Offer the global groups plus this matter's own categories.
+        if matter is not None:
+            self.filters["group"].queryset = Group.objects.for_matter(matter)

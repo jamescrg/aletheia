@@ -1,0 +1,24 @@
+<div id="matter-category-list" class="matter-category-list">
+  {% if categories %}
+    <ul class="assign-results">
+      {% for cat in categories %}
+        <li>
+          <span class="matter-category-name">
+            {{ cat.name }}
+            {% if cat.party_count %}<span class="matter-category-count">({{ cat.party_count }})</span>{% endif %}
+          </span>
+          <button type="button"
+                  class="button-link matter-category-delete"
+                  hx-post="{% url 'matters:category-delete' id=matter.id group_pk=cat.id %}"
+                  hx-target="#matter-category-list"
+                  hx-swap="outerHTML"
+                  hx-confirm="Delete &ldquo;{{ cat.name }}&rdquo;? This removes the category and unassigns any parties in it.">
+            <i class="icon-trash-2"></i>
+          </button>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="empty-message">No matter-specific categories yet.</p>
+  {% endif %}
+</div>

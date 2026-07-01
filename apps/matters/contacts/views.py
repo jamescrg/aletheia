@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Max
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
@@ -19,10 +20,12 @@ def get_contact_list(request, matter):
     contacts_qs = load_contacts(matter)
 
     if filter_data:
-        contacts_qs = MatterContactFilter(filter_data, queryset=contacts_qs).qs
+        contacts_qs = MatterContactFilter(
+            filter_data, queryset=contacts_qs, matter=matter
+        ).qs
     else:
         contacts_qs = MatterContactFilter(
-            DEFAULT_MATTER_CONTACT_FILTER, queryset=contacts_qs
+            DEFAULT_MATTER_CONTACT_FILTER, queryset=contacts_qs, matter=matter
         ).qs
 
     # Build unified list with matter.client as first row if exists
@@ -34,7 +37,7 @@ def get_contact_list(request, matter):
         if isinstance(group_filter, list):
             group_filter = group_filter[0] if group_filter else ""
         # Check if filtering by Client group (ID) or no filter
-        client_group = Group.objects.filter(name="Client").first()
+        client_group = Group.objects.filter(matter__isnull=True, name="Client").first()
         if not group_filter or str(group_filter) == str(
             client_group.id if client_group else ""
         ):
@@ -96,7 +99,7 @@ def get_contact_list(request, matter):
         "contacts": contact_list,
         "current_order": order_field,
         "session_key": session_key,
-        "groups": Group.objects.filter(is_active=True).order_by("order"),
+        "groups": Group.objects.for_matter(matter),
         "roles": Role.objects.filter(is_active=True).order_by("name"),
         "group_id": int(group_id) if group_id else None,
         "role_id": int(role_id) if role_id else None,
@@ -151,7 +154,7 @@ def contact_filter(request, id):
 
     filter_data = request.session.get(session_key, {})
     contacts_qs = load_contacts(matter)
-    filter_form = MatterContactFilter(filter_data, queryset=contacts_qs)
+    filter_form = MatterContactFilter(filter_data, queryset=contacts_qs, matter=matter)
 
     context = {
         "filter": filter_form,
@@ -189,7 +192,7 @@ def contact_sort(request, id, order):
 @matter_access_required
 def assign(request, id):
     matter = get_object_or_404(Matter, pk=id)
-    groups = Group.objects.filter(is_active=True).order_by("order")
+    groups = Group.objects.for_matter(matter)
     roles = (
         Role.objects.filter(is_active=True)
         .exclude(name__in=["Client", "Client (Invoicing)"])
@@ -241,7 +244,7 @@ def assign_edit(request, id):
     relationship = get_object_or_404(Relationship, pk=id)
     matter = get_object_or_404(Matter, pk=relationship.matter_id)
     contact = get_object_or_404(Contact, pk=relationship.contact_id)
-    groups = Group.objects.filter(is_active=True).order_by("order")
+    groups = Group.objects.for_matter(matter)
     roles = (
         Role.objects.filter(is_active=True)
         .exclude(name__in=["Client", "Client (Invoicing)"])
@@ -295,3 +298,51 @@ def filter_role(request, id, role_id):
     filter_data["role"] = "" if role_id == 0 else role_id
     request.session[session_key] = filter_data
     return HttpResponse(status=204, headers={"HX-Trigger": "contactsReload"})
+
+
+# --- Matter-specific categories (Groups scoped to one matter) ----------------
+
+
+def _category_context(matter):
+    categories = matter.categories.annotate(party_count=Count("relationship")).order_by(
+        "order", "name"
+    )
+    return {"matter": matter, "categories": categories}
+
+
+@login_required
+@matter_access_required
+def category_manage(request, id):
+    """Modal to add/remove categories scoped to this matter."""
+    matter = get_object_or_404(Matter, pk=id)
+    return render(
+        request, "matters/contacts/category-modal.html", _category_context(matter)
+    )
+
+
+@login_required
+@matter_access_required
+def category_add(request, id):
+    matter = get_object_or_404(Matter, pk=id)
+    name = (request.POST.get("name") or "").strip()
+    if name:
+        max_order = matter.categories.aggregate(Max("order"))["order__max"] or 0
+        Group.objects.create(matter=matter, name=name, order=max_order + 1)
+    response = render(
+        request, "matters/contacts/category-list.html", _category_context(matter)
+    )
+    response.headers["HX-Trigger"] = "contactsReload"
+    return response
+
+
+@login_required
+@matter_access_required
+def category_delete(request, id, group_pk):
+    matter = get_object_or_404(Matter, pk=id)
+    # Scoped to this matter so a global group can't be deleted from here.
+    Group.objects.filter(pk=group_pk, matter=matter).delete()
+    response = render(
+        request, "matters/contacts/category-list.html", _category_context(matter)
+    )
+    response.headers["HX-Trigger"] = "contactsReload"
+    return response

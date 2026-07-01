@@ -82,6 +82,22 @@ urlpatterns = [
     path("matters/<int:id>/print", print, name="print"),
     # Contacts
     path("matters/<int:id>/contacts", contacts.index, name="contacts"),
+    # Matter-specific party categories
+    path(
+        "matters/<int:id>/contacts/categories",
+        contacts.category_manage,
+        name="category-manage",
+    ),
+    path(
+        "matters/<int:id>/contacts/categories/add",
+        contacts.category_add,
+        name="category-add",
+    ),
+    path(
+        "matters/<int:id>/contacts/categories/<int:group_pk>/delete",
+        contacts.category_delete,
+        name="category-delete",
+    ),
     path(
         "matters/<int:id>/contacts/list/", contacts.contact_list, name="contacts-list"
     ),

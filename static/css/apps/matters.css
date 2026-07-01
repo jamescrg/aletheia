@@ -339,3 +339,38 @@ Mode Pills (Detail/Case toggle)
 .mode-pills + .filter-tools {
   margin-left: 1.25rem;
 }
+
+/* ==========================================================================
+ Matter-specific category management modal
+========================================================================== */
+
+.matter-category-add-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.matter-category-add-row input {
+  flex: 1;
+}
+
+.matter-category-list {
+  margin-top: 1rem;
+}
+
+.matter-category-list .assign-results li {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.matter-category-count {
+  color: var(--color-muted);
+}
+
+.matter-category-delete {
+  color: var(--color-muted-more);
+}
+
+.matter-category-delete:hover {
+  color: var(--urgent);
+}
