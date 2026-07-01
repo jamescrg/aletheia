@@ -66,15 +66,16 @@ def get_contact_list(request, matter):
     if isinstance(current_order, list):
         current_order = current_order[0] if current_order else "group"
 
-    # When sorted by group, flag the first row of each group so the template can
-    # emit a section-header row above it.
+    # Add band index for visual grouping when sorted by group
     order_field = current_order.lstrip("-")
-    grouped = order_field == "group"
-    if grouped:
+    if order_field == "group":
         current_group = None
+        band = 0
         for item in contact_list:
-            item["first_in_group"] = item["group"] != current_group
-            current_group = item["group"]
+            if item["group"] != current_group:
+                current_group = item["group"]
+                band = 1 - band
+            item["band"] = band
 
     # Get current filter values for dropdown display
     group_id = filter_data.get("group", "")
@@ -97,7 +98,6 @@ def get_contact_list(request, matter):
     return {
         "contacts": contact_list,
         "current_order": order_field,
-        "grouped": grouped,
         "session_key": session_key,
         "groups": Group.objects.for_matter(matter),
         "roles": Role.objects.filter(is_active=True).order_by("name"),
