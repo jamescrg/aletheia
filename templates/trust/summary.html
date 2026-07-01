@@ -24,9 +24,34 @@
     <table class="trust-summary">
       <tr>
         <th class="client-id">Client ID</th>
-        <th>Client</th>
-        <th class="numeric">Pending Balance</th>
-        <th class="numeric">Confirmed Balance</th>
+        <th>
+          Client
+          <button class="btn-sort {% if current_order == 'name' %}active{% endif %}"
+                  hx-post="{% url 'trust:order-by' 'name' %}">
+            <i class="icon-chevrons-up-down"></i>
+          </button>
+        </th>
+        <th class="numeric">
+          Pending Balance
+          <button class="btn-sort {% if current_order == 'pending_client_balance' %}active{% endif %}"
+                  hx-post="{% url 'trust:order-by' 'pending_client_balance' %}">
+            <i class="icon-chevrons-up-down"></i>
+          </button>
+        </th>
+        <th class="numeric">
+          Confirmed Balance
+          <button class="btn-sort {% if current_order == 'confirmed_client_balance' %}active{% endif %}"
+                  hx-post="{% url 'trust:order-by' 'confirmed_client_balance' %}">
+            <i class="icon-chevrons-up-down"></i>
+          </button>
+        </th>
+        <th class="numeric">
+          Clearance
+          <button class="btn-sort {% if current_order == 'clearance' %}active{% endif %}"
+                  hx-post="{% url 'trust:order-by' 'clearance' %}">
+            <i class="icon-chevrons-up-down"></i>
+          </button>
+        </th>
       </tr>
       {% if contacts %}
         {% for contact in contacts %}
@@ -39,6 +64,9 @@
               ${{ contact.pending_client_balance|intcomma }}
             </td>
             <td class="numeric">${{ contact.confirmed_client_balance|intcomma }}</td>
+            <td class="numeric clearance{% if contact.clearance < 0 %} is-negative{% endif %}">
+              ${{ contact.clearance|intcomma }}
+            </td>
           </tr>
         {% endfor %}
       {% endif %}
@@ -48,6 +76,7 @@
           <td></td>
           <td class="numeric">${{ pending_account_balance|intcomma }}</td>
           <td class="numeric">${{ confirmed_account_balance|intcomma }}</td>
+          <td class="numeric">${{ total_clearance|intcomma }}</td>
         </tr>
       {% endif %}
     </table>

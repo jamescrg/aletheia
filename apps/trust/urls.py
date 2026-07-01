@@ -8,6 +8,7 @@ from apps.trust.views import (
     edit,
     history,
     history_index,
+    order_by,
     toggle_confirmed,
     toggle_entered,
     trust_index,
@@ -19,6 +20,7 @@ app_name = "trust"
 urlpatterns = [
     path("invoicing/trust/", trust_index, name="index"),
     path("invoicing/trust/list/", trust_list, name="trust"),
+    path("invoicing/trust/order-by/<str:order>/", order_by, name="order-by"),
     path(
         "invoicing/trust/history/<str:interval>/", history_index, name="history-index"
     ),

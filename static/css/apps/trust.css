@@ -42,7 +42,12 @@ Summary
 }
 
 .trust-summary .numeric {
-  width: 19rem;
+  width: 13rem;
+}
+
+/* Over-extended: obligations exceed the client's trust on hand. */
+.trust-summary .clearance.is-negative {
+  color: var(--error);
 }
 
 /* ==========================================================================

@@ -45,6 +45,20 @@ def trust_list(request):
 
 
 @login_required
+def order_by(request, order):
+    """Toggle the Account Summary sort. Stores the chosen key in the session
+    (repeat click flips to descending) and re-renders via the trustChanged
+    trigger; get_trust_data applies it to the list of client rows."""
+    current = request.session.get("trust_order", "")
+    if current == order:
+        new_order = f"-{order}" if not current.startswith("-") else order
+    else:
+        new_order = order
+    request.session["trust_order"] = new_order
+    return HttpResponse(status=204, headers={"HX-Trigger": "trustChanged"})
+
+
+@login_required
 def history_index(request, interval="30days"):
     request.session["trust_view"] = "history"
     request.session["interval"] = interval
