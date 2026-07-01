@@ -10,18 +10,18 @@ class MatterForm(forms.ModelForm):
         model = Matter
 
         fields = (
+            "client",
             "status",
             "date_start",
-            "client",
             "name",
+            "practice_area",
             "description",
             "work_status",
-            "practice_area",
             "jurisdiction",
             "billable",
+            "deferred_fees",
             "billing_type",
             "flat_fee_amount",
-            "deferred_fees",
         )
 
         STATUSES = (
@@ -35,7 +35,7 @@ class MatterForm(forms.ModelForm):
             "name": forms.TextInput(
                 attrs={
                     "onfocus": "moveFocusToEnd(this)",
-                    "class": "span3",
+                    "class": "span2",
                 }
             ),
             "description": forms.TextInput(
