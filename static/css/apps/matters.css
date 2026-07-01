@@ -416,6 +416,11 @@ Mode Pills (Detail/Case toggle)
   gap: 0.5rem;
 }
 
+/* A touch more room between Save and Cancel (adds to the form's 0.5rem gap). */
+.matter-category-edit-form .matter-category-cancel {
+  margin-left: 0.375rem;
+}
+
 .matter-category-edit-form input {
   flex: 1;
 }
