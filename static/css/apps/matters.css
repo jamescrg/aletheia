@@ -354,7 +354,9 @@ Mode Pills (Detail/Case toggle)
 }
 
 .matter-category-list {
-  margin-block: 0.5rem;
+  margin-bottom: 0.5rem;
+  /* 0.5rem base + 0.75rem extra separation from the add input above. */
+  margin-top: 1.25rem;
 }
 
 .matter-category-list .assign-results li {
@@ -378,7 +380,7 @@ Mode Pills (Detail/Case toggle)
 
 .matter-category-actions {
   display: flex;
-  gap: 0.75rem;
+  gap: 1.25rem;
 }
 
 .matter-category-rename,
@@ -388,18 +390,14 @@ Mode Pills (Detail/Case toggle)
 }
 
 /* icons.css paints .icon-trash-2 red globally; let it inherit the button's
-   muted grey so it matches the pencil at rest (and reddens on hover below). */
+   muted grey so it matches the pencil. */
 .matter-category-delete .icon-trash-2 {
   color: inherit;
 }
 
-.matter-category-rename:hover,
-.matter-category-cancel:hover {
-  color: var(--link);
-}
-
-.matter-category-delete:hover {
-  color: var(--urgent);
+/* Push the lone Done button to the right of the space-between footer. */
+.matter-category-done {
+  margin-left: auto;
 }
 
 /* Inline rename: the form replaces the whole row, so stretch it across the
