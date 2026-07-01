@@ -39,6 +39,7 @@ class ContactForm(forms.ModelForm):
         )
 
         widgets = {
+            "folder": forms.Select(attrs={"class": "span2"}),
             "name": forms.TextInput(
                 attrs={
                     "onfocus": "moveFocusToEnd(this)",
