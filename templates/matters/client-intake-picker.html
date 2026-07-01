@@ -1,0 +1,40 @@
+<div class="modal-dialog modal-md">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title">Convert an Intake</h1>
+      <div>
+        <button type="button" @click="$dispatch('close-modal')">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <ul class="assign-results intake-picker">
+        {% for intake in intakes %}
+          <li>
+            <a href="#"
+               hx-get="{% url 'matters:client-intake-contact' id=intake.id %}"
+               hx-target="#htmx-modal-container .modal-dialog"
+               hx-swap="outerHTML">
+              <span class="intake-picker-name">{{ intake.name }}</span>
+              <span class="intake-picker-meta">
+                {% if intake.date %}{{ intake.date|date:"M j, Y" }}{% endif %}
+                {% if intake.phone %}&middot; {{ intake.phone }}{% endif %}
+                {% if intake.source %}&middot; {{ intake.source }}{% endif %}
+              </span>
+            </a>
+          </li>
+        {% empty %}
+          <li class="empty-message">No unconverted intakes.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="modal-footer">
+      <button type="button"
+              class="btn btn-secondary"
+              hx-get="{% url 'matters:client-cancel' %}"
+              hx-target="#htmx-modal-container .modal-dialog"
+              hx-swap="outerHTML">Back</button>
+    </div>
+  </div>
+</div>

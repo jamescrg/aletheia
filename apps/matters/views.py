@@ -397,12 +397,16 @@ def edit(request, id):
 @login_required
 def client_search(request):
     """Typeahead search for the add/edit matter client picker: all contacts by
-    name. Renders the shared combobox results partial."""
+    name. Renders the client-results partial (results + create/convert footer)."""
     text = request.POST.get("search_text")
     contacts = (
         Contact.objects.filter(name__icontains=text).order_by("name") if text else None
     )
-    return render(request, "matters/contacts/results.html", {"contacts": contacts})
+    return render(
+        request,
+        "matters/contacts/client-results.html",
+        {"contacts": contacts, "search_text": text},
+    )
 
 
 @login_required
