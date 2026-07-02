@@ -756,9 +756,13 @@ tr > td.importance.complete .button-link {
 }
 
 .kanban-column {
-  background: var(--background-section);
+  /* --background-subnav (not -section) so light columns sit a clear step
+     darker than the body/cards and read as distinct lanes. Free in dark:
+     -subnav and -section both resolve to gb-dark1, so the dark board is
+     unchanged. */
+  background: var(--background-subnav);
   border: solid 1px var(--border-light);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   display: flex;
   flex: 1 0 0;
   flex-direction: column;
@@ -787,6 +791,14 @@ tr > td.importance.complete .button-link {
   min-width: 1.75rem;
   padding: 0.1rem 0.5rem;
   text-align: center;
+}
+
+/* Light only: the column now fills with --background-subnav, which equals
+   --background-control (stone-200) in light — so lift the count pill a step to
+   stay a visible pill against its lane. Dark/cosmic keep the base fill (the
+   pill already reads fine there and both themes were signed off as-is). */
+[data-theme="light"] .kanban-column-count {
+  background: var(--background-subnav-contrast);
 }
 
 .kanban-column-cards {
