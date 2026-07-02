@@ -364,6 +364,19 @@ Contacts tab — parties table
   margin-top: 1rem;
 }
 
+/* Give it the toolbar-button look (it sits outside .toolbar, so it doesn't pick
+   up those rules): background, border, radius and padding. */
+.matter-subtab-add button {
+  align-items: center;
+  background: var(--background-control);
+  border: solid 1px var(--border-medium);
+  border-radius: var(--radius-sm);
+  color: var(--button-toolbar);
+  display: inline-flex;
+  line-height: 1.25;
+  padding: 0.5rem 0.75rem;
+}
+
 /* ==========================================================================
 Matter Info tab
 ========================================================================== */
