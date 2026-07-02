@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Max
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_POST
 
@@ -24,9 +24,29 @@ DEFAULT_MATTER_CONTACT_FILTER = {"order_by": "group"}
 # HX-Trigger that refreshes the #contacts panel.
 CONTACTS_TRIGGER = "contactsReload"
 
+# The client mirror row (Matter.client in the Client role) is managed via the
+# matter, not the parties list.
+CLIENT_ROW_GUARD_MSG = "The client is managed on the matter, not the parties list."
+
 
 def _selection_key(matter):
     return get_session_key("selected_matter_contacts", matter.id)
+
+
+def _is_client_mirror(relationship):
+    """True only for the row that mirrors Matter.client (that contact in the
+    Client role). Co-clients — the Client role on a different contact — are not
+    mirrors and stay fully editable."""
+    return (
+        relationship.matter.client_id == relationship.contact_id
+        and relationship.role.is_system
+    )
+
+
+def _without_client_mirror(qs, matter):
+    """Drop the client-mirror row from a Relationship queryset (no-op when the
+    matter has no client). Co-client Client rows are kept."""
+    return qs.exclude(contact_id=matter.client_id, role__is_system=True)
 
 
 def _filtered_relationships(request, matter):
@@ -47,37 +67,25 @@ def get_contact_list(request, matter):
 
     contacts_qs = _filtered_relationships(request, matter)
 
-    # Build unified list with matter.client as first row if exists
+    # The parties list is just the matter's relationships. The canonical client
+    # (Matter.client) is mirrored into a Client-group/Client-role relationship
+    # (see Matter._ensure_client_relationship), so it shows up here like any
+    # other party — flagged is_client so the template renders that one row
+    # read-only. Co-clients (Client role but a different contact) are normal.
     contact_list = []
-
-    if matter.client:
-        # Only include client row if not filtering by non-Client group
-        group_filter = filter_data.get("group", "")
-        if isinstance(group_filter, list):
-            group_filter = group_filter[0] if group_filter else ""
-        # Check if filtering by Client group (ID) or no filter
-        client_group = Group.objects.filter(matter__isnull=True, name="Client").first()
-        if not group_filter or str(group_filter) == str(
-            client_group.id if client_group else ""
-        ):
-            contact_list.append(
-                {
-                    "group": "Client",
-                    "role_name": "Client",
-                    "contact": matter.client,
-                    "relationship_id": None,
-                    "is_client": True,
-                }
-            )
-
     for rel in contacts_qs:
+        is_client = (
+            matter.client_id is not None
+            and rel.contact_id == matter.client_id
+            and rel.role.is_system
+        )
         contact_list.append(
             {
                 "group": rel.group.name,
                 "role_name": rel.role.name,
                 "contact": rel.contact,
                 "relationship_id": rel.id,
-                "is_client": False,
+                "is_client": is_client,
             }
         )
 
@@ -114,10 +122,14 @@ def get_contact_list(request, matter):
         role_obj = Role.objects.filter(id=role_id).first()
         selected_role = role_obj.name if role_obj else None
 
-    # Multi-select state (the synthetic client row has no relationship, so it's
-    # never selectable).
+    # Multi-select state. The client mirror row is read-only, so it's never
+    # selectable (excluded from visible_ids and rendered without a checkbox).
     selected_ids = get_selected_ids(request, _selection_key(matter))
-    visible_ids = [i["relationship_id"] for i in contact_list if i["relationship_id"]]
+    visible_ids = [
+        i["relationship_id"]
+        for i in contact_list
+        if i["relationship_id"] and not i["is_client"]
+    ]
 
     return {
         "contacts": contact_list,
@@ -293,6 +305,8 @@ def assign_edit(request, id):
 @login_required
 def assign_update(request, id):
     relationship = get_object_or_404(Relationship, pk=id)
+    if _is_client_mirror(relationship):
+        return HttpResponseForbidden(CLIENT_ROW_GUARD_MSG)
     relationship.group_id = request.POST.get("group_id")
     relationship.role_id = request.POST.get("role_id")
     relationship.save()
@@ -302,6 +316,8 @@ def assign_update(request, id):
 @login_required
 def assign_delete(request, id):
     relationship = get_object_or_404(Relationship, pk=id)
+    if _is_client_mirror(relationship):
+        return HttpResponseForbidden(CLIENT_ROW_GUARD_MSG)
     relationship.delete()
     return HttpResponse(status=204, headers={"HX-Trigger": "contactsReload"})
 
@@ -428,10 +444,13 @@ def toggle_select(request, id, relationship_id):
 @matter_access_required
 @require_POST
 def select_all(request, id):
-    """Select/deselect every party currently visible under the active filter."""
+    """Select/deselect every party currently visible under the active filter
+    (the read-only client mirror row is not selectable)."""
     matter = get_object_or_404(Matter, pk=id)
     visible_ids = list(
-        _filtered_relationships(request, matter).values_list("id", flat=True)
+        _without_client_mirror(
+            _filtered_relationships(request, matter), matter
+        ).values_list("id", flat=True)
     )
     select_all_ids(request, _selection_key(matter), visible_ids)
     return selection_response(CONTACTS_TRIGGER)
@@ -458,7 +477,9 @@ def bulk_group(request, id):
         Group.objects.for_matter(matter).filter(pk=request.POST.get("group_id")).first()
     )
     if selected and group:
-        Relationship.objects.filter(matter=matter, id__in=selected).update(group=group)
+        _without_client_mirror(
+            Relationship.objects.filter(matter=matter, id__in=selected), matter
+        ).update(group=group)
     return selection_response(CONTACTS_TRIGGER)
 
 
@@ -471,7 +492,9 @@ def bulk_role(request, id):
     selected = get_selected_ids(request, _selection_key(matter))
     role = Role.objects.filter(is_active=True, pk=request.POST.get("role_id")).first()
     if selected and role:
-        Relationship.objects.filter(matter=matter, id__in=selected).update(role=role)
+        _without_client_mirror(
+            Relationship.objects.filter(matter=matter, id__in=selected), matter
+        ).update(role=role)
     return selection_response(CONTACTS_TRIGGER)
 
 
@@ -484,6 +507,8 @@ def bulk_remove(request, id):
     key = _selection_key(matter)
     selected = get_selected_ids(request, key)
     if selected:
-        Relationship.objects.filter(matter=matter, id__in=selected).delete()
+        _without_client_mirror(
+            Relationship.objects.filter(matter=matter, id__in=selected), matter
+        ).delete()
     clear_selected_ids(request, key)
     return selection_response(CONTACTS_TRIGGER)
