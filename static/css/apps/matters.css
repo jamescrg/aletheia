@@ -405,22 +405,6 @@ Matter Info tab
   flex: 4;
 }
 
-/* Client row: name on the left, an edit-matter pencil pinned to the far right. */
-.info-client-cell {
-  align-items: center;
-  display: flex;
-  gap: 0.5rem;
-  justify-content: space-between;
-}
-
-.info-edit {
-  color: var(--color-muted-more);
-}
-
-.info-edit:hover {
-  color: var(--link);
-}
-
 .info-table th,
 .info-table td {
   border-bottom: solid 1px var(--border-medium);

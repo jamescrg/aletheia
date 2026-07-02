@@ -180,6 +180,18 @@ def detail(request, id):
     return redirect(f"/matters/{id}/{tab}")
 
 
+def _matter_info_context(matter):
+    """Shared context for the Info tab (full page + HTMX partial). The firm's
+    default jurisdiction (Company.jurisdiction) is shown when the matter has none."""
+    from apps.settings.models import Company
+
+    company = Company.objects.first()
+    return {
+        "primary_proceeding": matter.primary_proceeding,
+        "company_jurisdiction": company.jurisdiction if company else "",
+    }
+
+
 @login_required
 @matter_access_required
 def info_index(request, id):
@@ -189,7 +201,7 @@ def info_index(request, id):
         "app": "matters",
         "subapp": "info",
         "matter": matter,
-        "primary_proceeding": matter.primary_proceeding,
+        **_matter_info_context(matter),
     }
     return render(request, "matters/info/list.html", context)
 
@@ -269,7 +281,7 @@ def _get_detail_tab_data(request, matter, tab):
     if tab == "info":
         return {
             "tab_template": "matters/info/main.html",
-            "primary_proceeding": matter.primary_proceeding,
+            **_matter_info_context(matter),
         }
 
     if tab == "contacts":
