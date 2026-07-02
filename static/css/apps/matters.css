@@ -333,7 +333,7 @@ Contacts tab — parties table
 /* Add button placed below short, control-less subtab tables (Rates, Proceedings,
    Settlement) instead of in a near-empty top toolbar. */
 .matter-subtab-add {
-  margin-top: 1rem;
+  margin-top: 1.25rem;
 }
 
 /* Give it the toolbar-button look (it sits outside .toolbar, so it doesn't pick
