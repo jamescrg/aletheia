@@ -356,12 +356,9 @@ Contacts tab — parties table
 Matter Info tab
 ========================================================================== */
 
-.matter-info {
-  padding: 1rem;
-}
-
-/* Two tables at the top: matter properties (70%) beside the primary proceeding
-   (30%), mirroring the Ledger's side-by-side totals tables. */
+/* Two tables at the top: matter properties (60%) beside the primary proceeding
+   (40%), mirroring the Ledger's side-by-side totals tables. No wrapper padding —
+   the tables sit flush inside .detail-body's own padding. */
 .info-tables {
   align-items: flex-start;
   display: flex;
@@ -376,11 +373,27 @@ Matter Info tab
 }
 
 .info-table.info-main {
-  flex: 7;
+  flex: 6;
 }
 
 .info-table.info-proceeding {
-  flex: 3;
+  flex: 4;
+}
+
+/* Client row: name on the left, an edit-matter pencil pinned to the far right. */
+.info-client-cell {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+
+.info-edit {
+  color: var(--color-muted-more);
+}
+
+.info-edit:hover {
+  color: var(--link);
 }
 
 .info-table th,
