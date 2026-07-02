@@ -2,7 +2,7 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.db import models
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
@@ -16,7 +16,7 @@ def contacts_index(request):
     group_filter = request.session.get("settings_group_filter", "active")
     role_filter = request.session.get("settings_role_filter", "active")
 
-    groups = Group.objects.all().order_by("order")
+    groups = Group.objects.filter(matter__isnull=True).order_by("order")
     if group_filter == "active":
         groups = groups.filter(is_active=True)
     elif group_filter == "inactive":
@@ -85,6 +85,8 @@ def add_role(request):
 @login_required
 def edit_role(request, role_id):
     role = Role.objects.get(id=role_id)
+    if role.is_system:
+        return HttpResponseForbidden("This role is protected and cannot be edited.")
 
     if request.method == "POST":
         form = RoleForm(request.POST, instance=role)
@@ -106,7 +108,10 @@ def edit_role(request, role_id):
 
 @login_required
 def delete_role(request, role_id):
-    Role.objects.get(id=role_id).delete()
+    role = Role.objects.get(id=role_id)
+    if role.is_system:
+        return HttpResponseForbidden("This role is protected and cannot be deleted.")
+    role.delete()
     return HttpResponse(status=204, headers={"HX-Trigger": "roleListReload"})
 
 
@@ -117,7 +122,7 @@ def delete_role(request, role_id):
 def group_list(request):
     group_filter = request.session.get("settings_group_filter", "active")
 
-    groups = Group.objects.all().order_by("order")
+    groups = Group.objects.filter(matter__isnull=True).order_by("order")
     if group_filter == "active":
         groups = groups.filter(is_active=True)
     elif group_filter == "inactive":
@@ -145,7 +150,12 @@ def add_group(request):
         if form.is_valid():
             group = form.save(commit=False)
             # Auto-assign order: new groups go to the end
-            max_order = Group.objects.aggregate(models.Max("order"))["order__max"] or 0
+            max_order = (
+                Group.objects.filter(matter__isnull=True).aggregate(
+                    models.Max("order")
+                )["order__max"]
+                or 0
+            )
             group.order = max_order + 1
             group.save()
 
@@ -163,6 +173,8 @@ def add_group(request):
 @login_required
 def edit_group(request, group_id):
     group = Group.objects.get(id=group_id)
+    if group.is_system:
+        return HttpResponseForbidden("This group is protected and cannot be edited.")
 
     if request.method == "POST":
         form = GroupForm(request.POST, instance=group)
@@ -184,7 +196,10 @@ def edit_group(request, group_id):
 
 @login_required
 def delete_group(request, group_id):
-    Group.objects.get(id=group_id).delete()
+    group = Group.objects.get(id=group_id)
+    if group.is_system:
+        return HttpResponseForbidden("This group is protected and cannot be deleted.")
+    group.delete()
     return HttpResponse(status=204, headers={"HX-Trigger": "groupListReload"})
 
 

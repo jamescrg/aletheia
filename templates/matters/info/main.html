@@ -1,0 +1,98 @@
+<div class="matter-info">
+  <div class="info-tables">
+    <table class="info-table info-main">
+      <tr>
+        <th>Client</th>
+        <td>
+          <div class="info-client-cell">
+            {% if matter.client %}
+              <a href="{% url 'contacts:select' contact_id=matter.client.id %}">{{ matter.client.name }}</a>
+            {% else %}
+              <span class="info-empty">None</span>
+            {% endif %}
+            <a href="#"
+               class="info-edit"
+               hx-get="{% url 'matters:edit' id=matter.id %}"
+               hx-target="#htmx-modal-container"
+               hx-trigger="click"
+               title="Edit matter"><i class="icon-pencil"></i></a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <th>Status</th>
+        <td>{{ matter.status|default:"—" }}</td>
+      </tr>
+      <tr>
+        <th>Practice Area</th>
+        <td>{{ matter.practice_area|default:"—" }}</td>
+      </tr>
+      <tr>
+        <th>Open Date</th>
+        <td>{{ matter.date_start|date:"Y-m-d"|default:"—" }}</td>
+      </tr>
+      {% if matter.date_end %}
+        <tr>
+          <th>Closed</th>
+          <td>{{ matter.date_end|date:"Y-m-d" }}</td>
+        </tr>
+      {% endif %}
+      <tr>
+        <th>Work Status</th>
+        <td>{{ matter.work_status|default:"—" }}</td>
+      </tr>
+      {% if matter.description %}
+        <tr>
+          <th>Description</th>
+          <td>{{ matter.description }}</td>
+        </tr>
+      {% endif %}
+      <tr>
+        <th>Jurisdiction</th>
+        <td>{{ matter.jurisdiction|default:"—" }}</td>
+      </tr>
+      <tr>
+        <th>Billing Type</th>
+        <td>
+          {{ matter.get_billing_type_display }}
+          {% if matter.flat_fee_amount %}· {{ matter.flat_fee_amount }}{% endif %}
+        </td>
+      </tr>
+      <tr>
+        <th>Billable</th>
+        <td>{{ matter.billable|yesno:"Yes,No" }}</td>
+      </tr>
+      {% if matter.deferred_fees %}
+        <tr>
+          <th>Deferred Fees</th>
+          <td>Yes</td>
+        </tr>
+      {% endif %}
+      {% if matter.client_reference_id %}
+        <tr>
+          <th>Reference No.</th>
+          <td>{{ matter.client_reference_id }}</td>
+        </tr>
+      {% endif %}
+    </table>
+    {% if primary_proceeding %}
+      <table class="info-table info-proceeding">
+        <tr>
+          <th class="info-table-head" colspan="2">Primary Proceeding</th>
+        </tr>
+        <tr>
+          <th>Forum</th>
+          <td>{{ primary_proceeding.forum|default:"—" }}</td>
+        </tr>
+        <tr>
+          <th>Case No.</th>
+          <td>{{ primary_proceeding.case_number|default:"—" }}</td>
+        </tr>
+        <tr>
+          <th>Filed</th>
+          <td>{{ primary_proceeding.date_filed|date:"Y-m-d"|default:"—" }}</td>
+        </tr>
+      </table>
+    {% endif %}
+  </div>
+</div>

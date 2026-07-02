@@ -85,6 +85,38 @@ class Matter(AuditMixin, models.Model):
         # and it reverted files to the deprecated name-based layout.)
         super().save(*args, **kwargs)
 
+        self._ensure_client_relationship()
+
+    def _ensure_client_relationship(self):
+        """Make sure the canonical client (Matter.client) is represented as a
+        party in the Client group + Client role.
+
+        Purely additive: it only ever *adds* the one missing row and never
+        removes or edits anything else, so co-clients, spouses, and former
+        clients that also carry the Client role are left untouched. Idempotent —
+        does nothing if the row already exists or the matter has no client.
+        Matter.client stays the canonical field; this is only its representation
+        on the parties list."""
+        if not self.client_id:
+            return
+        client_group = Group.objects.client_group()
+        client_role = Role.objects.client_role()
+        if client_group is None or client_role is None:
+            return
+        already = Relationship.objects.filter(
+            matter=self,
+            contact_id=self.client_id,
+            group=client_group,
+            role=client_role,
+        ).exists()
+        if not already:
+            Relationship.objects.create(
+                matter=self,
+                contact_id=self.client_id,
+                group=client_group,
+                role=client_role,
+            )
+
     @property
     def primary_proceeding(self):
         """Return the primary proceeding for this matter, if any."""
@@ -283,11 +315,46 @@ class PracticeArea(AuditMixin, models.Model):
         ordering = ["name"]
 
 
+class GroupQuerySet(models.QuerySet):
+    def for_matter(self, matter):
+        """Active groups available on a matter: the global (firm-wide) ones plus
+        that matter's own groups, in display order."""
+        return (
+            self.filter(is_active=True)
+            .filter(models.Q(matter__isnull=True) | models.Q(matter=matter))
+            .order_by("order")
+        )
+
+    def client_group(self):
+        """The protected firm-wide system Client group. A matter's client is
+        mirrored into a Relationship in this group; it's the one stable reference
+        (see is_system) that replaces name-string lookups."""
+        return self.filter(is_system=True, name="Client", matter__isnull=True).first()
+
+
 class Group(AuditMixin, models.Model):
+    # Firm-wide (global) groups occupy the low order band (1, 2, 3, …); matter-
+    # specific groups are numbered from this base up, so ordering by `order`
+    # always sorts the firm groups first, then a matter's own groups.
+    MATTER_GROUP_ORDER_BASE = 1000
+
     name = models.CharField(max_length=50)
     order = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
+    # Protected system row (the Client group): the matter-client mirror depends on
+    # it, so Settings blocks renaming/deleting it.
+    is_system = models.BooleanField(default=False)
+    # Null → a global (firm-wide) group; set → a group scoped to one matter.
+    matter = models.ForeignKey(
+        Matter,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="groups",
+    )
     history = HistoricalRecords()
+
+    objects = GroupQuerySet.as_manager()
 
     def __str__(self):
         return self.name
@@ -297,10 +364,20 @@ class Group(AuditMixin, models.Model):
         ordering = ["order"]
 
 
+class RoleQuerySet(models.QuerySet):
+    def client_role(self):
+        """The protected system Client role used for the matter-client mirror."""
+        return self.filter(is_system=True, name="Client").first()
+
+
 class Role(AuditMixin, models.Model):
     name = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
+    # Protected system row (the Client role): see Group.is_system.
+    is_system = models.BooleanField(default=False)
     history = HistoricalRecords()
+
+    objects = RoleQuerySet.as_manager()
 
     def __str__(self):
         return f"{self.name}"

@@ -205,12 +205,11 @@ Matter Switcher
 
 /* Mobile: subtab toolbars marked `mobile-min-toolbar` collapse to just their
    Add + Filter buttons (plain buttons in .filter-tools). Everything else —
-   filter dropdowns, toolbar-right links (reports, deadline calc, view-all),
-   and the tasks "back to agenda" link — is hidden. */
+   filter dropdowns and toolbar-right links (reports, deadline calc, view-all)
+   — is hidden. */
 @media (width <= 768px) {
   .mobile-min-toolbar .dropdown,
-  .mobile-min-toolbar .toolbar-right,
-  .mobile-min-toolbar .return-to-agenda {
+  .mobile-min-toolbar .toolbar-right {
     display: none;
   }
 }
@@ -338,4 +337,183 @@ Mode Pills (Detail/Case toggle)
 
 .mode-pills + .filter-tools {
   margin-left: 1.25rem;
+}
+
+/* ==========================================================================
+Contacts tab — parties table
+========================================================================== */
+
+/* Narrow, centred multi-select column (matches the shared col-select pattern). */
+.matter-contacts th.col-select,
+.matter-contacts td.col-select {
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+  width: 2.5rem;
+}
+
+/* Non-interactive placeholder in the client row's select cell (the client can't
+   be bulk-selected); muted like an unchecked box so the column reads as complete. */
+.contacts-select-na {
+  color: var(--color-muted-more);
+}
+
+/* ==========================================================================
+Matter Info tab
+========================================================================== */
+
+/* Two tables at the top: matter properties (60%) beside the primary proceeding
+   (40%), mirroring the Ledger's side-by-side totals tables. No wrapper padding —
+   the tables sit flush inside .detail-body's own padding. */
+.info-tables {
+  align-items: flex-start;
+  display: flex;
+  gap: 1.25rem;
+}
+
+.info-table {
+  border: solid 1px var(--border-medium);
+  border-collapse: separate;
+  border-radius: var(--radius-md);
+  border-spacing: 0;
+}
+
+.info-table.info-main {
+  flex: 6;
+}
+
+.info-table.info-proceeding {
+  flex: 4;
+}
+
+/* Client row: name on the left, an edit-matter pencil pinned to the far right. */
+.info-client-cell {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+
+.info-edit {
+  color: var(--color-muted-more);
+}
+
+.info-edit:hover {
+  color: var(--link);
+}
+
+.info-table th,
+.info-table td {
+  border-bottom: solid 1px var(--border-medium);
+  padding: 0.5rem 1rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.info-table tr:last-child th,
+.info-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Label column: shrink to its content so the value column takes the rest. */
+.info-table th {
+  color: var(--color-muted);
+  font-weight: 600;
+  white-space: nowrap;
+  width: 1%;
+}
+
+/* Full-width section-title row (e.g. "Primary Proceeding"). */
+.info-table th.info-table-head {
+  color: var(--color-primary);
+  width: auto;
+}
+
+.info-empty {
+  color: var(--color-muted);
+}
+
+/* ==========================================================================
+ Matter-specific group management modal
+========================================================================== */
+
+.matter-group-add-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.matter-group-add-row input {
+  flex: 1;
+}
+
+.matter-group-list {
+  margin-bottom: 0.5rem;
+  /* 0.5rem base + 0.75rem extra separation from the add input above. */
+  margin-top: 1.25rem;
+}
+
+.matter-group-list .assign-results li {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* The shared .assign-results drops the top border/radius because in the combobox
+   the list sits flush under the search input. Standing alone in this modal it
+   needs its own top edge. */
+.matter-group-list .assign-results li:first-child {
+  border-top: solid 1px var(--border-medium);
+  border-top-left-radius: var(--radius-sm);
+  border-top-right-radius: var(--radius-sm);
+}
+
+.matter-group-count {
+  color: var(--color-muted);
+}
+
+.matter-group-actions {
+  display: flex;
+  gap: 1.25rem;
+}
+
+/* Rest and :hover both muted — buttons.css's .button-link:hover would otherwise
+   tint these green; we want no colour change on hover. */
+.matter-group-rename,
+.matter-group-cancel,
+.matter-group-delete,
+.matter-group-save,
+.matter-group-rename:hover,
+.matter-group-cancel:hover,
+.matter-group-delete:hover,
+.matter-group-save:hover {
+  color: var(--color-muted-more);
+}
+
+/* icons.css paints .icon-trash-2 red globally; let it inherit the button's
+   muted grey so it matches the pencil. */
+.matter-group-delete .icon-trash-2 {
+  color: inherit;
+}
+
+/* Push the lone Done button to the right of the space-between footer. */
+.matter-group-done {
+  margin-left: auto;
+}
+
+/* Inline rename: the form replaces the whole row, so stretch it across the
+   flex li and let the field take the slack, with the save/cancel icons trailing. */
+.matter-group-edit-form {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  gap: 0.5rem;
+}
+
+/* A touch more room between Save and Cancel (adds to the form's 0.5rem gap). */
+.matter-group-edit-form .matter-group-cancel {
+  margin-left: 0.5rem;
+}
+
+.matter-group-edit-form input {
+  flex: 1;
 }

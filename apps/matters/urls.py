@@ -26,6 +26,7 @@ from .views import (
     filter,
     filter_quick,
     filter_quick_status,
+    info_index,
     matter_index,
     matter_list,
     mode_content,
@@ -80,8 +81,36 @@ urlpatterns = [
         name="update-work-status",
     ),
     path("matters/<int:id>/print", print, name="print"),
+    # Info
+    path("matters/<int:id>/info", info_index, name="info-index"),
     # Contacts
     path("matters/<int:id>/contacts", contacts.index, name="contacts"),
+    # Matter-specific party groups
+    path(
+        "matters/<int:id>/contacts/groups",
+        contacts.group_manage,
+        name="group-manage",
+    ),
+    path(
+        "matters/<int:id>/contacts/groups/list",
+        contacts.group_list,
+        name="group-list",
+    ),
+    path(
+        "matters/<int:id>/contacts/groups/add",
+        contacts.group_add,
+        name="group-add",
+    ),
+    path(
+        "matters/<int:id>/contacts/groups/<int:group_pk>/edit",
+        contacts.group_edit,
+        name="group-edit",
+    ),
+    path(
+        "matters/<int:id>/contacts/groups/<int:group_pk>/delete",
+        contacts.group_delete,
+        name="group-delete",
+    ),
     path(
         "matters/<int:id>/contacts/list/", contacts.contact_list, name="contacts-list"
     ),
@@ -112,6 +141,37 @@ urlpatterns = [
         "matters/assign/<id>/delete",
         contacts.assign_delete,
         name="contacts-assign-delete",
+    ),
+    # Multi-select bulk actions on the parties list
+    path(
+        "matters/<int:id>/contacts/select/<int:relationship_id>",
+        contacts.toggle_select,
+        name="contacts-toggle-select",
+    ),
+    path(
+        "matters/<int:id>/contacts/select-all",
+        contacts.select_all,
+        name="contacts-select-all",
+    ),
+    path(
+        "matters/<int:id>/contacts/clear-selection",
+        contacts.clear_selection,
+        name="contacts-clear-selection",
+    ),
+    path(
+        "matters/<int:id>/contacts/bulk-group",
+        contacts.bulk_group,
+        name="contacts-bulk-group",
+    ),
+    path(
+        "matters/<int:id>/contacts/bulk-role",
+        contacts.bulk_role,
+        name="contacts-bulk-role",
+    ),
+    path(
+        "matters/<int:id>/contacts/bulk-remove",
+        contacts.bulk_remove,
+        name="contacts-bulk-remove",
     ),
     path(
         "matters/<int:id>/contacts/filter/group/<int:group_id>/",

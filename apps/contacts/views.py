@@ -227,7 +227,9 @@ def delete(request, id):
 @login_required
 def assign(request, id):
     matters = Matter.objects.filter(status="Open").order_by("name")
-    groups = Group.objects.filter(is_active=True).order_by("order")
+    # Global groups only — the matter isn't known when this cross-matter form
+    # renders, so matter-specific groups aren't offered here.
+    groups = Group.objects.filter(matter__isnull=True, is_active=True).order_by("order")
     roles = Role.objects.filter(is_active=True).order_by("name")
 
     context = {

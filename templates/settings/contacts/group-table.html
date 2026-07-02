@@ -41,17 +41,23 @@
                         @click="toggle()"
                         :aria-expanded="open">{{ group.name }}</button>
                 <ul class="dropdown-menu" x-ref="menu" x-show="open">
-                  <li>
-                    <a class="dropdown-item"
-                       hx-get="{% url 'settings:edit-group' group.id %}"
-                       hx-target="#htmx-modal-container"
-                       hx-trigger="click"><i class="icon-pencil"></i> Edit</a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item"
-                       hx-post="{% url 'settings:delete-group' group.id %}"
-                       hx-confirm="Are you sure? This will also delete any contact relationships using this group."><i class="icon-trash-2"></i> Delete</a>
-                  </li>
+                  {% if group.is_system %}
+                    <li>
+                      <span class="dropdown-item text-muted">Protected</span>
+                    </li>
+                  {% else %}
+                    <li>
+                      <a class="dropdown-item"
+                         hx-get="{% url 'settings:edit-group' group.id %}"
+                         hx-target="#htmx-modal-container"
+                         hx-trigger="click"><i class="icon-pencil"></i> Edit</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item"
+                         hx-post="{% url 'settings:delete-group' group.id %}"
+                         hx-confirm="Are you sure? This will also delete any contact relationships using this group."><i class="icon-trash-2"></i> Delete</a>
+                    </li>
+                  {% endif %}
                 </ul>
               </div>
             </div>
