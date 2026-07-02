@@ -31,7 +31,7 @@
       {% endif %}
       <tr>
         <th>Work Status</th>
-        <td>{{ matter.work_status|default:"—" }}</td>
+        <td id="info-work-status">{% include "matters/info/work-status.html" %}</td>
       </tr>
       {% if matter.description %}
         <tr>

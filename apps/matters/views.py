@@ -208,6 +208,24 @@ def info_index(request, id):
 
 @login_required
 @matter_access_required
+def info_work_status_edit(request, matter_id):
+    """Inline work-status editor for the Info tab (swaps the cell to an input)."""
+    matter = get_object_or_404(Matter, pk=matter_id)
+    return render(request, "matters/info/work-status-edit.html", {"matter": matter})
+
+
+@login_required
+@matter_access_required
+def info_work_status_update(request, id):
+    """Save the inline work-status edit and swap the cell back to the display."""
+    matter = get_object_or_404(Matter, pk=id)
+    matter.work_status = request.POST.get("work_status", "")
+    matter.save()
+    return render(request, "matters/info/work-status.html", {"matter": matter})
+
+
+@login_required
+@matter_access_required
 def mode_content(request, id):
     """Return detail mode content partial for HTMX, or redirect for regular request."""
     matter = get_object_or_404(Matter, pk=id)

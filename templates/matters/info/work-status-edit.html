@@ -1,0 +1,10 @@
+<input class="edit-matter-work-status-input"
+       type="text"
+       name="work_status"
+       hx-post="{% url 'matters:info-work-status-update' id=matter.id %}"
+       hx-target="#info-work-status"
+       hx-swap="innerHTML"
+       hx-trigger="change, blur, keyup[key=='Enter']"
+       onfocus="moveFocusToEnd(this)"
+       autofocus
+       value="{{ matter.work_status }}" />
