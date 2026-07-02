@@ -403,8 +403,24 @@ Matter Info tab
   border-spacing: 0;
 }
 
-.info-table.info-main {
+/* Left column: the properties table (60%) with the Edit button beneath it, so the
+   button's right edge tracks the table's right border whether or not the
+   proceeding table is present. */
+.info-main-col {
+  display: flex;
   flex: 6;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.info-main-col .info-table {
+  width: 100%;
+}
+
+/* Right-align the Edit button to the properties table's right edge. */
+.info-edit {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .info-table.info-proceeding {
