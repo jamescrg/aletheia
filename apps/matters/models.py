@@ -293,6 +293,12 @@ class GroupQuerySet(models.QuerySet):
             .order_by("order")
         )
 
+    def client_group(self):
+        """The protected firm-wide system Client group. A matter's client is
+        mirrored into a Relationship in this group; it's the one stable reference
+        (see is_system) that replaces name-string lookups."""
+        return self.filter(is_system=True, name="Client", matter__isnull=True).first()
+
 
 class Group(AuditMixin, models.Model):
     # Firm-wide (global) groups occupy the low order band (1, 2, 3, …); matter-
@@ -303,6 +309,9 @@ class Group(AuditMixin, models.Model):
     name = models.CharField(max_length=50)
     order = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
+    # Protected system row (the Client group): the matter-client mirror depends on
+    # it, so Settings blocks renaming/deleting it.
+    is_system = models.BooleanField(default=False)
     # Null → a global (firm-wide) group; set → a group scoped to one matter.
     matter = models.ForeignKey(
         Matter,
@@ -323,10 +332,20 @@ class Group(AuditMixin, models.Model):
         ordering = ["order"]
 
 
+class RoleQuerySet(models.QuerySet):
+    def client_role(self):
+        """The protected system Client role used for the matter-client mirror."""
+        return self.filter(is_system=True, name="Client").first()
+
+
 class Role(AuditMixin, models.Model):
     name = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
+    # Protected system row (the Client role): see Group.is_system.
+    is_system = models.BooleanField(default=False)
     history = HistoricalRecords()
+
+    objects = RoleQuerySet.as_manager()
 
     def __str__(self):
         return f"{self.name}"

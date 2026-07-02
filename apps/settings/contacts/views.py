@@ -2,7 +2,7 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.db import models
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
@@ -85,6 +85,8 @@ def add_role(request):
 @login_required
 def edit_role(request, role_id):
     role = Role.objects.get(id=role_id)
+    if role.is_system:
+        return HttpResponseForbidden("This role is protected and cannot be edited.")
 
     if request.method == "POST":
         form = RoleForm(request.POST, instance=role)
@@ -106,7 +108,10 @@ def edit_role(request, role_id):
 
 @login_required
 def delete_role(request, role_id):
-    Role.objects.get(id=role_id).delete()
+    role = Role.objects.get(id=role_id)
+    if role.is_system:
+        return HttpResponseForbidden("This role is protected and cannot be deleted.")
+    role.delete()
     return HttpResponse(status=204, headers={"HX-Trigger": "roleListReload"})
 
 
@@ -168,6 +173,8 @@ def add_group(request):
 @login_required
 def edit_group(request, group_id):
     group = Group.objects.get(id=group_id)
+    if group.is_system:
+        return HttpResponseForbidden("This group is protected and cannot be edited.")
 
     if request.method == "POST":
         form = GroupForm(request.POST, instance=group)
@@ -189,7 +196,10 @@ def edit_group(request, group_id):
 
 @login_required
 def delete_group(request, group_id):
-    Group.objects.get(id=group_id).delete()
+    group = Group.objects.get(id=group_id)
+    if group.is_system:
+        return HttpResponseForbidden("This group is protected and cannot be deleted.")
+    group.delete()
     return HttpResponse(status=204, headers={"HX-Trigger": "groupListReload"})
 
 

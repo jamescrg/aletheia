@@ -221,7 +221,8 @@ def assign(request, id):
     groups = Group.objects.for_matter(matter)
     roles = (
         Role.objects.filter(is_active=True)
-        .exclude(name__in=["Client", "Client (Invoicing)"])
+        .exclude(is_system=True)
+        .exclude(name="Client (Invoicing)")
         .order_by("name")
     )
 
@@ -273,7 +274,8 @@ def assign_edit(request, id):
     groups = Group.objects.for_matter(matter)
     roles = (
         Role.objects.filter(is_active=True)
-        .exclude(name__in=["Client", "Client (Invoicing)"])
+        .exclude(is_system=True)
+        .exclude(name="Client (Invoicing)")
         .order_by("name")
     )
 
