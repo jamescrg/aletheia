@@ -34,7 +34,6 @@ from .views import (
     mode_content,
     open_matters_json,
     order_by,
-    print,
     quick_search,
     switcher,
     tab_content,
@@ -82,7 +81,6 @@ urlpatterns = [
         update_work_status,
         name="update-work-status",
     ),
-    path("matters/<int:id>/print", print, name="print"),
     # Info
     path("matters/<int:id>/info", info_index, name="info-index"),
     path(

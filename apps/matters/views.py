@@ -7,8 +7,6 @@ from django.urls import reverse
 
 from apps.accounts.access import filter_matters_for_user, matter_access_required
 from apps.calendar.models import Event
-from apps.case.models import Fact
-from apps.contacts.functions.load_contacts import load_contacts
 from apps.contacts.models import Contact
 from apps.matters.filter import MatterFilter
 from apps.matters.forms import MatterForm
@@ -515,30 +513,6 @@ def update_work_status(request, id):
             return render(request, "matters/row.html", {"matter": matter})
     else:
         return redirect("/matters")
-
-
-@login_required
-@matter_access_required
-def print(request, id):
-    matter = get_object_or_404(Matter, pk=id)
-    proceeding = Proceeding.objects.filter(matter=matter.id, primary=True).first()
-    relationship_groups = load_contacts(matter)
-    events = Event.objects.filter(matter=id).order_by("-date")
-    proceedings = Proceeding.objects.filter(matter=matter.id).order_by("date_filed")
-    entries = SettlementEntry.objects.filter(matter=matter.id).order_by("date")
-    facts = Fact.objects.filter(matter=matter.id).order_by("date")
-
-    context = {
-        "matter": matter,
-        "proceeding": proceeding,
-        "relationship_groups": relationship_groups,
-        "events": events,
-        "proceedings": proceedings,
-        "entries": entries,
-        "facts": facts,
-    }
-
-    return render(request, "matters/print.html", context)
 
 
 @login_required

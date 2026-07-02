@@ -131,12 +131,6 @@ def test_edit_work_status(client, user, matter):
     assert response.status_code == 200
 
 
-def test_print(client, matter):
-    response = client.get(f"/matters/{matter.id}/print")
-    assert response.status_code == 200
-    assertTemplateUsed("matters/print.html")
-
-
 # -----------------------------------------------------
 # edge case tests - nonexistent records
 # -----------------------------------------------------

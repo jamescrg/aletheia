@@ -76,13 +76,13 @@
                     hx-post="{% url 'matters:activity-view' matter.id 'expenses' %}"
                     hx-swap="none">Expenses</button>
           </div>
-          <a href="{% url 'activity:time-filter-matter' matter.id %}"
-             class="accent-link">View All Activity</a>
         </div>
       {% endif %}
     </div>
     <div class="toolbar-right">
-      <a href="{% url 'matters:activity-report' matter.id %}"><i class="icon-file-pdf"></i> Activity Report</a>
+      <a href="{% url 'activity:time-filter-matter' matter.id %}">
+        <i class="icon-file-symlink"></i> View in Activity Tab</a>
+      <a href="{% url 'matters:activity-report' matter.id %}"><i class="icon-file"></i> Activity Report</a>
     </div>
   </div>
   <div id="matterActivityTable">
