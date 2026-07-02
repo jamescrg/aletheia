@@ -7,7 +7,6 @@
   <div class="detail-header">
     <div class="toolbar">
       <div class="toolbar-left">
-        <a href="{% url 'invoicing:invoices-index' %}" class="back-link"><i class="icon-chevron-left"></i></a>
         <h1>Invoice {{ invoice.id }} - {{ invoice.matter.name }}</h1>
         <div class="filter-tools">
           {% include "invoicing/invoices/status.html" %}

@@ -21,14 +21,6 @@
   padding: 0.5rem 0.75rem;
 }
 
-/* Back-arrow links (matter / intake / invoice detail headers) are plain icon
-   links, not toolbar buttons — strip the shared background + border above. Their
-   per-context spacing stays in each app's stylesheet. */
-.toolbar a.back-link {
-  background: none;
-  border: none;
-}
-
 .toolbar-left {
   align-items: center;
   display: flex;

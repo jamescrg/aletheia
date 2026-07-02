@@ -44,17 +44,6 @@ List View
 Detail View - Left Panel
 ========================================================================== */
 
-/* Match the tighter back-button sizing used on the matter/invoice detail
-   headers (which get padding-block: 0.25rem from the .detail-header rules). */
-.intake-sidebar .toolbar-left:has(> .back-link) {
-  gap: 0.5rem;
-}
-
-.intake-sidebar .toolbar-left > .back-link {
-  margin-right: 0.75rem;
-  padding-block: 0.25rem;
-}
-
 .intake-section.details table {
   border: 1px solid var(--border-medium);
   border-collapse: separate;

@@ -147,35 +147,6 @@ Matter List
 Matter Switcher
 ========================================================================== */
 
-.detail-header .toolbar-left:has(> .back-link) {
-  gap: 0.5rem;
-}
-
-.detail-header .toolbar-left > .back-link {
-  padding-block: 0.25rem;
-  /* Nudge the back button right 0.25rem so its left border lines up with the
-     subnav active-tab left border. The header padding puts it at 0.75rem; the
-     tab border sits at 1rem (.subnav ul left margin). */
-  margin-left: 0.25rem;
-}
-
-/* Compensate for the inner padding the matter-switcher button gives its h1
-   so a bare h1 next to the back-link sits at the same visual distance. */
-.detail-header .toolbar-left > .back-link + h1 {
-  margin-left: 0.75rem;
-}
-
-/* The shared back-link rule above tightens the whole left group to 0.5rem.
-   The matter header now holds the switcher, pills and add buttons in that
-   group, which we want spaced a uniform 1.25rem — only the back arrow stays
-   tight to the matter name (pulled back in with a negative margin). */
-.matter-toolbar .toolbar-left:has(> .back-link) {
-  gap: 1.25rem;
-}
-
-.matter-toolbar .toolbar-left > .back-link {
-  margin-right: -0.75rem;
-}
 
 /* A touch more breathing room to the right of the matter switcher. */
 .matter-toolbar .toolbar-left > .matter-switcher {
@@ -232,6 +203,7 @@ Matter Switcher
 .matter-switcher .icon-chevron-down {
   color: var(--color-muted);
   font-size: 0.75em;
+  margin-left: 0.75rem;
 }
 
 .matter-switcher .dropdown-menu {
