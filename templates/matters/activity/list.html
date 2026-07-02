@@ -66,6 +66,16 @@
         </div>
       {% else %}
         <div class="filter-tools">
+          <div class="mode-pills">
+            <button type="button"
+                    class="mode-pill {% if activity_view != 'expenses' %}active{% endif %}"
+                    hx-post="{% url 'matters:activity-view' matter.id 'time' %}"
+                    hx-swap="none">Time</button>
+            <button type="button"
+                    class="mode-pill {% if activity_view == 'expenses' %}active{% endif %}"
+                    hx-post="{% url 'matters:activity-view' matter.id 'expenses' %}"
+                    hx-swap="none">Expenses</button>
+          </div>
           <a href="{% url 'activity:time-filter-matter' matter.id %}"
              class="accent-link">View All Activity</a>
         </div>
@@ -76,79 +86,83 @@
     </div>
   </div>
   <div id="matterActivityTable">
-    <div class="table-container">
-      <table class="table matter-activity card-table">
-        <thead>
-          <tr>
-            <th class="col-select">
-              <button class="btn-check"
-                      hx-post="{% url 'matters:activity-select-all' matter.id %}"
-                      hx-swap="none"
-                      title="Select all">
-                <i class="icon-square{% if all_selected %}-check{% endif %}"></i>
-              </button>
-            </th>
-            <th class="date">
-              Date
-              <a href="#"
-                 hx-post="{% url 'matters:activity-sort' matter.id %}"
-                 hx-target="#matterActivityTable"
-                 hx-swap="outerHTML">
-                <i class="icon-chevrons-up-down"></i>
-              </a>
-            </th>
-            <th class="user">User</th>
-            <th class="actions">Actions</th>
-            <th class="numeric hours">Hours</th>
-            <th class="numeric rate">Rate</th>
-            <th class="numeric fee">Fee</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for entry in entries %}
-            <tr id="time-{{ entry.id }}">{% include "matters/activity/table-row.html" %}</tr>
-          {% empty %}
+    {% if activity_view == "expenses" %}
+      {% include "matters/activity/expenses-list.html" %}
+    {% else %}
+      <div class="table-container">
+        <table class="table matter-activity card-table">
+          <thead>
             <tr>
-              <td colspan="7" class="empty-message">No time entries found for this matter.</td>
+              <th class="col-select">
+                <button class="btn-check"
+                        hx-post="{% url 'matters:activity-select-all' matter.id %}"
+                        hx-swap="none"
+                        title="Select all">
+                  <i class="icon-square{% if all_selected %}-check{% endif %}"></i>
+                </button>
+              </th>
+              <th class="date">
+                Date
+                <a href="#"
+                   hx-post="{% url 'matters:activity-sort' matter.id %}"
+                   hx-target="#matterActivityTable"
+                   hx-swap="outerHTML">
+                  <i class="icon-chevrons-up-down"></i>
+                </a>
+              </th>
+              <th class="user">User</th>
+              <th class="actions">Actions</th>
+              <th class="numeric hours">Hours</th>
+              <th class="numeric rate">Rate</th>
+              <th class="numeric fee">Fee</th>
             </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <div class="flex-start-space">
-      <div>{% include "pagination.html" %}</div>
-      {% if summary %}
-        <div class="totals-table">
-          <table>
-            <tr>
-              <td>Total Hours</td>
-              <td class="numeric">{{ summary.total_hours|floatformat:1 }}</td>
-            </tr>
-            <tr>
-              <td>Comp Hours</td>
-              <td class="numeric">{{ summary.comp_hours|floatformat:1 }}</td>
-            </tr>
-            <tr class="total">
-              <th>Net Hours</th>
-              <td class="numeric">{{ summary.net_hours|floatformat:1 }}</td>
-            </tr>
-          </table>
-          <table>
-            <tr>
-              <td>Total Fees</td>
-              <td class="numeric">${{ summary.total_fees|floatformat:2|intcomma }}</td>
-            </tr>
-            <tr>
-              <td>Comp Fees</td>
-              <td class="numeric">${{ summary.comp_fees|floatformat:2|intcomma }}</td>
-            </tr>
-            <tr class="total">
-              <th>Net Fees</th>
-              <td class="numeric">${{ summary.net_fees|floatformat:2|intcomma }}</td>
-            </tr>
-          </table>
-        </div>
-      {% endif %}
-    </div>
+          </thead>
+          <tbody>
+            {% for entry in entries %}
+              <tr id="time-{{ entry.id }}">{% include "matters/activity/table-row.html" %}</tr>
+            {% empty %}
+              <tr>
+                <td colspan="7" class="empty-message">No time entries found for this matter.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="flex-start-space">
+        <div>{% include "pagination.html" %}</div>
+        {% if summary %}
+          <div class="totals-table">
+            <table>
+              <tr>
+                <td>Total Hours</td>
+                <td class="numeric">{{ summary.total_hours|floatformat:1 }}</td>
+              </tr>
+              <tr>
+                <td>Comp Hours</td>
+                <td class="numeric">{{ summary.comp_hours|floatformat:1 }}</td>
+              </tr>
+              <tr class="total">
+                <th>Net Hours</th>
+                <td class="numeric">{{ summary.net_hours|floatformat:1 }}</td>
+              </tr>
+            </table>
+            <table>
+              <tr>
+                <td>Total Fees</td>
+                <td class="numeric">${{ summary.total_fees|floatformat:2|intcomma }}</td>
+              </tr>
+              <tr>
+                <td>Comp Fees</td>
+                <td class="numeric">${{ summary.comp_fees|floatformat:2|intcomma }}</td>
+              </tr>
+              <tr class="total">
+                <th>Net Fees</th>
+                <td class="numeric">${{ summary.net_fees|floatformat:2|intcomma }}</td>
+              </tr>
+            </table>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
   </div>
 {% endblock subcontent %}

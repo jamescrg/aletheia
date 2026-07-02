@@ -45,7 +45,7 @@
           {% if matter.jurisdiction %}
             {{ matter.jurisdiction }}
           {% elif company_jurisdiction %}
-            <span class="info-empty">Firm Default</span> {{ company_jurisdiction }}
+            Firm Default ({{ company_jurisdiction }})
           {% else %}
             —
           {% endif %}

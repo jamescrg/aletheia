@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_POST
 
 from apps.accounts.access import matter_access_required
+from apps.activity.expenses.models import ExpenseEntry
 from apps.activity.models import ActivityLabel
 from apps.activity.time.models import TimeEntry
 from apps.activity.time.summary import calculate_summary
@@ -24,45 +25,70 @@ from apps.matters.generate_activity_report import generate_activity_report
 from apps.matters.models import Matter
 
 
-@login_required
-@matter_access_required
-def activity_index(request, id):
-    matter = get_object_or_404(Matter, pk=id)
+def get_matter_activity_data(request, matter):
+    """Context for the matter activity subtab, honoring the Time/Expenses toggle
+    (session `matter_activity_view`, default 'time'). Expenses is a simple
+    read-only list; Time keeps the existing sort/paginate/select machinery."""
+    view = request.session.get("matter_activity_view", "time")
 
-    # Get sort order from session, default to newest-first
+    if view == "expenses":
+        return {
+            "matter": matter,
+            "activity_view": "expenses",
+            "expense_entries": (
+                ExpenseEntry.objects.filter(matter=matter)
+                .select_related("user")
+                .order_by("-date", "-id")
+            ),
+        }
+
     sort_order = request.session.get("matter_activity_sort", "-id")
-    entries = TimeEntry.objects.filter(matter=id).order_by(sort_order)
-
+    entries = TimeEntry.objects.filter(matter=matter).order_by(sort_order)
     pagination = CustomPaginator(
         entries, per_page=10, request=request, session_key="activity_pagination"
     )
-
-    # Calculate summary for all entries (not just paginated)
-    summary = calculate_summary(entries)
-
-    # Get selection data
-    session_key = get_session_key("selected_matter_activity", id)
-    selected_entries = get_selected_ids(request, session_key)
-
-    visible_ids = [entry.id for entry in pagination.get_object_list()]
-    all_selected = all_visible_selected(selected_entries, visible_ids)
-
-    context = {
-        "app": "matters",
-        "subapp": "activity",
+    selected_entries = get_selected_ids(
+        request, get_session_key("selected_matter_activity", matter.id)
+    )
+    visible_ids = [e.id for e in pagination.get_object_list()]
+    return {
         "matter": matter,
+        "activity_view": "time",
         "entries": pagination.get_object_list(),
         "pagination": pagination,
         "session_key": "activity_pagination",
         "trigger_key": "matterActivityChanged",
-        "summary": summary,
+        "summary": calculate_summary(entries),
         "selected_entries": selected_entries,
-        "all_selected": all_selected,
+        "all_selected": all_visible_selected(selected_entries, visible_ids),
         "matters": Matter.objects.filter(
             status__in=["Pending", "Open", "Complete"]
         ).order_by("name"),
     }
 
+
+@login_required
+@matter_access_required
+@require_POST
+def activity_view(request, id, view):
+    """Switch the subtab between the time and expenses lists. The #rates panel
+    reloads via the matterActivityChanged trigger."""
+    get_object_or_404(Matter, pk=id)
+    request.session["matter_activity_view"] = (
+        "expenses" if view == "expenses" else "time"
+    )
+    return selection_response("matterActivityChanged")
+
+
+@login_required
+@matter_access_required
+def activity_index(request, id):
+    matter = get_object_or_404(Matter, pk=id)
+    context = {
+        "app": "matters",
+        "subapp": "activity",
+        **get_matter_activity_data(request, matter),
+    }
     return render(request, "matters/activity/main.html", context)
 
 
@@ -70,41 +96,11 @@ def activity_index(request, id):
 @matter_access_required
 def activity_list(request, id):
     matter = get_object_or_404(Matter, pk=id)
-
-    # Get sort order from session, default to newest-first
-    sort_order = request.session.get("matter_activity_sort", "-id")
-    entries = TimeEntry.objects.filter(matter=id).order_by(sort_order)
-
-    pagination = CustomPaginator(
-        entries, per_page=10, request=request, session_key="activity_pagination"
-    )
-
-    # Calculate summary for all entries (not just paginated)
-    summary = calculate_summary(entries)
-
-    # Get selection data
-    session_key = get_session_key("selected_matter_activity", id)
-    selected_entries = get_selected_ids(request, session_key)
-
-    visible_ids = [entry.id for entry in pagination.get_object_list()]
-    all_selected = all_visible_selected(selected_entries, visible_ids)
-
     context = {
         "app": "matters",
         "subapp": "activity",
-        "matter": matter,
-        "entries": pagination.get_object_list(),
-        "pagination": pagination,
-        "session_key": "activity_pagination",
-        "trigger_key": "matterActivityChanged",
-        "summary": summary,
-        "selected_entries": selected_entries,
-        "all_selected": all_selected,
-        "matters": Matter.objects.filter(
-            status__in=["Pending", "Open", "Complete"]
-        ).order_by("name"),
+        **get_matter_activity_data(request, matter),
     }
-
     return render(request, "matters/activity/list.html", context)
 
 
@@ -114,45 +110,14 @@ def activity_sort(request, id):
     """Toggle sorting between newest-first and oldest-first."""
     matter = get_object_or_404(Matter, pk=id)
 
-    # Get current sort order from session, default to newest-first (-id)
     current_order = request.session.get("matter_activity_sort", "-id")
-
-    # Toggle between -id (newest) and id (oldest)
-    new_order = "id" if current_order == "-id" else "-id"
-    request.session["matter_activity_sort"] = new_order
-
-    entries = TimeEntry.objects.filter(matter=id).order_by(new_order)
-
-    pagination = CustomPaginator(
-        entries, per_page=10, request=request, session_key="activity_pagination"
-    )
-
-    # Calculate summary for all entries (not just paginated)
-    summary = calculate_summary(entries)
-
-    # Get selection data
-    session_key = get_session_key("selected_matter_activity", id)
-    selected_entries = get_selected_ids(request, session_key)
-
-    visible_ids = [entry.id for entry in pagination.get_object_list()]
-    all_selected = all_visible_selected(selected_entries, visible_ids)
+    request.session["matter_activity_sort"] = "id" if current_order == "-id" else "-id"
 
     context = {
         "app": "matters",
         "subapp": "activity",
-        "matter": matter,
-        "entries": pagination.get_object_list(),
-        "pagination": pagination,
-        "session_key": "activity_pagination",
-        "trigger_key": "matterActivityChanged",
-        "summary": summary,
-        "selected_entries": selected_entries,
-        "all_selected": all_selected,
-        "matters": Matter.objects.filter(
-            status__in=["Pending", "Open", "Complete"]
-        ).order_by("name"),
+        **get_matter_activity_data(request, matter),
     }
-
     return render(request, "matters/activity/list.html", context)
 
 

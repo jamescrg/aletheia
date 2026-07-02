@@ -200,6 +200,11 @@ urlpatterns = [
     # Activity
     path("matters/<int:id>/activity/", activity.activity_index, name="activity-index"),
     path("matters/<int:id>/activity/list/", activity.activity_list, name="activity"),
+    path(
+        "matters/<int:id>/activity/view/<str:view>",
+        activity.activity_view,
+        name="activity-view",
+    ),
     # Activity selection and bulk actions
     path(
         "matters/<int:matter_id>/activity/<int:entry_id>/toggle-select",

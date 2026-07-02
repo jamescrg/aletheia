@@ -1,0 +1,42 @@
+{% load humanize %}
+<div class="table-container">
+  <table class="table matter-activity card-table">
+    <thead>
+      <tr>
+        <th class="date">Date</th>
+        <th class="user">User</th>
+        <th class="actions">Expense</th>
+        <th class="numeric amount">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for expense in expense_entries %}
+        <tr>
+          <td class="date">{{ expense.date|date:"Y-m-d"|default:"" }}</td>
+          <td class="user">{{ expense.user.initials }}</td>
+          <td class="actions card-desc">
+            <a href="#"
+               hx-get="/activity/expenses/{{ expense.id }}/edit"
+               hx-target="#htmx-modal-container"
+               hx-trigger="click"
+               data-bs-toggle="modal"
+               data-bs-target="#htmx-modal-container">
+              {% if expense.category %}{{ expense.category }} —{% endif %}
+            {{ expense.description }}</a>
+          </td>
+          <td class="numeric amount">
+            {% if expense.comp %}
+              comp
+            {% else %}
+              ${{ expense.amount|floatformat:2|intcomma }}
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4" class="empty-message">No expenses found for this matter.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

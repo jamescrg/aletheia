@@ -254,9 +254,7 @@ def tab_content(request, id, tab):
 
 def _get_detail_tab_data(request, matter, tab):
     """Fetch data for the specified detail tab."""
-    from apps.activity.time.models import TimeEntry
-    from apps.activity.time.summary import calculate_summary
-    from apps.management.pagination import CustomPaginator
+    from apps.matters.activity.views import get_matter_activity_data
     from apps.matters.contacts.views import get_contact_list
     from apps.matters.events.get_event_data import get_event_data
     from apps.matters.ledger.get_ledger_data import (
@@ -297,18 +295,9 @@ def _get_detail_tab_data(request, matter, tab):
         }
 
     elif tab == "activity":
-        sort_order = request.session.get("matter_activity_sort", "-id")
-        entries = TimeEntry.objects.filter(matter=matter.id).order_by(sort_order)
-        pagination = CustomPaginator(
-            entries, per_page=10, request=request, session_key="activity_pagination"
-        )
         return {
             "tab_template": "matters/activity/list.html",
-            "entries": pagination.get_object_list(),
-            "pagination": pagination,
-            "session_key": "activity_pagination",
-            "trigger_key": "matterActivityChanged",
-            "summary": calculate_summary(entries),
+            **get_matter_activity_data(request, matter),
         }
 
     elif tab == "events":
