@@ -2,15 +2,16 @@
   display: flex;
   align-items: flex-start;
   gap: 1.25rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
 }
 
-/* Download-PDF action sits below the summary tables, right-aligned (there's no
-   top toolbar). It's outside .toolbar, so give it the toolbar-button look. */
+/* Download-PDF action sits at the very bottom of the ledger, right-aligned
+   (there's no top toolbar). It's outside .toolbar, so give it the toolbar-button
+   look. */
 .ledger-pdf-action {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 1.5rem;
+  margin-top: 1rem;
 }
 
 .ledger-pdf-action a {

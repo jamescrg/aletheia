@@ -55,11 +55,6 @@
       </tr>
     </table>
   </div>
-  <div class="ledger-pdf-action">
-    <a href="{% url 'matters:ledger-pdf' matter.id %}"
-       target="_blank"
-       class="btn-icon">Download PDF</a>
-  </div>
   {% if transactions %}
     <div class="table-container">
       <table class="table ledger">
@@ -165,4 +160,9 @@
       </table>
     </div>
   {% endif %}
+  <div class="ledger-pdf-action">
+    <a href="{% url 'matters:ledger-pdf' matter.id %}"
+       target="_blank"
+       class="btn-icon">Download PDF</a>
+  </div>
 {% endblock subcontent %}
