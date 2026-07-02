@@ -85,6 +85,38 @@ class Matter(AuditMixin, models.Model):
         # and it reverted files to the deprecated name-based layout.)
         super().save(*args, **kwargs)
 
+        self._ensure_client_relationship()
+
+    def _ensure_client_relationship(self):
+        """Make sure the canonical client (Matter.client) is represented as a
+        party in the Client group + Client role.
+
+        Purely additive: it only ever *adds* the one missing row and never
+        removes or edits anything else, so co-clients, spouses, and former
+        clients that also carry the Client role are left untouched. Idempotent —
+        does nothing if the row already exists or the matter has no client.
+        Matter.client stays the canonical field; this is only its representation
+        on the parties list."""
+        if not self.client_id:
+            return
+        client_group = Group.objects.client_group()
+        client_role = Role.objects.client_role()
+        if client_group is None or client_role is None:
+            return
+        already = Relationship.objects.filter(
+            matter=self,
+            contact_id=self.client_id,
+            group=client_group,
+            role=client_role,
+        ).exists()
+        if not already:
+            Relationship.objects.create(
+                matter=self,
+                contact_id=self.client_id,
+                group=client_group,
+                role=client_role,
+            )
+
     @property
     def primary_proceeding(self):
         """Return the primary proceeding for this matter, if any."""
