@@ -12,17 +12,20 @@ class IntakeForm(forms.ModelForm):
     class Meta:
         model = Intake
 
+        # Ordered to flow into a 3-column grid (see templates/intakes/form.html
+        # `col3`): Status | Open Date | Source, then Name(span2) | Practice Area,
+        # then Phone | Email | Value, then the two full-width property textareas.
         fields = (
             "status",
             "date",
+            "source",
             "name",
+            "practice_area",
             "phone",
             "email",
-            "practice_area",
-            "source",
+            "value",
             "address",
             "disputed_property",
-            "value",
         )
 
         STATUSES = (
@@ -52,17 +55,17 @@ class IntakeForm(forms.ModelForm):
             ),
             "address": forms.Textarea(
                 attrs={
-                    "class": "span2",
-                    "rows": 4,
+                    "class": "span3",
+                    "rows": 3,
                 }
             ),
             "disputed_property": forms.Textarea(
                 attrs={
-                    "class": "span2",
-                    "rows": 4,
+                    "class": "span3",
+                    "rows": 3,
                 }
             ),
-            "value": forms.TextInput(attrs={"class": "span2"}),
+            "value": forms.TextInput(),
             "status": forms.Select(choices=STATUSES),
             "source": forms.Select(choices=SOURCES),
             "date": forms.DateInput(attrs={"type": "date"}),
