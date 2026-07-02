@@ -148,7 +148,10 @@
       {% for item in contacts %}
         <tr>
           <td class="col-select card-hide">
-            {% if not item.is_client %}
+            {% if item.is_client %}
+              <i class="icon-square-minus contacts-select-na"
+                 title="The client can't be selected"></i>
+            {% else %}
               {% url 'matters:contacts-toggle-select' matter.id item.relationship_id as toggle_url %}
               {% include "selection/checkbox.html" with toggle_url=toggle_url obj_id=item.relationship_id selected_ids=selected_ids %}
             {% endif %}

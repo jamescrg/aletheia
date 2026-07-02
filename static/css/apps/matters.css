@@ -352,6 +352,12 @@ Contacts tab — parties table
   width: 2.5rem;
 }
 
+/* Non-interactive placeholder in the client row's select cell (the client can't
+   be bulk-selected); muted like an unchecked box so the column reads as complete. */
+.contacts-select-na {
+  color: var(--color-muted-more);
+}
+
 /* ==========================================================================
 Matter Info tab
 ========================================================================== */
