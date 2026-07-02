@@ -2,7 +2,26 @@
   display: flex;
   align-items: flex-start;
   gap: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Download-PDF action sits below the summary tables, right-aligned (there's no
+   top toolbar). It's outside .toolbar, so give it the toolbar-button look. */
+.ledger-pdf-action {
+  display: flex;
+  justify-content: flex-end;
   margin-bottom: 1.5rem;
+}
+
+.ledger-pdf-action a {
+  align-items: center;
+  background: var(--background-control);
+  border: solid 1px var(--border-medium);
+  border-radius: var(--radius-sm);
+  color: var(--button-toolbar);
+  display: inline-flex;
+  line-height: 1.25;
+  padding: 0.5rem 0.75rem;
 }
 
 /* Deferred-fee invoices: description on the left, status badge on the right. */

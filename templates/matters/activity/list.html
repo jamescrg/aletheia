@@ -65,13 +65,12 @@
           </button>
         </div>
       {% else %}
-        <h2>Time Entries</h2>
+        <div class="filter-tools">
+          <a href="{% url 'activity:time-filter-matter' matter.id %}"
+             class="accent-link">View All Activity</a>
+          <a href="{% url 'matters:activity-report' matter.id %}"><i class="icon-file-pdf"></i> Activity Report</a>
+        </div>
       {% endif %}
-    </div>
-    <div class="toolbar-right">
-      <a href="{% url 'activity:time-filter-matter' matter.id %}"
-         class="accent-link">View All Activity <i class="icon-arrow-up-right ms-2"></i></a>
-      <a href="{% url 'matters:activity-report' matter.id %}"><i class="icon-file-pdf"></i> Activity Report</a>
     </div>
   </div>
   <div id="matterActivityTable">

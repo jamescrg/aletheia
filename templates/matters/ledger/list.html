@@ -1,17 +1,6 @@
 {% block subcontent %}
   {% load humanize %}
   {% load mathfilters %}
-  <div class="toolbar">
-    <div class="toolbar-left">
-      <h2>Ledger</h2>
-    </div>
-    <div class="toolbar-right">
-      <a href="{% url 'matters:ledger-pdf' matter.id %}"
-         target="_blank"
-         type="button"
-         class="btn-icon">Download PDF</a>
-    </div>
-  </div>
   <div class="ledger-summary">
     <table class="ledger-totals">
       <tr>
@@ -65,6 +54,11 @@
         <td class="numeric">${{ trust_clearance|floatformat:2|intcomma }}</td>
       </tr>
     </table>
+  </div>
+  <div class="ledger-pdf-action">
+    <a href="{% url 'matters:ledger-pdf' matter.id %}"
+       target="_blank"
+       class="btn-icon">Download PDF</a>
   </div>
   {% if transactions %}
     <div class="table-container">
