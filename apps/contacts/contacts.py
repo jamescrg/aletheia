@@ -28,7 +28,7 @@ def get_list_data(request):
     # otherwise pull the list of contacts matching the folder
     # if neither value is set, get all contacts without a folder
     if client_status:
-        contacts = Contact.objects.filter(client_status=client_status)
+        contacts = Contact.objects.by_client_status(client_status)
     elif selected_folder:
         contacts = Contact.objects.filter(folder_id=selected_folder_id)
     else:

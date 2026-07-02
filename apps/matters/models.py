@@ -15,7 +15,7 @@ class Matter(AuditMixin, models.Model):
         "accounts.CustomUser", on_delete=models.SET_NULL, null=True, blank=True
     )
     name = models.CharField(max_length=50, null=True)
-    work_status = models.CharField(max_length=255, null=True)
+    work_status = models.CharField(max_length=255, null=True, blank=True)
     description = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=50, null=True)
     date_start = models.DateField(null=True)
@@ -75,31 +75,8 @@ class Matter(AuditMixin, models.Model):
             # Mark all proceedings as concluded when matter is closed
             Proceeding.objects.filter(matter=self).update(status="Concluded")
 
-            # Mark client as former if client has no open matters
-            if (
-                not Matter.objects.filter(client=self.client, status="Open")
-                .exclude(pk=self.pk)
-                .exists()
-            ):
-                Contact.objects.filter(pk=self.client.pk).update(client_status="Former")
-        elif self.status == "Pending":
-            # Mark client as pending if they have no open/complete matters
-            if self.client and (
-                not Matter.objects.filter(
-                    client=self.client, status__in=["Open", "Complete"]
-                )
-                .exclude(pk=self.pk)
-                .exists()
-            ):
-                Contact.objects.filter(pk=self.client.pk).update(
-                    client_status="Pending"
-                )
-        elif self.status == "Open":
-            # Mark client as current if the matter was reopened
-            if self.client and self.client.client_status in ["Former", "Pending"]:
-                Contact.objects.filter(pk=self.client.pk).update(
-                    client_status="Current"
-                )
+        # (Client status is no longer maintained here — it's derived from a
+        # contact's matters; see apps.contacts.models.derive_client_status.)
 
         # Document files are stored by matter ID (see case.models
         # document_upload_path: documents/{matter_id}/{document_id}.ext), so a

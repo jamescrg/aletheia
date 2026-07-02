@@ -1,0 +1,36 @@
+{% comment %}
+Client combobox results for the add/edit matter form: the contact matches plus a
+footer with "create new contact" / "convert an intake" entry points. (The
+matter-detail assign-contact combobox uses the plain results.html instead.)
+{% endcomment %}
+{% if contacts is not None %}
+  <ul class="assign-results">
+    {% for contact in contacts %}
+      <li>
+        <a href="#"
+           data-contact-id="{{ contact.id }}"
+           data-contact-name="{{ contact.name }}">{{ contact.name }}</a>
+      </li>
+    {% empty %}
+      <li class="empty-message">No matching contacts found.</li>
+    {% endfor %}
+  </ul>
+  <div class="combobox-actions">
+    <button type="button"
+            class="combobox-action"
+            hx-post="{% url 'matters:client-new-contact' %}"
+            hx-include="#matter-form"
+            hx-target="#htmx-modal-container .modal-dialog"
+            hx-swap="outerHTML">
+      <i class="icon-plus"></i> Create new contact
+    </button>
+    <button type="button"
+            class="combobox-action"
+            hx-post="{% url 'matters:client-intake-picker' %}"
+            hx-include="#matter-form"
+            hx-target="#htmx-modal-container .modal-dialog"
+            hx-swap="outerHTML">
+      <i class="icon-user-plus"></i> Convert an intake&hellip;
+    </button>
+  </div>
+{% endif %}

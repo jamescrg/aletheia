@@ -94,7 +94,7 @@ def client_statement_filter(request):
         now = datetime.now()
         filter_data["month_num"] = str(now.month)
         filter_data["year"] = str(now.year)
-    clients = Contact.objects.filter(client_status="Current").order_by("name")
+    clients = Contact.objects.current_clients().order_by("name")
 
     # Generate year list (5 years back, current year, 2 years forward)
     current_year = datetime.now().year

@@ -350,8 +350,6 @@ def add(request):
     else:
         today = date.today().strftime("%Y-%m-%d")
         form = MatterForm(initial={"date_start": today}, use_required_attribute=False)
-        client_list = Contact.objects.filter(client_status="Current").order_by("name")
-        form.fields["client"].queryset = client_list
 
     context = {
         "app": "matters",
@@ -383,12 +381,6 @@ def edit(request, id):
 
     else:
         form = MatterForm(instance=matter)
-        client_list = Contact.objects.filter(client_status="Current").order_by("name")
-
-        if matter.client:
-            client_list |= Contact.objects.filter(pk=matter.client.pk)
-
-        form.fields["client"].queryset = client_list
 
     context = {
         "app": "matters",
@@ -400,6 +392,19 @@ def edit(request, id):
     }
 
     return render(request, "matters/form.html", context)
+
+
+@login_required
+def client_search(request):
+    """Typeahead search for the add/edit matter client picker: all contacts by
+    name. Renders the client-results partial (results + create/convert footer)."""
+    text = request.POST.get("search_text")
+    contacts = (
+        Contact.objects.filter(name__icontains=text).order_by("name") if text else None
+    )
+    return render(
+        request, "matters/contacts/client-results.html", {"contacts": contacts}
+    )
 
 
 @login_required

@@ -214,9 +214,7 @@ def requests_matter_fields(request):
 
 
 def _trust_clients():
-    return Contact.objects.filter(client_status__in=["Current", "Pending"]).order_by(
-        "name"
-    )
+    return Contact.objects.active_or_pending_clients().order_by("name")
 
 
 @login_required

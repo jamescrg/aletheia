@@ -88,3 +88,62 @@ Assign results list
 .assign-results .empty-message:hover {
   background: var(--background-light);
 }
+
+/* Overlay variant: float the results over the form instead of pushing content
+   down. Used by the matter form's client picker, where inline results would
+   stretch a single grid cell and distort the row. */
+.combobox-overlay {
+  position: relative;
+}
+
+.combobox-overlay #search-results {
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 20;
+}
+
+/* Create-new / convert-intake actions at the foot of the client combobox. They
+   sit outside .assign-results (so combobox.js keyboard nav skips them) but read
+   as a continuation of the results list. */
+.combobox-actions {
+  display: flex;
+  flex-direction: column;
+}
+
+.combobox-action {
+  align-items: center;
+  background: var(--background-light);
+  border: solid 1px var(--border-medium);
+  border-top: none;
+  color: var(--link);
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  text-align: left;
+  width: 100%;
+}
+
+.combobox-action:last-child {
+  border-bottom-left-radius: var(--radius-sm);
+  border-bottom-right-radius: var(--radius-sm);
+}
+
+.combobox-action:hover {
+  background: var(--background-section);
+  color: var(--link-hover);
+}
+
+/* Intake picker rows: name over muted meta. */
+.intake-picker a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.intake-picker-meta {
+  color: var(--color-muted);
+}

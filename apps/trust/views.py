@@ -195,7 +195,7 @@ def add(request, client_id=None):
             client = Contact.objects.get(pk=client_id)
             form = TransactionForm(initial={"date": today, "contact": client})
         else:
-            clients = Contact.objects.filter(client_status="Current").order_by("name")
+            clients = Contact.objects.current_clients().order_by("name")
 
             form = TransactionForm(
                 initial={"date": today}, use_required_attribute=False

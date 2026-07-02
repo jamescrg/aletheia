@@ -24,7 +24,7 @@ class TimeEntryFilter(django_filters.FilterSet):
     )
     client = django_filters.ModelChoiceFilter(
         field_name="matter__client",
-        queryset=Contact.objects.filter(client_status="Current").order_by("name"),
+        queryset=Contact.objects.current_clients().order_by("name"),
         empty_label="All Clients",
         label="Client",
     )

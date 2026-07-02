@@ -63,7 +63,6 @@ def select(request, contact_id):
 def add(request):
 
     selected_folder_id = request.session.get("contacts_selected_folder_id")
-    client_status = request.session.get("contacts_client_status")
 
     if request.method == "POST":
         form = ContactForm(request.POST, use_required_attribute=False)
@@ -127,10 +126,6 @@ def add(request):
         if selected_folder_id:
             form = ContactForm(
                 initial={"folder": selected_folder_id}, use_required_attribute=False
-            )
-        elif client_status:
-            form = ContactForm(
-                initial={"client_status": client_status}, use_required_attribute=False
             )
         else:
             form = ContactForm(use_required_attribute=False)
@@ -290,7 +285,6 @@ def add_intake(request, id):
         "phone1": intake.phone,
         "phone1_label": "Mobile",
         "email": intake.email,
-        "client_status": "Current",
     }
 
     form = ContactForm(initial=initial_data)

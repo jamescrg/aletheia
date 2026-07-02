@@ -1,6 +1,13 @@
 from django.urls import path
 
 from .activity import views as activity
+from .client_wizard import (
+    client_cancel,
+    client_create_contact,
+    client_intake_contact,
+    client_intake_picker,
+    client_new_contact,
+)
 from .contacts import views as contacts
 from .events import views as events
 from .ledger import views as ledger
@@ -11,6 +18,7 @@ from .tasks import views as tasks
 from .timeline import views as timeline
 from .views import (
     add,
+    client_search,
     delete,
     detail,
     edit,
@@ -40,6 +48,24 @@ urlpatterns = [
     path("matters/<int:id>/mode-content/", mode_content, name="mode-content"),
     path("matters/<int:id>/tab/<str:tab>/", tab_content, name="tab-content"),
     path("matters/add", add, name="add"),
+    path("matters/client-search", client_search, name="client-search"),
+    path("matters/client-new-contact", client_new_contact, name="client-new-contact"),
+    path(
+        "matters/client-intake-picker",
+        client_intake_picker,
+        name="client-intake-picker",
+    ),
+    path(
+        "matters/client-intake-contact/<int:id>",
+        client_intake_contact,
+        name="client-intake-contact",
+    ),
+    path(
+        "matters/client-create-contact",
+        client_create_contact,
+        name="client-create-contact",
+    ),
+    path("matters/client-cancel", client_cancel, name="client-cancel"),
     path("matters/<int:id>/edit", edit, name="edit"),
     path("matters/<int:id>/switcher", switcher, name="switcher"),
     path("matters/<int:id>/delete", delete, name="delete"),

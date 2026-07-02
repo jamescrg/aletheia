@@ -14,7 +14,6 @@ class ContactForm(forms.ModelForm):
         model = Contact
 
         fields = (
-            "client_status",
             "folder",
             "name",
             "company",
@@ -39,14 +38,8 @@ class ContactForm(forms.ModelForm):
             ("Other", "Other"),
         )
 
-        CLIENT_STATUSES = (
-            ("Nonclient", "Nonclient"),
-            ("Pending", "Pending"),
-            ("Current", "Current"),
-            ("Former", "Former"),
-        )
-
         widgets = {
+            "folder": forms.Select(attrs={"class": "span2"}),
             "name": forms.TextInput(
                 attrs={
                     "onfocus": "moveFocusToEnd(this)",
@@ -62,7 +55,6 @@ class ContactForm(forms.ModelForm):
             "phone1_label": forms.Select(choices=PHONE_LABELS),
             "phone2_label": forms.Select(choices=PHONE_LABELS),
             "phone3_label": forms.Select(choices=PHONE_LABELS),
-            "client_status": forms.Select(choices=CLIENT_STATUSES),
         }
 
         labels = {

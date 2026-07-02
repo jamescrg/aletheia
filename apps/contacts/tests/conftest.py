@@ -54,7 +54,6 @@ def contact(user, folder):
         email="contact@example.com",
         website="example.com",
         notes="The Mahatma",
-        client_status="Current",
     )
     contact.save()
 
