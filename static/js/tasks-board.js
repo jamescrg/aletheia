@@ -227,8 +227,17 @@
 
   document.addEventListener("DOMContentLoaded", initTaskBoard);
   window.addEventListener("resize", sizeBoard);
+  // Re-init after any swap that brings the board into the DOM. Two paths reach
+  // here: the #tasks div reloading itself (list⇄board toggle, filter changes)
+  // where target.id === "tasks"; and the hx-boosted sidebar nav, which swaps the
+  // whole page into #main-content — there target is the container, so we look for
+  // the board *inside* the swapped subtree. Without this second case the board
+  // renders on first navigation but never gets its SortableJS handlers, so cards
+  // won't drag until a full page refresh. initTaskBoard() is idempotent.
   document.body.addEventListener("htmx:afterSwap", function (event) {
-    if (event.target.id === "tasks") {
+    var t = event.target;
+    if (!t) return;
+    if (t.id === "tasks" || (t.querySelector && t.querySelector("#tasks-board"))) {
       initTaskBoard();
     }
   });
