@@ -19,6 +19,7 @@ from apps.matters.settlement.models import SettlementEntry
 
 # Valid detail tabs for the matter detail view
 VALID_DETAIL_TABS = [
+    "info",
     "contacts",
     "rates",
     "activity",
@@ -181,6 +182,20 @@ def detail(request, id):
 
 @login_required
 @matter_access_required
+def info_index(request, id):
+    """Full-page render of the matter Info tab (matter properties + client)."""
+    matter = get_object_or_404(Matter, pk=id)
+    context = {
+        "app": "matters",
+        "subapp": "info",
+        "matter": matter,
+        "primary_proceeding": matter.primary_proceeding,
+    }
+    return render(request, "matters/info/list.html", context)
+
+
+@login_required
+@matter_access_required
 def mode_content(request, id):
     """Return detail mode content partial for HTMX, or redirect for regular request."""
     matter = get_object_or_404(Matter, pk=id)
@@ -249,6 +264,12 @@ def _get_detail_tab_data(request, matter, tab):
         return {
             "tab_template": "matters/contacts/contact-table.html",
             "forbidden": True,
+        }
+
+    if tab == "info":
+        return {
+            "tab_template": "matters/info/main.html",
+            "primary_proceeding": matter.primary_proceeding,
         }
 
     if tab == "contacts":

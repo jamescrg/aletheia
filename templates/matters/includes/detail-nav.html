@@ -2,6 +2,12 @@
      class="subnav"
      {% if oob %}hx-swap-oob="true"{% endif %}>
   <ul>
+    <li {% if subapp == 'info' %}class="active"{% endif %}>
+      <a href="{% url 'matters:info-index' id=matter.id %}"
+         hx-get="{% url 'matters:tab-content' id=matter.id tab='info' %}"
+         hx-target=".detail-body"
+         hx-push-url="{% url 'matters:info-index' id=matter.id %}">Info</a>
+    </li>
     <li {% if subapp == 'contacts' %}class="active"{% endif %}>
       <a href="{% url 'matters:contacts' id=matter.id %}"
          hx-get="{% url 'matters:tab-content' id=matter.id tab='contacts' %}"

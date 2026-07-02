@@ -353,6 +353,39 @@ Contacts tab — parties table
 }
 
 /* ==========================================================================
+Matter Info tab
+========================================================================== */
+
+.matter-info {
+  padding: 1rem;
+}
+
+.info-grid {
+  display: grid;
+  gap: 0.5rem 1.5rem;
+  grid-template-columns: max-content 1fr;
+  margin: 0;
+  max-width: 40rem;
+}
+
+.info-grid dt {
+  color: var(--color-muted);
+  font-weight: 600;
+}
+
+.info-grid dd {
+  margin: 0;
+}
+
+.info-empty {
+  color: var(--color-muted);
+}
+
+.info-subhead {
+  margin: 1.5rem 0 0.75rem;
+}
+
+/* ==========================================================================
  Matter-specific group management modal
 ========================================================================== */
 

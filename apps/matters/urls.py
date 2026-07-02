@@ -26,6 +26,7 @@ from .views import (
     filter,
     filter_quick,
     filter_quick_status,
+    info_index,
     matter_index,
     matter_list,
     mode_content,
@@ -80,6 +81,8 @@ urlpatterns = [
         name="update-work-status",
     ),
     path("matters/<int:id>/print", print, name="print"),
+    # Info
+    path("matters/<int:id>/info", info_index, name="info-index"),
     # Contacts
     path("matters/<int:id>/contacts", contacts.index, name="contacts"),
     # Matter-specific party groups
