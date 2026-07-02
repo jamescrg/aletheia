@@ -360,29 +360,58 @@ Matter Info tab
   padding: 1rem;
 }
 
-.info-grid {
-  display: grid;
-  gap: 0.5rem 1.5rem;
-  grid-template-columns: max-content 1fr;
-  margin: 0;
-  max-width: 40rem;
+/* Two tables at the top: matter properties (70%) beside the primary proceeding
+   (30%), mirroring the Ledger's side-by-side totals tables. */
+.info-tables {
+  align-items: flex-start;
+  display: flex;
+  gap: 1.25rem;
 }
 
-.info-grid dt {
+.info-table {
+  border: solid 1px var(--border-medium);
+  border-collapse: separate;
+  border-radius: var(--radius-md);
+  border-spacing: 0;
+}
+
+.info-table.info-main {
+  flex: 7;
+}
+
+.info-table.info-proceeding {
+  flex: 3;
+}
+
+.info-table th,
+.info-table td {
+  border-bottom: solid 1px var(--border-medium);
+  padding: 0.5rem 1rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.info-table tr:last-child th,
+.info-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Label column: shrink to its content so the value column takes the rest. */
+.info-table th {
   color: var(--color-muted);
   font-weight: 600;
+  white-space: nowrap;
+  width: 1%;
 }
 
-.info-grid dd {
-  margin: 0;
+/* Full-width section-title row (e.g. "Primary Proceeding"). */
+.info-table th.info-table-head {
+  color: var(--color-primary);
+  width: auto;
 }
 
 .info-empty {
   color: var(--color-muted);
-}
-
-.info-subhead {
-  margin: 1.5rem 0 0.75rem;
 }
 
 /* ==========================================================================

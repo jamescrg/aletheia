@@ -1,7 +1,6 @@
 {% load phone_numbers %}
 <div class="toolbar matter-contacts-toolbar">
   <div class="toolbar-left">
-    <h2>Related Contacts</h2>
     {% if selected_ids %}
       <div class="filter-tools">
         <button type="button"
@@ -21,17 +20,12 @@
       </div>
     {% else %}
       <div class="filter-tools">
-        <a href="#"
-           class="accent-link"
-           hx-get="{% url 'matters:contacts-assign' id=matter.id %}"
-           hx-target="#htmx-modal-container"
-           hx-trigger="click">+ Assign</a>
-        <a href="#"
-           class="accent-link"
-           hx-get="{% url 'matters:group-manage' id=matter.id %}"
-           hx-target="#htmx-modal-container"
-           hx-trigger="click">
-          <i class="icon-square-pen with-text"></i>Groups</a>
+        <button type="button"
+                hx-get="{% url 'matters:contacts-assign' id=matter.id %}"
+                hx-target="#htmx-modal-container"
+                hx-trigger="click">
+          <i class="icon-plus"></i>
+        </button>
         <button type="button"
                 class="btn-icon"
                 hx-get="{% url 'matters:contacts-filter' id=matter.id %}"
@@ -100,6 +94,16 @@
       </div>
     {% endif %}
   </div>
+  {% if not selected_ids %}
+    <div class="toolbar-right">
+      <a href="#"
+         class="accent-link"
+         hx-get="{% url 'matters:group-manage' id=matter.id %}"
+         hx-target="#htmx-modal-container"
+         hx-trigger="click">
+        <i class="icon-square-pen with-text"></i>Groups</a>
+    </div>
+  {% endif %}
 </div>
 <div class="table-container">
   <table class="table matter-contacts card-table">
