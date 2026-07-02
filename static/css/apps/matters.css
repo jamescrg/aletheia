@@ -358,6 +358,12 @@ Contacts tab — parties table
   color: var(--color-muted-more);
 }
 
+/* Add button placed below short, control-less subtab tables (Rates, Proceedings,
+   Settlement) instead of in a near-empty top toolbar. */
+.matter-subtab-add {
+  margin-top: 1rem;
+}
+
 /* ==========================================================================
 Matter Info tab
 ========================================================================== */

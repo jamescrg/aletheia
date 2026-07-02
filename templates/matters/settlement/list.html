@@ -1,18 +1,5 @@
 {% block subcontent %}
   {% load humanize %}
-  <div class="toolbar">
-    <div class="toolbar-left">
-      <h2>Settlement</h2>
-      <div class="filter-tools">
-        <button hx-get="/matters/{{ matter.id }}/settlement/add"
-                hx-target="#htmx-modal-container"
-                data-bs-toggle="modal"
-                data-bs-target="#htmx-modal-container">
-          <i class="icon-plus"></i>
-        </button>
-      </div>
-    </div>
-  </div>
   <div class="overflow-x">
     <table class="table settlement-list card-table">
       <thead>
@@ -53,5 +40,15 @@
         {% endfor %}
       </tbody>
     </table>
+  </div>
+  <div class="matter-subtab-add">
+    <button type="button"
+            class="btn-icon"
+            hx-get="/matters/{{ matter.id }}/settlement/add"
+            hx-target="#htmx-modal-container"
+            data-bs-toggle="modal"
+            data-bs-target="#htmx-modal-container">
+      <i class="icon-plus with-text"></i> Add Settlement Entry
+    </button>
   </div>
 {% endblock subcontent %}

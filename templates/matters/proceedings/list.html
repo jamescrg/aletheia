@@ -1,17 +1,4 @@
 {% block subcontent %}
-  <div class="toolbar">
-    <div class="toolbar-left">
-      <h2>Proceedings</h2>
-      <div class="filter-tools">
-        <button hx-get="/matters/{{ matter.id }}/proceedings/add"
-                hx-target="#htmx-modal-container"
-                data-bs-toggle="modal"
-                data-bs-target="#htmx-modal-container">
-          <i class="icon-plus"></i>
-        </button>
-      </div>
-    </div>
-  </div>
   <div class="table-container">
     <table class="table proceedings-list card-table">
       <thead>
@@ -71,5 +58,15 @@
         {% endfor %}
       </tbody>
     </table>
+  </div>
+  <div class="matter-subtab-add">
+    <button type="button"
+            class="btn-icon"
+            hx-get="/matters/{{ matter.id }}/proceedings/add"
+            hx-target="#htmx-modal-container"
+            data-bs-toggle="modal"
+            data-bs-target="#htmx-modal-container">
+      <i class="icon-plus with-text"></i> Add Proceeding
+    </button>
   </div>
 {% endblock subcontent %}
