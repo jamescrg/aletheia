@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Max
+from django.db.models import Case, Count, IntegerField, Max, Value, When
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_POST
@@ -67,6 +67,25 @@ def get_contact_list(request, matter):
 
     contacts_qs = _filtered_relationships(request, matter)
 
+    current_order = filter_data.get("order_by", "group") if filter_data else "group"
+    if isinstance(current_order, list):
+        current_order = current_order[0] if current_order else "group"
+    order_field = current_order.lstrip("-")
+
+    # When sorted ascending by group, pin the canonical client to the top of the
+    # Client group (it's order 1, so top of the table). Co-clients otherwise sort
+    # in by name and can land above the actual client.
+    if current_order == "group" and matter.client_id:
+        contacts_qs = contacts_qs.order_by(
+            "group__order",
+            Case(
+                When(contact_id=matter.client_id, role__is_system=True, then=Value(0)),
+                default=Value(1),
+                output_field=IntegerField(),
+            ),
+            "contact__name",
+        )
+
     # The parties list is just the matter's relationships. The canonical client
     # (Matter.client) is mirrored into a Client-group/Client-role relationship
     # (see Matter._ensure_client_relationship), so it shows up here like any
@@ -89,12 +108,7 @@ def get_contact_list(request, matter):
             }
         )
 
-    current_order = filter_data.get("order_by", "group") if filter_data else "group"
-    if isinstance(current_order, list):
-        current_order = current_order[0] if current_order else "group"
-
     # Add band index for visual grouping when sorted by group
-    order_field = current_order.lstrip("-")
     if order_field == "group":
         current_group = None
         band = 0
