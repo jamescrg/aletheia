@@ -8,6 +8,9 @@ from django.views.decorators.http import require_POST
 
 from apps.accounts.access import matter_access_required
 from apps.activity.expenses.models import ExpenseEntry
+from apps.activity.expenses.summary import (
+    calculate_summary as calculate_expense_summary,
+)
 from apps.activity.models import ActivityLabel
 from apps.activity.time.models import TimeEntry
 from apps.activity.time.summary import calculate_summary
@@ -32,14 +35,16 @@ def get_matter_activity_data(request, matter):
     view = request.session.get("matter_activity_view", "time")
 
     if view == "expenses":
+        expense_entries = list(
+            ExpenseEntry.objects.filter(matter=matter)
+            .select_related("user", "matter")
+            .order_by("-date", "-id")
+        )
         return {
             "matter": matter,
             "activity_view": "expenses",
-            "expense_entries": (
-                ExpenseEntry.objects.filter(matter=matter)
-                .select_related("user")
-                .order_by("-date", "-id")
-            ),
+            "expense_entries": expense_entries,
+            "expense_summary": calculate_expense_summary(expense_entries),
         }
 
     sort_order = request.session.get("matter_activity_sort", "-id")

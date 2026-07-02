@@ -377,6 +377,12 @@ Contacts tab — parties table
   padding: 0.5rem 0.75rem;
 }
 
+.matter-activity-totals {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
 /* ==========================================================================
 Matter Info tab
 ========================================================================== */
